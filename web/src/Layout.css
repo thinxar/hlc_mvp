@@ -1,0 +1,4 @@
+#toolbarViewerRight {
+  display: none !important;
+  z-index: -9999;
+}

@@ -1,5 +1,7 @@
 import { PDFDocument } from 'pdf-lib';
 import { useEffect, useState } from 'react';
+import { FaRegFileLines } from 'react-icons/fa6';
+import { IoChevronBackOutline } from "react-icons/io5";
 
 interface Props {
   pdfUrlFromApi: string;
@@ -75,15 +77,22 @@ const PdfViewWithOverlay = ({
   }, [pdfUrlFromApi, imageUrlFromApi, pageIndex, position, scale]);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 bg-blue-600 rounded-lg">
-            <div className="w-6 h-6 text-white" />
+    <div className="max-w-4xl mx-auto p-5 min-h-screen">
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-blue-600 rounded-lg">
+              <FaRegFileLines size={16} className='text-white h-6 w-6' />
+            </div>
+            <h1 className="text-2xl font-bold text-slate-100">PDF Endorsement</h1>
           </div>
-          <h1 className="text-2xl font-bold text-slate-800">PDF Endorsement Tool</h1>
+          <p className="text-slate-200">Add endorsements and signatures to your PDF documents</p>
         </div>
-        <p className="text-slate-600">Add endorsements and signatures to your PDF documents</p>
+        <div className='flex items-center gap-1 text-slate-200 cursor-pointer'
+          onClick={() => window.history.back()}>
+          <IoChevronBackOutline size={16} />
+          Back
+        </div>
       </div>
 
       {pdfUrl && (
@@ -104,7 +113,7 @@ const PdfViewWithOverlay = ({
           </div>
 
           <div className="relative">
-            <iframe
+            <iframe id='pdf_frame'
               src={pdfUrl}
               title="Enhanced PDF Document"
               className="w-full h-[700px] border-0"
