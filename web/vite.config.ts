@@ -10,6 +10,7 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  assetsInclude: ['**/*.tiff'],
   server: {
     open: true,
     port: 5000
