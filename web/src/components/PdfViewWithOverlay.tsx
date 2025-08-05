@@ -1,7 +1,5 @@
 import { PDFDocument } from 'pdf-lib';
 import { useEffect, useState } from 'react';
-import { FaRegFileLines } from 'react-icons/fa6';
-import { IoChevronBackOutline } from "react-icons/io5";
 
 interface Props {
   pdfUrlFromApi: string;
@@ -78,23 +76,6 @@ const PdfViewWithOverlay = ({
 
   return (
     <div className="max-w-4xl mx-auto p-5 min-h-screen">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-blue-600 rounded-lg">
-              <FaRegFileLines size={16} className='text-white h-6 w-6' />
-            </div>
-            <h1 className="text-2xl font-bold text-slate-100">PDF Endorsement</h1>
-          </div>
-          <p className="text-slate-200">Add endorsements and signatures to your PDF documents</p>
-        </div>
-        <div className='flex items-center gap-1 text-slate-200 cursor-pointer'
-          onClick={() => window.history.back()}>
-          <IoChevronBackOutline size={16} />
-          Back
-        </div>
-      </div>
-
       {pdfUrl && (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <div className="bg-slate-50 border-b border-slate-200 p-4 flex items-center justify-between">
@@ -127,3 +108,4 @@ const PdfViewWithOverlay = ({
 };
 
 export { PdfViewWithOverlay };
+
