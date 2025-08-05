@@ -27,8 +27,11 @@ export { PolicyPdfList };
 const PolicyCard = ({ policy, policyIndex }: { policy: any, policyIndex: number }) => {
     const navigate = useNavigate();
 
-    const onCardClick = () => {
-        navigate('/app/pdfViewer')
+    const onCardClick = (type: string) => {
+        if (type == 'pdf')
+            navigate('/app/pdfViewer')
+        else
+            navigate('/app/tiffViewer')
     }
 
     return (
@@ -38,11 +41,12 @@ const PolicyCard = ({ policy, policyIndex }: { policy: any, policyIndex: number 
                 <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
             </div>
 
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {policy.pdfFiles.map((pdf: any, pdfIndex: number) => (
                     <div
                         key={`${policy.id}_${pdfIndex}`}
-                        onClick={onCardClick}
+                        onClick={() => onCardClick(pdf.type)}
                         className="group bg-white/10 backdrop-blur-xl rounded-xl p-4 border border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-lg animate-fade-in-up"
                         style={{ animationDelay: `${(policyIndex * 100) + (pdfIndex * 50)}ms` }}
                     >

@@ -1,0 +1,126 @@
+/* add css module styles here (optional) */
+
+.tiffContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  gap: 1rem;
+  padding: 2rem;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.tiffContainer .tiffArrow {
+  position: relative;
+  max-width: 1024px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tiffContainer .tiffArrow .tiffInner {
+  position: relative;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tiffContainer canvas {
+  max-width: 100%;
+  width: fit-content;
+  height: 100%;
+  max-height: 700px;
+  object-fit: contain;
+}
+
+.tiffContainer canvas:hover {
+  cursor: pointer;
+}
+
+.tiffContainer .tiffButton {
+  padding: 0.4rem 2rem;
+  border: none;
+  border-radius: 0.25rem;
+  background-color: #141414;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tiffContainer .tiffButton:disabled {
+  background-color: #ccc !important;
+  cursor: not-allowed !important;
+}
+
+.tiffContainer .tiffSpan {
+  margin: 0 16px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #aaa;
+  width: 100px;
+  display: inline-block;
+  text-align: center;
+}
+
+.tiffContainer .tiffAbsolute button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background-color: #141414;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  z-index: 99;
+  padding: 5px 12px;
+}
+
+.tiffContainer .tiffAbsolute button:nth-child(1) {
+  left: 5%;
+}
+
+.tiffContainer .tiffAbsolute button:nth-child(2) {
+  right: 5%;
+}
+
+.tiffContainer button {
+  transition: cubic-bezier(0.075, 0.82, 0.165, 1) all;
+}
+
+.tiffContainer button:not(:disabled):hover {
+  background-color: #000;
+  opacity: 0.8 !important;
+}
+
+.tiffContainer .tiffButtons {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.tiffContainer .tiffBtnPrint,
+.tiffContainer .tiffBtnZoom {
+  border: none;
+  color: #141414;
+  cursor: pointer;
+  padding: 4px 12px;
+  transition: all cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.tiffContainer .tiffBtnPrint:hover,
+.tiffContainer .tiffBtnZoom:hover {
+  color: #fff;
+}
+
+.tiffContainer .tiffButtons svg {
+  width: 14px;
+  height: 14px;
+}
