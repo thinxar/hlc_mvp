@@ -49,7 +49,7 @@ subprojects {
         implementation 'com.amazonaws:aws-java-sdk-s3:1.12.707'
         implementation("org.postgresql:postgresql:42.7.7")        
 		            
-        implementation 'org.springframework.boot:spring-boot-starter:3.3.4'
+       // implementation 'org.springframework.boot:spring-boot-starter:3.3.4'
         implementation ('org.springframework.boot:spring-boot-starter-web:3.3.4') {
         	exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     	}
@@ -78,6 +78,10 @@ subprojects {
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.4'
 		testImplementation("org.junit.platform:junit-platform-engine:1.13.4")    
     }
+
+    configurations.all {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+      }
 
     publishing {
       publications {

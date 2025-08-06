@@ -17,9 +17,9 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public Optional<UserEntity> findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+    public Optional<UserEntity> findUserByLoginName(String loginName) {
+		return userRepository.findUserByLoginName(loginName);
+	}
 
     public void setLoginNameAndDisplayPage(String email, String loginName, MenuEntity displayPage) {
         Optional<UserEntity> userOptional = userRepository.findByEmail(email);
@@ -30,16 +30,24 @@ public class UserService {
         });
     }
 
-    public LoginResponse getLoginNameAndDisplayPage(String email) {
-        Optional<UserEntity> userOptional = findUserByEmail(email);
-        if (userOptional.isPresent()) {
-            UserEntity user = userOptional.get();
-            LoginResponse loginResponse = new LoginResponse();
-            loginResponse.setLoginName(user.getLoginName());
-            if(null != user.getDisplayPage())
-            	loginResponse.setDisplayPage(user.getDisplayPage().getCode());
-            return loginResponse;
-        }
-        return null;
-    }
+    public LoginResponse getLoginNameAndDisplayPage(String loginName) {
+		Optional<UserEntity> userOptional = findUserByLoginName(loginName);
+		if (userOptional.isPresent()) {
+			UserEntity user = userOptional.get();
+			LoginResponse loginResponse = new LoginResponse();
+			loginResponse.setLoginName(user.getLoginName());
+			if (null != user.getDisplayPage())
+				loginResponse.setDisplayPage(user.getDisplayPage().getCode());
+			return loginResponse;
+		}
+		return null;
+	}
+    
+    public boolean isUserActive(String loginName) {
+		Optional<UserEntity> userOptional = userRepository.findUserByLoginNameAndActive(loginName, (short) 1);
+		if (userOptional.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
 }

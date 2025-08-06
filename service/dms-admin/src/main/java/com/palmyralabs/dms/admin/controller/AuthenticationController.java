@@ -47,6 +47,9 @@ public class AuthenticationController extends BaseController {
 				.unauthenticated(loginRequest.getUserName(), loginRequest.getPassword());
 		Authentication authentication = authenticationManager.authenticate(token);
 		if (null != authentication && authentication.isAuthenticated()) {
+			if(!userService.isUserActive(loginRequest.getUserName())) {
+				throw new UnAuthorizedException("USER001", "This user account has been deactivated.");
+			}
 			SecurityContext context = securityContextHolderStrategy.createEmptyContext();
 			context.setAuthentication(authentication);
 			securityContextHolderStrategy.setContext(context);
