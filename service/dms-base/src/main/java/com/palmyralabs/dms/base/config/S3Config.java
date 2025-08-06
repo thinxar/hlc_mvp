@@ -1,4 +1,4 @@
-package com.palmyralabs.dms.config;
+package com.palmyralabs.dms.base.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +8,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.palmyralabs.dms.model.S3Properties;
+import com.palmyralabs.dms.base.model.S3Properties;
 
 @Configuration
 public class S3Config {

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.palmyralabs.dms.service.S3Service;
+import com.palmyralabs.dms.base.service.S3Service;
 
 import lombok.RequiredArgsConstructor;
 

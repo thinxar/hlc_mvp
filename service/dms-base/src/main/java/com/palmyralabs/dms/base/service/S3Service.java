@@ -1,4 +1,4 @@
-package com.palmyralabs.dms.service;
+package com.palmyralabs.dms.base.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
-import com.palmyralabs.dms.model.S3Properties;
+import com.palmyralabs.dms.base.model.S3Properties;
 import com.palmyralabs.palmyra.base.exception.ResourceNotFoundException;
 
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.palmyralabs.dms.model;
+package com.palmyralabs.dms.base.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
