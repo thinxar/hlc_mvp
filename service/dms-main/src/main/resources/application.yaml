@@ -1,0 +1,37 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:mariadb://192.168.1.11:3306/ada_noc
+    username: dbuser
+    password: dbuser
+    default-auto-commit: false
+    driverClassName: org.mariadb.jdbc.Driver
+    hikari:
+      connection-timeout: 90000000
+      default-auto-commit: false
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
+
+server:
+  port: 7070
+  servlet:
+    context-path: /api
+    session:
+      timeout: 220m
+
+app:
+ fileStore:
+   baseFolder: "/home/palmyra/Desktop/"
+
+aws:
+  s3:
+    bucketName: hpcbucket
+    region: ap-south-1
+    accessKey: AKIAIOSFODNN7EXAMPLE
+    secretKey: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    endpoint: http://192.168.1.11:9000

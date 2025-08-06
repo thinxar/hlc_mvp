@@ -57,7 +57,7 @@ subprojects {
         implementation deps.palmyra.store.pgsql
         implementation deps.jakarta.persistence
         implementation deps.spring.security_config
-
+		implementation 'com.amazonaws:aws-java-sdk-s3:1.12.707'
         implementation deps.palmyra.extn.pwdmgmt
         implementation deps.palmyra.extn.aclmgmt
         
