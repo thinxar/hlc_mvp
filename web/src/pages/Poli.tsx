@@ -3,6 +3,7 @@ import { CiCalendar, CiHardDrive, CiSearch } from 'react-icons/ci';
 import { FaDownload, FaFile } from 'react-icons/fa6';
 import { PdfViewWithOverlay } from '../components/PdfViewWithOverlay';
 import { TIFFViewer } from '../components/TiffViewWithOverlay';
+import { IoClose } from 'react-icons/io5';
 
 const samplePolicies = [
     {
@@ -93,6 +94,9 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch }: any) => {
                                 className="w-full bg-transparent text-white placeholder-white/50 pl-12 pr-4 py-4 text-lg focus:outline-none"
                             />
                         </div>
+                        {searchTerm != '' &&
+                            <IoClose className='text-gray-400 cursor-pointer' fontSize={30} onClick={() => setSearchTerm('')} />
+                        }
                         <button
                             onClick={onSearch}
                             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-semibold transition duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
