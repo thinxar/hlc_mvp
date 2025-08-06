@@ -88,7 +88,7 @@ const PdfViewWithOverlay = ({
             download="overlayed-document.pdf"
           >
             <button
-              className=" cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
+              className="cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
               <FaDownload className="w-4 h-4" />
               <span>Download</span>
             </button>

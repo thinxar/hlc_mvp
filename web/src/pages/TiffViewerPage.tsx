@@ -9,7 +9,7 @@ const TiffViewerPage = () => {
     const overlays = [
         {
             page: 1,
-            imageUrl: '/images/horse.JPEG',
+            imageUrl: '/images/licseal.jpg',
             x: 100,
             y: 150,
             width: 100,
@@ -17,7 +17,7 @@ const TiffViewerPage = () => {
         },
         {
             page: 2,
-            imageUrl: '/images/horse.JPEG',
+            imageUrl: '/images/licseal.jpg',
             x: 100,
             y: 100,
             width: 250,

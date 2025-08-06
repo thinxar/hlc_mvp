@@ -18,8 +18,8 @@ const PdfViewer = ({ file }: any) => {
     }
 
     const overlays = [
-        { page: 1, imageUrl: '/images/horse.JPEG', x: 100, y: 150, width: 100, height: 50 },
-        { page: 2, imageUrl: '/images/horse.JPEG', x: 100, y: 100, width: 250, height: 250 }
+        { page: 1, imageUrl: '/images/licseal.jpg', x: 100, y: 150, width: 100, height: 100 },
+        { page: 2, imageUrl: '/images/licseal.jpg', x: 100, y: 100, width: 250, height: 250 }
     ];
 
     return (
@@ -31,8 +31,9 @@ const PdfViewer = ({ file }: any) => {
                         <p className="text-sm text-white/60">{file.fileName}</p>
                     </div>
                     <div className="flex justify-end p-4">
-                        <button
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
+                        <button //onClick={() => {window.location.reload()}}
+                            onClick={() => { }}
+                            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
                             <IoChevronBack className="w-4 h-4" />
                             <span>Back</span>
                         </button>
@@ -43,8 +44,8 @@ const PdfViewer = ({ file }: any) => {
                 <div className="h-[calc(100vh-140px)] bg-white rounded-2xl flex items-center justify-center overflow-auto">
                     {file.type === 'pdf' ? (
                         <PdfViewWithOverlay
-                            pdfUrlFromApi="https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf"
-                            imageUrlFromApi="https://picsum.photos/200/300.jpg"
+                            pdfUrlFromApi="/files/Sample-Policy-Document_LIC.pdf"
+                            imageUrlFromApi="/images/licseal.jpg"
                             pageIndex={0}
                             position={{ x: 250, y: 200 }}
                             scale={0.7}
