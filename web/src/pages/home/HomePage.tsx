@@ -1,12 +1,10 @@
-
-import Poli from '../Poli';
+import { PolicySearchPage } from './PolicySearchPage';
 
 const HomePage = () => {
 
     return (
         <div>
-            <Poli />
-            {/* <Tiff/> */}
+            <PolicySearchPage />
         </div>
     );
 };

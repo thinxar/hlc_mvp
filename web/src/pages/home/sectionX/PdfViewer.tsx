@@ -1,0 +1,64 @@
+import { FaDownload, FaFile } from 'react-icons/fa6';
+import { PdfViewWithOverlay } from '../../../components/PdfViewWithOverlay';
+import { TIFFViewer } from '../../../components/TiffViewWithOverlay';
+
+const PdfViewer = ({ file }: any) => {
+    if (!file) {
+        return (
+            <div className="flex items-center justify-center h-full text-white/60">
+                <div className="text-center">
+                    <FaFile className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                    <p className="text-xl">Select a document to view</p>
+                    <p className="text-sm mt-2">Choose a PDF or TIFF file from the list on the left</p>
+                </div>
+            </div>
+        );
+    }
+
+    const overlays = [
+        { page: 1, imageUrl: '/images/horse.JPEG', x: 100, y: 150, width: 100, height: 50 },
+        { page: 2, imageUrl: '/images/horse.JPEG', x: 100, y: 100, width: 250, height: 250 }
+    ];
+
+    return (
+        <div className="h-auto overflow-hidden">
+            <div className="p-3">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h3 className="font-semibold text-white">{file.name}</h3>
+                        <p className="text-sm text-white/60">{file.fileName}</p>
+                    </div>
+                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
+                        <FaDownload className="w-4 h-4" />
+                        <span>Download</span>
+                    </button>
+                </div>
+            </div>
+            <div className="p-3 h-full">
+                <div className="bg-white rounded-2xl flex items-center justify-center">
+                    {file.type === 'pdf' ? (
+                        <PdfViewWithOverlay
+                            pdfUrlFromApi="https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf"
+                            imageUrlFromApi="https://picsum.photos/200/300.jpg"
+                            pageIndex={0}
+                            position={{ x: 250, y: 200 }}
+                            scale={0.7}
+                        />
+                    ) : (
+                        <TIFFViewer
+                            overlays={overlays}
+                            tiff="/images/multiple.tiff"
+                            lang="tr"
+                            paginate="ltr"
+                            buttonColor="#141414"
+                            printable
+                            zoomable
+                        />
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export { PdfViewer };
