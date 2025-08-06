@@ -20,9 +20,9 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
 
   // refs
   const canvasRef: any = React.useRef(null)
-  const btnPrintRef: any = React.useRef(null)
-  const btnZoomInRef: any = React.useRef(null)
-  const btnZoomOutRef: any = React.useRef(null)
+  // const btnPrintRef: any = React.useRef(null)
+  // const btnZoomInRef: any = React.useRef(null)
+  // const btnZoomOutRef: any = React.useRef(null)
   const paginateLTRRef: any = React.useRef(null)
   const paginateBottomRef: any = React.useRef(null)
 
@@ -93,72 +93,72 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
     }
   }
 
-  const handlePrintClick = () => {
-    try {
-      if (printable) {
-        btnPrintRef.current.style.visibility = 'hidden'
-        btnZoomInRef.current.style.visibility = 'hidden'
-        btnZoomOutRef.current.style.visibility = 'hidden'
-      }
+  // const handlePrintClick = () => {
+  //   try {
+  //     if (printable) {
+  //       btnPrintRef.current.style.visibility = 'hidden'
+  //       btnZoomInRef.current.style.visibility = 'hidden'
+  //       btnZoomOutRef.current.style.visibility = 'hidden'
+  //     }
 
-      if (paginateLTRRef.current)
-        paginateLTRRef.current.style.visibility = 'hidden'
+  //     if (paginateLTRRef.current)
+  //       paginateLTRRef.current.style.visibility = 'hidden'
 
-      if (paginateBottomRef.current)
-        paginateBottomRef.current.style.visibility = 'hidden'
+  //     if (paginateBottomRef.current)
+  //       paginateBottomRef.current.style.visibility = 'hidden'
 
-      if (pages.length > 1) {
-        pages.forEach((page, index) => {
-          if (index > 0) {
-            canvasRef.current.style.display = 'block'
-            canvasRef.current.appendChild(page)
-          }
-        })
-        window.print()
+  //     if (pages.length > 1) {
+  //       pages.forEach((page, index) => {
+  //         if (index > 0) {
+  //           canvasRef.current.style.display = 'block'
+  //           canvasRef.current.appendChild(page)
+  //         }
+  //       })
+  //       window.print()
 
-        pages.forEach((page, index) => {
-          if (index > 0) {
-            canvasRef.current.removeChild(page)
-          } else {
-            canvasRef.current.style.display = 'flex'
-          }
-        })
-      } else {
-        window.print()
-      }
-    } catch (error) {
-      console.error('Error')
-    } finally {
-      if (printable) {
-        btnPrintRef.current.style.visibility = 'visible'
-        btnZoomInRef.current.style.visibility = 'visible'
-        btnZoomOutRef.current.style.visibility = 'visible'
-      }
+  //       pages.forEach((page, index) => {
+  //         if (index > 0) {
+  //           canvasRef.current.removeChild(page)
+  //         } else {
+  //           canvasRef.current.style.display = 'flex'
+  //         }
+  //       })
+  //     } else {
+  //       window.print()
+  //     }
+  //   } catch (error) {
+  //     console.error('Error')
+  //   } finally {
+  //     if (printable) {
+  //       btnPrintRef.current.style.visibility = 'visible'
+  //       btnZoomInRef.current.style.visibility = 'visible'
+  //       btnZoomOutRef.current.style.visibility = 'visible'
+  //     }
 
-      if (paginateLTRRef.current)
-        paginateLTRRef.current.style.visibility = 'visible'
+  //     if (paginateLTRRef.current)
+  //       paginateLTRRef.current.style.visibility = 'visible'
 
-      if (paginateBottomRef.current) {
-        paginateBottomRef.current.style.visibility = 'visible'
-      }
-    }
-  }
+  //     if (paginateBottomRef.current) {
+  //       paginateBottomRef.current.style.visibility = 'visible'
+  //     }
+  //   }
+  // }
 
-  const handleZoomInClick = () => {
-    const canvas = canvasRef.current
-    const currentWidth = canvas.clientWidth
-    const currentHeight = canvas.clientHeight
-    canvas.style.width = currentWidth + 100 + 'px'
-    canvas.style.height = currentHeight + 100 + 'px'
-  }
+  // const handleZoomInClick = () => {
+  //   const canvas = canvasRef.current
+  //   const currentWidth = canvas.clientWidth
+  //   const currentHeight = canvas.clientHeight
+  //   canvas.style.width = currentWidth + 100 + 'px'
+  //   canvas.style.height = currentHeight + 100 + 'px'
+  // }
 
-  const handleZoomOutClick = () => {
-    const canvas = canvasRef.current
-    const currentWidth = canvas.clientWidth
-    const currentHeight = canvas.clientHeight
-    canvas.style.width = currentWidth - 100 + 'px'
-    canvas.style.height = currentHeight - 100 + 'px'
-  }
+  // const handleZoomOutClick = () => {
+  //   const canvas = canvasRef.current
+  //   const currentWidth = canvas.clientWidth
+  //   const currentHeight = canvas.clientHeight
+  //   canvas.style.width = currentWidth - 100 + 'px'
+  //   canvas.style.height = currentHeight - 100 + 'px'
+  // }
 
   useEffect(() => {
     displayTIFF(_tiff)
@@ -206,7 +206,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
         {/* <button onClick={downloadMultiPageTIFF} className={styles.tiffBtnPrint}>
           Download (TIFF)
         </button> */}
-        {printable || zoomable ? (
+        {/* {printable || zoomable ? (
           <div className={styles.tiffButtons}>
             {zoomable && (
               <div>
@@ -240,7 +240,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
               </button>
             )}
           </div>
-        ) : null}
+        ) : null} */}
 
         <div className={styles.tiffArrow}>
           <div id='tiff-inner-container' className={styles.tiffInner} ref={canvasRef} />
