@@ -50,7 +50,10 @@ subprojects {
         implementation 'com.github.dhorions:boxable:1.7.0'
         
         implementation 'org.springframework.boot:spring-boot-starter:3.3.4'
-        implementation 'org.springframework.boot:spring-boot-starter-web:3.3.4'        
+        implementation ('org.springframework.boot:spring-boot-starter-web:3.3.4') {
+        	exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    	}
+    	implementation 'org.springframework.boot:spring-boot-starter-jetty:3.3.4'
         testImplementation 'org.springframework.boot:spring-boot-starter-test:3.3.4'
         implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.27'
         implementation deps.palmyra.spring
