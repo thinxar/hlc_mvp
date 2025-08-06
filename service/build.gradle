@@ -46,30 +46,30 @@ subprojects {
     }
 
     dependencies {
-    
-        implementation 'com.github.dhorions:boxable:1.7.0'
-        
+        implementation 'com.amazonaws:aws-java-sdk-s3:1.12.707'
+        implementation("org.postgresql:postgresql:42.7.7")        
+		            
         implementation 'org.springframework.boot:spring-boot-starter:3.3.4'
         implementation ('org.springframework.boot:spring-boot-starter-web:3.3.4') {
         	exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     	}
     	implementation 'org.springframework.boot:spring-boot-starter-jetty:3.3.4'
+    	implementation 'org.springframework.boot:spring-boot-starter-logging:3.3.4'
         testImplementation 'org.springframework.boot:spring-boot-starter-test:3.3.4'
-        implementation group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.27'
+
+    
         implementation deps.palmyra.spring
         implementation deps.palmyra.store.pgsql
         implementation deps.jakarta.persistence
         implementation deps.spring.security_config
-		implementation 'com.amazonaws:aws-java-sdk-s3:1.12.707'
         implementation deps.palmyra.extn.pwdmgmt
         implementation deps.palmyra.extn.aclmgmt
+        implementation deps.apache.log4j2.slf4j_adapter
         
         compileOnly deps.org.lombok
-        annotationProcessor deps.org.lombok
-        runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:3.2.0'
-        
+        annotationProcessor deps.org.lombok        
     
-        implementation deps.org.slf4j.api        
+        implementation deps.org.slf4j.api
         
         testImplementation 'org.mockito:mockito-core:5.18.0'
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'

@@ -4,12 +4,13 @@ spring:
     hibernate:
       ddl-auto: validate
   datasource:
-    url: jdbc:mariadb://192.168.1.11:3306/ada_noc
+    url: jdbc:postgresql://192.168.1.11:5432/postgres
     username: dbuser
-    password: dbuser
+    password: secret
     default-auto-commit: false
-    driverClassName: org.mariadb.jdbc.Driver
+    driverClassName: org.postgresql.Driver
     hikari:
+      schema: dms
       connection-timeout: 90000000
       default-auto-commit: false
   servlet:
