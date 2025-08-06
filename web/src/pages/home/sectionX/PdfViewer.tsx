@@ -34,8 +34,8 @@ const PdfViewer = ({ file }: any) => {
                     </button>
                 </div>
             </div>
-            <div className="p-3 h-full">
-                <div className="bg-white rounded-2xl flex items-center justify-center">
+            <div className="p-3">
+                <div className="h-[calc(100vh-140px)] bg-white rounded-2xl flex items-center justify-center overflow-auto">
                     {file.type === 'pdf' ? (
                         <PdfViewWithOverlay
                             pdfUrlFromApi="https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf"
@@ -44,6 +44,8 @@ const PdfViewer = ({ file }: any) => {
                             position={{ x: 250, y: 200 }}
                             scale={0.7}
                         />
+                    ) : file.type === 'JPEG' ? (
+                        <img src={file.path} className='h-full ' />
                     ) : (
                         <TIFFViewer
                             overlays={overlays}

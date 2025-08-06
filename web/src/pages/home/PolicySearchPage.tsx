@@ -8,42 +8,27 @@ const samplePolicies = [
     {
         id: '123456789',
         pdfFiles: [
-            { name: 'Policy Document', fileName: 'POL001234_Policy_Document.pdf', size: '2.3 MB', date: '15-01-2025', type: "pdf" },
-            { name: 'Premium Receipt', fileName: 'POL001234_Premium_Receipt.tiff', size: '456 KB', date: '12-01-2025', type: "tiff" },
-            { name: 'Coverage Details', fileName: 'POL001234_Coverage_Details.pdf', size: '1.8 MB', date: '29-02-2025', type: "pdf" },
-
-            { name: 'Policy Document', fileName: 'POL001234_Policy_Document.pdf', size: '2.3 MB', date: '15-01-2025', type: "pdf" },
-            { name: 'Premium Receipt', fileName: 'POL001234_Premium_Receipt.tiff', size: '456 KB', date: '12-01-2025', type: "tiff" },
-            { name: 'Coverage Details', fileName: 'POL001234_Coverage_Details.pdf', size: '1.8 MB', date: '29-02-2025', type: "pdf" },
-
-            { name: 'Policy Document', fileName: 'POL001234_Policy_Document.pdf', size: '2.3 MB', date: '15-01-2025', type: "pdf" },
-            { name: 'Premium Receipt', fileName: 'POL001234_Premium_Receipt.tiff', size: '456 KB', date: '12-01-2025', type: "tiff" },
-            { name: 'Coverage Details', fileName: 'POL001234_Coverage_Details.pdf', size: '1.8 MB', date: '29-02-2025', type: "pdf" },
-
-            { name: 'Policy Document', fileName: 'POL001234_Policy_Document.pdf', size: '2.3 MB', date: '15-01-2025', type: "pdf" },
-            { name: 'Premium Receipt', fileName: 'POL001234_Premium_Receipt.tiff', size: '456 KB', date: '12-01-2025', type: "tiff" },
-            { name: 'Coverage Details', fileName: 'POL001234_Coverage_Details.pdf', size: '1.8 MB', date: '29-02-2025', type: "pdf" },
-
-            { name: 'Policy Document', fileName: 'POL001234_Policy_Document.pdf', size: '2.3 MB', date: '15-01-2025', type: "pdf" },
-            { name: 'Premium Receipt', fileName: 'POL001234_Premium_Receipt.tiff', size: '456 KB', date: '12-01-2025', type: "tiff" },
-            { name: 'Coverage Details', fileName: 'POL001234_Coverage_Details.pdf', size: '1.8 MB', date: '29-02-2025', type: "pdf" }
+            { name: 'Policy Document', fileName: '123456789_Policy_Document.pdf', size: '2.3 MB', date: '15-01-2025', type: "pdf" },
+            { name: 'Premium Receipt', fileName: '123456789_Premium_Receipt.tiff', size: '456 KB', date: '12-01-2025', type: "tiff" },
+            { name: 'Coverage Details', fileName: '123456789_Coverage_Details.pdf', size: '1.8 MB', date: '29-02-2025', type: "pdf" },
+            { name: 'Policy Document', fileName: '123456789_Policy_Document.JPEG', size: '2.3 MB', date: '15-01-2025', type: "JPEG", path: 'images/horse.JPEG' }
         ]
     },
     {
         id: '987654321',
         pdfFiles: [
-            { name: 'Policy Document', fileName: 'POL002567_Policy_Document.pdf', size: '3.1 MB', date: '22-02-2025', type: "pdf" },
-            { name: 'Property Valuation', fileName: 'POL002567_Property_Valuation.tiff', size: '2.7 MB', date: '18-02-2025', type: "tiff" },
-            { name: 'Premium Schedule', fileName: 'POL002567_Premium_Schedule.tiff', size: '612 KB', date: '12-02-2025', type: "tiff" },
-            { name: 'Claim History', fileName: 'POL002567_Claim_History.pdf', size: '890 KB', date: '24-04-2025', type: "pdf" }
+            { name: 'Policy Document', fileName: '987654321_Policy_Document.pdf', size: '3.1 MB', date: '22-02-2025', type: "pdf" },
+            { name: 'Property Valuation', fileName: '987654321_Property_Valuation.tiff', size: '2.7 MB', date: '18-02-2025', type: "tiff" },
+            { name: 'Premium Schedule', fileName: '987654321_Premium_Schedule.tiff', size: '612 KB', date: '12-02-2025', type: "tiff" },
+            { name: 'Claim History', fileName: '987654321_Claim_History.pdf', size: '890 KB', date: '24-04-2025', type: "pdf" }
         ]
     },
     {
         id: '555554444',
         pdfFiles: [
-            { name: 'Policy Application', fileName: 'POL003890_Policy_Application.tiff', size: '1.9 MB', date: '03-03-2025', type: "tiff" },
-            { name: 'Medical Report', fileName: 'POL003890_Medical_Report.pdf', size: '4.2 MB', date: '20-05-2025', type: "pdf" },
-            { name: 'Beneficiary Details', fileName: 'POL003890_Beneficiary_Details.pdf', size: '723 KB', date: '14-03-2025', type: "pdf" }
+            { name: 'Policy Application', fileName: '555554444_Policy_Application.tiff', size: '1.9 MB', date: '03-03-2025', type: "tiff" },
+            { name: 'Medical Report', fileName: '555554444_Medical_Report.pdf', size: '4.2 MB', date: '20-05-2025', type: "pdf" },
+            { name: 'Beneficiary Details', fileName: '555554444_Beneficiary_Details.pdf', size: '723 KB', date: '14-03-2025', type: "pdf" }
         ]
     }
 ];

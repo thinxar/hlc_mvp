@@ -76,15 +76,15 @@ const PdfViewWithOverlay = ({
   }, [pdfUrlFromApi, imageUrlFromApi, pageIndex, position, scale]);
 
   return (
-    <div className="mx-auto p-5  w-full">
+    <div className="mx-auto p-5 w-full h-full">
       {pdfUrl != null ? (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <div className="relative">
             <iframe id='pdf_frame'
               src={pdfUrl}
               title="Enhanced PDF Document"
-              className="w-full h-[730px] border-0"
-              style={{ minHeight: '600px' }}
+              className="w-full min-h-[calc(100vh-100px)] border-0"
+              // style={{ minHeight: '600px' }}
             />
           </div>
         </div>
