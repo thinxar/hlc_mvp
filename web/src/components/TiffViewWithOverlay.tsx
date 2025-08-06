@@ -160,7 +160,6 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
 
   useEffect(() => {
     displayTIFF(_tiff)
-    console.log(_tiff);
 
   }, [_tiff])
 

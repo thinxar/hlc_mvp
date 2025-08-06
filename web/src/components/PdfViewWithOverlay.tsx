@@ -1,6 +1,7 @@
 import { Loader } from '@mantine/core';
 import { PDFDocument } from 'pdf-lib';
 import { useEffect, useState } from 'react';
+import { FaDownload } from 'react-icons/fa6';
 
 interface Props {
   pdfUrlFromApi: string;
@@ -18,10 +19,12 @@ const PdfViewWithOverlay = ({
   scale = 0.5,
 }: Props) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
 
   useEffect(() => {
     const generatePdf = async () => {
       setPdfUrl(null);
+      setPdfBlob(null);
 
       try {
         const existingPdfBytes = await fetch(pdfUrlFromApi).then(res => {
@@ -67,6 +70,7 @@ const PdfViewWithOverlay = ({
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
         const blobUrl = URL.createObjectURL(blob);
         setPdfUrl(blobUrl);
+        setPdfBlob(blob);
       } catch (err) {
         console.error("Error in generatePdf():", err);
       }
@@ -77,6 +81,20 @@ const PdfViewWithOverlay = ({
 
   return (
     <div className="mx-auto p-5 w-full h-full">
+      <div className="flex justify-end p-4">
+        {pdfBlob && (
+          <a
+            href={URL.createObjectURL(pdfBlob)}
+            download="overlayed-document.pdf"
+          >
+            <button
+              className=" cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
+              <FaDownload className="w-4 h-4" />
+              <span>Download</span>
+            </button>
+          </a>
+        )}
+      </div>
       {pdfUrl != null ? (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <div className="relative">
@@ -84,16 +102,18 @@ const PdfViewWithOverlay = ({
               src={pdfUrl}
               title="Enhanced PDF Document"
               className="w-full min-h-[calc(100vh-100px)] border-0"
-              // style={{ minHeight: '600px' }}
+            // style={{ minHeight: '600px' }}
             />
           </div>
         </div>
       ) : <div>
-        <div className='grid place-items-center h-100 text-white'>
-          <div className='flex-row'><Loader color="white" type="bars" />
-          <div className='mt-2'>Loading...</div></div>
+        <div className="flex flex-col items-center justify-center min-h-100 text-black">
+          <Loader type="bars" color="violet" />
+          <div className="mt-2 font-semibold text-lg">Loading...</div>
         </div>
+
       </div>}
+
     </div>
   );
 };

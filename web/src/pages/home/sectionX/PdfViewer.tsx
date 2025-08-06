@@ -1,8 +1,10 @@
-import { FaDownload, FaFile } from 'react-icons/fa6';
+import { FaFile } from 'react-icons/fa6';
 import { PdfViewWithOverlay } from '../../../components/PdfViewWithOverlay';
 import { TIFFViewer } from '../../../components/TiffViewWithOverlay';
+import { IoChevronBack } from 'react-icons/io5';
 
 const PdfViewer = ({ file }: any) => {
+
     if (!file) {
         return (
             <div className="flex items-center justify-center h-full text-white/60">
@@ -28,10 +30,13 @@ const PdfViewer = ({ file }: any) => {
                         <h3 className="font-semibold text-white">{file.name}</h3>
                         <p className="text-sm text-white/60">{file.fileName}</p>
                     </div>
-                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
-                        <FaDownload className="w-4 h-4" />
-                        <span>Download</span>
-                    </button>
+                    <div className="flex justify-end p-4">
+                        <button
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
+                            <IoChevronBack className="w-4 h-4" />
+                            <span>Back</span>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div className="p-3">
@@ -43,6 +48,7 @@ const PdfViewer = ({ file }: any) => {
                             pageIndex={0}
                             position={{ x: 250, y: 200 }}
                             scale={0.7}
+                        // setDownloadurl={setDownloadurl}
                         />
                     ) : file.type === 'JPEG' ? (
                         <img src={file.path} className='h-full ' />
@@ -64,3 +70,4 @@ const PdfViewer = ({ file }: any) => {
 };
 
 export { PdfViewer };
+
