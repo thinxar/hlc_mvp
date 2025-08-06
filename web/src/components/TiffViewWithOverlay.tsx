@@ -6,17 +6,9 @@ import styles from './styles.module.css'
 import { FaRegFileLines } from 'react-icons/fa6'
 import { IoChevronBackOutline } from 'react-icons/io5'
 
-
 export const TIFFViewer = forwardRef(function TiffFileViewer(
-  {
-    tiff,
-    paginate = 'bottom',
-    currentPage = 0,
-    buttonColor = '#141414',
-    onDocumentLoad = () => { },
-    printable = false,
-    zoomable = false,
-    ...rest
+  { tiff, paginate = 'bottom', currentPage = 0, buttonColor = '#141414', overlays,
+    onDocumentLoad = () => { }, printable = false, zoomable = false, ...rest
   }: any,
   ref: any
 ) {
@@ -34,6 +26,16 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
   const paginateLTRRef: any = React.useRef(null)
   const paginateBottomRef: any = React.useRef(null)
 
+  const overlayMap = React.useMemo(() => {
+    const map: any = {};
+    overlays.forEach((o: any) => {
+      const index = o.page - 1;
+      if (!map[index]) map[index] = [];
+      map[index].push(o);
+    });
+    return map;
+  }, [overlays]);
+
   function imgLoaded(e: any) {
     var ifds = UTIF.decode(e.target.response)
     const _tiffs: any = ifds.map(function (ifd, index) {
@@ -46,13 +48,15 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
       var img = ctx.createImageData(ifd.width, ifd.height)
       img.data.set(rgba)
       ctx.putImageData(img, 0, 0)
-      // eslint-disable-next-line no-undef
-      const image = new Image()
-      image.crossOrigin = 'anonymous'
-      image.src = 'https://picsum.photos/200/300.jpg'
-      image.onload = () => {
-        ctx.drawImage(image, 100, 150, 100, 50)
-      }
+      const currentOverlays = overlayMap[index] || [];
+      currentOverlays.forEach((overlay: any) => {
+        const image = new Image();
+        image.crossOrigin = 'anonymous';
+        image.src = overlay.imageUrl;
+        image.onload = () => {
+          ctx.drawImage(image, overlay.x, overlay.y, overlay.width, overlay.height);
+        }
+      })
       if (index === 0) {
         //@ts-ignore
         document.getElementById('tiff-inner-container').appendChild(canvas)
@@ -61,7 +65,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
     })
     setPages(_tiffs)
     setTiffs(_tiffs)
-    onDocumentLoad(pages)
+    onDocumentLoad(_tiffs)
   }
 
   async function displayTIFF(tiffUrl: any) {
@@ -179,7 +183,6 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
     }
   }))
 
-
   return (
     <div className="max-w-4xl mx-auto p-5 min-h-screen">
       <div className="mb-8 flex items-center justify-between">
@@ -199,75 +202,38 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
         </div>
       </div>
 
-      <div
-        className={styles.tiffContainer}
-        id='tiff-container'
-        ref={ref}
-        {...rest}
-      >
+      <div className={styles.tiffContainer} id='tiff-container' ref={ref} {...rest} >
         {/* <button onClick={downloadMultiPageTIFF} className={styles.tiffBtnPrint}>
-        Download (TIFF)
-      </button> */}
-
+          Download (TIFF)
+        </button> */}
         {printable || zoomable ? (
           <div className={styles.tiffButtons}>
             {zoomable && (
               <div>
-                <button
-                  id='btn-zoom-in'
-                  className={styles.tiffBtnZoom}
-                  type='button'
-                  onClick={handleZoomInClick}
-                  ref={btnZoomInRef}
-                >
+                <button id='btn-zoom-in' className={styles.tiffBtnZoom}
+                  type='button' onClick={handleZoomInClick} ref={btnZoomInRef} >
                   <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='none'
-                    viewBox='0 0 24 24'
-                    stroke='currentColor'
-                    className='w-6 h-6'
-                  >
+                    xmlns='http://www.w3.org/2000/svg' fill='none'
+                    viewBox='0 0 24 24' stroke='currentColor' className='w-6 h-6'>
                     <path d='M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5zm-4.5 8h4v-4h1v4h4v1h-4v4h-1v-4h-4v-1z' />
                   </svg>
                 </button>
-                <button
-                  id='btn-zoom-out'
-                  className={styles.tiffBtnZoom}
-                  type='button'
-                  onClick={handleZoomOutClick}
-                  ref={btnZoomOutRef}
-                >
+                <button id='btn-zoom-out' className={styles.tiffBtnZoom} type='button'
+                  onClick={handleZoomOutClick} ref={btnZoomOutRef}>
                   <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='none'
-                    viewBox='0 0 24 24'
-                    stroke='currentColor'
-                    className='w-6 h-6'
-                  >
+                    xmlns='http://www.w3.org/2000/svg' fill='none'
+                    viewBox='0 0 24 24' stroke='currentColor' className='w-6 h-6'>
                     <path d='M15.853 16.56c-1.683 1.517-3.911 2.44-6.353 2.44-5.243 0-9.5-4.257-9.5-9.5s4.257-9.5 9.5-9.5 9.5 4.257 9.5 9.5c0 2.442-.923 4.67-2.44 6.353l7.44 7.44-.707.707-7.44-7.44zm-6.353-15.56c4.691 0 8.5 3.809 8.5 8.5s-3.809 8.5-8.5 8.5-8.5-3.809-8.5-8.5 3.809-8.5 8.5-8.5zm-4.5 8h9v1h-9v-1z' />
                   </svg>
                 </button>
               </div>
             )}
             {printable && (
-              <button
-                id='btn-print'
-                onClick={handlePrintClick}
-                ref={btnPrintRef}
-                className={styles.tiffBtnPrint}
-                type='button'
-              >
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  strokeWidth={1.5}
-                  stroke='currentColor'
-                  className='w-6 h-6'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
+              <button id='btn-print' onClick={handlePrintClick}
+                ref={btnPrintRef} className={styles.tiffBtnPrint} type='button'>
+                <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'
+                  strokeWidth={1.5} stroke='currentColor' className='w-6 h-6'>
+                  <path strokeLinecap='round' strokeLinejoin='round'
                     d='M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z'
                   />
                 </svg>
@@ -277,34 +243,15 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
         ) : null}
 
         <div className={styles.tiffArrow}>
-          <div
-            id='tiff-inner-container'
-            className={styles.tiffInner}
-            ref={canvasRef}
-          />
-
+          <div id='tiff-inner-container' className={styles.tiffInner} ref={canvasRef} />
           {paginate === 'ltr' && pages.length > 1 && (
-            <div
-              className={styles.tiffAbsolute}
-              id='absolute'
-              ref={paginateLTRRef}
-            >
-              <button
-                style={{ backgroundColor: buttonColor }}
-                disabled={page === 0}
-                onClick={handlePreviousClick}
-                className={styles.tiffButton}
-                type='button'
-              >
+            <div className={styles.tiffAbsolute} id='absolute' ref={paginateLTRRef}>
+              <button style={{ backgroundColor: buttonColor }} disabled={page === 0}
+                onClick={handlePreviousClick} className={styles.tiffButton} type='button'>
                 &lt;
               </button>{' '}
-              <button
-                style={{ backgroundColor: buttonColor }}
-                disabled={page == pages.length - 1}
-                onClick={handleNextClick}
-                className={styles.tiffButton}
-                type='button'
-              >
+              <button style={{ backgroundColor: buttonColor }} disabled={page == pages.length - 1}
+                onClick={handleNextClick} className={styles.tiffButton} type='button'>
                 &gt;
               </button>
             </div>
@@ -313,24 +260,14 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
 
         {paginate === 'bottom' && pages.length > 1 && (
           <div id='footer' ref={paginateBottomRef}>
-            <button
-              style={{ backgroundColor: buttonColor }}
-              disabled={page === 0}
-              onClick={handlePreviousClick}
-              className={styles.tiffAbsolute}
-              type='button'
-            >
+            <button style={{ backgroundColor: buttonColor }} disabled={page === 0}
+              onClick={handlePreviousClick} className={styles.tiffAbsolute} type='button'>
               Previous
             </button>
             <span className={styles.tiffSpan}>
               'Page of total' {page + 1}  total: {pages.length}</span>
-            <button
-              style={{ backgroundColor: buttonColor }}
-              disabled={page === pages.length - 1}
-              onClick={handleNextClick}
-              className={styles.tiffAbsolute}
-              type='button'
-            >
+            <button style={{ backgroundColor: buttonColor }} disabled={page === pages.length - 1}
+              onClick={handleNextClick} className={styles.tiffAbsolute} type='button'>
               Next
             </button>
           </div>

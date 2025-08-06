@@ -1,5 +1,6 @@
 import { PDFDocument } from 'pdf-lib';
 import { useEffect, useState } from 'react';
+import { FaDownLong } from 'react-icons/fa6';
 
 interface Props {
   pdfUrlFromApi: string;
@@ -89,7 +90,7 @@ const PdfViewWithOverlay = ({
               className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
             >
               <div className="w-4 h-4" />
-              Download PDF
+              <FaDownLong /> Download PDF
             </a>
           </div>
 
@@ -108,4 +109,3 @@ const PdfViewWithOverlay = ({
 };
 
 export { PdfViewWithOverlay };
-
