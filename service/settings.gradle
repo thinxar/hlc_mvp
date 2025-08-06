@@ -1,6 +1,8 @@
 rootProject.name = 'hlc_dms'
 
+include 'dms-admin'
 include 'dms-base'
 include 'dms-jpa'
 include 'dms-policy'
 include 'dms-main'
+include 'dms-masterdata'
