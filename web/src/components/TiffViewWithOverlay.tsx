@@ -3,8 +3,6 @@ import PropTypes from 'prop-types'
 import React, { forwardRef, useEffect } from 'react'
 import UTIF from 'utif'
 import styles from './styles.module.css'
-import { FaRegFileLines } from 'react-icons/fa6'
-import { IoChevronBackOutline } from 'react-icons/io5'
 
 export const TIFFViewer = forwardRef(function TiffFileViewer(
   { tiff, paginate = 'bottom', currentPage = 0, buttonColor = '#141414', overlays,
@@ -24,7 +22,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
   // const btnZoomInRef: any = React.useRef(null)
   // const btnZoomOutRef: any = React.useRef(null)
   const paginateLTRRef: any = React.useRef(null)
-  const paginateBottomRef: any = React.useRef(null)
+  // const paginateBottomRef: any = React.useRef(null)
 
   const overlayMap = React.useMemo(() => {
     const map: any = {};
@@ -162,6 +160,8 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
 
   useEffect(() => {
     displayTIFF(_tiff)
+    console.log(_tiff);
+
   }, [_tiff])
 
   useEffect(() => {
@@ -185,23 +185,6 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
 
   return (
     <div className="max-w-4xl mx-auto p-5 min-h-screen">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-blue-600 rounded-lg">
-              <FaRegFileLines size={16} className='text-white h-6 w-6' />
-            </div>
-            <h1 className="text-2xl font-bold text-slate-100">TIFF Endorsement</h1>
-          </div>
-          <p className="text-slate-200">Add endorsements and signatures to your TIFF documents</p>
-        </div>
-        <div className='flex items-center gap-1 text-slate-200 cursor-pointer'
-          onClick={() => window.history.back()}>
-          <IoChevronBackOutline size={16} />
-          Back
-        </div>
-      </div>
-
       <div className={styles.tiffContainer} id='tiff-container' ref={ref} {...rest} >
         {/* <button onClick={downloadMultiPageTIFF} className={styles.tiffBtnPrint}>
           Download (TIFF)
@@ -249,7 +232,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
               <button style={{ backgroundColor: buttonColor }} disabled={page === 0}
                 onClick={handlePreviousClick} className={styles.tiffButton} type='button'>
                 &lt;
-              </button>{' '}
+              </button>
               <button style={{ backgroundColor: buttonColor }} disabled={page == pages.length - 1}
                 onClick={handleNextClick} className={styles.tiffButton} type='button'>
                 &gt;
@@ -258,7 +241,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
           )}
         </div>
 
-        {paginate === 'bottom' && pages.length > 1 && (
+        {/* {paginate === 'bottom' && pages.length > 1 && (
           <div id='footer' ref={paginateBottomRef}>
             <button style={{ backgroundColor: buttonColor }} disabled={page === 0}
               onClick={handlePreviousClick} className={styles.tiffAbsolute} type='button'>
@@ -271,7 +254,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
               Next
             </button>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   )

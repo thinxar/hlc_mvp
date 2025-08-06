@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { CiCalendar, CiHardDrive, CiSearch } from 'react-icons/ci';
 import { FaDownload, FaFile } from 'react-icons/fa6';
-// import { Search, FileText, Download, Calendar, HardDrive } from 'lucide-react';
+import { PdfViewWithOverlay } from '../components/PdfViewWithOverlay';
+import { TIFFViewer } from '../components/TiffViewWithOverlay';
 
 const samplePolicies = [
     {
-        id: '556012345',
+        id: '123456789',
         pdfFiles: [
             { name: 'Policy Document', fileName: 'POL001234_Policy_Document.pdf', size: '2.3 MB', date: '15-01-2025', type: "pdf" },
             { name: 'Premium Receipt', fileName: 'POL001234_Premium_Receipt.tiff', size: '456 KB', date: '12-01-2025', type: "tiff" },
@@ -13,7 +14,7 @@ const samplePolicies = [
         ]
     },
     {
-        id: '903452567',
+        id: '987654321',
         pdfFiles: [
             { name: 'Policy Document', fileName: 'POL002567_Policy_Document.pdf', size: '3.1 MB', date: '22-02-2025', type: "pdf" },
             { name: 'Property Valuation', fileName: 'POL002567_Property_Valuation.tiff', size: '2.7 MB', date: '18-02-2025', type: "tiff" },
@@ -22,12 +23,33 @@ const samplePolicies = [
         ]
     },
     {
-        id: '483943933',
+        id: '555554444',
         pdfFiles: [
             { name: 'Policy Application', fileName: 'POL003890_Policy_Application.tiff', size: '1.9 MB', date: '03-03-2025', type: "tiff" },
             { name: 'Medical Report', fileName: 'POL003890_Medical_Report.pdf', size: '4.2 MB', date: '20-05-2025', type: "pdf" },
             { name: 'Beneficiary Details', fileName: 'POL003890_Beneficiary_Details.pdf', size: '723 KB', date: '14-03-2025', type: "pdf" }
         ]
+    }
+];
+
+const image = '/images/multiple.tiff'
+
+const overlays = [
+    {
+        page: 1,
+        imageUrl: '/images/horse.JPEG',
+        x: 100,
+        y: 150,
+        width: 100,
+        height: 50
+    },
+    {
+        page: 2,
+        imageUrl: '/images/horse.JPEG',
+        x: 100,
+        y: 100,
+        width: 250,
+        height: 250
     }
 ];
 
@@ -37,10 +59,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch }: any) => {
             onSearch();
         }
     };
-    const handleClick = () => {
-        setSearchTerm()
-        onSearch()
-    }
+
     return (
         <div className="w-full max-w-2xl mx-auto mb-8 animate-slide-up">
             <div className="relative group">
@@ -51,15 +70,15 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch }: any) => {
                             <CiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60 w-5 h-5" />
                             <input
                                 type="text"
-                                placeholder="Enter policy number (e.g., POL001234)"
+                                placeholder="Enter policy number (e.g., 123456789)"
                                 value={searchTerm}
-                                // onChange={(e) => setSearchTerm(e.target.value)}
+                                onChange={(e) => setSearchTerm(e.target.value)}
                                 onKeyPress={handleKeyPress}
                                 className="w-full bg-transparent text-white placeholder-white/50 pl-12 pr-4 py-4 text-lg focus:outline-none"
                             />
                         </div>
                         <button
-                            onClick={handleClick}
+                            onClick={onSearch}
                             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-semibold transition duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                         >
                             Search
@@ -125,8 +144,8 @@ const PdfViewer = ({ file }: any) => {
     }
 
     return (
-        <div className="h-full bg-white/5 rounded-xl border border-white/10 overflow-hidden">
-            <div className="bg-white/10 px-6 py-4 border-b border-white/10">
+        <div className="h-auto bg-white/5 rounded-xl border border-white/10 overflow-hidden">
+            <div className="">
                 <div className="flex items-center justify-between">
                     <div>
                         <h3 className="font-semibold text-white">{file.name}</h3>
@@ -140,20 +159,37 @@ const PdfViewer = ({ file }: any) => {
             </div>
             <div className="p-6 h-full">
                 <div className="bg-white rounded-lg h-full flex items-center justify-center">
-                    <div className="text-center text-gray-600">
+                    {/* <div className="text-center text-gray-600">
                         <FaFile className="w-16 h-16 mx-auto mb-4 opacity-50" />
                         <p className="text-lg font-semibold">{file.name}</p>
                         <p className="text-sm mt-2">PDF/TIFF viewer would be integrated here</p>
                         <p className="text-xs mt-1 text-gray-500">File: {file.fileName}</p>
                         <p className="text-xs text-gray-500">Size: {file.size} • Date: {file.date}</p>
-                    </div>
+                    </div> */}
+                    {file.type == 'pdf' ?
+                        <PdfViewWithOverlay
+                            pdfUrlFromApi={"https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf"}
+                            // pdfUrlFromApi="https://www.ets.org/Media/Tests/TOEFL/pdf/SampleQuestions.pdf"
+                            imageUrlFromApi="https://picsum.photos/200/300.jpg"
+                            pageIndex={0}
+                            position={{ x: 250, y: 200 }}
+                            scale={0.7} />
+                        : <TIFFViewer
+                            overlays={overlays}
+                            tiff={image}
+                            lang='tr'
+                            paginate='ltr'
+                            buttonColor='#141414'
+                            printable
+                            zoomable
+                        />}
                 </div>
             </div>
         </div>
     );
 };
 
-const EmptyState = ({ hasSearched }: any) => {
+const EmptyState = ({ hasSearched, searchQuery }: any) => {
     if (!hasSearched) {
         return (
             <div className="text-center text-white/60 py-20">
@@ -166,26 +202,31 @@ const EmptyState = ({ hasSearched }: any) => {
 
     return (
         <div className="text-center text-white/60 py-20">
-            <FaFile className="w-16 h-16 mx-auto mb-4 opacity-50" />
+            <div className="w-16 h-16 mx-auto mb-4 opacity-50" />
             <h3 className="text-xl font-semibold mb-2">No Policy Found</h3>
-            <p>No policy documents found for the entered policy number.</p>
+            <p>No policy documents found for "{searchQuery}".</p>
+            <p className="text-sm mt-2 text-white/50">Try entering a different policy number</p>
         </div>
     );
 };
 
-const Poli = () => {
+const PolicySearchPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
     const [hasSearched, setHasSearched] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
 
     const handleSearch = () => {
+        setSearchQuery(searchTerm);
         setHasSearched(true);
         setSelectedFile(null);
     };
 
-    const filteredPolicies = samplePolicies.filter(policy =>
-        policy.id.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredPolicies = searchQuery
+        ? samplePolicies.filter(policy =>
+            policy.id.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        : [];
 
     const allFiles = filteredPolicies.flatMap(policy =>
         policy.pdfFiles.map(file => ({ ...file, policyId: policy.id }))
@@ -193,7 +234,6 @@ const Poli = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
-            {/* Background Effects */}
             <div className="absolute inset-0">
                 <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
                 <div className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
@@ -201,7 +241,6 @@ const Poli = () => {
             </div>
 
             <div className="relative z-10 p-6">
-                {/* Header */}
                 <div className="text-center mb-8 animate-fade-in">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
                         PolicyFinder
@@ -211,22 +250,20 @@ const Poli = () => {
                     </p>
                 </div>
 
-                {/* Search Bar */}
                 <SearchBar
                     searchTerm={searchTerm}
                     setSearchTerm={setSearchTerm}
                     onSearch={handleSearch}
                 />
 
-                {/* Results Layout */}
                 {hasSearched && (
                     <div className="animate-fade-in-up">
-                        {searchTerm.length > 0 ? (
-                            <div className="flex items-center gap-6 max-w-7xl mx-auto">
-                                {/* Left Panel - Document List */}
-                                <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6 w-1/2">
+                        {filteredPolicies.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 gap-6 max-w-7xl mx-auto">
+
+                                <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6">
                                     <h2 className="text-xl font-semibold text-white mb-4">
-                                        Policy Documents ({allFiles.length})
+                                        Policy Documents for "{searchQuery}" ({allFiles.length})
                                     </h2>
                                     <div className="space-y-3 max-h-96 overflow-y-auto">
                                         {allFiles.map((file: any, index) => (
@@ -240,13 +277,12 @@ const Poli = () => {
                                     </div>
                                 </div>
 
-                                {/* Right Panel - PDF Viewer */}
-                                <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 h-[52vh] w-1/2">
+                                <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 min-h-96">
                                     <PdfViewer file={selectedFile} />
                                 </div>
                             </div>
                         ) : (
-                            <EmptyState hasSearched={hasSearched} />
+                            <EmptyState hasSearched={hasSearched} searchQuery={searchQuery} />
                         )}
                     </div>
                 )}
@@ -278,4 +314,4 @@ const Poli = () => {
     );
 };
 
-export default Poli;
+export default PolicySearchPage;

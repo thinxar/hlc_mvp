@@ -1,11 +1,11 @@
 
-import { PolicySearchPage } from './PolicySearchPage';
+import Poli from '../Poli';
 
 const HomePage = () => {
 
     return (
         <div>
-            <PolicySearchPage />
+            <Poli />
             {/* <Tiff/> */}
         </div>
     );
