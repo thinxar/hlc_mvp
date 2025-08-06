@@ -1,10 +1,15 @@
 import { CiSearch } from 'react-icons/ci';
 import { IoClose } from 'react-icons/io5';
 
-const SearchBar = ({ searchTerm, setSearchTerm, onSearch }: any) => {
+const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched }: any) => {
     const handleKeyPress = (e: any) => {
         if (e.key === 'Enter') onSearch();
     };
+
+    const handleClear = () => {
+        setHasSearched(false);
+        setSearchTerm('');
+    }
 
     return (
         <div className="w-full max-w-2xl mx-auto mb-8 animate-slide-up">
@@ -24,7 +29,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch }: any) => {
                             />
                         </div>
                         {searchTerm && (
-                            <IoClose className='text-gray-400 cursor-pointer' fontSize={30} onClick={() => setSearchTerm('')} />
+                            <IoClose className='text-gray-400 cursor-pointer' fontSize={30} onClick={handleClear} />
                         )}
                         <button
                             onClick={onSearch}

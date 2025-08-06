@@ -91,7 +91,7 @@ const PolicySearchPage = () => {
                                 Search and manage your insurance policies with ease
                             </p>
                         </div>
-                        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} />
+                        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} setHasSearched={setHasSearched} />
                         <EmptyList hasSearched={hasSearched} searchQuery={searchQuery} />
                     </>
                 )}
