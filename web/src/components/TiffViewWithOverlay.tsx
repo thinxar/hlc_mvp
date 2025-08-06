@@ -184,7 +184,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
   }))
 
   return (
-    <div className="max-w-4xl mx-auto p-5 min-h-screen">
+    <div className="mx-auto p-5">
       <div className={styles.tiffContainer} id='tiff-container' ref={ref} {...rest} >
         {/* <button onClick={downloadMultiPageTIFF} className={styles.tiffBtnPrint}>
           Download (TIFF)

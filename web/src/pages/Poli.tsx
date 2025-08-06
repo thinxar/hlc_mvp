@@ -10,6 +10,22 @@ const samplePolicies = [
         pdfFiles: [
             { name: 'Policy Document', fileName: 'POL001234_Policy_Document.pdf', size: '2.3 MB', date: '15-01-2025', type: "pdf" },
             { name: 'Premium Receipt', fileName: 'POL001234_Premium_Receipt.tiff', size: '456 KB', date: '12-01-2025', type: "tiff" },
+            { name: 'Coverage Details', fileName: 'POL001234_Coverage_Details.pdf', size: '1.8 MB', date: '29-02-2025', type: "pdf" },
+
+            { name: 'Policy Document', fileName: 'POL001234_Policy_Document.pdf', size: '2.3 MB', date: '15-01-2025', type: "pdf" },
+            { name: 'Premium Receipt', fileName: 'POL001234_Premium_Receipt.tiff', size: '456 KB', date: '12-01-2025', type: "tiff" },
+            { name: 'Coverage Details', fileName: 'POL001234_Coverage_Details.pdf', size: '1.8 MB', date: '29-02-2025', type: "pdf" },
+
+            { name: 'Policy Document', fileName: 'POL001234_Policy_Document.pdf', size: '2.3 MB', date: '15-01-2025', type: "pdf" },
+            { name: 'Premium Receipt', fileName: 'POL001234_Premium_Receipt.tiff', size: '456 KB', date: '12-01-2025', type: "tiff" },
+            { name: 'Coverage Details', fileName: 'POL001234_Coverage_Details.pdf', size: '1.8 MB', date: '29-02-2025', type: "pdf" },
+
+            { name: 'Policy Document', fileName: 'POL001234_Policy_Document.pdf', size: '2.3 MB', date: '15-01-2025', type: "pdf" },
+            { name: 'Premium Receipt', fileName: 'POL001234_Premium_Receipt.tiff', size: '456 KB', date: '12-01-2025', type: "tiff" },
+            { name: 'Coverage Details', fileName: 'POL001234_Coverage_Details.pdf', size: '1.8 MB', date: '29-02-2025', type: "pdf" },
+
+            { name: 'Policy Document', fileName: 'POL001234_Policy_Document.pdf', size: '2.3 MB', date: '15-01-2025', type: "pdf" },
+            { name: 'Premium Receipt', fileName: 'POL001234_Premium_Receipt.tiff', size: '456 KB', date: '12-01-2025', type: "tiff" },
             { name: 'Coverage Details', fileName: 'POL001234_Coverage_Details.pdf', size: '1.8 MB', date: '29-02-2025', type: "pdf" }
         ]
     },
@@ -102,7 +118,7 @@ const PdfFileItem = ({ file, isSelected, onClick }: any) => {
     return (
         <div
             onClick={onClick}
-            className={`cursor-pointer p-4 rounded-xl border transition-all duration-300 hover:scale-[1.02] ${isSelected
+            className={`cursor-pointer p-4 rounded-xl border transition-all duration-300 ${isSelected
                 ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-blue-400/50 shadow-lg'
                 : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20'
                 }`}
@@ -144,8 +160,8 @@ const PdfViewer = ({ file }: any) => {
     }
 
     return (
-        <div className="h-auto bg-white/5 rounded-xl border border-white/10 overflow-hidden">
-            <div className="">
+        <div className="h-auto overflow-hidden">
+            <div className="p-3">
                 <div className="flex items-center justify-between">
                     <div>
                         <h3 className="font-semibold text-white">{file.name}</h3>
@@ -157,8 +173,8 @@ const PdfViewer = ({ file }: any) => {
                     </button>
                 </div>
             </div>
-            <div className="p-6 h-full">
-                <div className="bg-white rounded-lg h-full flex items-center justify-center">
+            <div className="p-3 h-full">
+                <div className="bg-white rounded-2xl flex items-center justify-center">
                     {/* <div className="text-center text-gray-600">
                         <FaFile className="w-16 h-16 mx-auto mb-4 opacity-50" />
                         <p className="text-lg font-semibold">{file.name}</p>
@@ -224,7 +240,7 @@ const PolicySearchPage = () => {
 
     const filteredPolicies = searchQuery
         ? samplePolicies.filter(policy =>
-            policy.id.toLowerCase().includes(searchQuery.toLowerCase())
+            policy.id.toLowerCase() === searchQuery.toLowerCase()
         )
         : [];
 
@@ -241,53 +257,63 @@ const PolicySearchPage = () => {
             </div>
 
             <div className="relative z-10 p-6">
-                <div className="text-center mb-8 animate-fade-in">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
-                        PolicyFinder
-                    </h1>
-                    <p className="text-lg text-white/70 max-w-2xl mx-auto">
-                        Search and manage your insurance policies with ease
-                    </p>
-                </div>
-
-                <SearchBar
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                    onSearch={handleSearch}
-                />
-
-                {hasSearched && (
-                    <div className="animate-fade-in-up">
-                        {filteredPolicies.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 gap-6 max-w-7xl mx-auto">
-
-                                <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6">
-                                    <h2 className="text-xl font-semibold text-white mb-4">
-                                        Policy Documents for "{searchQuery}" ({allFiles.length})
-                                    </h2>
-                                    <div className="space-y-3 max-h-96 overflow-y-auto">
-                                        {allFiles.map((file: any, index) => (
-                                            <PdfFileItem
-                                                key={index}
-                                                file={file}
-                                                isSelected={selectedFile === file}
-                                                onClick={() => setSelectedFile(file)}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 min-h-96">
-                                    <PdfViewer file={selectedFile} />
+                {hasSearched && filteredPolicies.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[40%_60%] lg:grid-cols-[30%_70%] xl:grid-cols-[30%_70%] 2xl:grid-cols-[30%_70%] transition-all duration-300 ease-in-out gap-4 px-20 mx-auto w-full h-[calc(98vh-30px)]">
+                        <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6 flex flex-col overflow-auto">
+                            <div className="mb-6">
+                                <h1 className="text-2xl md:text-3xl font-bold mb-2 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                                    PolicyFinder
+                                </h1>
+                                <p className="text-sm text-white/70">
+                                    Search and manage your insurance policies with ease
+                                </p>
+                                <div className="mt-4">
+                                    <SearchBar
+                                        searchTerm={searchTerm}
+                                        setSearchTerm={setSearchTerm}
+                                        onSearch={handleSearch}
+                                    />
                                 </div>
                             </div>
-                        ) : (
-                            <EmptyState hasSearched={hasSearched} searchQuery={searchQuery} />
-                        )}
+
+                            <h2 className="text-xl font-semibold text-white mb-4">
+                                Policy Number: {searchQuery} ({allFiles.length})
+                            </h2>
+                            <div className="space-y-3 overflow-y-auto">
+                                {allFiles.map((file: any, index) => (
+                                    <PdfFileItem
+                                        key={index}
+                                        file={file}
+                                        isSelected={selectedFile === file}
+                                        onClick={() => setSelectedFile(file)}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                        <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-auto">
+                            <PdfViewer file={selectedFile} />
+                        </div>
                     </div>
+                ) : (
+                    <>
+                        <div className="text-center mb-8 animate-fade-in">
+                            <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                                PolicyFinder
+                            </h1>
+                            <p className="text-lg text-white/70 max-w-2xl mx-auto">
+                                Search and manage your insurance policies with ease
+                            </p>
+                        </div>
+                        <SearchBar
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                            onSearch={handleSearch}
+                        />
+                        {hasSearched && <EmptyState hasSearched={true} searchQuery={searchQuery} />}
+                        {!hasSearched && <EmptyState hasSearched={false} />}
+                    </>
                 )}
 
-                {!hasSearched && <EmptyState hasSearched={false} />}
             </div>
 
             <style>{`
