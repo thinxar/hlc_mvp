@@ -1,7 +1,9 @@
 import { CiSearch } from 'react-icons/ci';
 
 const EmptyList = ({ hasSearched, searchQuery }: any) => {
-    if (!hasSearched) {
+    const isQueryEmpty = !searchQuery?.trim();
+
+    if (!hasSearched || isQueryEmpty) {
         return (
             <div className="text-center text-white/60 py-20">
                 <CiSearch className="w-16 h-16 mx-auto mb-4 opacity-50" />
