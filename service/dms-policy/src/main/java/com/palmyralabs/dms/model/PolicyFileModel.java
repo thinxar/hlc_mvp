@@ -1,7 +1,6 @@
 package com.palmyralabs.dms.model;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 
 import com.palmyralabs.palmyra.base.annotations.PalmyraField;
 import com.palmyralabs.palmyra.base.annotations.PalmyraType;
@@ -11,18 +10,28 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@PalmyraType(type = "DmsPolicy")
-public class PolicyModel {
+@PalmyraType(type = "DmsPolicyFile")
+public class PolicyFileModel {
 	@PalmyraField(keyField = true)
 	private Integer id;
 	@PalmyraField
+	private Long policyFileId;
+	@PalmyraField
 	private String policyNumber;
 	@PalmyraField
-	private LocalDate policyDate;
+	private String fileName;
 	@PalmyraField
-	private Integer policyStatus;
+	private Long fileSize;
 	@PalmyraField
-	private String region;
+	private String fileType;
+	@PalmyraField
+	private String uuid;
+	@PalmyraField
+	private Long currentOffset;
+	@PalmyraField
+	private Integer fileStatus;
+	@PalmyraField
+	private String fileLocation;
 	@PalmyraField
 	private String createdBy;
 	@PalmyraField
