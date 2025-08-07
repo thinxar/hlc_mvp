@@ -3,5 +3,5 @@ group = 'com.palmyralabs.dms'
 dependencies {	
 	api project(':dms-jpa')
 	api project(':dms-base')
-	api project(':dms-masterdata')	
+	api project(':dms-masterdata')
 }
