@@ -10,16 +10,18 @@ import com.palmyralabs.palmyra.filemgmt.spring.ResponseFileEmitter;
 import com.palmyralabs.palmyra.filemgmt.stream.AsyncStreamDelivery;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class FileController {
 	
-	private final AsyncStreamDelivery streamDelivery = new AsyncStreamDelivery();
+	private final AsyncStreamDelivery streamDelivery;
 
 	@GetMapping("/hello")
 	public ResponseFileEmitter get(HttpServletResponse response) throws FileNotFoundException {
 		
-		return streamDelivery.push(Paths.get("/home/user/file"));
+		return streamDelivery.push(Paths.get("/home/ksvraja/devtools/gradle/LICENSE"));
 		
 	}
 }

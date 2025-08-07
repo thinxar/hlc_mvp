@@ -12,7 +12,7 @@ import com.palmyralabs.palmyra.spring.PalmyraSpringConfiguration;
 
 @SpringBootApplication()
 @Import(PalmyraSpringConfiguration.class)
-@ComponentScan(value = { "com.palmyralabs.dms", "com.palmyralabs.palmyra.enhancer"})
+@ComponentScan(value = { "com.palmyralabs.dms", "com.palmyralabs.palmyra.enhancer", "com.palmyralabs.palmyra.filemgmt"})
 @EnableJpaRepositories
 @EntityScan
 @EnableMethodSecurity
