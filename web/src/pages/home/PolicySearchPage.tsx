@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { SearchBar } from './sectionX/SearchBar';
-import { PdfFileItem } from './sectionX/PdfFileItem';
-import { PdfViewer } from './sectionX/PdfViewer';
 import { EmptyList } from './sectionX/EmptyList';
+import { MemoizedPdfViewer } from './sectionX/MemoizedPdfViewer';
+import { PdfFileItem } from './sectionX/PdfFileItem';
+import { SearchBar } from './sectionX/SearchBar';
 
 const samplePolicies = [
     {
@@ -52,7 +52,7 @@ const PolicySearchPage = () => {
     const allFiles = filteredPolicies.flatMap((policy) =>
         policy.pdfFiles.map((file) => ({ ...file, policyId: policy.id }))
     );
-
+    console.log('policy search page render...')
     return (
         <div className="min-h-screen bg-gradient-to-br bColor relative overflow-hidden">
             <div className="absolute inset-0">
@@ -71,14 +71,14 @@ const PolicySearchPage = () => {
                                     <PdfFileItem
                                         key={idx}
                                         file={file}
-                                        isSelected={selectedFile === file}
+                                        isSelected={selectedFile?.fileName === file?.fileName}
                                         onClick={() => setSelectedFile(file)}
                                     />
                                 ))}
                             </div>
                         </div>
                         <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-auto">
-                            <PdfViewer file={selectedFile} setHasSearched={setHasSearched} />
+                            <MemoizedPdfViewer file={selectedFile} setHasSearched={setHasSearched} />
                         </div>
                     </div>
                 ) : (

@@ -224,16 +224,18 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
           </div>
         ) : null} */}
 
-        <div className={styles.tiffArrow}>
+        <div>
           <div id='tiff-inner-container' className={styles.tiffInner} ref={canvasRef} />
           {paginate === 'ltr' && pages.length > 1 && (
             <div className={styles.tiffAbsolute} id='absolute' ref={paginateLTRRef}>
-              <button style={{ backgroundColor: buttonColor }} disabled={page === 0}
-                onClick={handlePreviousClick} className={styles.tiffButton} type='button'>
+              <button disabled={page === 0}
+                onClick={handlePreviousClick} type='button' className='-ml-30 rounded-xl bg-amber-300'>
                 &lt;
               </button>
-              <button style={{ backgroundColor: buttonColor }} disabled={page == pages.length - 1}
-                onClick={handleNextClick} className={styles.tiffButton} type='button'>
+              <button style={{ backgroundColor: buttonColor }}
+                disabled={page == pages.length - 1}
+                className='-mr-30 rounded-xl bg-amber-300'
+                onClick={handleNextClick} type='button'>
                 &gt;
               </button>
             </div>
