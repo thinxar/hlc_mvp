@@ -1,4 +1,4 @@
-package com.palmyralabs.dms.base.config;
+package com.palmyralabs.palmyra.s3.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +8,7 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.palmyralabs.dms.base.model.S3Properties;
+import com.palmyralabs.palmyra.s3.model.S3Properties;
 
 @Configuration
 public class S3Config {
@@ -22,5 +22,16 @@ public class S3Config {
 	        .withPathStyleAccessEnabled(true)
 	        .build();
 	}
+
+//    @Bean
+//    public CompletableFuture<AmazonS3> amazonS3Async(S3Properties props) {
+//        return CompletableFuture.supplyAsync(() -> AmazonS3ClientBuilder.standard()
+//            .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(props.getEndpoint(), props.getRegion()))
+//            .withCredentials(new AWSStaticCredentialsProvider(
+//                new BasicAWSCredentials(props.getAccessKey(), props.getSecretKey())))
+//            .withPathStyleAccessEnabled(true)
+//            .build());
+//    }
+
 
 }

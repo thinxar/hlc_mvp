@@ -1,5 +1,8 @@
 package com.palmyralabs.dms.jpa.entity;
 
+import java.math.BigInteger;
+import java.time.LocalDate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -14,10 +17,10 @@ import lombok.Setter;
 public class PolicyEntity implements Auditable{
 	@Id
 	@Column(name = "policy_number")
-	private String policyNumber;
+	private Integer policyNumber;
 	
 	@Column(name = "policy_date")
-	private String policyDate;
+	private LocalDate policyDate;
 	
 	@Column(name = "policy_status")
 	private int status;

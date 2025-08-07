@@ -1,4 +1,4 @@
-package com.palmyralabs.dms.base.model;
+package com.palmyralabs.palmyra.s3.model;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Primary;
