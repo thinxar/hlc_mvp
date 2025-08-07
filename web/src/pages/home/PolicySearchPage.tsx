@@ -78,7 +78,7 @@ const PolicySearchPage = () => {
                             </div>
                         </div>
                         <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-auto">
-                            <PdfViewer file={selectedFile} />
+                            <PdfViewer file={selectedFile} setHasSearched={setHasSearched}/>
                         </div>
                     </div>
                 ) : (

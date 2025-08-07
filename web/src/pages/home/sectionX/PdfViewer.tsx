@@ -3,7 +3,7 @@ import { PdfViewWithOverlay } from '../../../components/PdfViewWithOverlay';
 import { TIFFViewer } from '../../../components/TiffViewWithOverlay';
 import { IoChevronBack } from 'react-icons/io5';
 
-const PdfViewer = ({ file }: any) => {
+const PdfViewer = ({ file, setHasSearched }: any) => {
 
     if (!file) {
         return (
@@ -31,9 +31,9 @@ const PdfViewer = ({ file }: any) => {
                         <p className="text-sm text-white/60">{file.fileName}</p>
                     </div>
                     <div className="flex justify-end p-4">
-                        <button //onClick={() => {window.location.reload()}}
-                            onClick={() => { }}
-                            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
+                        <button
+                            onClick={() => { setHasSearched(false) }}
+                            className="cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
                             <IoChevronBack className="w-4 h-4" />
                             <span>Back</span>
                         </button>

@@ -34,7 +34,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched }: any)
                         )}
                         <button
                             onClick={onSearch}
-                            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-semibold transition duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                            className="cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-semibold transition duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                         >
                             Search
                         </button>
