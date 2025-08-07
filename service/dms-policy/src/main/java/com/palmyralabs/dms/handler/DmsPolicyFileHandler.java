@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@CrudMapping(mapping = "/policy/dms/{policyNumber}", type = PolicyFileModel.class)
+@CrudMapping(mapping = "/policy/file/dms/{policyNumber}", type = PolicyFileModel.class)
 public class DmsPolicyFileHandler extends AbstractHandler implements QueryHandler{
 
 	@Override
