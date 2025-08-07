@@ -58,8 +58,11 @@ public class AuthenticationUserModel {
 	
 	@PalmyraField
 	private String state;
-
+	
 	@PalmyraField
-	private String pincode;
+	private String address;
+	
+	@PalmyraField
+	private short active;
 
 }

@@ -29,6 +29,9 @@ app:
  fileStore:
    baseFolder: "/home/palmyra/Desktop/"
 
+palmyra:
+  database: 
+    schemas: dms
 aws:
   s3:
     bucketName: hpcbucket

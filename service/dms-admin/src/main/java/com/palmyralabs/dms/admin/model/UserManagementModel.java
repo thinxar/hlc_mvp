@@ -58,11 +58,11 @@ public class UserManagementModel {
 	
 	@PalmyraField
 	private String state;
-
-	@PalmyraField
-	private String pincode;
 	
 	@PalmyraField(attribute = "address")
 	private String address;
+	
+	@PalmyraField
+	private short active;
 
 }
