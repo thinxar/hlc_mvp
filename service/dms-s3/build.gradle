@@ -1,5 +1,8 @@
 group = 'com.palmyralabs.dms'
 
 dependencies {
+	implementation(platform("software.amazon.awssdk:bom:2.27.21"))
+	implementation("software.amazon.awssdk:s3")
 	
+	api project(":dms-filemgmt:")
 }

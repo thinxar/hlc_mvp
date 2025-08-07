@@ -1,4 +1,4 @@
-package com.palmyralabs.palmyra.s3.model;
+package com.palmyralabs.palmyra.s3.spring;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Primary;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Component
 @Primary
 @ConfigurationProperties(prefix = "aws.s3")
-public class S3Properties {
+public class S3Config {
 	private String bucketName;
     private String region;
     private String accessKey;

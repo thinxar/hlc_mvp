@@ -46,7 +46,6 @@ subprojects {
     }
 
     dependencies {
-        implementation 'com.amazonaws:aws-java-sdk-s3:1.12.707'
         implementation("org.postgresql:postgresql:42.7.7")        
 		            
        // implementation 'org.springframework.boot:spring-boot-starter:3.3.4'
