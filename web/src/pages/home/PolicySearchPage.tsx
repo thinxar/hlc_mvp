@@ -94,7 +94,7 @@ const PolicySearchPage = () => {
                                 PolicyFinder
                             </h1>
                             <p className="text-lg text-white/70 max-w-2xl mx-auto">
-                                Search and manage your insurance policies with ease
+                                Search and manage insurance policies
                             </p>
                         </div>
                         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} setHasSearched={setHasSearched} />
