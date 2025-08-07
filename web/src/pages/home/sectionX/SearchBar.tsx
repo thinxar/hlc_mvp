@@ -30,7 +30,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched }: any)
     return (
         <div className="w-full max-w-2xl mx-auto mb-8 animate-slide-up">
             <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-500"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-200 to-blue-800 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-500"></div>
                 <div className="relative bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-2">
                     <div className="flex items-center space-x-4">
                         <div className="flex-1 relative">
@@ -47,8 +47,8 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched }: any)
                         {searchTerm && (
                             <IoClose className='text-gray-400 cursor-pointer' fontSize={30} onClick={handleClear} />
                         )}
-                        <button onClick={handleSearch} className="cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700
-                        text-white px-8 py-4 rounded-xl font-semibold transition duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                        <button onClick={handleSearch} className="cursor-pointer bg-yellow-400 text-sky-800 px-8 py-4 rounded-xl
+                            font-semibold transition duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
                             Search
                         </button>
                     </div>
@@ -56,7 +56,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched }: any)
             </div>
             <div className='min-h-15'>
                 {searchTerm == '' && showError &&
-                    <div className='text-yellow-300 text-sm flex items-center gap-1'><PiWarningCircleFill /> Please enter a valid policy number.</div>}
+                    <div className='text-yellow-400 text-sm flex items-center gap-1'><PiWarningCircleFill /> Please enter a valid policy number.</div>}
             </div>
         </div>
     );

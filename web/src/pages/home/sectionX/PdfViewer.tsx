@@ -33,7 +33,7 @@ const PdfViewer = ({ file, setHasSearched }: any) => {
                     <div className="flex justify-end p-4">
                         <button
                             onClick={() => { setHasSearched(false) }}
-                            className="cursor-pointer bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
+                            className="cursor-pointer bg-yellow-400 text-sky-800 hover:to-purple-700 px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
                             <IoChevronBack className="w-4 h-4" />
                             <span>Back</span>
                         </button>
