@@ -24,14 +24,14 @@ const PdfFileItem = ({ file, isSelected, onClick }: any) => {
     return (
         <div
             onClick={onClick}
-            className={`cursor-pointer p-4 rounded-xl transition-all duration-400 ease-in border-l-[10px] 
+            className={`cursor-pointer p-2 rounded-xl transition-all duration-400 ease-in border-l-[10px] 
                   ${isSelected
                     ? 'bg-slate-100 shadow-lg border-yellow-400'
                     : 'bg-white/92 hover:border-white/20 hover:bg-white/80 border-transparent'
                 }
                   `}>
-            <div className="flex items-start space-x-3">
-                <div className={`p-2 rounded-lg bg-white/10`}>
+            <div className="flex items-start space-x-1">
+                <div className={`p-1 rounded-lg bg-white/10`}>
                     {getFileTypeColor(file.type)}
                 </div>
                 <div className="flex-1 min-w-0">

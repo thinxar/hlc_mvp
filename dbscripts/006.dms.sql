@@ -39,16 +39,10 @@ CREATE TABLE dms_document_type (
 
 CREATE TABLE dms_policy_file (
     id bigserial NOT NULL,
-    policy_file_id int8 NOT NULL,
-    position varchar(128) NULL,
-    policy_number varchar(128) NULL,
+    policy_id int8 NOT NULL,
     file_name varchar(128) NULL,
     file_size int8 NULL,
-    file_type varchar(128) NULL,
-    uuid varchar(256) NULL,
-    current_offset bigint NULL,
-    file_status int4 NULL,
-    file_location varchar(258) NULL,
+    file_type varchar(16) NULL,
     docket_type bigint NULL,
     object_url varchar(500) NULL,
     created_by varchar(128) NOT NULL,
@@ -56,6 +50,6 @@ CREATE TABLE dms_policy_file (
     created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
     CONSTRAINT dms_policy_file_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_dms_policy_file_id FOREIGN KEY (policy_file_id) REFERENCES dms_policy(id),
+    CONSTRAINT fk_dms_policy_file_id FOREIGN KEY (policy_id) REFERENCES dms_policy(id),
     CONSTRAINT fk_dms_docket_type FOREIGN KEY (docket_type) REFERENCES dms_document_type(id)
 );

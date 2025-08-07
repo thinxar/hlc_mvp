@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { IoChevronBackOutline } from 'react-icons/io5';
 import { EmptyList } from './sectionX/EmptyList';
 import { MemoizedPdfViewer } from './sectionX/MemoizedPdfViewer';
 import { PdfFileItem } from './sectionX/PdfFileItem';
@@ -52,7 +53,7 @@ const PolicySearchPage = () => {
     const allFiles = filteredPolicies.flatMap((policy) =>
         policy.pdfFiles.map((file) => ({ ...file, policyId: policy.id }))
     );
-    console.log('policy search page render...')
+
     return (
         <div className="min-h-screen bg-gradient-to-br bColor relative overflow-hidden">
             <div className="absolute inset-0">
@@ -60,12 +61,17 @@ const PolicySearchPage = () => {
                 <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
             </div>
-            <div className="relative z-10 p-6">
+            <div className="relative z-10 p-4">
                 {hasSearched && filteredPolicies.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[40%_60%] lg:grid-cols-[30%_70%] xl:grid-cols-[30%_70%] 2xl:grid-cols-[30%_70%] transition-all duration-300 ease-in-out gap-4 px-20 mx-auto w-full h-[calc(98vh-30px)]">
-                        <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6 flex flex-col overflow-auto">
-                            <h1 className="text-2xl font-bold text-white mb-4">Policy Number: {searchQuery}</h1>
-                            <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[30%_70%] lg:grid-cols-[20%_80%] xl:grid-cols-[20%_80%] 2xl:grid-cols-[20%_80%] transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(98vh-30px)]">
+                        <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-3 flex flex-col overflow-auto">
+                            <div className="flex items-center gap-1.5 mb-4">
+                                <IoChevronBackOutline onClick={() => { setHasSearched(false) }}
+                                    className='text-slate-300 cursor-pointer' />
+                                <div className='text-lg font-bold text-slate-300'>
+                                    Policy Number:</div>
+                                <div className='text-xl text-slate-100 font-semibold'>{searchQuery}</div></div>
+                            <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch} compact={true} />
                             <div className="space-y-3 overflow-y-auto">
                                 {allFiles.map((file, idx) => (
                                     <PdfFileItem
@@ -78,7 +84,7 @@ const PolicySearchPage = () => {
                             </div>
                         </div>
                         <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-auto">
-                            <MemoizedPdfViewer file={selectedFile} setHasSearched={setHasSearched} />
+                            <MemoizedPdfViewer file={selectedFile} />
                         </div>
                     </div>
                 ) : (
@@ -101,3 +107,4 @@ const PolicySearchPage = () => {
 };
 
 export { PolicySearchPage };
+
