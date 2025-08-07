@@ -4,6 +4,9 @@ import { EmptyList } from './sectionX/EmptyList';
 import { MemoizedPdfViewer } from './sectionX/MemoizedPdfViewer';
 import { PdfFileItem } from './sectionX/PdfFileItem';
 import { SearchBar } from './sectionX/SearchBar';
+import { useFormstore } from '../../wire/StoreFactory';
+import { StringFormat } from '@palmyralabs/ts-utils';
+import { ServiceEndpoint } from '../../config/ServiceEndpoint';
 
 const samplePolicies = [
     {
@@ -40,10 +43,16 @@ const PolicySearchPage = () => {
     const [hasSearched, setHasSearched] = useState(false);
     const [selectedFile, setSelectedFile] = useState<any>(null);
 
+    const searchPolicyEndpoint = StringFormat(ServiceEndpoint.policy.searchPolicyApi, { policyNumber: searchTerm });
+
     const handleSearch = () => {
         setSearchQuery(searchTerm);
         setHasSearched(true);
         setSelectedFile(null);
+
+        useFormstore(searchPolicyEndpoint).get({}).then((d) => {
+            console.log(d);
+        })
     };
 
     const filteredPolicies = searchQuery

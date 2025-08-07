@@ -13,6 +13,10 @@
     "@mantine/core": "^7.17.8",
     "@mantine/dates": "^7.13.3",
     "@mantine/hooks": "^7.17.8",
+    "@palmyralabs/palmyra-wire": "^1.1.1",
+    "@palmyralabs/rt-forms": "github:palmyralabs/rt-forms",
+    "@palmyralabs/rt-forms-mantine": "github:palmyralabs/rt-forms-mantine",
+    "@palmyralabs/ts-utils": "^0.2.0",
     "@tailwindcss/vite": "^4.0.3",
     "axios": "^1.7.7",
     "pdf-lib": "^1.17.1",
@@ -27,6 +31,7 @@
     "react-signature-canvas": "^1.1.0-alpha.2",
     "react-tiff": "^0.0.14",
     "react-toastify": "^10.0.5",
+    "sweetalert2": "^11.22.2",
     "tailwindcss": "^4.0.3",
     "usehooks-ts": "^3.1.0",
     "utif": "^3.1.0"
@@ -34,6 +39,7 @@
   "devDependencies": {
     "@eslint/js": "^9.30.1",
     "@tailwindcss/vite": "^4.1.11",
+    "@types/prop-types": "^15.7.15",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@types/utif": "^3.0.5",
@@ -48,6 +54,8 @@
     "vite-tsconfig-paths": "^5.1.4"
   },
   "overrides": {
-    "axios": "^1.7.7"
+    "axios": "^1.7.7",
+    "@palmyralabs/ts-utils": "^0.2.0",
+    "@palmyralabs/palmyra-wire": "^1.1.1"
   }
 }
