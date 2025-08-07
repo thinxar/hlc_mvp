@@ -20,8 +20,8 @@ public class PolicyFileEntity implements Auditable{
 	@Column(name = "id")
 	private Long id;
 	
-	@Column(name = "policy_number")
-	private String policyNumber;
+	@Column(name = "policy_id")
+	private Long policyId;
 	
 	@Column(name = "file_name")
 	private String fileName;
@@ -32,17 +32,11 @@ public class PolicyFileEntity implements Auditable{
 	@Column(name = "file_type")
 	private String fileType;
 
-	@Column(name = "uuid")
-	private String uuid;
+	@Column(name = "docket_type")
+	private Long docketType;
 
-	@Column(name = "current_offset")
-	private Long currentOffset;
-
-	@Column(name = "file_status")
-	private Integer fileStatus;
-
-	@Column(name = "file_location")
-	private String fileLocation;
+	@Column(name = "object_url")
+	private String objectUrl;
 
 	private Timestamps timestamps;
 }

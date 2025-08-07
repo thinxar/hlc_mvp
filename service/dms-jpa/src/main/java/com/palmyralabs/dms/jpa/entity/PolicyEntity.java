@@ -1,7 +1,7 @@
 package com.palmyralabs.dms.jpa.entity;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.Date;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,8 +22,44 @@ public class PolicyEntity implements Auditable{
 	@Column(name = "policy_date")
 	private LocalDate policyDate;
 	
+	@Column(name = "customer_id")
+	private String customerId;
+	
+	private String name;
+	
+	private LocalDate dob;
+	
+	private LocalDate doc;
+	
+	@Column(name = "division_code")
+	private Long divisionCode;
+	
+	@Column(name = "branch_code")
+	private String branchCode;
+	
+	@Column(name = "branch_number")
+	private String branchNumber;
+	
+	@Column(name = "box_number")
+	private String boxNumber;
+	
+	@Column(name = "rms_status")
+	private Integer rmsStatus;
+	
+	@Column(name = "upload_label")
+	private String uploadLabel;
+	
+	private Long field1;
+	
+	private String field2;
+	
+	private String field3;
+	
+	@Column(name = "mobile_number")
+	private String mobileNumber;
+	
 	@Column(name = "policy_status")
-	private int status;
+	private Integer policyStatus;
 	
 	private String region;
 	

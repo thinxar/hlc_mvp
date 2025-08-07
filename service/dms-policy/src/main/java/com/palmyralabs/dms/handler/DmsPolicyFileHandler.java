@@ -1,8 +1,8 @@
 package com.palmyralabs.dms.handler;
 
-import org.eclipse.jetty.ee10.annotations.AnnotationParser.AbstractHandler;
 import org.springframework.stereotype.Component;
 
+import com.palmyralabs.dms.masterdata.handler.AbstractHandler;
 import com.palmyralabs.dms.model.PolicyFileModel;
 import com.palmyralabs.palmyra.base.annotations.CrudMapping;
 import com.palmyralabs.palmyra.handlers.HandlerContext;
@@ -14,13 +14,13 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@CrudMapping(mapping = "/policy/file/dms/{policyNumber}", type = PolicyFileModel.class)
+@CrudMapping(mapping = "/policy/{policyNumber}/file", type = PolicyFileModel.class)
 public class DmsPolicyFileHandler extends AbstractHandler implements QueryHandler {
 
 	@Override
 	public QueryFilter applyQueryFilter(QueryFilter filter, HandlerContext ctx) {
-		String PolicyNumber = ctx.getParams().get("policyNumber");
-		filter.addCondition(Criteria.EQ("policyNumber", PolicyNumber));
+		Integer PolicyNumber =Integer.parseInt(ctx.getParams().get("policyNumber")) ;
+		filter.addCondition(Criteria.EQ("policyId.policyNumber", PolicyNumber));
 		return QueryHandler.super.applyQueryFilter(filter, ctx);
 	}
 }
