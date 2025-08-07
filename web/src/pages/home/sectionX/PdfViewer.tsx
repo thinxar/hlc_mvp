@@ -45,11 +45,10 @@ const PdfViewer = ({ file, setHasSearched }: any) => {
                     {file.type === 'pdf' ? (
                         <PdfViewWithOverlay
                             pdfUrlFromApi="/files/Sample-Policy-Document_LIC.pdf"
-                            imageUrlFromApi="/images/licseal.jpg"
-                            pageIndex={0}
-                            position={{ x: 250, y: 200 }}
+                            imageUrlFromApi={['/images/lic.png',"/images/licseal.jpg"]}
+                            pageIndex={[0, 1]}
+                            position={{ x: 450, y: 100 }}
                             scale={0.7}
-                        // setDownloadurl={setDownloadurl}
                         />
                     ) : file.type === 'JPEG' ? (
                         <img src={file.path} className='h-full ' />

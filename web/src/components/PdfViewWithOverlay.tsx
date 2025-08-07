@@ -5,8 +5,8 @@ import { FaDownload } from 'react-icons/fa6';
 
 interface Props {
   pdfUrlFromApi: string;
-  imageUrlFromApi: string;
-  pageIndex: number;
+  imageUrlFromApi: any[] | any;
+  pageIndex: any[] | any;
   position: { x: number; y: number };
   scale?: number;
 }
@@ -35,37 +35,44 @@ const PdfViewWithOverlay = ({
         const pdfDoc = await PDFDocument.load(existingPdfBytes);
         const pages = pdfDoc.getPages();
 
-        if (pageIndex < 0 || pageIndex >= pages.length) {
-          throw new Error(`Invalid page index. PDF has ${pages.length} pages.`);
+        if (imageUrlFromApi.length !== pageIndex.length) {
+          throw new Error("imageUrlFromApi and pageIndex must have the same length");
         }
 
-        const targetPage = pages[pageIndex];
+        for (let i = 0; i < imageUrlFromApi.length; i++) {
+          const url = imageUrlFromApi[i];
+          const index = pageIndex[i];
 
-        const imageBytes = await fetch(imageUrlFromApi).then(res => {
-          if (!res.ok) throw new Error("Failed to fetch image");
-          return res.arrayBuffer();
-        });
+          if (index < 0 || index >= pages.length) {
+            throw new Error(`Invalid page index ${index}. PDF has ${pages.length} pages.`);
+          }
 
-        const imageExtension = imageUrlFromApi.split('.').pop()?.toLowerCase();
-        let embeddedImage;
+          const imageBytes = await fetch(url).then(res => {
+            if (!res.ok) throw new Error(`Failed to fetch image from ${url}`);
+            return res.arrayBuffer();
+          });
 
-        if (imageExtension === 'jpg' || imageExtension === 'jpeg') {
-          embeddedImage = await pdfDoc.embedJpg(imageBytes);
-        } else if (imageExtension === 'png') {
-          embeddedImage = await pdfDoc.embedPng(imageBytes);
-        } else {
-          throw new Error(`Unsupported image format: ${imageExtension}`);
+          const imageExtension = url.split('.').pop()?.toLowerCase();
+          let embeddedImage;
+
+          if (imageExtension === 'jpg' || imageExtension === 'jpeg') {
+            embeddedImage = await pdfDoc.embedJpg(imageBytes);
+          } else if (imageExtension === 'png') {
+            embeddedImage = await pdfDoc.embedPng(imageBytes);
+          } else {
+            throw new Error(`Unsupported image format: ${imageExtension}`);
+          }
+
+          const imgDims = embeddedImage.scale(scale);
+          const targetPage = pages[index];
+
+          targetPage.drawImage(embeddedImage, {
+            x: position.x,
+            y: position.y,
+            width: imgDims.width,
+            height: imgDims.height,
+          });
         }
-
-        const imgDims = embeddedImage.scale(scale);
-
-        targetPage.drawImage(embeddedImage, {
-          x: position.x,
-          y: position.y,
-          width: imgDims.width,
-          height: imgDims.height,
-        });
-
         const pdfBytes = await pdfDoc.save();
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
         const blobUrl = URL.createObjectURL(blob);
@@ -102,7 +109,6 @@ const PdfViewWithOverlay = ({
               src={pdfUrl}
               title="Enhanced PDF Document"
               className="w-full min-h-[calc(100vh-100px)] border-0"
-            // style={{ minHeight: '600px' }}
             />
           </div>
         </div>
