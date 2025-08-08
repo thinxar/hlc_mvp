@@ -40,10 +40,9 @@ function PdfViewerPage() {
                     </div>
                     <PdfViewWithOverlay
                         pdfUrlFromApi={pdfUrl}
-                        // pdfUrlFromApi="https://www.ets.org/Media/Tests/TOEFL/pdf/SampleQuestions.pdf"
-                        imageUrlFromApi="https://picsum.photos/200/300.jpg"
-                        pageIndex={0}
-                        position={{ x: 250, y: 200 }}
+                        imageUrlFromApi={[]}
+                        pageIndex={[]}
+                        position={{ x: 0, y: 0 }}
                         scale={0.7} />
                 </div>
             }

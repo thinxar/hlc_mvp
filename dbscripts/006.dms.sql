@@ -22,7 +22,7 @@ CREATE TABLE dms_policy (
     last_upd_by varchar(128) NULL,
     created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
-    CONSTRAINT uq_dms_policy UNIQUE (policy_number),
+    CONSTRAINT uq_dms_policy UNIQUE (policy_number, branch_code),
     CONSTRAINT dms_policy_pkey PRIMARY KEY (id)
 );
 

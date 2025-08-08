@@ -15,6 +15,11 @@ const PolicyResultView = () => {
 
     const endpoint = StringFormat(ServiceEndpoint.policy.searchPolicyByIdApi, { policyId: params?.policyId });
 
+    const BASE_URL = `${window.location.origin}/api/palmyra`;
+    const endPoint = StringFormat(ServiceEndpoint.policy.getFileApi, { policyId: params?.policyId, fileId: selectedFile?.pdfFiles?.id });
+
+    const pdfUrl = BASE_URL + endPoint;
+
     useEffect(() => {
         useFormstore(endpoint).get({}).then((d) => {
             const mappedPolicies: any = d.map((item: any) => ({
@@ -29,22 +34,23 @@ const PolicyResultView = () => {
                     path: item.path || ''
                 }
             }));
-        
+
             setData(mappedPolicies);
         }).catch(() => {
             handleError
         });
     }, [])
-    
+
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[30%_70%] lg:grid-cols-[20%_80%] xl:grid-cols-[20%_80%] 2xl:grid-cols-[20%_80%]
-        transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(108vh-41px)] min-h-[calc(100vh-41px)]">
+        transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-40px)]">
             <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-3 flex flex-col overflow-auto">
-                {data.length != 0 ? <> <div className="flex items-center gap-1.5 mb-4">
+                <div className="flex items-center gap-1.5 mb-4">
                     <IoChevronBackOutline onClick={() => { window.history.back() }} className="text-slate-300 cursor-pointer" />
                     <div className="text-lg font-bold text-slate-300">Policy Number: </div>
-                    <div className="text-xl text-slate-100 font-semibold">{data[0]?.id}</div>
+                    <div className="text-xl text-slate-100 font-semibold">{data[0]?.id || '--'}</div>
                 </div>
+                {data.length != 0 ?
                     <div className="space-y-3 overflow-y-auto">
                         {data.map((file: any, idx: number) => (
                             <PdfFileItem
@@ -52,15 +58,15 @@ const PolicyResultView = () => {
                                 file={file}
                                 isSelected={selectedFile?.pdfFiles?.fileName === file?.pdfFiles?.fileName}
                                 onClick={() => setSelectedFile(file)}
+                                fileUrl={pdfUrl}
                             />
                         ))}
                     </div>
-                </> : <div className='text-white grid place-items-center'>No File Found</div>}
+                    : <div className='text-white grid place-items-center'>No File Found</div>}
             </div>
 
-            {/* Right Panel */}
             <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-auto">
-                <PdfViewer file={selectedFile} />
+                <PdfViewer file={selectedFile}  fileUrl={pdfUrl}/>
             </div>
         </div>
     );

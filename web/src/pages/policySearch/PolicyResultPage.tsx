@@ -2,7 +2,7 @@ import { PolicyResultView } from "./PolicyResultView"
 
 const PolicyResultPage = () => {
     return (
-        <div>
+        <div className="p-4">
             <PolicyResultView />
         </div>
     )

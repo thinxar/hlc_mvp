@@ -108,7 +108,7 @@ const PdfViewWithOverlay = ({
             <iframe id='pdf_frame'
               src={pdfUrl}
               title="Enhanced PDF Document"
-              className="w-full min-h-[calc(100vh-100px)] border-0"
+              className="w-full min-h-[calc(100vh-100px)] border-0 pb-22"
             />
           </div>
         </div>

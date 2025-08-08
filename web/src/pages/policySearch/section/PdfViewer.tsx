@@ -1,15 +1,9 @@
 import { FaFile } from 'react-icons/fa6';
 import { PdfViewWithOverlay } from '../../../components/PdfViewWithOverlay';
 import { TIFFViewer } from '../../../components/TiffViewWithOverlay';
-import { ServiceEndpoint } from '../../../config/ServiceEndpoint';
-import { StringFormat } from '@palmyralabs/ts-utils';
-import { useParams } from 'react-router-dom';
 
-const PdfViewer = ({ file }: any) => {
-    const params = useParams()
+const PdfViewer = ({ file, fileUrl }: any) => {
 
-    const endPoint = StringFormat(ServiceEndpoint.policy.getFileApi, {policyId: params?.policyId, fileId: file?.pdfFiles?.id});
-    
     if (!file) {
         return (
             <div className="flex items-center justify-center h-full text-white/60">
@@ -38,13 +32,13 @@ const PdfViewer = ({ file }: any) => {
                 </div>
             </div>
             <div className="p-3">
-                <div className="h-[calc(100vh-140px)] bg-white rounded-2xl flex items-center justify-center overflow-auto">
+                <div className="h-[calc(100vh-90px)] bg-white rounded-2xl flex items-center justify-center overflow-hidden">
                     {file?.pdfFiles?.type === 'pdf' ? (
                         <PdfViewWithOverlay
-                            pdfUrlFromApi={endPoint}
-                            imageUrlFromApi={['/images/lic.png',"/images/licseal.jpg"]}
-                            pageIndex={[0, 1]}
-                            position={{ x: 450, y: 100 }}
+                            pdfUrlFromApi={fileUrl}
+                            imageUrlFromApi={[]}
+                            pageIndex={[]}
+                            position={{ x: 0, y: 0 }}
                             scale={0.7}
                         />
                     ) : file.type === 'JPEG' ? (

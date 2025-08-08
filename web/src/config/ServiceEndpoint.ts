@@ -18,7 +18,7 @@ const ServiceEndpoint = {
     policy: {
         searchPolicyApi: '/policy',
         searchPolicyByIdApi: '/policy/{policyId}/file',
-        getFileApi: '/api/palmyra/policy/{policyId}/file/{fileId}'
+        getFileApi: '/policy/{policyId}/file/{fileId}'
         
     }
 }
