@@ -92,7 +92,7 @@
 }
 
 .login-btn-container {
-  padding: 10px;
+  padding: 10px 15px 10px 20px;
   margin-top: 1em;
 }
 
@@ -140,6 +140,8 @@
   color: rgb(0, 89, 138) !important;
   font-weight: bold !important;
   border-radius: 10px !important;
+  font-size: 18px;
+  min-height: 50px !important
 }
 
 /* .login-btn:hover {
