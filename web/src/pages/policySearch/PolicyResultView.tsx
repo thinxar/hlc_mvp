@@ -5,8 +5,8 @@ import { useParams } from 'react-router-dom';
 import { ServiceEndpoint } from '../../config/ServiceEndpoint';
 import { handleError } from '../../wire/ErrorHandler';
 import { useFormstore } from '../../wire/StoreFactory';
-import { MemoizedPdfViewer } from './section/MemoizedPdfViewer';
 import { PdfFileItem } from './section/PdfFileItem';
+import { PdfViewer } from './section/PdfViewer';
 
 const PolicyResultView = () => {
     const params = useParams();
@@ -20,6 +20,7 @@ const PolicyResultView = () => {
             const mappedPolicies: any = d.map((item: any) => ({
                 id: item.policyId?.policyNumber,
                 pdfFiles: {
+                    id: item.id,
                     name: item.name,
                     fileName: item.fileName,
                     size: item.fileSize,
@@ -28,12 +29,13 @@ const PolicyResultView = () => {
                     path: item.path || ''
                 }
             }));
+        
             setData(mappedPolicies);
         }).catch(() => {
             handleError
         });
     }, [])
-
+    
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[30%_70%] lg:grid-cols-[20%_80%] xl:grid-cols-[20%_80%] 2xl:grid-cols-[20%_80%]
         transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(108vh-41px)] min-h-[calc(100vh-41px)]">
@@ -58,7 +60,7 @@ const PolicyResultView = () => {
 
             {/* Right Panel */}
             <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-auto">
-                <MemoizedPdfViewer file={selectedFile} />
+                <PdfViewer file={selectedFile} />
             </div>
         </div>
     );
