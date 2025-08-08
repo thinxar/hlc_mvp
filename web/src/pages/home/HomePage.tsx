@@ -1,5 +1,5 @@
 import { Topbar } from '../../components/Topbar';
-import { PolicySearchPage } from './PolicySearchPage';
+import { PolicySearchPage } from '../policySearch/PolicySearchPage';
 
 const HomePage = () => {
 

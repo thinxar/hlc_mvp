@@ -1,5 +1,5 @@
 import { FaDownLong, FaRegFileLines } from 'react-icons/fa6';
-import { PdfViewWithOverlay } from '../components/PdfViewWithOverlay'
+import { PdfViewWithOverlay } from '../../components/PdfViewWithOverlay'
 import { IoChevronBackOutline } from 'react-icons/io5';
 
 function PdfViewerPage() {

@@ -1,5 +1,5 @@
 import { IoChevronBackOutline } from "react-icons/io5";
-import { TIFFViewer } from "../components/TiffViewWithOverlay";
+import { TIFFViewer } from "../../components/TiffViewWithOverlay";
 import { FaRegFileLines } from "react-icons/fa6";
 
 const TiffViewerPage = () => {

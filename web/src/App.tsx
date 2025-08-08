@@ -3,8 +3,8 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
 import './Layout.css'
 import { HomePage } from './pages/home/HomePage'
-import { PdfViewerPage } from './pages/PdfViewerPage'
-import TiffViewerPage from './pages/TiffViewerPage'
+import { PdfViewerPage } from './pages/viewer/PdfViewerPage'
+import TiffViewerPage from './pages/viewer/TiffViewerPage'
 import LoginPage from './pages/login/LoginPage'
 
 function App() {
