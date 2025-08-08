@@ -11,11 +11,12 @@ interface IServerApiConfig extends IPageApiRef {
 
 const ServiceEndpoint = {
     baseUrl: '',
-    login: {
-        loginApi: '/api/auth/login'
+    auth: {
+        login: '/api/auth/login',
+        logout: '/auth/logout',
     },
     policy: {
-        searchPolicyApi: '/policy/dms/{policyNumber}'
+        searchPolicyApi: '/policy/{policyNumber}/file'
     }
 }
 
