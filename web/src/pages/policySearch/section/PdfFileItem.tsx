@@ -1,21 +1,25 @@
-import { CiCalendar, CiHardDrive } from 'react-icons/ci';
+import { CiCalendar, CiHardDrive, CiMenuKebab } from 'react-icons/ci';
 import Pdf from '../../../../public/images/pdf.png'
 import Tiff from '../../../../public/images/tiff.png'
 import Image from '../../../../public/images/image.png'
+import { useNavigate } from 'react-router-dom';
+import { Tooltip } from '@mantine/core';
 
 const PdfFileItem = ({ file, isSelected, onClick }: any) => {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
     // const getFileTypeColor = (type: any) =>
     //     type === 'pdf' ? 'text-red-400' : 'text-blue-400';
 
-    // const handleNavigate = () => {
-    // if (file.type === 'pdf')
-    //     navigate('/app/pdfViewer')
-    // else
-    //     navigate('/app/tiffViewer')
-    // }
-
+    const handleNavigate = () => {
+        if (file?.pdfFiles?.type === 'pdf')
+            navigate('/app/pdfViewer')
+        else if (file?.pdfFiles?.type === 'tiff')
+            navigate('/app/tiffViewer')
+        else
+            navigate('/app/imageViewer')
+    }
+    
     const getFileTypeColor = (type: any) => {
         return <>{type === 'pdf' ? <img src={Pdf} className='w-7 h-7' /> : type === 'tiff' ? <img src={Tiff} className='w-8 h-8' />
             : <img src={Image} className='w-7 h-7' />}</>
@@ -36,22 +40,22 @@ const PdfFileItem = ({ file, isSelected, onClick }: any) => {
                 </div>
                 <div className="flex-1 min-w-0">
                     <div className='flex items-center justify-between'>
-                        <h3 className="font-semibold text-black truncate">{file.name}</h3>
-                        {/* <div className='text-gray-500' onClick={handleNavigate}>
+                        <h3 className="font-semibold text-black truncate">{file?.pdfFiles?.fileName}</h3>
+                        <div className='text-gray-500' onClick={handleNavigate}>
                             <Tooltip label="Open With New Window">
                                 <CiMenuKebab className="w-3 h-3" />
-                            </Tooltip></div> */}
+                            </Tooltip></div>
                     </div>
-                    <p className="text-sm text-gray-600 truncate">{file?.pdfFiles?.fileName}</p>
+                    {/* <p className="text-sm text-gray-600 truncate">{file?.pdfFiles?.fileName}</p> */}
                     <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
-                        <span className="flex items-center space-x-1">
+                        {file.pdfFiles?.size && <span className="flex items-center space-x-1">
                             <CiHardDrive className="w-3 h-3" />
                             <span>{file.pdfFiles?.size}</span>
-                        </span>
-                        <span className="flex items-center space-x-1">
+                        </span>}
+                        {file.pdfFiles?.date && <span className="flex items-center space-x-1">
                             <CiCalendar className="w-3 h-3" />
                             <span>{file.date}</span>
-                        </span>
+                        </span>}
                     </div>
                 </div>
             </div>

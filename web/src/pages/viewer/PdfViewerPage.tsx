@@ -1,6 +1,7 @@
-import { FaDownLong, FaRegFileLines } from 'react-icons/fa6';
-import { PdfViewWithOverlay } from '../../components/PdfViewWithOverlay'
+import { FaDownLong } from 'react-icons/fa6';
 import { IoChevronBackOutline } from 'react-icons/io5';
+import Pdf from '../../../public/images/pdf.png';
+import { PdfViewWithOverlay } from '../../components/PdfViewWithOverlay';
 
 function PdfViewerPage() {
     const pdfUrl = "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf";
@@ -10,8 +11,8 @@ function PdfViewerPage() {
             <div className="flex items-center justify-between max-w-4xl mx-auto p-5">
                 <div>
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-blue-600 rounded-lg">
-                            <FaRegFileLines size={16} className='text-white h-6 w-6' />
+                        <div className="p-2 bg-gray-200 rounded-lg">
+                            <img src={Pdf} className='w-7 h-7' />
                         </div>
                         <h1 className="text-2xl font-bold text-slate-100">PDF Endorsement</h1>
                     </div>

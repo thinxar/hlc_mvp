@@ -3,7 +3,7 @@ import { CiSearch } from 'react-icons/ci';
 import { IoClose } from 'react-icons/io5';
 import { PiWarningCircleFill } from "react-icons/pi";
 
-const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched, compact }: any) => {
+const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched, compact, setData, setNotFound }: any) => {
     const [showError, setShowError] = useState(false)
     const handleKeyPress = (e: any) => {
         if (e.key === 'Enter') onSearch();
@@ -19,6 +19,8 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched, compac
 
     const handleChange = (e: any) => {
         setSearchTerm(e.target.value)
+        setData([]);
+        setNotFound(false)
     }
 
     const handleSearch = () => {
@@ -26,9 +28,8 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched, compac
         setShowError(true);
     }
 
-
     return (
-        <div className="w-full max-w-2xl mx-auto mb-8 animate-slide-up">
+        <div className="w-full max-w-2xl mx-auto mb-8 animate-slide-up mt-3">
             <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-200 to-blue-800 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-500"></div>
                 <div className="relative bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-1">

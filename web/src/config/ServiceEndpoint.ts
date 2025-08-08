@@ -16,7 +16,8 @@ const ServiceEndpoint = {
         logout: '/auth/logout',
     },
     policy: {
-        searchPolicyApi: '/policy/{policyNumber}/file'
+        searchPolicyApi: '/policy',
+        searchPolicyByIdApi: '/policy/{policyId}/file'
     }
 }
 

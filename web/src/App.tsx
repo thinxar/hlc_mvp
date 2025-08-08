@@ -6,6 +6,7 @@ import { HomePage } from './pages/home/HomePage'
 import { PdfViewerPage } from './pages/viewer/PdfViewerPage'
 import TiffViewerPage from './pages/viewer/TiffViewerPage'
 import LoginPage from './pages/login/LoginPage'
+import { PolicyResultPage } from './pages/policySearch/PolicyResultPage'
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace={true} />} />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/app/home' element={<HomePage />} />
+          <Route path='/app/policy/:policyId' element={<PolicyResultPage />} />
           <Route path='/app/pdfViewer' element={<PdfViewerPage />} />
           <Route path='/app/tiffViewer' element={<TiffViewerPage />} />
         </Routes>

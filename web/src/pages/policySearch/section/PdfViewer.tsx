@@ -61,4 +61,3 @@ const PdfViewer = ({ file }: any) => {
 };
 
 export { PdfViewer };
-
