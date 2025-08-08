@@ -17,10 +17,16 @@ import com.palmyralabs.palmyra.ext.usermgmt.exception.UnAuthorizedException;
 import com.zitlab.palmyra.common.exception.PalmyraException;
 import com.zitlab.palmyra.store.base.exception.FieldValidationException;
 import com.zitlab.palmyra.store.base.exception.MultipleTuplesExistsException;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends BaseController {
 
+	@ExceptionHandler(NoSuchKeyException.class)
+	public ResponseEntity<ErrorResponse> NoSuchKeyException(NoSuchKeyException e) {
+		return notFound(getErrorResponse(e));
+	}
+	
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ErrorResponse> resourceNotFoundException(ResourceNotFoundException e) {
 		return notFound(getErrorResponse(e));

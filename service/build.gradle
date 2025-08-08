@@ -56,11 +56,13 @@ subprojects {
     	implementation 'org.springframework.boot:spring-boot-starter-logging:3.3.4'
         testImplementation 'org.springframework.boot:spring-boot-starter-test:3.3.4'
 
+		implementation 'software.amazon.awssdk:s3:2.25.23'
     
         implementation deps.palmyra.spring
         implementation deps.palmyra.store.pgsql
         implementation deps.jakarta.persistence
         implementation deps.spring.security_config
+        implementation deps.spring.security_web
         implementation deps.palmyra.extn.pwdmgmt
         implementation deps.palmyra.extn.aclmgmt
         implementation deps.apache.log4j2.slf4j_adapter
@@ -75,7 +77,8 @@ subprojects {
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.2'
         testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2' 
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.4'
-		testImplementation("org.junit.platform:junit-platform-engine:1.13.4")    
+		testImplementation("org.junit.platform:junit-platform-engine:1.13.4")   
+
     }
 
     configurations.all {
