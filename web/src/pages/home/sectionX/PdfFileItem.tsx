@@ -32,7 +32,7 @@ const PdfFileItem = ({ file, isSelected, onClick }: any) => {
                   `}>
             <div className="flex items-start space-x-1">
                 <div className={`p-1 rounded-lg bg-white/10`}>
-                    {getFileTypeColor(file.type)}
+                    {getFileTypeColor(file.pdfFiles?.type)}
                 </div>
                 <div className="flex-1 min-w-0">
                     <div className='flex items-center justify-between'>
@@ -42,11 +42,11 @@ const PdfFileItem = ({ file, isSelected, onClick }: any) => {
                                 <CiMenuKebab className="w-3 h-3" />
                             </Tooltip></div> */}
                     </div>
-                    <p className="text-sm text-gray-600 truncate">{file.fileName}</p>
+                    <p className="text-sm text-gray-600 truncate">{file?.pdfFiles?.fileName}</p>
                     <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
                         <span className="flex items-center space-x-1">
                             <CiHardDrive className="w-3 h-3" />
-                            <span>{file.size}</span>
+                            <span>{file.pdfFiles?.size}</span>
                         </span>
                         <span className="flex items-center space-x-1">
                             <CiCalendar className="w-3 h-3" />
