@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.palmyralabs.dms.jpa.entity.PolicyFileEntity;
 import com.palmyralabs.dms.jpa.repository.PolicyFileRepository;
+import com.palmyralabs.palmyra.base.exception.DataNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,11 +21,11 @@ public class PolicyFileService {
 				return policyFileEntity.getObjectUrl();
 			}
 			else {
-				  throw new RuntimeException("Object URL not found");
+				  throw new DataNotFoundException("INV012","Object URL not found");
 			}
 		}
 		else {
-			throw new RuntimeException("policy not found");
+			throw new DataNotFoundException("INV012","policy not found");
 		}
 	}
 	

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.palmyralabs.dms.base.controller.BaseController;
 import com.palmyralabs.dms.base.exception.InvaidInputException;
 import com.palmyralabs.dms.base.model.ErrorResponse;
+import com.palmyralabs.palmyra.base.exception.DataNotFoundException;
 import com.palmyralabs.palmyra.base.exception.EndPointForbiddenException;
 import com.palmyralabs.palmyra.base.exception.ResourceAlreadyExistsException;
 import com.palmyralabs.palmyra.base.exception.ResourceNotFoundException;
@@ -24,6 +25,11 @@ public class GlobalExceptionHandler extends BaseController {
 
 	@ExceptionHandler(NoSuchKeyException.class)
 	public ResponseEntity<ErrorResponse> NoSuchKeyException(NoSuchKeyException e) {
+		return notFound(getErrorResponse(e));
+	}
+	
+	@ExceptionHandler(DataNotFoundException.class)
+	public ResponseEntity<ErrorResponse> dataNotFoundException(DataNotFoundException e) {
 		return notFound(getErrorResponse(e));
 	}
 	
