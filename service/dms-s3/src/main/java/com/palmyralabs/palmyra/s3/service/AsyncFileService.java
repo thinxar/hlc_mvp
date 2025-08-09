@@ -2,6 +2,8 @@ package com.palmyralabs.palmyra.s3.service;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.CompletableFuture;
 
 import org.reactivestreams.Subscriber;
@@ -70,7 +72,7 @@ public class AsyncFileService {
 	private void asyncDownload(String key, ResponseFileEmitter emitter) {
 		try {
 			GetObjectRequest request = GetObjectRequest.builder().bucket(props.getBucketName()).key(key).build();
-			
+
 			CompletableFuture<ResponsePublisher<GetObjectResponse>> cplResponse = asyncClient.getObject(request,
 					AsyncResponseTransformer.toPublisher());
 
@@ -78,11 +80,11 @@ public class AsyncFileService {
 
 			GetObjectResponse responseMetadata = publisher.response();
 
-		    String contentType = responseMetadata.contentType();
-		    if (contentType == null || contentType.isEmpty()) {
-		          contentType = "application/octet-stream"; 
-		    }
-		    emitter.setContentType(contentType);
+			String contentType = responseMetadata.contentType();
+			if (contentType == null || contentType.isEmpty()) {
+				contentType = "application/octet-stream";
+			}
+			emitter.setContentType(contentType);
 			publisher.subscribe(new S3FileConsumer(emitter));
 		} catch (Exception t) {
 			log.error("Error while downloading file " + key, t);
@@ -95,11 +97,14 @@ public class AsyncFileService {
 
 		private final ResponseFileEmitter fileEmitter;
 		private Subscription s;
+		private static final int BUFFER_SIZE = 512 * 1024;
+		private byte[] buffer = new byte[BUFFER_SIZE];
+		int bufferSize = 0;
 
 		@Override
 		public void onSubscribe(Subscription s) {
 			this.s = s;
-			s.request(64 * 1024);
+			s.request(BUFFER_SIZE);
 		}
 
 		@Override
@@ -108,7 +113,14 @@ public class AsyncFileService {
 			int l = t.capacity();
 			byte[] b = new byte[l];
 			t.get(b);
-			fileEmitter.send(b, l);
+
+			if (l + bufferSize >= BUFFER_SIZE) {
+				fileEmitter.send(buffer, bufferSize);
+				bufferSize = 0;
+			} else {
+				System.arraycopy(b, 0, buffer, bufferSize, l);
+				bufferSize += l;
+			}
 		}
 
 		@Override
@@ -122,6 +134,14 @@ public class AsyncFileService {
 
 		@Override
 		public void onComplete() {
+			try {
+				if (bufferSize > 0) {
+					fileEmitter.send(buffer, bufferSize);
+				}
+			} catch (Throwable t) {
+
+			}
+
 			try {
 				s.cancel();
 			} catch (Throwable t) {
