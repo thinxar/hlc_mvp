@@ -37,14 +37,14 @@ const PolicySearchPage = () => {
 
         useFormstore(endpoint).query({ filter: { "policyNumber": searchTerm } }).then((d) => {
             if (d.result.length == 1) {
-                navigate(`/app/policy/${d?.result[0]?.id}`)
+                navigate(`/app/policy/${d?.result[0]?.id}`, { state: { policyNumber: d?.result[0]?.policyNumber } })
             }
             setData(d.result);
         }).catch(() => {
             handleError
             setShowError(true);
         });
-    };    
+    };
 
     return (
         <div className="min-h-[calc(100vh-41px)] bg-gradient-to-br bColor relative overflow-hidden">
@@ -63,7 +63,7 @@ const PolicySearchPage = () => {
                     </p>
                 </div>
                 <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch}
-                    setHasSearched={setSearchTerm} setData={setData} setNotFound={setShowError} />
+                    setHasSearched={setHasSearched} setData={setData} setNotFound={setShowError} />
                 {searchTerm && data.length != 1 && data.length != 0 && <PolicyList data={data} />}
                 {data.length == 0 && <EmptyList hasSearched={hasSearched} searchQuery={searchTerm} />}
             </div>

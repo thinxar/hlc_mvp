@@ -8,10 +8,8 @@ import Tiff from '../../../../public/images/tiff.png';
 import { ServiceEndpoint } from '../../../config/ServiceEndpoint';
 
 const FileItemList = ({ file, isSelected, onClick, policyId }: any) => {
-
     const BASE_URL = `${window.location.origin}/api/palmyra`;
     const endPoint = StringFormat(ServiceEndpoint.policy.getFileApi, { policyId: policyId, fileId: file?.pdfFiles?.id });
-
     const fileUrl = BASE_URL + endPoint;
 
     const handleNavigate = () => {
@@ -19,9 +17,13 @@ const FileItemList = ({ file, isSelected, onClick, policyId }: any) => {
     }
 
     const getFileType = (type: any) => {
-        return <>{type === 'pdf' ? <img src={Pdf} className='w-7 h-7' /> : type === 'tiff' ? <img src={Tiff} className='w-8 h-8' />
+        return <>{type === 'application/pdf' ? <img src={Pdf} className='w-7 h-7' /> : type === 'image/tiff' ? <img src={Tiff} className='w-8 h-8' />
             : <img src={Image} className='w-7 h-7' />}</>
     }
+
+    // const getFileSize = (size: number) => {
+    //   return size;
+    // }
 
     return (
         <div
@@ -31,8 +33,7 @@ const FileItemList = ({ file, isSelected, onClick, policyId }: any) => {
                   ${isSelected
                     ? 'bg-slate-100 shadow-lg border-yellow-400'
                     : 'bg-white/92 hover:border-white/20 hover:bg-white/80 border-transparent'
-                }
-                  `}>
+                }`}>
             <div className="flex items-start space-x-1">
                 <div className={`p-1 rounded-lg bg-white/10`}>
                     {getFileType(file.pdfFiles?.type)}

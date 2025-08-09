@@ -20,6 +20,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched, compac
     const handleChange = (e: any) => {
         setSearchTerm(e.target.value)
         setData([]);
+        setHasSearched(false);
         setNotFound(false)
     }
 

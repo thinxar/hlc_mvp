@@ -5,6 +5,7 @@ import UTIF from 'utif'
 import styles from './styles.module.css'
 import { FaDownload } from 'react-icons/fa6'
 import { Loader } from '@mantine/core'
+import { toast } from 'react-toastify'
 
 export const TIFFViewer = forwardRef(function TiffFileViewer(
   { tiff, paginate = 'bottom', currentPage = 0, buttonColor = '#141414', overlays = [], onDocumentLoad = () => { },
@@ -106,7 +107,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
     try {
       const response = await fetch(tiff);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+         toast.error("Download failed")
       }
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
@@ -118,7 +119,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Failed to download TIFF:', error);
+       toast.error("Download failed")
     }
   }
 

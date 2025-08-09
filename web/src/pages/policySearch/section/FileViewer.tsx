@@ -1,7 +1,7 @@
 import { FaFile } from 'react-icons/fa6';
-import { PdfViewWithOverlay } from '../../../components/PdfViewWithOverlay';
-import { TIFFViewer } from '../../../components/TiffViewWithOverlay';
-import { ImageViewer } from '../../../components/ImageViewer';
+import { PdfViewWithOverlay } from '../../../components/viewer/PdfViewWithOverlay';
+import { TIFFViewer } from '../../../components/viewer/TiffViewWithOverlay';
+import { ImageViewer } from '../../../components/viewer/ImageViewer';
 
 const FileViewer = ({ file, fileUrl }: any) => {
 
@@ -34,7 +34,7 @@ const FileViewer = ({ file, fileUrl }: any) => {
             </div>
             <div className="p-3">
                 <div className="h-[calc(100vh-90px)] bg-white rounded-2xl flex items-center justify-center overflow-hidden">
-                    {file?.pdfFiles?.type === 'pdf' ? (
+                    {file?.pdfFiles?.type === 'application/pdf' ? (
                         <PdfViewWithOverlay
                             pdfUrlFromApi={fileUrl}
                             imageUrlFromApi={[]}
@@ -43,7 +43,7 @@ const FileViewer = ({ file, fileUrl }: any) => {
                             scale={0.7}
                             file={file}
                         />
-                    ) : file.pdfFiles?.type === 'tiff' ? (
+                    ) : file.pdfFiles?.type === 'image/tiff' ? (
                         <TIFFViewer
                             overlays={overlays}
                             tiff={fileUrl}

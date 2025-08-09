@@ -18,8 +18,8 @@ const ServiceEndpoint = {
     policy: {
         searchPolicyApi: '/policy',
         searchPolicyByIdApi: '/policy/{policyId}/file',
-        getFileApi: '/policy/{policyId}/file/{fileId}'
-        
+        getFileApi: '/policy/{policyId}/file/{fileId}',
+        fileUploadApi: '/policy/{policyId}/file'
     }
 }
 
