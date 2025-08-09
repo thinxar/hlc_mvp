@@ -97,7 +97,7 @@ public class AsyncFileService {
 
 		private final ResponseFileEmitter fileEmitter;
 		private Subscription s;
-		private static final int BUFFER_SIZE = 512 * 1024;
+		private static final int BUFFER_SIZE = 2 * 1024 * 1024;
 		private byte[] buffer = new byte[BUFFER_SIZE];
 		int bufferSize = 0;
 
