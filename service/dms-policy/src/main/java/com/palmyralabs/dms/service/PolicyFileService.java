@@ -1,5 +1,6 @@
 package com.palmyralabs.dms.service;
 
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -49,13 +50,25 @@ public class PolicyFileService {
 			PolicyEntity policy = policyOptional.get();			
 			String folder = String.valueOf(policy.getPolicyNumber());
 			PolicyFileUploadListener listener = new PolicyFileUploadListener();
-			
 			syncFileService.upload(folder, file.getOriginalFilename(), file, listener);
+			
+			String objectUrl = Paths.get(folder,  file.getOriginalFilename()).toString();
+			addToPolicyFileEntity(file,policyId,objectUrl);
 			
 			return "completed";
 		} else {
 			throw new DataNotFoundException("INV012", "Policy Record not found");
 		}
+	}
+	
+	private void addToPolicyFileEntity(MultipartFile file,Integer policyId,String objectUrl) {
+		PolicyFileEntity fileEntity = new PolicyFileEntity();
+		fileEntity.setFileName(file.getOriginalFilename());
+		fileEntity.setFileSize(file.getSize());
+		fileEntity.setFileType(file.getContentType());
+		fileEntity.setPolicyId((long)policyId);
+		fileEntity.setObjectUrl(objectUrl);
+		policyFileRepository.save(fileEntity);
 	}
 
 }

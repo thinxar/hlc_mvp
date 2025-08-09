@@ -1,7 +1,10 @@
 package com.palmyralabs.dms.jpa.entity;
 
+import com.palmyra.dms.jpa.config.AuditListener;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,8 +16,8 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "dms_policy_file")
+@EntityListeners(AuditListener.class)
 public class PolicyFileEntity implements Auditable{
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")

@@ -81,7 +81,9 @@ public class SyncFileServiceImpl {
 	@SneakyThrows
 	public void upload(String folder, String originalFilename, MultipartFile file, FileUploadListener listener) {
 		String key = Paths.get(folder,  originalFilename).toString();
-		PutObjectRequest request = PutObjectRequest.builder().bucket(props.getBucketName()).key(key).build();
+		PutObjectRequest request = PutObjectRequest.builder().bucket(props.getBucketName())
+		.contentType(file.getContentType())
+		.key(key).build();
 		RequestBody requestBody = RequestBody.fromInputStream(file.getInputStream(), file.getSize());
 		try {
 			PutObjectResponse response = client.putObject(request, requestBody);
