@@ -70,12 +70,19 @@ public class AsyncFileService {
 	private void asyncDownload(String key, ResponseFileEmitter emitter) {
 		try {
 			GetObjectRequest request = GetObjectRequest.builder().bucket(props.getBucketName()).key(key).build();
-
+			
 			CompletableFuture<ResponsePublisher<GetObjectResponse>> cplResponse = asyncClient.getObject(request,
 					AsyncResponseTransformer.toPublisher());
 
 			ResponsePublisher<GetObjectResponse> publisher = cplResponse.join();
 
+			GetObjectResponse responseMetadata = publisher.response();
+
+		    String contentType = responseMetadata.contentType();
+		    if (contentType == null || contentType.isEmpty()) {
+		          contentType = "application/octet-stream"; 
+		    }
+		    emitter.setContentType(contentType);
 			publisher.subscribe(new S3FileConsumer(emitter));
 		} catch (Exception t) {
 			log.error("Error while downloading file " + key, t);

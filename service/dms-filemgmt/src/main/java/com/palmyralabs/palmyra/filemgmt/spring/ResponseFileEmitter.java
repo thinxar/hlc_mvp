@@ -11,6 +11,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
 public class ResponseFileEmitter {
+	
+	@Nullable
+	private String contentType;
+	 
 	@Nullable
 	private final Long timeout;
 
@@ -66,11 +70,15 @@ public class ResponseFileEmitter {
 	/**
 	 * Return the configured timeout value, if any.
 	 */
+	
+	public synchronized void setContentType(String contentType) {
+	        this.contentType = contentType;
+	}
+	 
 	@Nullable
 	public Long getTimeout() {
 		return this.timeout;
 	}
-
 
 	synchronized void initialize(Handler handler) throws IOException {
 		this.handler = handler;
@@ -111,7 +119,10 @@ public class ResponseFileEmitter {
 	 * <p>The default implementation is empty.
 	 */
 	protected void extendResponse(ServerHttpResponse outputMessage) {
-	}
+        if (this.contentType != null && !this.contentType.isEmpty()) {
+            outputMessage.getHeaders().set("Content-Type", this.contentType);
+        }
+ }
 	
 	/**
 	 * Overloaded variant of {@link #send(Object)} that also accepts a MediaType
