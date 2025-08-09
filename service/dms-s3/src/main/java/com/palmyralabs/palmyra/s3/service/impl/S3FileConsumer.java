@@ -12,7 +12,7 @@ import lombok.SneakyThrows;
 
 @RequiredArgsConstructor
 class S3FileConsumer implements Subscriber<ByteBuffer> {
-	private static final int BUFFER_SIZE = 2 * 1024 * 1024;
+	private static final int BUFFER_SIZE = 64 * 1024;
 
 	private final ResponseFileEmitter fileEmitter;
 	private Subscription s;
@@ -30,14 +30,15 @@ class S3FileConsumer implements Subscriber<ByteBuffer> {
 	@SneakyThrows
 	public void onNext(ByteBuffer t) {
 		int l = t.capacity();
-		byte[] b = new byte[l];
-		t.get(b);
 
 		if (l + bufferSize >= BUFFER_SIZE) {
-			fileEmitter.send(buffer, bufferSize);
-			bufferSize = 0;
+			int remainingCapacity = BUFFER_SIZE - bufferSize;
+			t.get(buffer, bufferSize, remainingCapacity);
+			fileEmitter.send(buffer, BUFFER_SIZE);
+			bufferSize = l - remainingCapacity;
+			t.get(buffer, 0, bufferSize);
 		} else {
-			System.arraycopy(b, 0, buffer, bufferSize, l);
+			t.get(buffer, bufferSize, l);
 			bufferSize += l;
 		}
 	}
