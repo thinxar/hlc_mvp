@@ -9,15 +9,10 @@ interface Props {
   pageIndex: any[] | any;
   position: { x: number; y: number };
   scale?: number;
+  file?: any
 }
 
-const PdfViewWithOverlay = ({
-  pdfUrlFromApi,
-  imageUrlFromApi,
-  pageIndex,
-  position,
-  scale = 0.5,
-}: Props) => {
+const PdfViewWithOverlay = ({ pdfUrlFromApi, imageUrlFromApi, pageIndex, position, scale = 0.5, file }: Props) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
 
@@ -88,14 +83,12 @@ const PdfViewWithOverlay = ({
 
   return (
     <div className="mx-auto p-5 w-full h-full">
-      <div className="flex justify-end p-4">
+      <div className="flex justify-between p-4">
+        <div className="text-lg font-semibold">{file?.pdfFiles?.fileName}</div>
         {pdfBlob && (
-          <a
-            href={URL.createObjectURL(pdfBlob)}
-            download="overlayed-document.pdf"
-          >
-            <button
-              className="cursor-pointer text-white bg-sky-800 px-4 py-2 rounded-lg flex items-center space-x-2 transition duration-200">
+          <a href={URL.createObjectURL(pdfBlob)} download={file?.pdfFiles?.fileName}>
+            <button className="cursor-pointer text-white bg-sky-800 px-4 py-2 rounded-lg flex items-center
+              space-x-2 transition duration-200">
               <FaDownload className="w-4 h-4" />
               <span>Download</span>
             </button>

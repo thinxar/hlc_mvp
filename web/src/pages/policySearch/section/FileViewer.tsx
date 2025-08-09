@@ -1,8 +1,9 @@
 import { FaFile } from 'react-icons/fa6';
 import { PdfViewWithOverlay } from '../../../components/PdfViewWithOverlay';
 import { TIFFViewer } from '../../../components/TiffViewWithOverlay';
+import { ImageViewer } from '../../../components/ImageViewer';
 
-const PdfViewer = ({ file, fileUrl }: any) => {
+const FileViewer = ({ file, fileUrl }: any) => {
 
     if (!file) {
         return (
@@ -40,19 +41,19 @@ const PdfViewer = ({ file, fileUrl }: any) => {
                             pageIndex={[]}
                             position={{ x: 0, y: 0 }}
                             scale={0.7}
+                            file={file}
                         />
-                    ) : file.type === 'JPEG' ? (
-                        <img src={file.path} className='h-full ' />
-                    ) : (
+                    ) : file.pdfFiles?.type === 'tiff' ? (
                         <TIFFViewer
                             overlays={overlays}
-                            tiff="/images/multiple.tiff"
+                            tiff={fileUrl}
                             lang="tr"
                             paginate="ltr"
                             buttonColor="#141414"
-                            printable
-                            zoomable
+                            file={file}
                         />
+                    ) : (
+                        <ImageViewer endPoint={fileUrl} file={file} />
                     )}
                 </div>
             </div>
@@ -60,4 +61,4 @@ const PdfViewer = ({ file, fileUrl }: any) => {
     );
 };
 
-export { PdfViewer };
+export { FileViewer };

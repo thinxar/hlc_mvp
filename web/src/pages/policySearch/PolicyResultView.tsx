@@ -5,8 +5,8 @@ import { useParams } from 'react-router-dom';
 import { ServiceEndpoint } from '../../config/ServiceEndpoint';
 import { handleError } from '../../wire/ErrorHandler';
 import { useFormstore } from '../../wire/StoreFactory';
-import { PdfFileItem } from './section/PdfFileItem';
-import { PdfViewer } from './section/PdfViewer';
+import { FileItemList } from './section/FileItemList';
+import { FileViewer } from './section/FileViewer';
 
 const PolicyResultView = () => {
     const params = useParams();
@@ -39,8 +39,8 @@ const PolicyResultView = () => {
         }).catch(() => {
             handleError
         });
-    }, [])
-
+    }, [])    
+    
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[30%_70%] lg:grid-cols-[20%_80%] xl:grid-cols-[20%_80%] 2xl:grid-cols-[20%_80%]
         transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-40px)]">
@@ -53,8 +53,9 @@ const PolicyResultView = () => {
                 {data.length != 0 ?
                     <div className="space-y-3 overflow-y-auto">
                         {data.map((file: any, idx: number) => (
-                            <PdfFileItem
+                            <FileItemList
                                 key={idx}
+                                policyId={params?.policyId}
                                 file={file}
                                 isSelected={selectedFile?.pdfFiles?.fileName === file?.pdfFiles?.fileName}
                                 onClick={() => setSelectedFile(file)}
@@ -66,7 +67,7 @@ const PolicyResultView = () => {
             </div>
 
             <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-auto">
-                <PdfViewer file={selectedFile}  fileUrl={pdfUrl}/>
+                <FileViewer file={selectedFile} fileUrl={pdfUrl} />
             </div>
         </div>
     );
