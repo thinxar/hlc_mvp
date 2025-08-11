@@ -1,7 +1,8 @@
-import { Loader } from '@mantine/core';
+import { Button, Loader } from '@mantine/core';
 import { PDFDocument } from 'pdf-lib';
 import { useEffect, useState } from 'react';
 import { FaDownload } from 'react-icons/fa6';
+import { toast } from 'react-toastify';
 
 interface Props {
   pdfUrlFromApi: string;
@@ -14,12 +15,13 @@ interface Props {
 
 const PdfViewWithOverlay = ({ pdfUrlFromApi, imageUrlFromApi, pageIndex, position, scale = 0.5, file }: Props) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
+  const [loading, setLoading] = useState(false);
+  // const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
 
   useEffect(() => {
     const generatePdf = async () => {
       setPdfUrl(null);
-      setPdfBlob(null);
+      // setPdfBlob(null);
 
       try {
         const existingPdfBytes = await fetch(pdfUrlFromApi).then(res => {
@@ -72,7 +74,7 @@ const PdfViewWithOverlay = ({ pdfUrlFromApi, imageUrlFromApi, pageIndex, positio
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
         const blobUrl = URL.createObjectURL(blob);
         setPdfUrl(blobUrl);
-        setPdfBlob(blob);
+        // setPdfBlob(blob);
       } catch (err) {
         console.error("Error in generatePdf():", err);
       }
@@ -81,19 +83,86 @@ const PdfViewWithOverlay = ({ pdfUrlFromApi, imageUrlFromApi, pageIndex, positio
     generatePdf();
   }, [pdfUrlFromApi, imageUrlFromApi, pageIndex, position, scale]);
 
+  const handleDownload = async () => {
+    setLoading(true);
+
+    try {
+      const existingPdfBytes = await fetch(pdfUrlFromApi).then(res => {
+        if (!res.ok) throw new Error("Failed to fetch PDF");
+        return res.arrayBuffer();
+      });
+
+      const pdfDoc = await PDFDocument.load(existingPdfBytes);
+      const pages = pdfDoc.getPages();
+
+      if (imageUrlFromApi.length !== pageIndex.length) {
+        throw new Error("imageUrlFromApi and pageIndex must have the same length");
+      }
+
+      for (let i = 0; i < imageUrlFromApi.length; i++) {
+        const url = imageUrlFromApi[i];
+        const index = pageIndex[i];
+
+        if (index < 0 || index >= pages.length) {
+          throw new Error(`Invalid page index ${index}`);
+        }
+
+        const imageBytes = await fetch(url).then(res => {
+          if (!res.ok) throw new Error(`Failed to fetch image: ${url}`);
+          return res.arrayBuffer();
+        });
+
+        const ext = url.split('.').pop()?.toLowerCase();
+        let embeddedImage;
+
+        if (ext === 'jpg' || ext === 'jpeg') {
+          embeddedImage = await pdfDoc.embedJpg(imageBytes);
+        } else if (ext === 'png') {
+          embeddedImage = await pdfDoc.embedPng(imageBytes);
+        } else {
+          throw new Error(`Unsupported image format: ${ext}`);
+        }
+
+        const dims = embeddedImage.scale(scale);
+        const page = pages[index];
+
+        page.drawImage(embeddedImage, {
+          x: position.x,
+          y: position.y,
+          width: dims.width,
+          height: dims.height,
+        });
+      }
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = file?.pdfFiles?.fileName || 'enhanced.pdf';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error?.message || "Download failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
     <div className="mx-auto p-5 w-full h-full">
       <div className="flex justify-between p-4">
         <div className="text-lg font-semibold">{file?.pdfFiles?.fileName}</div>
-        {pdfBlob && (
-          <a href={URL.createObjectURL(pdfBlob)} download={file?.pdfFiles?.fileName}>
-            <button className="cursor-pointer text-white bg-sky-800 px-4 py-2 rounded-lg flex items-center
-              space-x-2 transition duration-200">
-              <FaDownload className="w-4 h-4" />
-              <span>Download</span>
-            </button>
-          </a>
-        )}
+        <Button onClick={handleDownload} loaderProps={{ type: 'dots' }}
+          loading={loading} className="filled-button"
+          leftSection={<FaDownload className="w-4 h-4" />}>
+          Download
+        </Button>
       </div>
       {pdfUrl != null ? (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">

@@ -68,7 +68,17 @@ const PolicyResultView = () => {
             topic.unsubscribe(handle);
         };
     }, []);
-    
+
+    const handleFileClick = (file: any) => {
+        if (selectedFile?.pdfFiles?.id === file?.pdfFiles?.id) {
+            setSelectedFile(null);
+            setTimeout(() => {
+                setSelectedFile(file);
+            }, 0);
+        } else {
+            setSelectedFile(file);
+        }
+    };
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[30%_70%] lg:grid-cols-[20%_80%] xl:grid-cols-[20%_80%] 2xl:grid-cols-[20%_80%]
         transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-40px)]">
@@ -76,7 +86,7 @@ const PolicyResultView = () => {
                 <div className="flex items-center gap-1.5 mb-4">
                     <IoChevronBackOutline onClick={() => { window.history.back() }} className="text-slate-300 cursor-pointer" />
                     <div className="text-lg font-bold text-slate-300">Policy Number: </div>
-                    <div className="text-xl text-slate-100 font-semibold">{data[0]?.id || location?.state?.policyNumber ||  '--'}</div>
+                    <div className="text-xl text-slate-100 font-semibold">{data[0]?.id || location?.state?.policyNumber || '--'}</div>
                 </div>
                 {data.length != 0 ?
                     <div className="space-y-3 overflow-y-auto">
@@ -86,7 +96,7 @@ const PolicyResultView = () => {
                                 policyId={params?.policyId}
                                 file={file}
                                 isSelected={selectedFile?.pdfFiles?.id === file?.pdfFiles?.id}
-                                onClick={() => setSelectedFile(file)}
+                                onClick={() => handleFileClick(file)}
                                 fileUrl={pdfUrl}
                             />
                         ))}
@@ -107,7 +117,7 @@ const PolicyResultView = () => {
 
             </div>
             <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-auto">
-                <FileViewer file={selectedFile} fileUrl={pdfUrl} />
+                <FileViewer file={selectedFile} fileUrl={pdfUrl} key={selectedFile?.pdfFiles?.id} />
             </div>
         </div>
     );

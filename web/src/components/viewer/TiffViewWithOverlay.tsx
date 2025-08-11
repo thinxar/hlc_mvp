@@ -4,7 +4,7 @@ import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState }
 import UTIF from 'utif'
 import styles from './styles.module.css'
 import { FaDownload } from 'react-icons/fa6'
-import { Loader } from '@mantine/core'
+import { Button, Loader } from '@mantine/core'
 import { toast } from 'react-toastify'
 
 export const TIFFViewer = forwardRef(function TiffFileViewer(
@@ -13,6 +13,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
 ) {
   const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
   const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const canvasRef: any = useRef(null);
   const paginateLTRRef: any = useRef(null);
@@ -105,9 +106,10 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
 
   const handleDownload = async () => {
     try {
+      setLoading(true);
       const response = await fetch(tiff);
       if (!response.ok) {
-         toast.error("Download failed")
+        toast.error("Download failed")
       }
       const blob = await response.blob();
       const url = URL.createObjectURL(blob);
@@ -119,7 +121,9 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (error) {
-       toast.error("Download failed")
+      toast.error("Download failed")
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -140,11 +144,11 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
     <div className="mx-auto p-5 w-full h-full">
       <div className="flex justify-between p-4">
         <div className="text-lg font-semibold">{file?.pdfFiles?.fileName}</div>
-        <button onClick={handleDownload}
-          className="cursor-pointer text-white bg-sky-800 px-4 py-2 rounded-lg flex items-center gap-2 space-x-2 transition duration-200">
-          <FaDownload className="w-4 h-4" />
+        <Button onClick={handleDownload} loaderProps={{ type: 'dots' }}
+          loading={loading} className="filled-button"
+          leftSection={<FaDownload className="w-4 h-4" />}>
           Download
-        </button>
+        </Button>
       </div>
 
       <div className={styles.tiffContainer} id="tiff-container" ref={ref} {...rest}>

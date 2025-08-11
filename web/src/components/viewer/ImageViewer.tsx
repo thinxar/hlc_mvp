@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 const ImageViewer = ({ endPoint, file }: any) => {
     const [loading, setLoading] = useState(false);
+    const [imageLoading, setImageLoading] = useState(true);
 
     const handleDownload = async () => {
         try {
@@ -43,13 +44,16 @@ const ImageViewer = ({ endPoint, file }: any) => {
             </div>
 
             <div className="flex justify-center">
-                <img src={endPoint} className="max-h-[80vh] object-contain" alt="preview" />
+                <img src={endPoint} className="max-h-[80vh] object-contain" alt="preview"
+                    onLoad={() => setImageLoading(false)}
+                    onError={() => { setImageLoading(false); toast.error("Failed to load image"); }}
+                    style={{ display: imageLoading ? "none" : "block" }} />
             </div>
 
-            <div className="flex flex-col items-center justify-center min-h-100 text-black">
+            {imageLoading && (<div className="flex flex-col items-center justify-center min-h-100 text-black">
                 <Loader type="bars" color="blue" />
                 <div className="mt-2 font-semibold text-lg">Loading...</div>
-            </div>
+            </div>)}
         </div>
     );
 };

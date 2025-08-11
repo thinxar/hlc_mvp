@@ -1,9 +1,9 @@
 import { FaFile } from 'react-icons/fa6';
+import { ImageViewer } from '../../../components/viewer/ImageViewer';
 import { PdfViewWithOverlay } from '../../../components/viewer/PdfViewWithOverlay';
 import { TIFFViewer } from '../../../components/viewer/TiffViewWithOverlay';
-import { ImageViewer } from '../../../components/viewer/ImageViewer';
 
-const FileViewer = ({ file, fileUrl }: any) => {
+const FileViewer = ({ file, fileUrl, key }: any) => {
 
     if (!file) {
         return (
@@ -17,20 +17,20 @@ const FileViewer = ({ file, fileUrl }: any) => {
         );
     }
 
-    const overlays = [
-        { page: 1, imageUrl: '/images/licseal.jpg', x: 100, y: 150, width: 100, height: 100 },
-        { page: 2, imageUrl: '/images/licseal.jpg', x: 100, y: 100, width: 250, height: 250 }
-    ];
+    // const overlays = [
+    //     { page: 1, imageUrl: '/images/licseal.jpg', x: 100, y: 150, width: 100, height: 100 },
+    //     { page: 2, imageUrl: '/images/licseal.jpg', x: 100, y: 100, width: 250, height: 250 }
+    // ];
 
     return (
-        <div className="h-auto overflow-hidden">
+        <div className="h-auto overflow-hidden" key={key}>
             <div className="p-3">
-                <div className="flex items-center justify-between">
+                {/* <div className="flex items-center justify-between">
                     <div>
                         <h3 className="font-semibold text-white">{file.name}</h3>
                         <p className="text-sm text-white/60">{file.fileName}</p>
                     </div>
-                </div>
+                </div> */}
             </div>
             <div className="p-3">
                 <div className="h-[calc(100vh-90px)] bg-white rounded-2xl flex items-center justify-center overflow-hidden">
@@ -45,7 +45,7 @@ const FileViewer = ({ file, fileUrl }: any) => {
                         />
                     ) : file.pdfFiles?.type === 'image/tiff' ? (
                         <TIFFViewer
-                            overlays={overlays}
+                            // overlays={overlays}
                             tiff={fileUrl}
                             lang="tr"
                             paginate="ltr"

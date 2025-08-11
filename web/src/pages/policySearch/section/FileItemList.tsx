@@ -21,19 +21,12 @@ const FileItemList = ({ file, isSelected, onClick, policyId }: any) => {
             : <img src={Image} className='w-7 h-7' />}</>
     }
 
-    // const getFileSize = (size: number) => {
-    //   return size;
-    // }
-
     return (
-        <div
-            onClick={onClick}
-            className={`cursor-pointer p-2 rounded-xl transition-all duration-400 ease-in border-l-[10px] 
-                min-h-[65px]
-                  ${isSelected
-                    ? 'bg-slate-100 shadow-lg border-yellow-400'
-                    : 'bg-white/92 hover:border-white/20 hover:bg-white/80 border-transparent'
-                }`}>
+        <div onClick={onClick} className={`cursor-pointer p-2 rounded-xl transition-all duration-400 ease-in border-l-[10px] 
+                min-h-[65px] ${isSelected
+                ? 'bg-slate-100 shadow-lg border-yellow-400'
+                : 'bg-white/92 hover:border-white/20 hover:bg-white/80 border-transparent'
+            }`}>
             <div className="flex items-start space-x-1">
                 <div className={`p-1 rounded-lg bg-white/10`}>
                     {getFileType(file.pdfFiles?.type)}
@@ -52,7 +45,9 @@ const FileItemList = ({ file, isSelected, onClick, policyId }: any) => {
                     <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
                         {file.pdfFiles?.size && <span className="flex items-center space-x-1">
                             <CiHardDrive className="w-3 h-3" />
-                            <span>{file.pdfFiles?.size} MB</span>
+                            {file.pdfFiles?.size < 1024 * 1024
+                                ? `${(file.pdfFiles?.size / 1024).toFixed(2)} KB`
+                                : `${(file.pdfFiles?.size / 1024 / 1024).toFixed(2)} MB`}
                         </span>}
                         {file.pdfFiles?.date && <span className="flex items-center space-x-1">
                             <CiCalendar className="w-3 h-3" />
