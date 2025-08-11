@@ -13,3 +13,11 @@ values
 
 INSERT INTO xpm_user (id,display_name, login_name, email, gender, dob, first_name, last_name, user_type, phone_number, flat_no, street, city, state, pincode, display_page, random, salt, created_by, created_on, last_upd_by, last_upd_on) VALUES
     (1,'Admin', 'admin@gmail.com','admin@gmail.com', 'M', '2023-09-04', 'Admin', 'Admin', 1,'9874839383','0/001', 'West Street', 'Chennai', '33', '600028', 1, NULL, 'ad', 'raja', current_timestamp, NULL, NULL);
+
+INSERT INTO mst_document_type (document, description,created_by,created_on)
+VALUES 
+  ('Policy', null,'admin',current_timestamp),
+  ('POA', null,'admin',current_timestamp),
+  ('POI', null,'admin',current_timestamp),
+  ('Proposal', null,'admin',current_timestamp),
+  ('Medical', null,'admin',current_timestamp);

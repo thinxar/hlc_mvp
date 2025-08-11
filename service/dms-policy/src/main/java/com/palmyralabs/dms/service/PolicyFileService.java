@@ -11,6 +11,7 @@ import com.palmyralabs.dms.jpa.entity.PolicyEntity;
 import com.palmyralabs.dms.jpa.entity.PolicyFileEntity;
 import com.palmyralabs.dms.jpa.repository.PolicyFileRepository;
 import com.palmyralabs.dms.jpa.repository.PolicyRepository;
+import com.palmyralabs.dms.model.PolicyFileModel;
 import com.palmyralabs.palmyra.base.exception.DataNotFoundException;
 import com.palmyralabs.palmyra.filemgmt.spring.ResponseFileEmitter;
 import com.palmyralabs.palmyra.s3.service.AsyncFileService;
@@ -43,32 +44,31 @@ public class PolicyFileService {
 		}
 	}
 
-	public String upload(Integer policyId, MultipartFile file) {
+	public String upload(MultipartFile file, PolicyFileModel fileModel) {
+		Integer policyId = fileModel.getPolicyId().getId();
 		Optional<PolicyEntity> policyOptional = policyRepository.findById(policyId);
 
 		if (policyOptional.isPresent()) {
-			PolicyEntity policy = policyOptional.get();			
+			PolicyEntity policy = policyOptional.get();
 			String folder = String.valueOf(policy.getPolicyNumber());
 			PolicyFileUploadListener listener = new PolicyFileUploadListener();
 			syncFileService.upload(folder, file.getOriginalFilename(), file, listener);
-			
-			String objectUrl = Paths.get(folder,  file.getOriginalFilename()).toString();
-			addToPolicyFileEntity(file,policyId,objectUrl);
-			
+
+			String objectUrl = Paths.get(folder, file.getOriginalFilename()).toString();
+
+			PolicyFileEntity fileEntity = new PolicyFileEntity();
+			fileEntity.setFileName(file.getOriginalFilename());
+			fileEntity.setFileSize(file.getSize());
+			fileEntity.setFileType(file.getContentType());
+			fileEntity.setPolicyId((long) policyId);
+			fileEntity.setObjectUrl(objectUrl);
+			fileEntity.setDocketType(fileModel.getDocketType().getId());
+			policyFileRepository.save(fileEntity);
+
 			return "completed";
 		} else {
 			throw new DataNotFoundException("INV012", "Policy Record not found");
 		}
-	}
-	
-	private void addToPolicyFileEntity(MultipartFile file,Integer policyId,String objectUrl) {
-		PolicyFileEntity fileEntity = new PolicyFileEntity();
-		fileEntity.setFileName(file.getOriginalFilename());
-		fileEntity.setFileSize(file.getSize());
-		fileEntity.setFileType(file.getContentType());
-		fileEntity.setPolicyId((long)policyId);
-		fileEntity.setObjectUrl(objectUrl);
-		policyFileRepository.save(fileEntity);
 	}
 
 }

@@ -26,15 +26,16 @@ CREATE TABLE dms_policy (
     CONSTRAINT dms_policy_pkey PRIMARY KEY (id)
 );
 
-CREATE TABLE dms_document_type (
-    id bigserial NOT NULL,
-    document char(2)  NOT NULL,
-    description varchar(250) null,
-    created_by varchar(128) NOT NULL,
-    last_upd_by varchar(128) NULL,
-    created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
-    CONSTRAINT dms_document_type_pkey PRIMARY KEY (id)
+CREATE TABLE mst_document_type (
+	id int8 DEFAULT nextval('dms.dms_document_type_id_seq'::regclass) NOT NULL,
+	"document" varchar(128) NOT NULL,
+	description varchar(250) NULL,
+	created_by varchar(128) NOT NULL,
+	last_upd_by varchar(128) NULL,
+	created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	CONSTRAINT dms_document_type_pkey PRIMARY KEY (id),
+	CONSTRAINT uq_mst_document_type_document UNIQUE (document)
 );
 
 CREATE TABLE dms_policy_file (

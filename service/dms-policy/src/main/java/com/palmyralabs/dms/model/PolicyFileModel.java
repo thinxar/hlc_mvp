@@ -1,6 +1,7 @@
 package com.palmyralabs.dms.model;
 
 
+import com.palmyralabs.dms.masterdata.model.DocumentTypeModel;
 import com.palmyralabs.palmyra.base.annotations.PalmyraField;
 import com.palmyralabs.palmyra.base.annotations.PalmyraType;
 import com.palmyralabs.palmyra.base.format.Mandatory;
@@ -13,7 +14,7 @@ import lombok.Setter;
 @PalmyraType(type = "DmsPolicyFile")
 public class PolicyFileModel {
 	@PalmyraField(keyField = true)
-	private Integer id;
+	private Long id;
 
 	@PalmyraField(mandatory = Mandatory.ALL)
 	private PolicyModel policyId;
@@ -28,7 +29,7 @@ public class PolicyFileModel {
 	private String fileType;
 
 	@PalmyraField
-	private Long docketType;
+	private DocumentTypeModel docketType;
 
 	@PalmyraField
 	private String objectUrl;
