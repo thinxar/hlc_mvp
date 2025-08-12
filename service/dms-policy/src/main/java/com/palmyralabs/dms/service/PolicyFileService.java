@@ -50,12 +50,14 @@ public class PolicyFileService {
 			PolicyEntity policy = policyOptional.get();
 			String folder = String.valueOf(policy.getPolicyNumber());
 			PolicyFileUploadListener listener = new PolicyFileUploadListener();
-			syncFileService.upload(folder, file.getOriginalFilename(), file, listener);
-
 			String objectUrl = Paths.get(folder, file.getOriginalFilename()).toString();
 
+			String fileName = checkObjectUrlAlreadyExists(objectUrl, file, folder);
+			objectUrl = Paths.get(folder, fileName).toString();
+
+			syncFileService.upload(folder, fileName, file, listener);
 			PolicyFileEntity fileEntity = new PolicyFileEntity();
-			fileEntity.setFileName(file.getOriginalFilename());
+			fileEntity.setFileName(fileName);
 			fileEntity.setFileSize(file.getSize());
 			fileEntity.setFileType(file.getContentType());
 			fileEntity.setPolicyId((long) policyId);
@@ -66,6 +68,31 @@ public class PolicyFileService {
 			return "completed";
 		} else {
 			throw new DataNotFoundException("INV012", "Policy Record not found");
+		}
+	}
+
+	private String checkObjectUrlAlreadyExists(String objectUrl, MultipartFile file, String folder) {
+		Optional<PolicyFileEntity> optPolicyFile = policyFileRepository.findByObjectUrl(objectUrl);
+		String fileName = file.getOriginalFilename();
+		if (optPolicyFile.isPresent()) {
+			String originalFileName = fileName;
+			String extension = "";
+			int dotIndex = originalFileName.lastIndexOf('.');
+			if (dotIndex != -1) {
+				fileName = originalFileName.substring(0, dotIndex);
+				extension = originalFileName.substring(dotIndex);
+			}
+			int count = 1;
+			String newFileName = "";
+			do {
+				newFileName = fileName + "_" + count + extension;
+				count++;
+				objectUrl = Paths.get(folder, newFileName).toString();
+				optPolicyFile = policyFileRepository.findByObjectUrl(objectUrl);
+			} while (optPolicyFile.isPresent());
+			return newFileName;
+		} else {
+			return fileName;
 		}
 	}
 
