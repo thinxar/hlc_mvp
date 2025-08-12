@@ -11,7 +11,6 @@ import com.palmyralabs.dms.jpa.entity.PolicyEntity;
 import com.palmyralabs.dms.jpa.entity.PolicyFileEntity;
 import com.palmyralabs.dms.jpa.repository.PolicyFileRepository;
 import com.palmyralabs.dms.jpa.repository.PolicyRepository;
-import com.palmyralabs.dms.model.PolicyFileModel;
 import com.palmyralabs.palmyra.base.exception.DataNotFoundException;
 import com.palmyralabs.palmyra.filemgmt.spring.ResponseFileEmitter;
 import com.palmyralabs.palmyra.s3.service.AsyncFileService;
@@ -44,8 +43,7 @@ public class PolicyFileService {
 		}
 	}
 
-	public String upload(MultipartFile file, PolicyFileModel fileModel) {
-		Integer policyId = fileModel.getPolicyId().getId();
+	public String upload(MultipartFile file, Integer policyId, Integer docketType) {
 		Optional<PolicyEntity> policyOptional = policyRepository.findById(policyId);
 
 		if (policyOptional.isPresent()) {
@@ -62,7 +60,7 @@ public class PolicyFileService {
 			fileEntity.setFileType(file.getContentType());
 			fileEntity.setPolicyId((long) policyId);
 			fileEntity.setObjectUrl(objectUrl);
-			fileEntity.setDocketType(fileModel.getDocketType().getId());
+			fileEntity.setDocketType((long) docketType);
 			policyFileRepository.save(fileEntity);
 
 			return "completed";
