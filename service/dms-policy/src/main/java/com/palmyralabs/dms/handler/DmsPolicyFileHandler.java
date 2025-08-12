@@ -16,11 +16,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @CrudMapping(mapping = "/policy/{policyId}/file", type = PolicyFileModel.class)
 public class DmsPolicyFileHandler extends AbstractHandler implements QueryHandler {
-
+	
 	@Override
 	public QueryFilter applyQueryFilter(QueryFilter filter, HandlerContext ctx) {
-		Integer PolicyNumber =Integer.parseInt(ctx.getParams().get("policyId")) ;
-		filter.addCondition(Criteria.EQ("policyId", PolicyNumber));
-		return QueryHandler.super.applyQueryFilter(filter, ctx);
+	    Integer policyId = Integer.parseInt(ctx.getParams().get("policyId"));
+	    filter.addCondition(Criteria.EQ("policyId", policyId));
+	    filter.addOrderAsc("docketType");
+	    return QueryHandler.super.applyQueryFilter(filter, ctx);
 	}
+	
 }
