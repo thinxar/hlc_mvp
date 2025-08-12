@@ -27,10 +27,10 @@ public class PolicyFileController {
 		return policyService.download(policyId, fileId);
 	}
 
-	@PostMapping("/{policyId}/{docketType}/file")
+	@PostMapping("/{policyId}/docketType/{docketTypeId}/file")
 	public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
-			@PathVariable("policyId") Integer policyId, @PathVariable("docketType") Integer docketType) {
-		String result = policyService.upload(file, policyId, docketType);
+			@PathVariable("policyId") Integer policyId, @PathVariable("docketTypeId") Integer docketTypeId) {
+		String result = policyService.upload(file, policyId,docketTypeId);
 		return ResponseEntity.ok(result);
 	}
 

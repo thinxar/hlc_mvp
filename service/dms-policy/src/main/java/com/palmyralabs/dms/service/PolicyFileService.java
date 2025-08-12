@@ -43,7 +43,7 @@ public class PolicyFileService {
 		}
 	}
 
-	public String upload(MultipartFile file, Integer policyId, Integer docketType) {
+	public String upload(MultipartFile file, Integer policyId, Integer docketTypeId) {
 		Optional<PolicyEntity> policyOptional = policyRepository.findById(policyId);
 
 		if (policyOptional.isPresent()) {
@@ -60,7 +60,7 @@ public class PolicyFileService {
 			fileEntity.setFileType(file.getContentType());
 			fileEntity.setPolicyId((long) policyId);
 			fileEntity.setObjectUrl(objectUrl);
-			fileEntity.setDocketType((long) docketType);
+			fileEntity.setDocketType((long) docketTypeId);
 			policyFileRepository.save(fileEntity);
 
 			return "completed";
