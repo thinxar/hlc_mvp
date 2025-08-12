@@ -15,11 +15,52 @@ const ServiceEndpoint = {
         login: '/api/auth/login',
         logout: '/auth/logout',
     },
+    password: {
+        resetPwd: "",
+        changePwd: ""
+    },
+    aclmgmt: {
+        group: '',
+        menuApi: {
+            aclPutMenuEditorApi: '',
+            aclMenuEditorApi: '',
+            lookup: {
+                menuApi: ''
+            }
+        },
+        groupsByUser: {
+            restApi: '',
+            deleteApi: '',
+            lookup: {
+                restApi: ''
+            }
+        },
+        usersByGroup: {
+            restApi: '/admin/acl/user/{userId}/groups',
+            deleteApi: '/admin/acl/user/{userId}/group/{groupId}',
+            lookup: {
+                restApi: '/admin/acl/user/{userId}/groups/lookup'
+            }
+        },
+    },
+    userManagement: {
+        users: {
+            restApi: '/userManagement'
+        },
+        usersById: {
+            restApi: '/userManagement/{id}'
+        }
+    },
     policy: {
         searchPolicyApi: '/policy',
         searchPolicyByIdApi: '/policy/{policyId}/file',
         getFileApi: '/policy/{policyId}/file/{fileId}',
-        fileUploadApi: '/policy/{policyId}/file'
+        fileUploadApi: '/policy/{policyId}/docketType/{docketTypeId}/file'
+    },
+    lookup: {
+        docketType: '/masterdata/docketType',
+        userType: '',
+        designation: ''
     }
 }
 

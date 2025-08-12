@@ -1,9 +1,8 @@
-import { Modal } from '@mantine/core';
+import { Accordion, Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { StringFormat, topic } from '@palmyralabs/ts-utils';
 import { useEffect, useState } from 'react';
 import { FaUpload } from "react-icons/fa";
-import { IoChevronBackOutline } from 'react-icons/io5';
 import { useLocation, useParams } from 'react-router-dom';
 import { FileDropZone } from '../../components/fileUpload/FileDropZone';
 import { ServiceEndpoint } from '../../config/ServiceEndpoint';
@@ -11,6 +10,7 @@ import { handleError } from '../../wire/ErrorHandler';
 import { useFormstore } from '../../wire/StoreFactory';
 import { FileItemList } from './section/FileItemList';
 import { FileViewer } from './section/FileViewer';
+import { PolicyData } from './section/PolicyData';
 
 const PolicyResultView = () => {
     const params = useParams();
@@ -19,13 +19,12 @@ const PolicyResultView = () => {
     const [selectedFile, setSelectedFile] = useState<any>(null);
     const [opened, { open, close }] = useDisclosure(false);
     const [_uploadedFile, setUploadedFile] = useState<any[]>([]);
-    const endpoint = StringFormat(ServiceEndpoint.policy.searchPolicyByIdApi, { policyId: params?.policyId });
-
+    const policyData = location?.state?.policyData;
     const BASE_URL = `${window.location.origin}/api/palmyra`;
-    const endPoint = StringFormat(ServiceEndpoint.policy.getFileApi, { policyId: params?.policyId, fileId: selectedFile?.pdfFiles?.id });
 
+    const endpoint = StringFormat(ServiceEndpoint.policy.searchPolicyByIdApi, { policyId: params?.policyId });
+    const endPoint = StringFormat(ServiceEndpoint.policy.getFileApi, { policyId: params?.policyId, fileId: selectedFile?.pdfFiles?.id });
     const pdfUrl = BASE_URL + endPoint;
-    const fileUploadEndPoint = StringFormat(ServiceEndpoint.policy.fileUploadApi, { policyId: params?.policyId })
 
     const handleFetch = () => {
         useFormstore(endpoint).get({}).then((d) => {
@@ -38,6 +37,7 @@ const PolicyResultView = () => {
                     size: item.fileSize,
                     date: item.date,
                     type: item.fileType,
+                    docketType: item.docketType,
                     path: item.path || ''
                 }
             }));
@@ -63,7 +63,6 @@ const PolicyResultView = () => {
                 handleFetch()
             }
         });
-
         return () => {
             topic.unsubscribe(handle);
         };
@@ -79,47 +78,71 @@ const PolicyResultView = () => {
             setSelectedFile(file);
         }
     };
+
+    const groupedByDocketType = data.reduce((acc: any, item: any) => {
+        const type = item.pdfFiles?.docketType?.document || '--';
+        if (!acc[type]) {
+            acc[type] = [];
+        }
+        acc[type].push(item);
+        return acc;
+    }, {});
+
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[30%_70%] lg:grid-cols-[20%_80%] xl:grid-cols-[20%_80%] 2xl:grid-cols-[20%_80%]
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[40%_60%] lg:grid-cols-[20%_80%] xl:grid-cols-[20%_80%] 2xl:grid-cols-[20%_80%]
         transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-40px)]">
-            <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-3 flex flex-col overflow-auto">
-                <div className="flex items-center gap-1.5 mb-4">
-                    <IoChevronBackOutline onClick={() => { window.history.back() }} className="text-slate-300 cursor-pointer" />
-                    <div className="text-lg font-bold text-slate-300">Policy Number: </div>
-                    <div className="text-xl text-slate-100 font-semibold">{data[0]?.id || location?.state?.policyNumber || '--'}</div>
+            <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-3 flex flex-col overflow-hidden">
+                <div>
+                    <PolicyData data={policyData} />
                 </div>
-                {data.length != 0 ?
-                    <div className="space-y-3 overflow-y-auto">
-                        {data.map((file: any, idx: number) => (
-                            <FileItemList
-                                key={idx}
-                                policyId={params?.policyId}
-                                file={file}
-                                isSelected={selectedFile?.pdfFiles?.id === file?.pdfFiles?.id}
-                                onClick={() => handleFileClick(file)}
-                                fileUrl={pdfUrl}
-                            />
-                        ))}
-                    </div>
-                    : <div className='text-white grid place-items-center'>No File Found</div>}
-                <div className='w-full p-7'>
-                    <button className='fixed bottom-4 left-1/2 transform -translate-x-1/2 cursor-pointer text-sm font-medium bg-yellow-400 text-sky-800 px-4 py-2
-                        flex gap-2 items-center rounded-sm transition duration-300 hover:scale-105 shadow-lg hover:shadow-xl'
-                        onClick={open}>
-                        <FaUpload fontSize={14} />Upload
+                <div className="flex-1 overflow-hidden mt-2">
+                    {data.length !== 0 ? (
+                        <Accordion variant="filled" radius="md" className="h-full flex flex-col">
+                            <div className="space-y-3 flex-1 overflow-auto pr-2">
+                                {Object.keys(groupedByDocketType).map((docketType) => (
+                                    <Accordion.Item key={docketType} value={docketType}>
+                                        <div className='bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-4'>
+                                            <Accordion.Control>
+                                                <div className='text-white mb-2'>{docketType}</div>
+                                            </Accordion.Control>
+                                            <Accordion.Panel>
+                                                {/* <div className="max-h-[300px] overflow-auto pr-2"> */}
+                                                <div>
+                                                    {groupedByDocketType[docketType].map((file: any) => (
+                                                        <FileItemList
+                                                            key={file.pdfFiles.id}
+                                                            policyId={params?.policyId}
+                                                            file={file}
+                                                            isSelected={selectedFile?.pdfFiles?.id === file?.pdfFiles?.id}
+                                                            onClick={() => handleFileClick(file)}
+                                                            fileUrl={pdfUrl}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </Accordion.Panel>
+                                        </div>
+                                    </Accordion.Item>
+                                ))}
+                            </div>
+                        </Accordion>
+                    ) : (
+                        <div className='text-white grid place-items-center flex-1'>No File Found</div>
+                    )}
+                </div>
+                <div className='w-full p-7 bg-transparent'>
+                    <button onClick={open} className='fixed bottom-4 left-1/2 transform -translate-x-1/2 cursor-pointer text-sm font-medium
+                    bg-yellow-400 text-sky-800 px-4 py-2 flex gap-2 items-center rounded-sm transition duration-300 hover:scale-105 shadow-lg hover:shadow-xl'>
+                        <FaUpload fontSize={14} /> Upload
                     </button>
                 </div>
-
-                <Modal opened={opened} onClose={close} onKeyDown={handleKeyClose} centered
-                    size={"40%"} zIndex={999} title="File Upload">
-                    <FileDropZone onClose={close} setUploadedFile={setUploadedFile} endPoint={fileUploadEndPoint} />
+                <Modal opened={opened} onClose={close} onKeyDown={handleKeyClose} centered size={"40%"} title="File Upload">
+                    <FileDropZone onClose={close} setUploadedFile={setUploadedFile} policyId={params?.policyId} />
                 </Modal>
-
-            </div>
+            </div >
             <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-auto">
                 <FileViewer file={selectedFile} fileUrl={pdfUrl} key={selectedFile?.pdfFiles?.id} />
             </div>
-        </div>
+        </div >
     );
 }
 

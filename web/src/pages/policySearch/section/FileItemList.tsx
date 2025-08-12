@@ -11,7 +11,7 @@ const FileItemList = ({ file, isSelected, onClick, policyId }: any) => {
     const BASE_URL = `${window.location.origin}/api/palmyra`;
     const endPoint = StringFormat(ServiceEndpoint.policy.getFileApi, { policyId: policyId, fileId: file?.pdfFiles?.id });
     const fileUrl = BASE_URL + endPoint;
-
+    
     const handleNavigate = () => {
         window.open(fileUrl, '_blank');
     }
@@ -23,14 +23,11 @@ const FileItemList = ({ file, isSelected, onClick, policyId }: any) => {
 
     return (
         <div onClick={onClick} className={`cursor-pointer p-2 rounded-xl transition-all duration-400 ease-in border-l-[10px] 
-                min-h-[65px] ${isSelected
+                min-h-[65px] mt-2 ${isSelected
                 ? 'bg-slate-100 shadow-lg border-yellow-400'
                 : 'bg-white/92 hover:border-white/20 hover:bg-white/80 border-transparent'
             }`}>
             <div className="flex items-start space-x-1">
-                <div className={`p-1 rounded-lg bg-white/10`}>
-                    {getFileType(file.pdfFiles?.type)}
-                </div>
                 <div className="flex-1 min-w-0">
                     <div className='flex items-center justify-between'>
                         <h3 className="font-semibold text-black truncate">{file?.pdfFiles?.fileName}</h3>
@@ -54,6 +51,9 @@ const FileItemList = ({ file, isSelected, onClick, policyId }: any) => {
                             <span>{file.date}</span>
                         </span>}
                     </div>
+                </div>
+                <div className={`p-1 rounded-lg bg-white/10`}>
+                    {getFileType(file.pdfFiles?.type)}
                 </div>
             </div>
         </div>

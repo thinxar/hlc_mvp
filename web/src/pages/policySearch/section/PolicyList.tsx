@@ -5,13 +5,9 @@ import { useNavigate } from "react-router-dom";
 const PolicyList = ({ data }: any) => {
     const navigate = useNavigate();
 
-    const handleNavigate = (policyId: number) => {
-        navigate(`/app/policy/${policyId}`)
-    }
-
-    return (<div className="max-w-7xl mx-auto p-8 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-xl rounded-3xl shadow-xl h-[700px] overflow-y-auto">
+    return (<div className="max-w-7xl mx-auto p-8 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-xl rounded-3xl shadow-xl h-full overflow-y-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {data.map((file: any) => (
+            {data.map((file: any, index: number) => (
                 <div key={file.id} className="group bg-white/60 hover:bg-white/80 transition-all
                     duration-300 ease-in-out rounded-2xl shadow-md hover:shadow-2xl border border-white/50 backdrop-blur-md p-6">
                     <div className="mb-4">
@@ -45,7 +41,7 @@ const PolicyList = ({ data }: any) => {
 
                     <div className="mt-4 float-right">
                         <button className="cursor-pointer text-sm font-medium text-sky-800 hover:underline flex gap-2 items-center"
-                            onClick={() => handleNavigate(file.id)}>
+                            onClick={() => navigate(`/app/policy/${file?.id}`, { state: { policyData: data[index] } })}>
                             View Details <BiRightArrowAlt fontSize={20} />
                         </button>
                     </div>

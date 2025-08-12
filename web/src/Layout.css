@@ -2,3 +2,1031 @@
   display: none !important;
   z-index: -9999;
 }
+
+:root {
+  --primary-fontsize: 1.5em;
+  --secondary-fontsize: 0.9em;
+  --left-menu-fontsize: 1.01em;
+  --card-box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+/* -- dark mode icon */
+.dark-mode-toggle-icon {
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 10px;
+  transition: transform 0.3s ease, color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  color: var(--primary-text-color);
+}
+
+.sun-icon {
+  color: rgb(241, 184, 13);
+}
+
+.scatter-dash-filter-container .py-field-group-container {
+  gap: 0px !important;
+  justify-content: end !important;
+}
+
+.dark-mode-toggle-icon svg {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.mantine-Checkbox-label {
+  word-break: normal;
+  word-wrap: break-word;
+}
+
+.mobile-menu .mantine-List-itemWrapper {
+  width: 100%;
+}
+
+.mobile-menu .mantine-List-itemLabel {
+  width: 100%;
+}
+
+.noc-action-btn {
+  transition: all 0.3s ease-in-out;
+  background-color: rgb(255, 106, 0);
+}
+
+.noc-action-btn:hover {
+  transform: scale(1.05);
+  background-color: rgb(255, 106, 0);
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.noc-req-grid .py-action-button {
+  letter-spacing: 1px;
+  background-color: #fff;
+  border: none;
+  border-radius: 45px;
+  box-shadow: 0px 5px 20px rgba(255, 106, 0, 0.4) !important;
+  transition: all 0.3s ease 0s;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  outline: none;
+  font-size: larger !important;
+  background-color: rgb(255, 106, 0) !important;
+}
+
+.noc-req-grid .py-action-button:hover {
+  background-color: rgb(255, 106, 0) !important;
+  box-shadow: 0px 5px 20px rgba(255, 106, 0, 0.4) !important;
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.grid-container .mantine-Input-input,
+.dashboard-filter-container .mantine-Input-input,
+.qs-container .mantine-Input-input {
+  border-radius: 50px;
+}
+
+.modal-qs-container .mantine-Modal-content {
+  min-height: 100% !important;
+}
+
+.apexcharts-title-text {
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.dashboard-filter-container .py-field-group-container {
+  gap: 0px;
+}
+
+.dashboard-filter-container .py-field-group-container-3columns .py-form-field-container {
+  width: calc(32% - 0px) !important;
+}
+
+.grid-status-col-field {
+  text-align: center;
+  padding: 5px 10px;
+  border-radius: 50px;
+  max-width: 140px;
+}
+
+.py-selectable-pagination-left-content-container {
+  font-size: 15px;
+  color: white;
+}
+
+.py-selectable-pagination-select-field>div {
+  width: 60px !important;
+}
+
+.mantine-Checkbox-input {
+  cursor: pointer;
+}
+
+.mantine-Popover-dropdown {
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  z-index: 9999 !important;
+}
+
+.main-layout,
+.tab-content-animate {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.mantine-Tabs-tabLabel {
+  width: 100%;
+}
+
+body {
+  /* background-color: #bbcee4; */
+  background-color: white;
+}
+
+.py-datagrid-header-right-container {
+  /* align-self: flex-start; */
+}
+
+.tab-view .mantine-Tabs-tab {
+  border-radius: 0 !important;
+  border-left: 0;
+  border-top: 0;
+}
+
+.mantine-Tabs-tab {
+  border-radius: 50px 0 0 50px;
+  transition: all 0.3s ease-in-out;
+  color: rgba(var(--dark-bgcolor-rgb), 0.65);
+}
+
+.mantine-Tabs-tab:hover {
+  color: rgba(var(--dark-bgcolor-rgb), 1);
+}
+
+.m_8fb7ebe7[readonly][aria-haspopup] {
+  pointer-events: all;
+}
+
+.mantine-Tabs-tabSection {
+  min-width: 20px;
+}
+
+pre {
+  font-family: unset;
+}
+
+.noc-layout .mantine-Tabs-list::before {
+  border-color: rgba(var(--dark-color-rgb), 0.15);
+}
+
+.noc-layout .mantine-Tabs-tab[data-active] {
+  border-color: rgba(var(--dark-color-rgb), 0.15);
+  border-right-color: white;
+  color: rgba(var(--dark-bgcolor-rgb), 1);
+}
+
+
+.status-view-bar {
+  border-radius: 50px;
+  padding: 0 8px;
+}
+
+.userMgmt .user-icon {
+  color: rgb(228, 86, 154);
+}
+
+.scroll-top {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 0;
+  right: 0;
+  margin: 30px 50px;
+  width: 40px;
+  height: 40px;
+  background-color: rgb(222, 126, 148);
+  color: var(--secondary-text-color);
+  text-align: center;
+  font-size: 1.5em;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  transform: translateY(10px);
+  opacity: 0;
+  transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+}
+
+.scroll-top-show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.text-view-value-filled,
+.text-view-value-outlined {
+  margin: 10px auto 5px auto;
+}
+
+.gutter-container {
+  /* width: 150ch; */
+  width: 100%;
+  max-width: calc((100vw) * 0.7);
+  margin: 0 auto;
+  transition: all 0.3s ease-in-out;
+}
+
+.text-view-value-filled {
+  min-height: auto !important;
+  word-break: break-word;
+  word-wrap: break-word;
+}
+
+.grid-action-link {
+  color: rgba(var(--primary-color-rgb), 1);
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.grid-action-link:hover {
+  color: rgba(var(--primary-color-rgb), 1);
+  text-decoration: underline;
+}
+
+/* -- mantine -- */
+.mantine-InputWrapper-root {
+  padding: 7px 0;
+  width: 100%;
+}
+
+/* -- bootstrap -- */
+.col {
+  transition: all 0.5s ease-in-out;
+}
+
+/* -- py -- */
+.py-grid-data-row-even {
+  background-color: rgba(var(--dark-color-rgb), 0.02);
+}
+
+.py-grid-data-row:hover {
+  background-color: rgba(var(--dark-color-rgb), 0.04);
+}
+
+.py-grid-header {
+  background-color: transparent !important;
+  color: white !important;
+}
+
+.py-grid-header tr td {
+  z-index: -999;
+  position: relative;
+}
+
+.py-baseGrid-header-cell,
+.py-grid-data-cell {
+  /* border-right: 1px solid rgba(140, 138, 138, 0.3); */
+  border-right: 1px solid var(--border-color);
+  color: white;
+}
+
+.py-form-group-title {
+  padding: 10px;
+  font-size: 1.2em;
+  border-radius: 10px;
+}
+
+/* -- card -- */
+.card-header-container {
+  padding: 10px !important;
+}
+
+/* --dashboard-- */
+.py-baseGrid {
+  /* border: 1px solid var(--border-color); */
+}
+
+.grid-title {
+  font-weight: 600;
+  font-size: 1.1em;
+  padding-bottom: 10px;
+}
+
+.dash-cards {
+  background-color: var(--default-bgcolor);
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 10px 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+  padding: 10px;
+}
+
+.dash-filter-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1em;
+}
+
+.dash-filter-container .header-text {
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.fl-right-section {
+  display: flex;
+  align-items: center;
+}
+
+/* -- card -- */
+.card-view-x4 {
+  margin: 0;
+}
+
+.card-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2em;
+}
+
+.card-header-text {
+  font-weight: bold;
+}
+
+.card-section {
+  width: calc(50% - 10px);
+  min-width: calc(300px - 20px);
+  border-radius: 5px;
+  background-color: rgba(var(--default-color-rgb), 1);
+  /* box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px; */
+  border: 1px solid var(--border-color);
+  align-self: normal;
+}
+
+.card-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5em;
+  border-radius: 5px 5px 0 0;
+  border-bottom: 1px solid var(--border-color);
+  /* background-color: rgba(var(--primary-color-rgb), 0.15); */
+}
+
+.card-section-content,
+.card-section-content-2col {
+  padding: 0 1em 1em 1em;
+}
+
+.card-section-content-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 25px;
+}
+
+.card-section-content-2col .card-field.left {
+  grid-column: 1;
+}
+
+.card-section-content-2col .card-field.right {
+  grid-column: 2;
+}
+
+.card-section-content-2col .card-field {
+  width: calc(100%);
+}
+
+.card-field {
+  /* display: flex;
+    align-items: center; */
+  /* gap: 20px; */
+  margin-top: 1em;
+}
+
+.card-field .field-label {
+  /* width: 50%; */
+  color: rgba(var(--dark-bgcolor-rgb), 0.65);
+}
+
+.card-field .field-data {
+  /* width: 50%; */
+  /* padding-left: 10px; */
+  background-color: rgba(var(--dark-bgcolor-rgb), 0.025);
+  padding: 3px 10px;
+  border-radius: 5px;
+}
+
+/* --grid style-- */
+.py-dropdown-button {
+  border: 1px solid white !important;
+}
+
+/* -- Mantine Css -- */
+.mantine-Drawer-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.mantine-Pagination-control {
+  border-radius: 10px !important;
+  font-size: 14px;
+  border: none;
+  height: 28px;
+  min-width: 30px;
+}
+
+.mantine-Pagination-control:where([data-active]),
+.mantine-Pagination-control:where([data-active]):hover {
+  background-color: rgba(var(--primary-color-rgb), 0.125);
+  color: rgba(var(--dark-bgcolor-rgb), 1);
+  border-color: var(--border-color);
+}
+
+.mantine-Button-section {
+  display: block;
+}
+
+.MuiDrawer-docked {
+  z-index: 1 !important;
+}
+
+.mantine-Modal-title,
+.mantine-Drawer-title {
+  font-weight: bold !important;
+  font-size: 18px !important;
+}
+
+.py-baseGrid-header-cell .mantine-Table-td {
+  letter-spacing: initial;
+  cursor: pointer;
+  /* color: black !important; */
+}
+
+.py-dataGrid-header-text {
+  color: black !important;
+}
+
+.py-data-grid-table {
+  border: 1px solid var(--border-color) !important;
+  border-radius: 8px;
+  max-height: 73vh;
+}
+
+.py-form-field-label {
+  color: rgb(108, 107, 107);
+}
+
+/* --page not found-- */
+
+.page-not-found-container {
+  height: calc(100vh - 120px);
+  /* top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0; */
+  text-align: center;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.page-not-found-container .btn-container {
+  margin-top: 1em;
+}
+
+.error-404 {
+  font-size: 3.5vw;
+  color: rgba(var(--dark-bgcolor-rgb), 0.35);
+}
+
+.error-404-text {
+  font-size: 1.5vw;
+  color: rgba(var(--dark-bgcolor-rgb), 0.55);
+}
+
+.text-view-label {
+  text-align: left;
+  color: rgb(229, 229, 229) !important;
+}
+
+.text-view-field-container {
+  width: 100%;
+}
+
+.text-view-value {
+  margin-top: 5px;
+}
+
+.acl-menu-header {
+  font-size: 1.2em;
+}
+
+.grid-container,
+.grid-container-mt {
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 10px;
+  /* background-color: #f8f8f8; */
+  /* box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px; */
+}
+
+.py-datagrid-title {
+  color: white
+}
+
+.grid-container-mt {
+  margin-top: 1em;
+  padding: 1em;
+}
+
+.base-grid-container {
+  padding: 10px;
+}
+
+.add-icon {
+  font-size: 24px !important;
+}
+
+/* text style h series */
+.h2 {
+  font-size: 1.5em;
+}
+
+.h3 {
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.h4 {
+  font-size: 0.8em;
+  color: var(--dark-bgcolor);
+  font-weight: bold;
+}
+
+/* --Sweet Alert -- */
+.swal2-timer-progress-bar {
+  background-color: var(--error-color) !important;
+}
+
+.custom-header {
+  background-color: #007bff;
+  color: var(--default-bgcolor);
+  padding: 10px;
+  text-align: start;
+  font-size: 22px;
+  font-family: sans-serif;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+
+.custom-text {
+  margin-top: 10px;
+  font-size: 20px;
+  color: #474747 !important;
+  font-family: sans-serif;
+}
+
+.custom-btn {
+  margin: 0;
+  background-color: #007bff !important;
+  color: var(--default-bgcolor);
+}
+
+.custom-icon {
+  color: var(--default-bgcolor);
+}
+
+.custom-width {
+  width: 400px !important;
+}
+
+.grid-renderer-container .grid-footer .MuiInput-input.MuiSelect-select,
+.card-pagination .MuiInput-input.MuiSelect-select {
+  border: 1.2px solid #80808047;
+  padding: 5px 0px 5px 5px;
+  padding-right: 25px !important;
+  border-radius: 2px;
+  background-color: var(--default-bgcolor);
+}
+
+.filled-button:active,
+.secondary-filled-button:active,
+.cancel-filled-button:active,
+.default-filled-button:active {
+  transform: scale(0.98);
+}
+
+
+.status-button,
+.py-filled-button,
+.py-reset-button,
+.py-action-button,
+.py-filter-button,
+.py-dropdown-button,
+.filled-button,
+.py-action-button,
+.py-disabled-button,
+.py-cancel-filled-button,
+.py-delt-filled-button,
+.secondary-filled-button,
+.remove-filled-button,
+.py-delt-filled-button,
+.outlined-button,
+.cancel-filled-button,
+.cancel-oulined-button,
+.default-filled-button {
+  font-weight: normal;
+  border-radius: 50px !important;
+}
+
+.py-filled-button,
+.py-action-button,
+.py-filter-button {
+  background-color: rgba(2, 77, 148, 0.9);
+}
+
+.py-filled-button-disabled,
+.py-action-button-disabled {
+  border-color: white !important;
+  background-color: rgba(var(--dark-bgcolor-rgb), 0.03) !important;
+}
+
+.filled-button:hover,
+.py-filled-button:hover,
+.py-action-button:hover,
+.py-filter-button:hover {
+  background-color: rgba(var(--primary-color-rgb), 1);
+}
+
+.py-dropdown-button,
+.py-dropdown-button:hover {
+  background-color: rgba(var(--default-color-rgb), 0.95);
+  color: rgba(var(--dark-bgcolor-rgb), 1);
+}
+
+.py-reset-button,
+.py-reset-button:hover {
+  background-color: rgba(var(--primary-color-rgb), 0.15);
+  color: rgba(var(--primary-color-rgb), 1);
+}
+
+.py-cancel-filled-button,
+.py-cancel-filled-button:hover {
+  background-color: var(--cancel-btn-bgcolor);
+  color: var(--cancel-btn-color);
+}
+
+.py-delt-filled-button,
+.py-delt-filled-button:hover {
+  background-color: var(--delete-btn-color);
+  color: var(--default-color);
+}
+
+/* .status-button,
+.filled-button,
+.py-action-button {
+    gap: 5px !important;
+    font-size: 14px !important;
+    text-transform: none !important;
+    cursor: pointer;
+    background-color: rgba(var(--primary-color-rgb), 0.95);
+} */
+
+.secondary-filled-button {
+  gap: 5px !important;
+  font-size: 14px !important;
+  cursor: pointer;
+  text-transform: none !important;
+}
+
+.remove-filled-button {
+  gap: 5px !important;
+  font-size: 14px !important;
+  cursor: pointer;
+  text-transform: none !important;
+  background-color: rgba(var(--primary-color-rgb), 0.1) !important;
+  color: var(--primary-color) !important;
+}
+
+.py-delt-filled-button,
+.cancel-filled-button {
+  gap: 5px !important;
+  font-size: 14px !important;
+  cursor: pointer;
+  text-transform: none !important;
+}
+
+.cancel-oulined-button {
+  gap: 5px !important;
+  font-size: 14px !important;
+  border: 1px solid !important;
+  cursor: pointer;
+  text-transform: none !important;
+}
+
+.default-filled-button {
+  gap: 8px !important;
+  font-size: 14px !important;
+  cursor: pointer;
+  text-transform: none !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.outlined-button {
+  font-size: 14px !important;
+  gap: 8px !important;
+  border: 1px solid !important;
+  text-transform: none !important;
+  border: 1px solid white !important;
+  background-color: rgba(var(--default-color-rgb), 1) !important;
+  color: white !important;
+  cursor: pointer;
+}
+
+.outlined-button:hover {
+  box-shadow: none !important;
+}
+
+.button-icon {
+  font-size: 16px !important;
+  margin-left: 0px !important;
+  vertical-align: middle !important;
+  cursor: pointer !important;
+}
+
+.dropdown-icon {
+  font-size: 23px !important;
+}
+
+.dropdown-text {
+  padding-left: 10px;
+}
+
+.display-name-text {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* -- Grid Dialog-- */
+.grid-dialog .MuiDialog-paper {
+  min-width: 800px !important;
+}
+
+.grid-dialog-header-right-container {
+  text-align: end;
+  background-color: var(--cancel-btn-bgcolor);
+  color: var(--cancel-btn-color);
+  padding: 5px 5px 0 5px;
+  border-radius: 5px;
+  text-align: end;
+}
+
+.grid-dialog-header-text {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.grid-dialog-content-container {
+  padding: 10px;
+}
+
+.acl-menu-editor .tree-node-group {
+  padding-left: 15px;
+}
+
+.user-group-grid {
+  padding: 1em;
+}
+
+.user-group-grid-btn-container {
+  text-align: end;
+  padding: 2em 0 0 0;
+}
+
+/* -- Taps & TapPanel userManagement & groups -- */
+.acl-tab-page .mantine-Tabs-list::before {
+  border: none !important;
+}
+
+.acl-tab-page .tab-view .mantine-Tabs-tab:where([data-active]) {
+  background-color: white;
+  color: black !important;
+  font-weight: 600;
+  border-bottom: 1px solid skyblue
+}
+
+.mantine-Tabs-tab {
+  color: white !important;
+}
+
+/* -- Form -- */
+.header-container {
+  padding: 0.8em;
+  font-size: 1.3em;
+}
+
+.form-container {
+  padding: 10px;
+  border-radius: 10px;
+  /* box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px; */
+}
+
+.form-header-container {
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  padding: 10px 10px 20px;
+}
+
+.form-header-text {
+  color: white;
+}
+
+.form-footer-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 10px 10px;
+}
+
+.form-footer-btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 10px;
+}
+
+.form-header-btn-container {
+  /* width: 50%; */
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 10px;
+}
+
+.form-btn-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: end;
+  padding: 1.5em 0.5em;
+}
+
+.form-header-text {
+  width: 50% !important;
+  text-align: start !important;
+}
+
+.form-button-container {
+  width: 50% !important;
+  text-align: end !important;
+}
+
+/* -- Grid -- */
+.header-content-text {
+  color: var(--dark-bgcolor);
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.grid-action-icon {
+  color: rgba(var(--dark-bgcolor-rgb), 0.5);
+  font-size: 1.3em;
+  cursor: pointer;
+}
+
+/* --Dialoge-- */
+.dialog-container {
+  min-width: 500px !important;
+}
+
+.dialog-btn {
+  background-color: rgb(102, 124, 146) !important;
+}
+
+.dialog-btn:hover {
+  background-color: rgb(53, 70, 87) !important;
+}
+
+.param-dialoge-box .MuiDialog-paper {
+  min-width: 450px !important;
+}
+
+.dialog-header-container {
+  display: flex;
+  padding: 20px;
+  justify-content: space-between;
+  width: auto;
+}
+
+.dialog-header-text-container {
+  width: 50%;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.dialog-header-icon-container {
+  text-align: end;
+  background-color: var(--cancel-btn-bgcolor);
+  color: var(--cancel-btn-color);
+  padding: 5px 5px 0 5px;
+  border-radius: 5px;
+}
+
+.dialog-cancel-icon {
+  cursor: pointer;
+}
+
+.dialog-header-border {
+  border: 1px solid;
+}
+
+.dialog-content-container {
+  padding: 20px;
+}
+
+.dialog-footer-btn-container {
+  text-align: end;
+  padding: 15px;
+  padding-right: 40px;
+}
+
+.dialog-warn-icon {
+  font-size: 28px !important;
+  margin-left: 0px !important;
+  vertical-align: middle !important;
+  color: var(--warning-color);
+}
+
+.reset-pwd-dialog .dialog-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 15px 0px 15px;
+}
+
+.reset-pwd-dialog .dialog-content {
+  margin: 20px 20px 30px 20px;
+}
+
+.reset-pwd-dialog .dialog-header-text {
+  text-align: left;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.reset-pwd-form-container {
+  margin-top: 0px;
+}
+
+.reset-pwd-form-btn-container {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  gap: 10px;
+  margin-top: 30px;
+  text-align: center;
+  padding: 0 20px 20px 0;
+}
+
+/* -- User Page -- */
+
+.user-form-container {
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.user-form-container .acl-menu-editor {
+  padding: 10px 10px 10px 10px;
+}
+
+.user-form-container .grid-renderer-container {
+  border-radius: 10px;
+}
+
+.mantine-Accordion-item {
+  background-color: transparent;
+}
+
+.mantine-Accordion-chevron {
+  color: white;
+}

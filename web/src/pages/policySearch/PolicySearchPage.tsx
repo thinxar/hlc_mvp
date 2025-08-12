@@ -37,7 +37,7 @@ const PolicySearchPage = () => {
 
         useFormstore(endpoint).query({ filter: { "policyNumber": searchTerm } }).then((d) => {
             if (d.result.length == 1) {
-                navigate(`/app/policy/${d?.result[0]?.id}`, { state: { policyNumber: d?.result[0]?.policyNumber } })
+                navigate(`/app/policy/${d?.result[0]?.id}`, { state: { policyData: d?.result[0] } })
             }
             setData(d.result);
         }).catch(() => {

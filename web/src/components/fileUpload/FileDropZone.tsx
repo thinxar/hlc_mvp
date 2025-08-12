@@ -1,8 +1,7 @@
-import { topic } from '@palmyralabs/ts-utils';
-import { useEffect, useState } from 'react';
+import { StringFormat, topic } from '@palmyralabs/ts-utils';
+import { useEffect, useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { IoMdClose } from 'react-icons/io';
-// import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Image from '../../../public/images/image.png';
 import Pdf from '../../../public/images/pdf.png';
@@ -13,19 +12,25 @@ import './FileDropZone.css';
 import { BiSolidCloudUpload } from 'react-icons/bi';
 import { Button, Modal, Loader, Box, Text } from '@mantine/core';
 import { FaUpload } from 'react-icons/fa6';
+import { type ISaveForm, PalmyraNewForm } from '@palmyralabs/rt-forms';
+import { ServerLookup } from '../../templates/mantineForm';
+import { ServiceEndpoint } from '../../config/ServiceEndpoint';
 
 interface IOptions {
-    endPoint?: any
     onClose?: any
     setUploadedFile?: any
     onSaveSuccess?: (data: any) => void;
     onSaveFailure?: any;
+    policyId: any
 }
 const FileDropZone = (props: IOptions) => {
-    // const navigate = useNavigate();
-    const { endPoint, onClose, setUploadedFile, onSaveSuccess } = props;
+    const { onClose, setUploadedFile, onSaveSuccess, policyId } = props;
     const [fileList, setFileList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const formRef = useRef<ISaveForm>(null);
+
+    const endPoint = StringFormat(ServiceEndpoint.policy.fileUploadApi,
+        { policyId: policyId, docketTypeId: formRef?.current?.getData()?.docketType?.id })
 
     const { getRootProps, getInputProps } = useDropzone({
         onDropRejected: (_fileRejections: any) => {
@@ -126,6 +131,12 @@ const FileDropZone = (props: IOptions) => {
 
     return (
         <div>
+            <PalmyraNewForm endPoint={''} ref={formRef}>
+                <ServerLookup attribute="docketType" required placeholder="Select Docket Type"
+                    label={"Docket Type"} invalidMessage={"This field is mandatory"}
+                    queryOptions={{ endPoint: ServiceEndpoint.lookup.docketType }}
+                    lookupOptions={{ idAttribute: 'id', labelAttribute: 'document' }} />
+            </PalmyraNewForm>
             {fileList.length == 0 ? <section className="dropzone-container">
                 <div className={"file-cards-container"}>
                     {/* {isBtnEnable && files} */}
