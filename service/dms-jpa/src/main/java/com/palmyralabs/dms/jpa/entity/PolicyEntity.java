@@ -61,7 +61,7 @@ public class PolicyEntity implements Auditable{
 	private String mobileNumber;
 	
 	@Column(name = "policy_status")
-	private Integer policyStatus;
+	private String policyStatus;
 	
 	private Timestamps timestamps;
 }
