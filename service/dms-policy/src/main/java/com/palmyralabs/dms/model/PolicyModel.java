@@ -62,6 +62,6 @@ public class PolicyModel {
 	private String mobileNumber;
 
 	@PalmyraField
-	private String policyStatus;
+	private Integer policyStatus;
 
 }
