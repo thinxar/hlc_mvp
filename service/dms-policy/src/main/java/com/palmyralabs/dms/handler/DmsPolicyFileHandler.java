@@ -21,6 +21,7 @@ public class DmsPolicyFileHandler extends AbstractHandler implements QueryHandle
 	public QueryFilter applyQueryFilter(QueryFilter filter, HandlerContext ctx) {
 	    Integer policyId = Integer.parseInt(ctx.getParams().get("policyId"));
 	    filter.addCondition(Criteria.EQ("policyId", policyId));
+	    filter.setLimit(-1);
 	    filter.addOrderAsc("docketType");
 	    return QueryHandler.super.applyQueryFilter(filter, ctx);
 	}
