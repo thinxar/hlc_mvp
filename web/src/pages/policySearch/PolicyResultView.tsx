@@ -22,13 +22,13 @@ const PolicyResultView = () => {
     const policyData = location?.state?.policyData;
     const BASE_URL = `${window.location.origin}/api/palmyra`;
 
-    const endpoint = StringFormat(ServiceEndpoint.policy.searchPolicyByIdApi, { policyId: params?.policyId });
-    const endPoint = StringFormat(ServiceEndpoint.policy.getFileApi, { policyId: params?.policyId, fileId: selectedFile?.pdfFiles?.id });
-    const pdfUrl = BASE_URL + endPoint;
+    const endpoint = StringFormat(ServiceEndpoint.policy.searchPolicyByIdApi + "?_limit=-1", { policyId: params?.policyId });
+    const filePoint = StringFormat(ServiceEndpoint.policy.getFileApi, { policyId: params?.policyId, fileId: selectedFile?.pdfFiles?.id });
+    const pdfUrl = BASE_URL + filePoint;
 
     const handleFetch = () => {
-        useFormstore(endpoint).get({}).then((d) => {
-            const mappedPolicies: any = d.map((item: any) => ({
+        useFormstore(endpoint).query({ filter: {} }).then((d: any) => {
+            const mappedPolicies: any = d?.result?.map((item: any) => ({
                 id: item.policyId?.policyNumber,
                 pdfFiles: {
                     id: item.id,
@@ -41,7 +41,9 @@ const PolicyResultView = () => {
                     path: item.path || ''
                 }
             }));
+            setSelectedFile(mappedPolicies[0])
             setData(mappedPolicies);
+
         }).catch(() => {
             handleError
         });
@@ -89,19 +91,19 @@ const PolicyResultView = () => {
     }, {});
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[40%_60%] lg:grid-cols-[20%_80%] xl:grid-cols-[20%_80%] 2xl:grid-cols-[20%_80%]
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[40%_60%] lg:grid-cols-[31%_69%] xl:grid-cols-[23%_77%] 2xl:grid-cols-[22%_78%]
         transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-40px)]">
-            <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-3 flex flex-col overflow-hidden">
-                <div>
+            <div className=" overflow-y-auto bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-hidden">
+                <div className=''>
                     <PolicyData data={policyData} />
                 </div>
-                <div className="flex-1 overflow-hidden mt-2">
+                <div className="flex-1  mt-2 p-3">
                     {data.length !== 0 ? (
                         <Accordion variant="filled" radius="md" className="h-full flex flex-col">
-                            <div className="space-y-3 flex-1 overflow-auto pr-2">
+                            <div className="space-y-3 flex-1  pr-2">
                                 {Object.keys(groupedByDocketType).map((docketType) => (
                                     <Accordion.Item key={docketType} value={docketType}>
-                                        <div className='bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-4'>
+                                        <div className='bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 '>
                                             <Accordion.Control>
                                                 <div className='text-white mb-2'>{docketType}</div>
                                             </Accordion.Control>
@@ -129,9 +131,11 @@ const PolicyResultView = () => {
                         <div className='text-white grid place-items-center flex-1'>No File Found</div>
                     )}
                 </div>
-                <div className='w-full p-7 bg-transparent'>
-                    <button onClick={open} className='fixed bottom-4 left-1/2 transform -translate-x-1/2 cursor-pointer text-sm font-medium
-                    bg-yellow-400 text-sky-800 px-4 py-2 flex gap-2 items-center rounded-sm transition duration-300 hover:scale-105 shadow-lg hover:shadow-xl'>
+                <div className="sticky bottom-0 bg-Color backdrop-blur-md p-2 rounded-t-lg flex items-center justify-center">
+                    <button
+                        onClick={open}
+                        className="cursor-pointer text-sm font-medium bg-yellow-400 text-sky-800 px-4 py-2 flex gap-2 items-center rounded-sm
+                  transition duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
                         <FaUpload fontSize={14} /> Upload
                     </button>
                 </div>
@@ -139,6 +143,7 @@ const PolicyResultView = () => {
                     <FileDropZone onClose={close} setUploadedFile={setUploadedFile} policyId={params?.policyId} />
                 </Modal>
             </div >
+
             <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-auto">
                 <FileViewer file={selectedFile} fileUrl={pdfUrl} key={selectedFile?.pdfFiles?.id} />
             </div>

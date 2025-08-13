@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import UTIF from 'utif'
 import styles from './styles.module.css'
-import { FaDownload } from 'react-icons/fa6'
-import { Button, Loader } from '@mantine/core'
-import { toast } from 'react-toastify'
+import { Loader } from '@mantine/core'
 
 export const TIFFViewer = forwardRef(function TiffFileViewer(
   { tiff, paginate = 'bottom', currentPage = 0, buttonColor = '#141414', overlays = [], onDocumentLoad = () => { },
@@ -13,8 +11,6 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
 ) {
   const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
   const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(false);
-
   const canvasRef: any = useRef(null);
   const paginateLTRRef: any = useRef(null);
 
@@ -104,28 +100,28 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
     }
   }))
 
-  const handleDownload = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(tiff);
-      if (!response.ok) {
-        toast.error("Download failed")
-      }
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = file?.pdfFiles?.fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      toast.error("Download failed")
-    } finally {
-      setLoading(false);
-    }
-  }
+  // const handleDownload = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await fetch(tiff);
+  //     if (!response.ok) {
+  //       toast.error("Download failed")
+  //     }
+  //     const blob = await response.blob();
+  //     const url = URL.createObjectURL(blob);
+  //     const a = document.createElement('a');
+  //     a.href = url;
+  //     a.download = file?.pdfFiles?.fileName;
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //     URL.revokeObjectURL(url);
+  //   } catch (error) {
+  //     toast.error("Download failed")
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }
 
   if (pages.length == 0) {
     return <div className="mx-auto p-5 w-full h-full">
@@ -144,11 +140,11 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
     <div className="mx-auto p-5 w-full h-full">
       <div className="flex justify-between p-4">
         <div className="text-lg font-semibold">{file?.pdfFiles?.fileName}</div>
-        <Button onClick={handleDownload} loaderProps={{ type: 'dots' }}
+        {/* <Button onClick={handleDownload} loaderProps={{ type: 'dots' }}
           loading={loading} className="filled-button"
           leftSection={<FaDownload className="w-4 h-4" />}>
           Download
-        </Button>
+        </Button> */}
       </div>
 
       <div className={styles.tiffContainer} id="tiff-container" ref={ref} {...rest}>
