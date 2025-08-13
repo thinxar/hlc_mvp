@@ -18,3 +18,11 @@ RENAME COLUMN dob TO customer_dob;
 
 ALTER TABLE dms_policy
 RENAME COLUMN branch_number TO batch_number;
+
+UPDATE dms_policy
+SET policy_status = NULL
+WHERE trim(policy_status) = '';
+
+
+ALTER TABLE dms_policy
+ALTER COLUMN policy_status SET DATA TYPE int8 USING policy_status::int8;
