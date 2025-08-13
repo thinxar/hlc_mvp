@@ -20,16 +20,13 @@ public class PolicyModel {
 	private Integer policyNumber;
 
 	@PalmyraField
-	private LocalDate policyDate;
-
-	@PalmyraField
 	private String customerId;
 
 	@PalmyraField
-	private String name;
+	private String customerName;
 
 	@PalmyraField
-	private LocalDate dob;
+	private LocalDate customerDob;
 
 	@PalmyraField
 	private LocalDate doc;
@@ -41,7 +38,7 @@ public class PolicyModel {
 	private String branchCode;
 
 	@PalmyraField
-	private String branchNumber;
+	private String batchNumber;
 
 	@PalmyraField
 	private String boxNumber;
@@ -66,8 +63,5 @@ public class PolicyModel {
 
 	@PalmyraField
 	private Integer policyStatus;
-
-	@PalmyraField
-	private String region;
 
 }
