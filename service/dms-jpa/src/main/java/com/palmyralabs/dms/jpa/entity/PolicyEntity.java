@@ -18,20 +18,19 @@ public class PolicyEntity implements Auditable{
 	@Column(name = "id")
 	private Long id;
 	
-	
 	@Column(name = "policy_number")
 	private Long policyNumber;
-	
-	@Column(name = "policy_date")
-	private LocalDate policyDate;
 	
 	@Column(name = "customer_id")
 	private String customerId;
 	
-	private String name;
+	@Column(name = "customer_name")
+	private String customerName;
 	
-	private LocalDate dob;
+	@Column(name = "customer_dob")
+	private LocalDate customerDob;
 	
+	@Column(name = "doc")
 	private LocalDate doc;
 	
 	@Column(name = "division_code")
@@ -40,8 +39,8 @@ public class PolicyEntity implements Auditable{
 	@Column(name = "branch_code")
 	private String branchCode;
 	
-	@Column(name = "branch_number")
-	private String branchNumber;
+	@Column(name = "batch_number")
+	private String batchNumber;
 	
 	@Column(name = "box_number")
 	private String boxNumber;
@@ -63,8 +62,6 @@ public class PolicyEntity implements Auditable{
 	
 	@Column(name = "policy_status")
 	private Integer policyStatus;
-	
-	private String region;
 	
 	private Timestamps timestamps;
 }
