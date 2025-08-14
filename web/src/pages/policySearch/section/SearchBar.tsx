@@ -4,8 +4,8 @@ import { IoClose } from 'react-icons/io5';
 import { PiWarningCircleFill } from "react-icons/pi";
 
 interface SearchBarProps {
-    onSearch:(string: any) => void,
-    onClear:() => void,
+    onSearch: (string: any) => void,
+    onClear: () => void,
     compact: boolean
 }
 
@@ -23,9 +23,16 @@ const SearchBar = ({ onSearch, onClear, compact }: SearchBarProps) => {
     }
 
     const handleChange = (e: any) => {
-        setSearchTerm(e.target.value)
-        setShowError(false);
-    }
+        const value = e.target.value;
+        const onlyNumbers = value.replace(/\D/g, '');
+
+        if (value !== onlyNumbers && value !== '') {
+            setShowError(true);
+        } else {
+            setShowError(false);
+        }
+        setSearchTerm(value);
+    };
 
     const handleSearch = () => {
         if (searchTerm == '')

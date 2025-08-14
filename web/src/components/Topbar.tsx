@@ -1,6 +1,6 @@
 import { BiLogOutCircle } from "react-icons/bi"
 import { getStoreFactory } from "../wire/StoreFactory";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { PathConfig } from "../config/PathConfig";
 import { ServiceEndpoint } from "../config/ServiceEndpoint";
 
@@ -20,13 +20,17 @@ const Topbar = () => {
         });
     };
 
-    return (
+    return (<>
         <div className="text-white px-4 py-2 flex justify-end fixed z-99 w-full">
             <div className='hover:text-yellow-400 flex items-center gap-2 cursor-pointer' onClick={handleLogOut}>
                 <BiLogOutCircle /> Logout
             </div>
             <div></div>
         </div>
+        <div className="mt-5">
+            <Outlet />
+        </div>
+    </>
     )
 }
 

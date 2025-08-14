@@ -2,7 +2,11 @@ import { BiRightArrowAlt } from "react-icons/bi";
 import { MdPolicy } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
-const PolicyList = ({ data }: any) => {
+interface Props {
+    data: any
+}
+
+const PolicyList = ({ data }: Props) => {
     const navigate = useNavigate();
 
     return (<div className="max-w-7xl mx-auto p-8 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-xl rounded-3xl shadow-xl h-full overflow-y-auto">
@@ -13,7 +17,7 @@ const PolicyList = ({ data }: any) => {
                     <div className="mb-4">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h3 className="text-xl font-semibold text-gray-800">{file.name}</h3>
+                                <h3 className="text-xl font-semibold text-gray-800">{file.customerName}</h3>
                                 {/* <p className="text-sm text-gray-500">{file.policyDate}</p> */}
                             </div>
                             <MdPolicy className="text-gray-600" fontSize={25} />

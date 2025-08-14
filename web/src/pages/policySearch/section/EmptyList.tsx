@@ -17,7 +17,7 @@ const EmptyList = ({ data }: any) => {
         <div className="text-center text-white/60 py-20">
             <div className="w-16 h-16 mx-auto mb-4 opacity-50" />
             <h3 className="text-xl font-semibold mb-2">No Policy Found</h3>
-            <p>No policy documents found".</p>
+            <p>No policy documents found.</p>
             <p className="text-sm mt-2 text-white/50">Try entering a different policy number</p>
         </div>
     );

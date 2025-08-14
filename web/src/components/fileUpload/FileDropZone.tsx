@@ -1,7 +1,7 @@
 import { Box, Button, Loader, Modal, Text } from '@mantine/core';
 import { PalmyraNewForm } from '@palmyralabs/rt-forms';
 import { StringFormat, topic } from '@palmyralabs/ts-utils';
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { BiSolidCloudUpload } from 'react-icons/bi';
 import { FaUpload } from 'react-icons/fa6';
@@ -18,16 +18,16 @@ import './FileDropZone.css';
 
 interface IOptions {
     onClose?: any
-    setUploadedFile?: any
     onSaveSuccess?: (data: any) => void;
     onSaveFailure?: any;
     policyId: any
 }
 const FileDropZone = (props: IOptions) => {
-    const { onClose, setUploadedFile, onSaveSuccess, policyId } = props;
+    const { onClose, onSaveSuccess, policyId } = props;
     const [fileList, setFileList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [docketId, setDocketId] = useState(null);
+    const lookupRef = useRef<any>(null)
 
     const endPoint = StringFormat(ServiceEndpoint.policy.fileUploadApi,
         { policyId: policyId, docketTypeId: docketId })
@@ -51,9 +51,9 @@ const FileDropZone = (props: IOptions) => {
         accept: { pdf: ['.pdf'], docx: ['.docx'], images: ['.jpg', '.jpeg', '.png'], 'image/tiff': ['.tiff', '.tif'] }
     });
 
-    useEffect(() => {
-        setUploadedFile(fileList);
-    }, [fileList])
+    // useEffect(() => {
+    //     setUploadedFile(fileList);
+    // }, [fileList])
 
     const removeFile = (file: any) => {
         const updatedFiles = fileList.filter((f: any) => f.path !== file.path);
@@ -127,12 +127,16 @@ const FileDropZone = (props: IOptions) => {
                 onClose();
                 topic.publish("fileUpload", "fileUpload");
                 toast.success("File Uploaded Successfully!");
-            }).catch((_res: any) => {
+            }).catch((error: any) => {
                 setLoading(false);
-                handleError;
+                handleError(error);
             }).finally(() => setLoading(false));
         }
-        else { toast.error("Please select a docket type before uploading the file."), setLoading(false) };
+        else {
+            toast.error("Please select a docket type before uploading the file.");
+            lookupRef?.current?.setError("This field is mandatory"),
+                setLoading(false)
+        }
     }
 
     const isBtnEnable = fileList.length > 0;
@@ -142,7 +146,7 @@ const FileDropZone = (props: IOptions) => {
             <PalmyraNewForm endPoint={''}>
                 <ServerLookup attribute="docketType" required placeholder="Select Docket Type"
                     label={"Docket Type"} invalidMessage={"This field is mandatory"} onChange={handleChange}
-                    queryOptions={{ endPoint: ServiceEndpoint.lookup.docketType }}
+                    queryOptions={{ endPoint: ServiceEndpoint.lookup.docketType }} ref={lookupRef}
                     lookupOptions={{ idAttribute: 'id', labelAttribute: 'document' }} />
             </PalmyraNewForm>
             {fileList.length == 0 ? <section className="dropzone-container">

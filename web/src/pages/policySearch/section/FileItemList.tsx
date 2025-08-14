@@ -7,11 +7,18 @@ import Pdf from '../../../../public/images/pdf.png';
 import Tiff from '../../../../public/images/tiff.png';
 import { ServiceEndpoint } from '../../../config/ServiceEndpoint';
 
-const FileItemList = ({ file, isSelected, onClick, policyId }: any) => {
+interface FileProps {
+    file: any
+    isSelected: boolean,
+    onClick: () => void,
+    policyId: any
+}
+
+const FileItemList = ({ file, isSelected, onClick, policyId }: FileProps) => {
     const BASE_URL = `${window.location.origin}/api/palmyra`;
     const endPoint = StringFormat(ServiceEndpoint.policy.getFileApi, { policyId: policyId, fileId: file?.pdfFiles?.id });
     const fileUrl = BASE_URL + endPoint;
-    
+
     const handleNavigate = () => {
         window.open(fileUrl, '_blank');
     }
