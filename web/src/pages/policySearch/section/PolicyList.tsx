@@ -37,10 +37,10 @@ const PolicyList = ({ data }: Props) => {
                             <div className="font-medium">Mobile Number:</div>
                             <div>{file.mobileNumber}</div>
                         </div>
-                        <div className="flex items-center gap-3 justify-between">
+                        {/* <div className="flex items-center gap-3 justify-between">
                             <div className="font-medium">Region:</div>
                             <div>{file.region}</div>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="mt-4 float-right">
