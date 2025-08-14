@@ -1,9 +1,9 @@
 import { CiSearch } from 'react-icons/ci';
 
-const EmptyList = ({ hasSearched, searchQuery }: any) => {
-    const isQueryEmpty = !searchQuery?.trim();
+const EmptyList = ({ data }: any) => {
+    const hasSearched = null != data;
 
-    if (!hasSearched || isQueryEmpty) {
+    if (!hasSearched) {
         return (
             <div className="text-center text-white/60 py-20">
                 <CiSearch className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -17,7 +17,7 @@ const EmptyList = ({ hasSearched, searchQuery }: any) => {
         <div className="text-center text-white/60 py-20">
             <div className="w-16 h-16 mx-auto mb-4 opacity-50" />
             <h3 className="text-xl font-semibold mb-2">No Policy Found</h3>
-            <p>No policy documents found for "{searchQuery}".</p>
+            <p>No policy documents found".</p>
             <p className="text-sm mt-2 text-white/50">Try entering a different policy number</p>
         </div>
     );

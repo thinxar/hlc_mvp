@@ -3,30 +3,35 @@ import { CiSearch } from 'react-icons/ci';
 import { IoClose } from 'react-icons/io5';
 import { PiWarningCircleFill } from "react-icons/pi";
 
-const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched, compact, setData, setNotFound }: any) => {
-    const [showError, setShowError] = useState(false)
+interface SearchBarProps {
+    onSearch:(string: any) => void,
+    onClear:() => void,
+    compact: boolean
+}
+
+const SearchBar = ({ onSearch, onClear, compact }: SearchBarProps) => {
+    const [showError, setShowError] = useState(false);
+    const [searchTerm, setSearchTerm] = useState<string>("");
     const handleKeyPress = (e: any) => {
-        if (e.key === 'Enter') onSearch();
+        if (e.key === 'Enter') onSearch(searchTerm);
     };
 
     const handleClear = () => {
-        if (setHasSearched) {
-            setHasSearched(false);
-        }
+        onClear();
         setSearchTerm('');
         setShowError(false);
     }
 
     const handleChange = (e: any) => {
         setSearchTerm(e.target.value)
-        setData([]);
-        setHasSearched(false);
-        setNotFound(false)
+        setShowError(false);
     }
 
     const handleSearch = () => {
-        onSearch()
-        setShowError(true);
+        if (searchTerm == '')
+            setShowError(true);
+        else
+            onSearch(searchTerm)
     }
 
     return (
@@ -42,7 +47,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched, compac
                                 placeholder="Enter policy number"
                                 value={searchTerm}
                                 onChange={handleChange}
-                                onKeyPress={handleKeyPress}
+                                onKeyUp={handleKeyPress}
                                 className={`w-full bg-transparent text-white placeholder-white/50 
                                 ${compact ? 'pl-8 placeholder:text-sm' : 'pl-12 pr-4 py-4'}
                                 text-lg focus:outline-none`}
@@ -61,7 +66,7 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch, setHasSearched, compac
             </div>
             {!compact &&
                 <div className='min-h-15'>
-                    {searchTerm == '' && showError &&
+                    {showError &&
                         <div className='text-yellow-400 text-sm flex items-center gap-1'><PiWarningCircleFill /> Please enter a valid policy number.</div>}
                 </div>}
         </div>

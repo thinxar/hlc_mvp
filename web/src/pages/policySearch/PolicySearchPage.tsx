@@ -21,30 +21,23 @@ interface PolicyFile {
 
 const PolicySearchPage = () => {
     const navigate = useNavigate();
-    const [searchTerm, setSearchTerm] = useState('');
-    const [data, setData] = useState<PolicyFile[]>([]);
-    const [hasSearched, setHasSearched] = useState(false);
-    const [_showError, setShowError] = useState(false);
+    const [data, setData] = useState<PolicyFile[] | null>(null);
 
-    const handleSearch = () => {
-        setShowError(false)
-        setHasSearched(true);
-        if (!searchTerm.trim()) {
-            setData([]);
-            return;
-        }
+    const handleSearch = (searchTerm: string) => {
         const endpoint = ServiceEndpoint.policy.searchPolicyApi;
 
         useFormstore(endpoint).query({ filter: { "policyNumber": searchTerm } }).then((d) => {
             if (d.result.length == 1) {
                 navigate(`/app/policy/${d?.result[0]?.id}`, { state: { policyData: d?.result[0] } })
-            }
-            setData(d.result);
-        }).catch(() => {
-            handleError
-            setShowError(true);
-        });
+            } else
+                setData(d.result);
+        }).catch(handleError);
     };
+
+
+    const handleClear = () => {
+        setData(null);
+    }
 
     return (
         <div className="min-h-[calc(100vh-41px)] bg-gradient-to-br bColor relative overflow-hidden">
@@ -62,10 +55,12 @@ const PolicySearchPage = () => {
                         Search and manage insurance policies
                     </p>
                 </div>
-                <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} onSearch={handleSearch}
-                    setHasSearched={setHasSearched} setData={setData} setNotFound={setShowError} />
-                {searchTerm && data.length != 1 && data.length != 0 && <PolicyList data={data} />}
-                {data.length == 0 && <EmptyList hasSearched={hasSearched} searchQuery={searchTerm} />}
+                <SearchBar onSearch={handleSearch}
+                    onClear={handleClear} compact={false} />
+                {data && data?.length > 1 ?
+                    <PolicyList data={data} /> :
+                    <EmptyList data={data} />}
+
             </div>
         </div>
     );
