@@ -1,7 +1,7 @@
 import { FaFile } from 'react-icons/fa6';
-import { ImageViewer } from '../../../components/viewer/ImageViewer';
-import { PdfViewWithOverlay } from '../../../components/viewer/PdfViewWithOverlay';
-import { TIFFViewer } from '../../../components/viewer/TiffViewWithOverlay';
+import { ImageViewer } from 'components/viewer/ImageViewer';
+import { PdfViewWithOverlay } from 'components/viewer/PdfViewWithOverlay';
+import { TIFFViewer } from 'components/viewer/TiffViewWithOverlay';
 import { IoClose } from 'react-icons/io5';
 import { useState } from 'react';
 

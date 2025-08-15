@@ -1,8 +1,8 @@
+import { PathConfig } from "config/PathConfig";
+import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { BiLogOutCircle } from "react-icons/bi"
-import { getStoreFactory } from "../wire/StoreFactory";
 import { Outlet, useNavigate } from "react-router-dom";
-import { PathConfig } from "../config/PathConfig";
-import { ServiceEndpoint } from "../config/ServiceEndpoint";
+import { getStoreFactory } from "wire/StoreFactory";
 
 const Topbar = () => {
     const navigate = useNavigate();

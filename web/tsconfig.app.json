@@ -8,57 +8,39 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ],
     "module": "ESNext",
     "skipLibCheck": true,
     /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
-  },
-  "paths": {
-    "admin/*": [
-      "./src/admin/*"
-    ],
-    "config/*": [
-      "./src/config/*"
-    ],
-    "templates/*": [
-      "./src/templates/*"
-    ],
-    "wire/*": [
-      "./src/wire/*"
-    ],
-    "common/*": [
-      "./src/common/*"
-    ],
-    "components/*": [
-      "./src/components/*"
-    ],
-    "themes/*": [
-      "./src/themes/*"
-    ],
-    "utils/*": [
-      "./src/utils/*"
-    ],
-    "public/*": [
-      "./public/*"
-    ]
-  },
-  "include": [
-    "src"
-  ]
+    "baseUrl": "./",
+    "paths": {
+      "config/*": [
+        "src/config/*"
+      ],
+      "templates/*": [
+        "src/templates/*"
+      ],
+      "wire/*": [
+        "src/wire/*"
+      ],
+      "components/*": [
+        "src/components/*"
+      ],
+      "utils/*": [
+        "src/utils/*"
+      ],
+      "public/*": [
+        "public/*"
+      ]
+    }
+  }
 }

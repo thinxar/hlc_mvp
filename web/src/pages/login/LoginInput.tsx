@@ -4,11 +4,11 @@ import axios from 'axios';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { ServiceEndpoint } from '../../config/ServiceEndpoint';
-import { Password, TextField } from '../../templates/mantineForm';
-import { handleError } from '../../wire/ErrorHandler';
 import { IoPersonOutline } from 'react-icons/io5';
 import { CiLock } from 'react-icons/ci';
+import { ServiceEndpoint } from 'config/ServiceEndpoint';
+import { TextField, Password } from 'templates/mantineForm';
+import { handleError } from 'wire/ErrorHandler';
 
 const LoginInput = () => {
   const [loading, setLoading] = useState<boolean>(false);

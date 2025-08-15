@@ -1,7 +1,7 @@
 import { Accordion } from "@mantine/core";
 import { IoChevronBackOutline } from "react-icons/io5";
 import { IoMdPerson } from "react-icons/io";
-import { FormateDate } from "../../../utils/FormateDate";
+import { FormateDate } from "utils/FormateDate";
 
 // const fieldIcons = {
 //     "Policy Number": <MdPolicy className="w-4 h-4 text-sky-700" />,
@@ -35,7 +35,7 @@ const PolicyData = ({ data }: any) => {
 
     const viewFields = [
         { label: "Mobile No", value: data?.mobileNumber },
-        { label: "Division Code", value: data?.divisionNumber },
+        { label: "Division Code", value: data?.divisionCode },
         { label: "Batch No", value: data?.batchNumber },
         { label: "Box No", value: data?.boxNumber },
         { label: "RMS Status", value: data?.rmsStatus },

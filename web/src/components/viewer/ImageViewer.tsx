@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 
 const ImageViewer = ({ endPoint, file }: any) => {
-    const [_loading, _setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
     const [imageLoading, setImageLoading] = useState(true);
 
     // const handleDownload = async () => {

@@ -13,7 +13,7 @@ interface Props {
 
 const PdfViewWithOverlay = ({ pdfUrlFromApi, imageUrlFromApi, pageIndex, position, scale = 0.5, file }: Props) => {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
-  const [_loading, _setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   // const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
 
   useEffect(() => {

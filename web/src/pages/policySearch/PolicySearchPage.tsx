@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ServiceEndpoint } from '../../config/ServiceEndpoint';
-import { handleError } from '../../wire/ErrorHandler';
-import { useFormstore } from '../../wire/StoreFactory';
+import { ServiceEndpoint } from 'config/ServiceEndpoint';
+import { handleError } from 'wire/ErrorHandler';
+import { useFormstore } from 'wire/StoreFactory';
 import { PolicyList } from './section/PolicyList';
 import { SearchBar } from './section/SearchBar';
 import { EmptyList } from './section/EmptyList';

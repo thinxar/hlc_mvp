@@ -10,11 +10,11 @@ import { toast } from 'react-toastify';
 import Image from '../../../public/images/image.png';
 import Pdf from '../../../public/images/pdf.png';
 import Tiff from '../../../public/images/tiff.png';
-import { ServiceEndpoint } from '../../config/ServiceEndpoint';
-import { ServerLookup } from '../../templates/mantineForm';
-import { handleError } from '../../wire/ErrorHandler';
-import { useFormstore } from '../../wire/StoreFactory';
 import './FileDropZone.css';
+import { ServiceEndpoint } from 'config/ServiceEndpoint';
+import { ServerLookup } from 'templates/mantineForm';
+import { handleError } from 'wire/ErrorHandler';
+import { useFormstore } from 'wire/StoreFactory';
 
 interface IOptions {
     onClose?: any

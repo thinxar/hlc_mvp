@@ -1,7 +1,7 @@
 import Swal from "sweetalert2";
 import { PalmyraStoreFactory, type IEndPoint } from "@palmyralabs/palmyra-wire";
 import 'react-toastify/dist/ReactToastify.css';
-import { ServiceEndpoint } from "../config/ServiceEndpoint";
+import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { showAclErrorToast, showServerErrorToast } from "./errorToast";
 
 const goToLogin = () => {

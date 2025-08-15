@@ -5,7 +5,7 @@ import { CiCalendar, CiHardDrive } from 'react-icons/ci';
 import Image from '../../../../public/images/image.png';
 import Pdf from '../../../../public/images/pdf.png';
 import Tiff from '../../../../public/images/tiff.png';
-import { ServiceEndpoint } from '../../../config/ServiceEndpoint';
+import { ServiceEndpoint } from 'config/ServiceEndpoint';
 
 interface FileProps {
     file: any
