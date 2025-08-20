@@ -27,8 +27,8 @@ CREATE TABLE dms_policy (
 );
 
 CREATE TABLE mst_document_type (
-	id int8 DEFAULT nextval('dms.dms_document_type_id_seq'::regclass) NOT NULL,
-	"document" varchar(128) NOT NULL,
+	id BIGINT NOT NULL,
+	document varchar(128) NOT NULL,
 	description varchar(250) NULL,
 	created_by varchar(128) NOT NULL,
 	last_upd_by varchar(128) NULL,
@@ -51,6 +51,16 @@ CREATE TABLE dms_policy_file (
     created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
     CONSTRAINT dms_policy_file_pkey PRIMARY KEY (id),
+    constraint uq_dms_policy_file_object_url unique (object_url),
     CONSTRAINT fk_dms_policy_file_id FOREIGN KEY (policy_id) REFERENCES dms_policy(id),
-    CONSTRAINT fk_dms_docket_type FOREIGN KEY (docket_type) REFERENCES dms_document_type(id)
+    CONSTRAINT fk_dms_docket_type FOREIGN KEY (docket_type) REFERENCES mst_document_type(id)
 );
+
+
+INSERT INTO mst_document_type (id,document, description,created_by,created_on)
+VALUES 
+  (1,'Policy', null,'admin',current_timestamp),
+  (2,'POA', null,'admin',current_timestamp),
+  (3,'POI', null,'admin',current_timestamp),
+  (4,'Proposal', null,'admin',current_timestamp),
+  (5,'Medical', null,'admin',current_timestamp);
