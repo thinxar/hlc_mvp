@@ -90,6 +90,8 @@ public class SyncFileServiceImpl {
 			processResponse(key, response, listener);
 		} catch (Exception e) {
 			listener.onFailure(e);
+			log.error("S3 upload failed for file '{}': {}", originalFilename, e.getMessage());
+			throw new RuntimeException("upload failed");
 		}		
 	}
 }

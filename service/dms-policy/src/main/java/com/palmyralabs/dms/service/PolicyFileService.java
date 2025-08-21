@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.palmyralabs.dms.base.exception.InvaidInputException;
 import com.palmyralabs.dms.handler.PolicyFileUploadListener;
 import com.palmyralabs.dms.jpa.entity.PolicyEntity;
 import com.palmyralabs.dms.jpa.entity.PolicyFileEntity;
@@ -17,7 +18,9 @@ import com.palmyralabs.palmyra.s3.service.AsyncFileService;
 import com.palmyralabs.palmyra.s3.service.impl.SyncFileServiceImpl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PolicyFileService {
@@ -49,13 +52,16 @@ public class PolicyFileService {
 		if (policyOptional.isPresent()) {
 			PolicyEntity policy = policyOptional.get();
 			String folder = String.valueOf(policy.getPolicyNumber());
-			PolicyFileUploadListener listener = new PolicyFileUploadListener();
 			String objectUrl = Paths.get(folder, file.getOriginalFilename()).toString();
 
 			String fileName = checkObjectUrlAlreadyExists(objectUrl, file, folder);
 			objectUrl = Paths.get(folder, fileName).toString();
-
-			syncFileService.upload(folder, fileName, file, listener);
+			PolicyFileUploadListener listener = new PolicyFileUploadListener();
+			try {
+				syncFileService.upload(folder, fileName, file, listener);
+			}catch(Exception e){
+				throw new InvaidInputException("INV400", "File Upload To S3 failed");
+			}
 			PolicyFileEntity fileEntity = new PolicyFileEntity();
 			fileEntity.setFileName(fileName);
 			fileEntity.setFileSize(file.getSize());
