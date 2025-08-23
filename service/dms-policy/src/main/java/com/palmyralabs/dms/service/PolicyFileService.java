@@ -60,6 +60,7 @@ public class PolicyFileService {
 			try {
 				syncFileService.upload(folder, fileName, file, listener);
 			}catch(Exception e){
+				log.error("S3 upload failed for file '{}': {}", fileName, e.getMessage(),e);
 				throw new InvaidInputException("INV400", "File Upload To S3 failed");
 			}
 			PolicyFileEntity fileEntity = new PolicyFileEntity();
