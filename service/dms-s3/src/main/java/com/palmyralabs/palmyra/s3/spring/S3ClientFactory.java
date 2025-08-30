@@ -81,7 +81,7 @@ public class S3ClientFactory {
 //	}
 
 	private Region getRegion() {
-		return Region.AP_SOUTH_1;
+		return Region.of(props.getRegion());
 	}
 
 }

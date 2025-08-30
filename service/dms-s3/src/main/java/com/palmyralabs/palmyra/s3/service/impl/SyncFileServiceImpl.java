@@ -34,7 +34,6 @@ public class SyncFileServiceImpl {
 	public void download(String key, ResponseFileEmitter emitter) {
 
 		try {
-
 			GetObjectRequest request = GetObjectRequest.builder().bucket(props.getBucketName()).key(key).build();
 			ResponseInputStream<GetObjectResponse> response = client.getObject(request);
 
@@ -47,18 +46,18 @@ public class SyncFileServiceImpl {
 				}
 				emitter.complete();
 			} catch (IOException e) {
-				emitter.completeWithError(e); // Handle errors
+				log.info("Exception while processing the buffer", e);
+				emitter.completeWithError(e);
 			} finally {
 				try {
 					response.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.info("Exception while closing the response", e);
 				}
 			}
 		} catch (Exception e) {
+			log.info("Exception while processing the download", e);
 			emitter.completeWithError(e);
-			e.printStackTrace();
 		}
 
 	}
@@ -70,6 +69,7 @@ public class SyncFileServiceImpl {
 			PutObjectResponse response = client.putObject(request, requestBody);
 			processResponse(key, response, listener);
 		} catch (Exception e) {
+			log.info("Exception while uploading the file", e);
 			listener.onFailure(e);
 		}
 	}
@@ -80,10 +80,9 @@ public class SyncFileServiceImpl {
 
 	@SneakyThrows
 	public void upload(String folder, String originalFilename, MultipartFile file, FileUploadListener listener) {
-		String key = Paths.get(folder,  originalFilename).toString();
+		String key = Paths.get(folder, originalFilename).toString();
 		PutObjectRequest request = PutObjectRequest.builder().bucket(props.getBucketName())
-		.contentType(file.getContentType())
-		.key(key).build();
+				.contentType(file.getContentType()).key(key).build();
 		RequestBody requestBody = RequestBody.fromInputStream(file.getInputStream(), file.getSize());
 		try {
 			PutObjectResponse response = client.putObject(request, requestBody);
@@ -91,6 +90,6 @@ public class SyncFileServiceImpl {
 		} catch (Exception e) {
 			listener.onFailure(e);
 			throw e;
-		}		
+		}
 	}
 }
