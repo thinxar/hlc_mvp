@@ -1,18 +1,26 @@
+import { Loader } from '@mantine/core'
 import axios from 'axios'
 import PropTypes from 'prop-types'
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import UTIF from 'utif'
-import styles from './styles.module.css'
-import { Loader } from '@mantine/core'
+import { GoDash, GoPlus } from "react-icons/go";
+import { MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown } from "react-icons/md";
+
 
 export const TIFFViewer = forwardRef(function TiffFileViewer(
-  { tiff, paginate = 'bottom', currentPage = 0, buttonColor = '#141414', overlays = [], onDocumentLoad = () => { },
-    printable = false, zoomable = false, file, ...rest }: any, ref: any
+  {
+    tiff,
+    currentPage = 0,
+    overlays = [],
+    onDocumentLoad = () => { },
+    file
+  }: any,
+  ref: any
 ) {
-  const [pages, setPages] = useState<HTMLCanvasElement[]>([]);
+  const [pages, setPages] = useState<HTMLCanvasElement[]>([])
   const [page, setPage] = useState(0);
-  const canvasRef: any = useRef(null);
-  const paginateLTRRef: any = useRef(null);
+  const [zoom, setZoom] = useState(1);
+  const canvasRef: any = useRef<HTMLCanvasElement>(null);
 
   const overlayMap = useMemo(() => {
     const map: Record<number, any[]> = {};
@@ -24,10 +32,11 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
     return map;
   }, [overlays]);
 
-  function imgLoaded(e: any) {
-    var ifds = UTIF.decode(e.target.response)
-    const _tiffs: HTMLCanvasElement[] = ifds.map(function (ifd, index) {
-      UTIF.decodeImage(e.target.response, ifd)
+  const imgLoaded = async () => {
+    var response = await axios.get(tiff, { responseType: 'arraybuffer' })
+    var ifds = UTIF.decode(response.data)
+    const _tiffs = ifds.map((ifd, index) => {
+      UTIF.decodeImage(response.data, ifd)
       var rgba = UTIF.toRGBA8(ifd)
       var canvas = document.createElement('canvas')
       canvas.width = ifd.width
@@ -52,76 +61,38 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
     onDocumentLoad(_tiffs)
   }
 
-  async function displayTIFF(tiffUrl: string) {
-    const response = await axios.get(tiffUrl, {
-      responseType: 'arraybuffer'
-    })
-    imgLoaded({ target: { response: response.data } })
-  }
+  useEffect(() => {
+    imgLoaded()
+  }, [tiff])
 
   useEffect(() => {
     if (currentPage >= 0 && currentPage < pages.length) {
       setPage(currentPage)
     }
-  }, [currentPage])
-
-  const handlePreviousClick = () => {
-    if (page > 0) {
-      setPage(page - 1)
-    }
-  }
-
-  const handleNextClick = () => {
-    if (page < pages.length - 1) {
-      setPage(page + 1)
-    }
-  }
+  }, [currentPage, pages])
 
   useEffect(() => {
-    displayTIFF(tiff)
-  }, [tiff])
+    const originalCanvas = pages[page]
+    const displayCanvas = canvasRef.current
+    if (!originalCanvas || !displayCanvas) return
 
-  useEffect(() => {
-    if (pages.length > 0) {
-      canvasRef.current.innerHTML = ''
-      canvasRef.current.appendChild(pages[page])
-    }
-  }, [page, pages])
+    const ctx = displayCanvas.getContext('2d')
+    if (!ctx) return
+
+    const scaledWidth = originalCanvas.width * zoom
+    const scaledHeight = originalCanvas.height * zoom
+
+    displayCanvas.width = scaledWidth
+    displayCanvas.height = scaledHeight
+
+    ctx.setTransform(zoom, 0, 0, zoom, 0, 0)
+    ctx.clearRect(0, 0, scaledWidth, scaledHeight)
+    ctx.drawImage(originalCanvas, 0, 0)
+  }, [pages, page, zoom])
 
   useImperativeHandle(ref, () => ({
-    context: () => {
-      pages.forEach((page, index) => {
-        if (index > 0) {
-          canvasRef.current.style.display = 'block'
-          canvasRef.current.appendChild(page)
-        }
-      })
-      return canvasRef.current
-    }
+    context: canvasRef.current
   }))
-
-  // const handleDownload = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await fetch(tiff);
-  //     if (!response.ok) {
-  //       toast.error("Download failed")
-  //     }
-  //     const blob = await response.blob();
-  //     const url = URL.createObjectURL(blob);
-  //     const a = document.createElement('a');
-  //     a.href = url;
-  //     a.download = file?.pdfFiles?.fileName;
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     document.body.removeChild(a);
-  //     URL.revokeObjectURL(url);
-  //   } catch (error) {
-  //     toast.error("Download failed")
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
 
   if (pages.length == 0) {
     return <div className="mx-auto p-5 w-full h-full">
@@ -137,31 +108,50 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
   }
 
   return (
-    <div className="mx-auto p-5 w-full h-full">
-      <div className="flex justify-between p-4">
-        <div className="text-lg font-semibold">{file?.pdfFiles?.fileName}</div>
-        {/* <Button onClick={handleDownload} loaderProps={{ type: 'dots' }}
-          loading={loading} className="filled-button"
-          leftSection={<FaDownload className="w-4 h-4" />}>
-          Download
-        </Button> */}
+    <div className="w-full h-full p-4 items-center gap-4">
+      <div className="flex justify-between items-center">
+        <div className="text-base font-semibold">{file?.pdfFiles?.fileName}</div>
+        <div></div>
+      </div>
+      <div className="flex justify-between items-center">
+        <div className="flex flex-wrap items-center gap-2 p-7">
+          <button onClick={() => setPage((p) => Math.max(0, p - 1))}
+            disabled={page === 0}
+            className="py-1 rounded disabled:opacity-50 hover:bg-gray-300">
+            <MdOutlineKeyboardArrowUp fontSize={20} />
+          </button>
+          <span className="text-xl">|</span>
+          <button onClick={() => setPage((p) => Math.min(pages.length - 1, p + 1))}
+            disabled={page === pages.length - 1}
+            className="py-1 rounded disabled:opacity-50 hover:bg-gray-300">
+            <MdOutlineKeyboardArrowDown fontSize={20} />
+          </button>
+          <div className="text-sm text-gray-600">
+            Page {page + 1} of {pages.length}
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <div onClick={() => setZoom((z) => Math.max(0.2, z - 0.1))}
+            className="py-1 rounded hover:bg-gray-300">
+            <GoDash fontSize={20} />
+          </div>
+          <span className="text-xl">|</span>
+          {/* <span className="min-w-[60px] text-center">{(zoom * 100).toFixed(0)}%</span> */}
+          <div onClick={() => setZoom((z) => Math.min(5, z + 0.1))}
+            className="py-1 rounded hover:bg-gray-300">
+            <GoPlus fontSize={20} />
+          </div>
+          <div onClick={() => setZoom(1)} className="px-3 py-1 bg-gray-200 rounded">
+            Reset
+          </div>
+        </div>
       </div>
 
-      <div className={styles.tiffContainer} id="tiff-container" ref={ref} {...rest}>
-        <div>
-          <div id='tiff-inner-container' className={styles.tiffInner} ref={canvasRef} />
-          {paginate === 'ltr' && pages.length > 1 && (
-            <div className={styles.tiffAbsolute} ref={paginateLTRRef}>
-              <button disabled={page === 0} onClick={handlePreviousClick}
-                className="mx-2 px-4 py-2 rounded bg-amber-300">
-                &lt;
-              </button>
-              <button disabled={page == pages.length - 1} onClick={handleNextClick}
-                className="mx-2 px-4 py-2 rounded bg-amber-300">
-                &gt;
-              </button>
-            </div>
-          )}
+      <div className="w-full h-[80vh] overflow-auto border border-gray-400 shadow-2xl rounded-2xl bg-white p-2">
+        <div className="w-fit h-fit min-w-full min-h-full">
+          <div className='grid place-content-center'>
+            <canvas ref={canvasRef} />
+          </div>
         </div>
       </div>
     </div>
@@ -170,10 +160,8 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
 
 TIFFViewer.propTypes = {
   tiff: PropTypes.string.isRequired,
-  paginate: PropTypes.string,
-  buttonColor: PropTypes.string,
-  onDocumentLoad: PropTypes.func,
   currentPage: PropTypes.number,
-  printable: PropTypes.bool,
-  zoomable: PropTypes.bool
+  overlays: PropTypes.array,
+  onDocumentLoad: PropTypes.func,
+  file: PropTypes.object
 }

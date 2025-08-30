@@ -31,7 +31,7 @@ const useNavigation = () => {
 };
 
 const redirectToPage = (data: any, pageName: string, navigate: any) => {
-    const baseUrl = `../${pageName}`;
+    const baseUrl = `/app/admin/${pageName}`;
     const url = data?.id ? `${baseUrl}/view/${data.id}` : baseUrl;
     navigate(url);
 }

@@ -10,10 +10,6 @@
   --card-box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
 }
 
-* {
-  scrollbar-width: none;
-}
-
 /* -- dark mode icon */
 .dark-mode-toggle-icon {
   cursor: pointer;
@@ -257,9 +253,12 @@ pre {
   transform: translateY(0);
 }
 
-.text-view-value-filled,
-.text-view-value-outlined {
-  margin: 10px auto 5px auto;
+.text-view-value-filled {
+  margin: 1px !important;
+  width: 76% !important;
+  border-radius: 20px !important;
+  background-color: rgba(208, 204, 204, 0.2) !important;
+  color: white !important;
 }
 
 .gutter-container {
@@ -271,7 +270,7 @@ pre {
 }
 
 .text-view-value-filled {
-  min-height: auto !important;
+  min-height: 40px !important;
   word-break: break-word;
   word-wrap: break-word;
 }
@@ -310,12 +309,11 @@ pre {
 }
 
 .py-grid-header {
-  background-color: transparent !important;
-  color: white !important;
+  background-color: rgba(0, 30, 70, 0.3) !important;
 }
 
 .py-grid-header tr td {
-  z-index: -999;
+  /* z-index: -999; */
   position: relative;
 }
 
@@ -499,13 +497,14 @@ pre {
 }
 
 .py-dataGrid-header-text {
-  color: black !important;
+  color: rgb(255, 255, 255) !important;
 }
 
 .py-data-grid-table {
   border: 1px solid var(--border-color) !important;
   border-radius: 8px;
   max-height: 73vh;
+  margin-top: 14px;
 }
 
 .py-form-field-label {
@@ -542,7 +541,10 @@ pre {
 
 .text-view-label {
   text-align: left;
-  color: rgb(229, 229, 229) !important;
+  color: rgb(255, 255, 255) !important;
+  font-weight: 500;
+  font-size: 15px;
+  margin-top: 10px;
 }
 
 .text-view-field-container {
@@ -691,7 +693,8 @@ pre {
 .py-filled-button:hover,
 .py-action-button:hover,
 .py-filter-button:hover {
-  background-color: rgba(var(--primary-color-rgb), 1);
+  background-color: rgb(252, 200, 0);
+  color: rgb(0, 89, 138);
 }
 
 .py-dropdown-button,
@@ -848,10 +851,10 @@ pre {
 }
 
 .acl-tab-page .tab-view .mantine-Tabs-tab:where([data-active]) {
-  background-color: white;
-  color: black !important;
+  background-color: rgba(175, 175, 175, 0.2);
+  /* color: black !important; */
   font-weight: 600;
-  border-bottom: 1px solid skyblue
+  border: 1px solid rgb(146, 146, 146, 0.3);
 }
 
 .mantine-Tabs-tab {
@@ -875,6 +878,7 @@ pre {
   justify-content: space-between;
   font-size: 20px;
   padding: 10px 10px 20px;
+  color: white;
 }
 
 .form-header-text {
@@ -1071,4 +1075,34 @@ pre {
 
 .bg-Color {
   background-color: #377bb9cc;
+}
+
+/* 
+.py-form-field-data {
+  color: white;
+} */
+
+.user-view-form-container {
+  gap: 10px;
+}
+
+.user-form-container-no .mantine-InputWrapper-label,
+.mantine-Radio-label {
+  color: white;
+}
+
+.user-form-container-no .mantine-Input-wrapper {
+  width: 76% !important;
+}
+
+.user-form-container-no .mantine-Input-input {
+  margin: 1px !important;
+  /* width: 76% !important; */
+  border-radius: 20px !important;
+  background-color: rgba(208, 204, 204, 0.2) !important;
+  color: white !important;
+}
+
+.user-form-container-no .mantine-Input-section{
+color: white !important;
 }
