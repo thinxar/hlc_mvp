@@ -108,7 +108,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
   }
 
   return (
-    <div className="w-full h-full p-4 items-center gap-4">
+    <div className="w-full h-[calc(100vh-115px)] overflow-hidden p-4 flex flex-col gap-4">
       <div className="flex justify-between items-center">
         <div className="text-base font-semibold">{file?.pdfFiles?.fileName}</div>
         <div></div>
@@ -136,7 +136,6 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
             <GoDash fontSize={20} />
           </div>
           <span className="text-xl">|</span>
-          {/* <span className="min-w-[60px] text-center">{(zoom * 100).toFixed(0)}%</span> */}
           <div onClick={() => setZoom((z) => Math.min(5, z + 0.1))}
             className="py-1 rounded hover:bg-gray-300">
             <GoPlus fontSize={20} />
@@ -147,7 +146,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer(
         </div>
       </div>
 
-      <div className="w-full h-[80vh] overflow-auto border border-gray-400 shadow-2xl rounded-2xl bg-white p-2">
+      <div className="w-full flex-1 overflow-auto border border-gray-400 shadow-2xl rounded-2xl bg-white p-2">
         <div className="w-fit h-fit min-w-full min-h-full">
           <div className='grid place-content-center'>
             <canvas ref={canvasRef} />
