@@ -5,10 +5,12 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.palmyralabs.dms.dataload.model.PolicyModel;
 
+@Service
 public class CsvReaderService {
 
 	public PolicyModel parseCsv(MultipartFile file) {
@@ -41,6 +43,7 @@ public class CsvReaderService {
 		String policyNumber = values[5].trim();
 		String batchNumber = values[6].trim();
 		String customerName = values[7].trim();
+		String uploadLabel = values[values.length - 1];
 		
 		PolicyModel model = new PolicyModel();
 		model.setBoxNumber(boxNumber);
@@ -52,7 +55,9 @@ public class CsvReaderService {
 		model.setPolicyNumber(Integer.parseInt(policyNumber));
 		model.setBatchNumber(batchNumber);
 		model.setCustomerName(customerName);
-		
+		model.setUploadLabel(uploadLabel);
+		model.setRmsStatus(1);
+		model.setPolicyStatus(1);
 		return model;
 	}
 
