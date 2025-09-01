@@ -1,7 +1,5 @@
 package com.palmyralabs.dms.dataload.model;
 
-import java.time.LocalDate;
-
 import com.palmyralabs.palmyra.client.PalmyraType;
 
 import lombok.Getter;
@@ -19,9 +17,9 @@ public class PolicyModel {
 
 	private String customerName;
 
-	private LocalDate customerDob;
+	private String customerDob;
 
-	private LocalDate doc;
+	private String doc;
 
 	private Long divisionCode;
 

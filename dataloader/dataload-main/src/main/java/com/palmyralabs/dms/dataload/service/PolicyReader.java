@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
 
@@ -44,13 +43,14 @@ public class PolicyReader {
 		String batchNumber = values[6].trim();
 		String customerName = values[7].trim();
 		String uploadLabel = values[values.length - 1];
-
+		
 		PolicyModel model = new PolicyModel();
+		model.setId(2);
 		model.setBoxNumber(boxNumber);
-		model.setCustomerDob(LocalDate.parse(customerDob));
+		model.setCustomerDob(customerDob);
 		model.setCustomerId(policyNumber);
 		model.setBranchCode(brachCode);
-		model.setDoc(LocalDate.parse(doc));
+		model.setDoc(doc);
 		model.setDivisionCode(Long.parseLong(divisionCode));
 		model.setPolicyNumber(Integer.parseInt(policyNumber));
 		model.setBatchNumber(batchNumber);

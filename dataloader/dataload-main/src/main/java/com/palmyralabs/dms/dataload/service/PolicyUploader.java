@@ -22,11 +22,10 @@ public class PolicyUploader {
 		PolicyModel model = csvReader.parseCsv(path.toFile());
 		if(null != model) {
 			PolicyModel response = saveModel(model, client);
-			uploadFiles(response);
 		}
 	}
 
-	private void uploadFiles(PolicyModel response) {
+	public void uploadFiles(Integer policyId, Integer docketTypeId) {
 				
 	}
 

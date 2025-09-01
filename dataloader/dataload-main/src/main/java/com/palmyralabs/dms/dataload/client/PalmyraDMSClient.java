@@ -1,6 +1,8 @@
 package com.palmyralabs.dms.dataload.client;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,6 +43,21 @@ public class PalmyraDMSClient extends BaseRestClient{
 	public PolicyModel save(PolicyModel policy) throws IOException {
 		return client.save(policy);		
 	}
+	
+	public void uploadFile(Integer policyId, Integer docketTypeId,String policyNumber,PalmyraDMSClient client) throws IOException{
+		
+		String url = baseURL + "/palmyra/policy/{policyId}/docketType/{docketTypeId}/file";
+		HashMap<String, Object> request = new HashMap<String, Object>();
+		request.put("policyId", policyId.toString());
+		request.put("docketTypeId", docketTypeId.toString());
+		
+		Path path = Paths.get("/home/palmyra/suresh",  policyNumber, "597934126~correspondence~FeapDocument~correspondence~175313078" + ".txt");
+		
+		StringResponseHandler handler = new StringResponseHandler(url);
+		String response = post(url, request, handler);
+		System.out.println(response);
+	}
+	
 	
 	public List<PolicyModel> getPolicyByNumber(String policyNumber) throws IOException {		
 		FilterCriteria criteria = new FilterCriteria();
