@@ -22,9 +22,9 @@ application {
 }
 
 dependencies {
-    implementation deps.spring.core    
-    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.11' 
-    implementation deps.palmyra.spring
+    implementation deps.spring.core  
+    implementation deps.apache.http.client  
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.11'
 }
 
 configurations {

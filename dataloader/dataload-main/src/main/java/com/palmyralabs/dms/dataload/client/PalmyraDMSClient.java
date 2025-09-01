@@ -19,10 +19,12 @@ public class PalmyraDMSClient extends BaseRestClient{
 	private final String baseURL;
 	
 	private final PalmyraClientFactory clientFactory;
+	private final PalmyraClient<PolicyModel, Integer> client;
 	
 	public PalmyraDMSClient(String baseUrl, String context) {
 		this.baseURL = baseUrl;
 		this.clientFactory = new PalmyraClientFactoryImpl(baseURL, context);
+		this.client = this.clientFactory.getClient(PolicyModel.class);
 	}
 	
 	public void login(String username, String password) throws IOException{
@@ -36,8 +38,11 @@ public class PalmyraDMSClient extends BaseRestClient{
 		System.out.println(response);
 	}
 	
-	public List<PolicyModel> getPolicyByNumber(String policyNumber) throws IOException {
-		PalmyraClient<PolicyModel, Integer> client = this.clientFactory.getClient(PolicyModel.class);
+	public PolicyModel save(PolicyModel policy) throws IOException {
+		return client.save(policy);		
+	}
+	
+	public List<PolicyModel> getPolicyByNumber(String policyNumber) throws IOException {		
 		FilterCriteria criteria = new FilterCriteria();
 		criteria.addCriteria("policyNumber", policyNumber);
 		ResultSet<PolicyModel> result = client.query(criteria);

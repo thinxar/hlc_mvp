@@ -1,6 +1,6 @@
 def versions = [ spring_boot: '3.5.3',spring:'6.2.8',
 	HikariCP:'6.2.1',log4j2:'2.25.1',spring_security:'6.5.1',
-	persistence_api:'3.1.0',servlet_api:'6.1.0', 
+	persistence_api:'3.1.0',servlet_api:'6.1.0', httpcomponents:'5.3', 
 	jackson:'2.18.3', slf4j:"2.0.17", jetty:'11.0.16',
 	lombok:'1.18.36', jdbc_mariadb:'3.5.2', palmyra:'1.4.3']
 
@@ -20,7 +20,6 @@ def spring = [
 	jdbc : "org.springframework:spring-jdbc:${versions.spring}",
 	context : "org.springframework:spring-context:${versions.spring}",
 	core : "org.springframework:spring-core:${versions.spring}",
-	web : "org.springframework:spring-web:${versions.spring}",
 	spring_tx : "org.springframework:spring-tx:${versions.spring}",
 	security_web: "org.springframework.security:spring-security-web:${versions.spring_security}",
 	security_config: "org.springframework.security:spring-security-config:${versions.spring_security}",
@@ -45,6 +44,7 @@ def jackson = [
 ]
 
 def apache = [	
+	http: [ client:"org.apache.httpcomponents.client5:httpclient5:${versions.httpcomponents}"],
 	log4j2:[ 
 		slf4j_adapter :"org.apache.logging.log4j:log4j-to-slf4j:${versions.log4j2}"
 		]

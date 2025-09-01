@@ -1,7 +1,5 @@
 package com.palmyralabs.dms.dataload;
 
-import java.util.List;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,11 +7,15 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 import com.palmyralabs.dms.dataload.client.PalmyraDMSClient;
-import com.palmyralabs.dms.dataload.model.PolicyModel;
+import com.palmyralabs.dms.dataload.service.PolicyUploader;
+import com.palmyralabs.palmyra.client.exception.ClientException;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@EnableAsync
 @SpringBootApplication()
 @ComponentScan(value = { "com.palmyralabs.dms" })
-@EnableAsync
 public class DataLoadMain implements CommandLineRunner {
 
 	public static void main(String[] args) {
@@ -22,9 +24,17 @@ public class DataLoadMain implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		PalmyraDMSClient client = new PalmyraDMSClient("http://localhost:7070/api/", "palmyra/");
-		client.login("admin@gmail.com", "ad");
-		List<PolicyModel> policies = client.getPolicyByNumber("782002020");
-		System.out.println(policies.size());
+		try {
+			PalmyraDMSClient client = new PalmyraDMSClient("http://localhost:7070/api/", "palmyra/");
+			client.login("admin@gmail.com", "ad");
+			
+			PolicyUploader loader = new PolicyUploader("/home/palmyra/data");
+			loader.loadPolicy("597934126", client);
+			
+		} catch (ClientException ce) {
+			log.error("Error while loading data - {}", ce.getMessage());
+		} catch (Throwable t) {
+			log.error("Error while loading data", t);
+		}
 	}
 }
