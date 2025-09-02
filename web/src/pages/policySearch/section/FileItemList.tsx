@@ -5,6 +5,8 @@ import { CiCalendar, CiHardDrive } from 'react-icons/ci';
 import Image from '../../../../public/images/image.png';
 import Pdf from '../../../../public/images/pdf.png';
 import Tiff from '../../../../public/images/tiff.png';
+import Text from '../../../../public/images/text.png';
+import Html from '../../../../public/images/html.png';
 import { ServiceEndpoint } from 'config/ServiceEndpoint';
 
 interface FileProps {
@@ -23,10 +25,17 @@ const FileItemList = ({ file, isSelected, onClick, policyId }: FileProps) => {
         window.open(fileUrl, '_blank');
     }
 
-    const getFileType = (type: any) => {
-        return <>{type === 'application/pdf' ? <img src={Pdf} className='w-7 h-7' /> : type === 'image/tiff' ? <img src={Tiff} className='w-8 h-8' />
-            : <img src={Image} className='w-7 h-7' />}</>
-    }
+    const iconMap: Record<string, { src: string; className: string }> = {
+        'application/pdf': { src: Pdf, className: 'w-7 h-7' },
+        'image/tiff': { src: Tiff, className: 'w-8 h-8' },
+        'text/html': { src: Html, className: 'w-7 h-7' },
+        'text/plain': { src: Text, className: 'w-9 h-9' },
+    };
+
+    const getFileType = (type: string) => {
+        const { src, className } = iconMap[type] || { src: Image, className: 'w-7 h-7' };
+        return <img src={src} className={className} />;
+    };
 
     return (
         <div onClick={onClick} className={`cursor-pointer p-2 rounded-xl transition-all duration-400 ease-in border-l-[10px] 
