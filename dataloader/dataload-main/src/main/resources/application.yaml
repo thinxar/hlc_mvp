@@ -5,3 +5,6 @@ app:
    username: "admin@gmail.com"
    password: "ad"
    policyFolder: "/home/ksvraja/test_data/dev/hpe"
+   parallel: 10
+   start: 10
+   end: 110

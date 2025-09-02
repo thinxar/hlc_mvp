@@ -6,14 +6,14 @@
 	<statusListener
 		class="ch.qos.logback.core.status.NopStatusListener" />
 
-	<appender name="CONSOLE"
+	<!--  appender name="CONSOLE"
 		class="ch.qos.logback.core.ConsoleAppender">
 		<layout class="ch.qos.logback.classic.PatternLayout">
 			<Pattern>
 				%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n
 			</Pattern>
 		</layout>
-	</appender>
+	</appender -->
 
 	<appender name="FileAppender"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -54,19 +54,19 @@
 	</appender>
 
 	<logger name="ch.qos" level="error" additivity="false">
-		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FileAppender" />
 	</logger>
 
 	<logger name="org.springframework" level="info"
 		additivity="false">
-		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FileAppender" />
 	</logger>
 
 	<logger name="com.zitlab" level="debug" additivity="false">
-		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FileAppender" />
 	</logger>
 	<logger name="com.palmyralabs" level="DEBUG">
-		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FileAppender" />
 	</logger>
 	
 	<logger name="com.palmyralabs.policyupload.failure" level="DEBUG">
@@ -74,7 +74,6 @@
 	</logger>
 
 	<root level="INFO">
-		<appender-ref ref="Console" />
 		<appender-ref ref="FileAppender" />
 		<appender-ref ref="ErrorFileAppender" />
 	</root>

@@ -15,4 +15,7 @@ public class UploadConfig {
 	private String username;
 	private String password;
 	private String policyFolder;
+	private Integer parallel = 1;
+	private Integer start = 0;
+	private Integer end = 0;
 }
