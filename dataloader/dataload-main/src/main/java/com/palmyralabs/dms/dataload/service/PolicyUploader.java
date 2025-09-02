@@ -28,6 +28,7 @@ public class PolicyUploader {
 		Path parent = baseFolder.resolve(relativePath);
 
 		String metadataFile = strategy.getPolicyMetaDataFile(relativePath);
+		log.info("Loading policy from {}/{}",  relativePath, metadataFile);
 		Path path = parent.resolve(metadataFile);
 
 		PolicyModel model = csvReader.parseCsv(path.toFile());
@@ -61,17 +62,22 @@ public class PolicyUploader {
 
 	@SneakyThrows
 	public void uploadFile(Integer policyId, Integer docketTypeId, Path filePath, PolicyNumberStrategy strategy) {
-		log.info("uploading file {} to policy {} with docket {}", filePath, policyId, docketTypeId);
+		Path relativePath = baseFolder.relativize(filePath);
+		log.info("uploading file {} to policy {} with docket {}", relativePath, policyId, docketTypeId);
 		try {
 			client.uploadFile(policyId, docketTypeId, filePath);
-		} catch (BadRequestException bre) {
-			Path relativePath = baseFolder.relativize(filePath);
+		} catch (BadRequestException bre) {			
 			String errorMessage = bre.getMessage();
 			if (null != errorMessage && errorMessage.toLowerCase().contains("file already exists")) {
 				log.trace("Error while uploading {}, error - '{}'", relativePath.toString(), bre.getMessage());
 			} else
 				failureLogger.error("Error while uploading {}, error - '{}'", relativePath.toString(),
 						bre.getMessage());
+		}catch(Throwable t) {
+			log.error("Error while uploading {}, error - '{}'", relativePath.toString(),
+					t.getMessage());
+			failureLogger.error("Error while uploading {}, error - '{}'", relativePath.toString(),
+					t.getMessage());
 		}
 	}
 

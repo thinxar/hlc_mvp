@@ -39,6 +39,7 @@ public class DummyDataLoader implements CommandLineRunner {
 				PooledExecutor executor = new PooledExecutor(uploadConfig.getParallel());
 
 				for (int i = start; i <= end; i++) {
+					log.info("Processing cycle {}", i);
 					GenerationalPolicyNumberStrategy strategy = new GenerationalPolicyNumberStrategy(i);
 					PolicyFileUploader fileUploader = new PolicyFileUploader(baseFolder, loader, strategy, executor);					
 					FolderUtil.processPolicy(baseFolder, fileUploader);					

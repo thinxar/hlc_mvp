@@ -24,7 +24,7 @@ public class PooledExecutor {
 
 		@Override
 		public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-			boolean queued = false;
+			
 			do {
 				try {
 					Thread.sleep(5 * 100);
@@ -35,8 +35,9 @@ public class PooledExecutor {
 				int capacityAvailable = executor.getQueue().remainingCapacity();
 				if (capacityAvailable > 2) {
 					executor.execute(r);
+					return;
 				}
-			} while (!queued);
+			} while (true);
 		}
 
 	}
