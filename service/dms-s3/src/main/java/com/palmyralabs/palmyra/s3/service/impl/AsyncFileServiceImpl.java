@@ -3,6 +3,8 @@ package com.palmyralabs.palmyra.s3.service.impl;
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,8 +32,8 @@ import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 public class AsyncFileServiceImpl implements AsyncFileService {
 
 	private final S3AsyncClient asyncClient;
-
 	private final S3Config props;
+	private static final Logger logger = LoggerFactory.getLogger(AsyncFileServiceImpl.class);
 
 	public void download(String key, ResponseFileEmitter emitter) {
 		asyncDownload(key, emitter);
@@ -55,7 +57,7 @@ public class AsyncFileServiceImpl implements AsyncFileService {
 			emitter.setContentType(contentType);
 			publisher.subscribe(new S3FileConsumer(emitter));
 		} catch (Exception t) {
-			log.error("Error while downloading file " + key, t);
+			logger.error("Error while downloading file " + key, t);
 			emitter.completeWithError(t);
 		}
 	}

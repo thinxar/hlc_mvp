@@ -3,6 +3,8 @@ package com.palmyralabs.dms.service;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +30,8 @@ public class PolicyFileService {
 	private final SyncFileServiceImpl syncFileService;
 	private final PolicyFileRepository policyFileRepository;
 	private final PolicyRepository policyRepository;
-
+	private static final Logger logger = LoggerFactory.getLogger(PolicyFileService.class);
+	  
 	public ResponseFileEmitter download(Integer policyId, Integer fileId) {
 		PolicyFileEntity policyFileEntity = policyFileRepository.findByPolicyIdAndId(policyId, fileId);
 
@@ -47,6 +50,8 @@ public class PolicyFileService {
 	}
 
 	public String upload(MultipartFile file, Integer policyId, Integer docketTypeId) {
+		
+		logger.info("Initiating upload process for policyId={}, docketTypeId={}", policyId, docketTypeId);
 		Optional<PolicyEntity> policyOptional = policyRepository.findById(policyId);
 
 		if (policyOptional.isPresent()) {
@@ -59,10 +64,11 @@ public class PolicyFileService {
 			PolicyFileUploadListener listener = new PolicyFileUploadListener();
 			try {
 				syncFileService.upload(folder, fileName, file, listener);
+				logger.info("Upload successful: File '{}' uploaded to '{}'", fileName, folder);
 			}catch(Exception e){
-				log.error("S3 upload failed for file '{}': {}", fileName, e.getMessage(),e);
-				throw new InvaidInputException("INV400", "File Upload To S3 failed");
-			}
+				logger.error("S3 upload failed for file '{}': {}", fileName, e.getMessage(),e);
+				throw new InvaidInputException("INV400", "File Upload To S3 failed for "+e.getMessage());
+			}	
 			PolicyFileEntity fileEntity = new PolicyFileEntity();
 			fileEntity.setFileName(fileName);
 			fileEntity.setFileSize(file.getSize());
@@ -82,22 +88,7 @@ public class PolicyFileService {
 		Optional<PolicyFileEntity> optPolicyFile = policyFileRepository.findByObjectUrl(objectUrl);
 		String fileName = file.getOriginalFilename();
 		if (optPolicyFile.isPresent()) {
-			String originalFileName = fileName;
-			String extension = "";
-			int dotIndex = originalFileName.lastIndexOf('.');
-			if (dotIndex != -1) {
-				fileName = originalFileName.substring(0, dotIndex);
-				extension = originalFileName.substring(dotIndex);
-			}
-			int count = 1;
-			String newFileName = "";
-			do {
-				newFileName = fileName + "_" + count + extension;
-				count++;
-				objectUrl = Paths.get(folder, newFileName).toString();
-				optPolicyFile = policyFileRepository.findByObjectUrl(objectUrl);
-			} while (optPolicyFile.isPresent());
-			return newFileName;
+			throw new InvaidInputException("INV400", "File Already Exists");
 		} else {
 			return fileName;
 		}

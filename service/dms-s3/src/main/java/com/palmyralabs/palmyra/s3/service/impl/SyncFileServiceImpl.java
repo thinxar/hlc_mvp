@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,8 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
@@ -28,8 +33,8 @@ import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 public class SyncFileServiceImpl {
 
 	private final S3Client client;
-
 	private final S3Config props;
+	private static final Logger logger = LoggerFactory.getLogger(SyncFileServiceImpl.class);
 
 	public void download(String key, ResponseFileEmitter emitter) {
 
@@ -46,17 +51,17 @@ public class SyncFileServiceImpl {
 				}
 				emitter.complete();
 			} catch (IOException e) {
-				log.info("Exception while processing the buffer", e);
+				logger.info("Exception while processing the buffer", e);
 				emitter.completeWithError(e);
 			} finally {
 				try {
 					response.close();
 				} catch (IOException e) {
-					log.info("Exception while closing the response", e);
+					logger.info("Exception while closing the response", e);
 				}
 			}
 		} catch (Exception e) {
-			log.info("Exception while processing the download", e);
+			logger.info("Exception while processing the download", e);
 			emitter.completeWithError(e);
 		}
 
@@ -69,7 +74,7 @@ public class SyncFileServiceImpl {
 			PutObjectResponse response = client.putObject(request, requestBody);
 			processResponse(key, response, listener);
 		} catch (Exception e) {
-			log.info("Exception while uploading the file", e);
+			logger.info("Exception while uploading the file", e);
 			listener.onFailure(e);
 		}
 	}
@@ -83,9 +88,23 @@ public class SyncFileServiceImpl {
 		String key = Paths.get(folder, originalFilename).toString();
 		PutObjectRequest request = PutObjectRequest.builder().bucket(props.getBucketName())
 				.contentType(file.getContentType()).key(key).build();
+
 		RequestBody requestBody = RequestBody.fromInputStream(file.getInputStream(), file.getSize());
 		try {
 			PutObjectResponse response = client.putObject(request, requestBody);
+			
+			HeadObjectRequest headRequest = HeadObjectRequest.builder().bucket(props.getBucketName()).key(key).build();
+			HeadObjectResponse headResponse = client.headObject(headRequest);
+			long uploadedFileSize = headResponse.contentLength();
+			if (uploadedFileSize == 0) {
+		            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+		                    .bucket(props.getBucketName())
+		                    .key(key)
+		                    .build();
+
+		            client.deleteObject(deleteRequest);
+		            throw new IllegalStateException("Uploaded file is 0 KB and has been deleted.");
+		        }
 			processResponse(key, response, listener);
 		} catch (Exception e) {
 			listener.onFailure(e);
