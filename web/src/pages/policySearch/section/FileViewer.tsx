@@ -4,6 +4,7 @@ import { PdfViewWithOverlay } from 'components/viewer/PdfViewWithOverlay';
 import { TIFFViewer } from 'components/viewer/TiffViewWithOverlay';
 import { IoClose } from 'react-icons/io5';
 import { useState } from 'react';
+import { TextHtmlViewer } from 'components/viewer/TextHtmlViewer';
 
 interface FileProps {
     file: any
@@ -36,7 +37,7 @@ const FileViewer = ({ fileUrl, key, file }: FileProps) => {
                             scale={0.7}
                             file={fileData}
                         />
-                    ) : fileData.pdfFiles?.type === 'image/tiff' ? (
+                    ) : fileData?.pdfFiles?.type === 'image/tiff' ? (
                         <TIFFViewer
                             // overlays={overlays}
                             tiff={fileUrl}
@@ -45,9 +46,9 @@ const FileViewer = ({ fileUrl, key, file }: FileProps) => {
                             buttonColor="#141414"
                             file={fileData}
                         />
-                    ) : (
-                        <ImageViewer endPoint={fileUrl} file={fileData} />
-                    )}
+                    ) : fileData?.pdfFiles?.type === 'text/plain' || fileData?.pdfFiles?.type === 'text/html' ? (
+                        <TextHtmlViewer endPoint={fileUrl} file={fileData} />
+                    ) : <> <ImageViewer endPoint={fileUrl} file={fileData} /></>}
                 </div>
             </div>
         </div>
