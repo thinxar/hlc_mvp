@@ -13,7 +13,7 @@ def pdf = [
 def palmyra = [
 	spring:"com.palmyralabs.palmyra:palmyra-spring:${versions.palmyra}",
 	standard:"com.palmyralabs.palmyra.core:palmyra-standard:${versions.palmyra}",
-	client:"com.palmyralabs.palmyra:palmyra-java-client:0.4.1"
+	client:"com.palmyralabs.palmyra:palmyra-java-client:0.4.2"
 ]
 
 def spring = [

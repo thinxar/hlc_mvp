@@ -25,6 +25,10 @@ dependencies {
     implementation deps.spring.core  
     implementation deps.apache.http.client  
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.11'
+    
+
+	implementation("org.apache.tika:tika-core:3.2.2")
+	implementation("org.apache.tika:tika-parsers-standard-package:3.2.2")
 }
 
 configurations {

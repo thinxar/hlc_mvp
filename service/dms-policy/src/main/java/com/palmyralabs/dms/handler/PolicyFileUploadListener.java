@@ -2,6 +2,8 @@ package com.palmyralabs.dms.handler;
 
 import com.palmyralabs.palmyra.filemgmt.stream.FileUploadListener;
 
+import lombok.SneakyThrows;
+
 public class PolicyFileUploadListener implements FileUploadListener{
 
 	@Override
@@ -10,8 +12,9 @@ public class PolicyFileUploadListener implements FileUploadListener{
 	}
 
 	@Override
+	@SneakyThrows
 	public void onFailure(Throwable e) {
-		
+		throw e;
 	}
 
 }

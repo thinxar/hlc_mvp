@@ -27,13 +27,10 @@ public class DataLoadMain implements CommandLineRunner {
 		try {
 			PalmyraDMSClient client = new PalmyraDMSClient("http://localhost:7070/api/", "palmyra/");
 			client.login("admin@gmail.com", "ad");
-			
-			PolicyUploader loader = new PolicyUploader("/home/palmyra/suresh");
-			loader.loadPolicy("597934126", client);
-			
-			client.uploadFile(1,2,"597934126",client);
-			
-			
+
+			PolicyUploader loader = new PolicyUploader("/home/ksvraja/test_data/dev/hpe/lic/597934126", client);
+			loader.loadPolicy("597934126");
+
 		} catch (ClientException ce) {
 			log.error("Error while loading data - {}", ce.getMessage());
 		} catch (Throwable t) {
