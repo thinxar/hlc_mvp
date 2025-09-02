@@ -1,0 +1,7 @@
+
+app:
+ upload:
+   url: "http://localhost:7070/api/"
+   username: "admin@gmail.com"
+   password: "ad"
+   policyFolder: "/home/ksvraja/test_data/dev/hpe"

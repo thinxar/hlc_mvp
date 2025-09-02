@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @PalmyraType(type = "DmsPolicy")
 public class PolicyModel {
-	@PalmyraField(keyField = true)
+	@PalmyraField(primaryKey = true)
 	private Integer id;
 
 	@PalmyraField(mandatory = Mandatory.ALL)

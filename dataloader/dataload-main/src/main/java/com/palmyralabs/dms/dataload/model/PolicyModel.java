@@ -1,5 +1,6 @@
 package com.palmyralabs.dms.dataload.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.palmyralabs.palmyra.client.PalmyraType;
 
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.Setter;
 @Setter
 @PalmyraType("policy")
 public class PolicyModel {
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Integer id;
 
 	private Integer policyNumber;
