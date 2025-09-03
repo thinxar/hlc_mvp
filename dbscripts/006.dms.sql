@@ -24,6 +24,8 @@ CREATE TABLE dms_policy (
     CONSTRAINT dms_policy_pkey PRIMARY KEY (id)
 );
 
+CREATE INDEX idx_policy_number ON dms_policy (policy_number);
+
 CREATE TABLE mst_document_type (
 	id BIGINT NOT NULL,
 	document varchar(128) NOT NULL,
@@ -54,6 +56,7 @@ CREATE TABLE dms_policy_file (
     CONSTRAINT fk_dms_docket_type FOREIGN KEY (docket_type) REFERENCES mst_document_type(id)
 );
 
+CREATE INDEX idx_pfile_policy_id ON dms_policy_file (policy_id);
 
 INSERT INTO mst_document_type (id,document, description,created_by,created_on)
 VALUES 
