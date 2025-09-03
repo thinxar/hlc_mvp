@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, forwardRef } from "react";
 import axios from "axios";
-import UTIF from "utif";
+import UTIF from "utif2";
 import { Loader } from "@mantine/core";
 import { GoDash, GoPlus } from "react-icons/go";
 import { MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown } from "react-icons/md";
@@ -10,7 +10,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
   const [pages, setPages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(0.85);
 
   const canvasRef: any = useRef<HTMLCanvasElement>(null);
 
@@ -83,7 +83,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
     if (!currentPage || !currentPage.canvas) return;
 
     const originalCanvas = currentPage.canvas;
-
+    
     const scaledWidth = originalCanvas.width * zoom
     const scaledHeight = originalCanvas.height * zoom
 
