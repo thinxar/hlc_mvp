@@ -40,9 +40,11 @@ const PolicyResultView = () => {
                     path: item.path || ''
                 }
             }));
-            setSelectedFile(mappedPolicies[0])
+            const file = mappedPolicies.find((f: any) =>
+                f?.pdfFiles?.fileName?.includes('Bond')
+            );
+            setSelectedFile(file)
             setData(mappedPolicies);
-
         }).catch(handleError);
     }
 

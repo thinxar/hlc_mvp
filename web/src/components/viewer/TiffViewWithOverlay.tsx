@@ -146,7 +146,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
               className="py-1 rounded hover:bg-gray-300 cursor-pointer">
               <GoPlus fontSize={20} />
             </div>
-            <div onClick={() => setZoom(1)} className="px-3 py-1 bg-gray-200 rounded cursor-pointer">
+            <div onClick={() => setZoom(0.85)} className="px-3 py-1 bg-gray-200 rounded cursor-pointer">
               Reset
             </div>
           </div>

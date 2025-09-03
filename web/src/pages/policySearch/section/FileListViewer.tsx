@@ -23,14 +23,22 @@ const FileListViewer = ({ data, policyId, selectedFile, setSelectedFile }: FileP
 
     const groupedByDocketType = data.reduce((acc: any, item: any) => {
         const type = item.pdfFiles?.docketType?.document || '--';
+
+        const fileName = item.pdfFiles?.fileName;
+
         if (!acc[type]) {
             acc[type] = [];
         }
-        acc[type].push(item);
+
+        if (fileName.includes("Bond")) {
+            acc[type].unshift(item);
+        } else {
+            acc[type].push(item);
+        }
         return acc;
     }, {});
 
-  const docketTypes = Object.keys(groupedByDocketType);
+    const docketTypes = Object.keys(groupedByDocketType);
 
     return (<>
         {data.length !== 0 ? (

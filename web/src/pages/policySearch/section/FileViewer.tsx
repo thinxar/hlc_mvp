@@ -13,7 +13,7 @@ interface FileProps {
 }
 
 const FileViewer = ({ fileUrl, key, file }: FileProps) => {
-    const [fileData, setFileData] = useState(file);
+    const [fileData, _setFileData] = useState(file);
 
     // const overlays = [
     //     { page: 1, imageUrl: '/images/licseal.jpg', x: 100, y: 150, width: 100, height: 100 },
@@ -24,7 +24,7 @@ const FileViewer = ({ fileUrl, key, file }: FileProps) => {
         {fileData ? <div className="h-auto overflow-hidden" key={key}>
             <div className="p-2 flex justify-between">
                 <div></div>
-                <IoClose fontSize={20} className='text-white cursor-pointer hover:bg-white/20' onClick={() => { setFileData(null) }} />
+                <IoClose fontSize={20} className='text-white cursor-pointer hover:bg-white/20' onClick={() => window.history.back()} />
             </div>
             <div className="p-3">
                 <div className="h-[calc(100vh-115px)] bg-white rounded-2xl flex items-center justify-center overflow-hidden">
