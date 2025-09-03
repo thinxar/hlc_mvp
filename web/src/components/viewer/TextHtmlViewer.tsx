@@ -16,7 +16,7 @@ const TextHtmlViewer = ({ endPoint, file }: any) => {
       setLoading(true);
       const response = await axios.get(endPoint, { responseType: 'text' });
       setContent(response.data);
-    } catch (error) {
+    } catch (error:any) {
       toast.error("Failed to load file");
     } finally {
       setLoading(false);

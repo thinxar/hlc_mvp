@@ -10,6 +10,8 @@ import { toast } from 'react-toastify';
 import Image from '../../../public/images/image.png';
 import Pdf from '../../../public/images/pdf.png';
 import Tiff from '../../../public/images/tiff.png';
+import TextFile from '../../../public/images/text.png';
+import Html from '../../../public/images/html.png';
 import './FileDropZone.css';
 import { ServiceEndpoint } from 'config/ServiceEndpoint';
 import { ServerLookup } from 'templates/mantineForm';
@@ -48,7 +50,10 @@ const FileDropZone = (props: IOptions) => {
             }
         },
         multiple: false,
-        accept: { pdf: ['.pdf'], docx: ['.docx'], images: ['.jpg', '.jpeg', '.png'], 'image/tiff': ['.tiff', '.tif'] }
+        accept: {
+            pdf: ['.pdf'], docx: ['.docx'], html: ['.html', '.htm'], text: ['.txt'],
+            images: ['.jpg', '.jpeg', '.png'], 'image/tiff': ['.tiff', '.tif']
+        }
     });
 
     // useEffect(() => {
@@ -66,10 +71,14 @@ const FileDropZone = (props: IOptions) => {
         const getImage = () => {
             if (fileExtension === "pdf") {
                 return Pdf;
-            } else if (fileExtension === "tiff") {
+            } else if (fileExtension === "tiff" || fileExtension === "tif") {
                 return Tiff;
             } else if (["jpg", "jpeg", "png"].includes(fileExtension)) {
                 return Image;
+            } else if (fileExtension === "html") {
+                return Html;
+            } else if (fileExtension === "txt") {
+                return TextFile;
             }
             return Image;
         };
