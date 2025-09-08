@@ -1,6 +1,7 @@
 package com.palmyralabs.palmyra.s3.spring;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +15,7 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.client.config.SdkAdvancedAsyncClientOption;
+import software.amazon.awssdk.http.nio.netty.NettyNioAsyncHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -31,22 +33,22 @@ public class S3ClientFactory {
 		AwsCredentialsProvider crProvider = StaticCredentialsProvider
 				.create(AwsBasicCredentials.create(props.getAccessKey(), props.getSecretKey()));
 
-//		NettyNioAsyncHttpClient.Builder asyncHttpClientBuilder = NettyNioAsyncHttpClient.builder()
-//		        .maxConcurrency(64)		        
-//		        .connectionTimeout(Duration.ofSeconds(20))
-//		        .connectionAcquisitionTimeout(Duration.ofSeconds(20));
-//		
+		NettyNioAsyncHttpClient.Builder asyncHttpClientBuilder = NettyNioAsyncHttpClient.builder()
+				.maxConcurrency(null == props.getMaxConcurrency() ? 32 : props.getMaxConcurrency())
+				.connectionTimeout(Duration.ofSeconds(20)).connectionAcquisitionTimeout(Duration.ofSeconds(20));
 
-		ThreadPoolExecutor executor = new ThreadPoolExecutor(25, 25, 600, TimeUnit.SECONDS,
-				new LinkedBlockingQueue<>(25), new ThreadFactoryBuilder().threadNamePrefix("sdk-asynsdf").build());
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(props.getCorePoolSize(), props.getMaximumPoolSize(),
+				props.getKeepAliveTime(), TimeUnit.SECONDS, new LinkedBlockingQueue<>(props.getWorkQueue()),
+				new ThreadFactoryBuilder().threadNamePrefix("sdk-asynsdf").build());
 
 		// Allow idle core threads to time out
 		executor.allowCoreThreadTimeOut(true);
 
-		S3AsyncClient client = S3AsyncClient.builder().region(getRegion()).asyncConfiguration(
-				b -> b.advancedOption(SdkAdvancedAsyncClientOption.FUTURE_COMPLETION_EXECUTOR, executor))
-//				.httpClientBuilder(asyncHttpClientBuilder)
-				.credentialsProvider(crProvider).endpointOverride(getEndPoint())
+		S3AsyncClient client = S3AsyncClient.builder().region(getRegion())
+				.asyncConfiguration(
+						b -> b.advancedOption(SdkAdvancedAsyncClientOption.FUTURE_COMPLETION_EXECUTOR, executor))
+				.httpClientBuilder(asyncHttpClientBuilder).credentialsProvider(crProvider)
+				.endpointOverride(getEndPoint())
 //				.endpointProvider(getEndPointProvider())
 				.forcePathStyle(true).build();
 

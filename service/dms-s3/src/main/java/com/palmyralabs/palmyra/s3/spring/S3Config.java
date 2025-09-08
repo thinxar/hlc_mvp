@@ -18,4 +18,9 @@ public class S3Config {
     private String accessKey;
     private String secretKey;
     private String endpoint;
+    private Integer corePoolSize;
+    private Integer maximumPoolSize;
+    private Integer maxConcurrency;
+    private Long keepAliveTime;
+    private Integer workQueue;
 }

@@ -39,3 +39,8 @@ aws:
     accessKey: AKIAIOSFODNN7EXAMPLE
     secretKey: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
     endpoint: http://192.168.1.11:9000
+    corePoolSize: 25
+    maximumPoolSize: 25
+    keepAliveTime: 600
+    workQueue: 25
+    maxConcurrency: 32
