@@ -5,13 +5,13 @@ spring:
     hibernate:
       ddl-auto: validate
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://192.168.1.11:5432/postgres
+    username: dbuser
+    password: secret
     default-auto-commit: false
     driverClassName: org.postgresql.Driver
     hikari:
-      schema: ${DB_SCHEMA}
+      schema: dms
       connection-timeout: 90000000
       default-auto-commit: false
   servlet:
@@ -20,7 +20,7 @@ spring:
       max-request-size: 25MB
 
 server:
-  port: ${SERVER_PORT}
+  port: 7070
   jetty:
     threads:
       min: 128
@@ -36,16 +36,16 @@ app:
 
 palmyra:
   database: 
-    schemas: ${DB_SCHEMA}
+    schemas: dms
 aws:
   s3:
-    bucketName: ${S3_BUCKET}
-    region: ${S3_REGION}
-    accessKey: ${S3_ACCESSKEY}
-    secretKey: ${S3_SECRETKEY}
-    endpoint: ${S3_ENDPOINT}
-    corePoolSize: 16
-    maximumPoolSize: 16
+    bucketName: hpcbucket
+    region: ap-south-1
+    accessKey: AKIAIOSFODNN7EXAMPLE
+    secretKey: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    endpoint: http://192.168.1.11:9000
+    corePoolSize: 25
+    maximumPoolSize: 25
     keepAliveTime: 600
     workQueue: 25
-    maxConcurrency: ${S3_CLIENT_CONCURRENCY}
+    maxConcurrency: 32
