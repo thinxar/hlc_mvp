@@ -1,7 +1,7 @@
 <configuration>
-	<property name="LOG_PATH" value="/opt/palmyra/logs" />
+	<!-- <property name="LOG_PATH" value="/opt/palmyra/logs" />
 	<property name="LOG_FILE" value="${LOG_PATH}/application.log" />
-	<property name="ERROR_LOG_FILE" value="${LOG_PATH}/error.log" />
+	<property name="ERROR_LOG_FILE" value="${LOG_PATH}/error.log" /> -->
 
 	<statusListener
 		class="ch.qos.logback.core.status.NopStatusListener" />
@@ -15,7 +15,7 @@
 		</layout>
 	</appender>
 
-	<appender name="FileAppender"
+	<!-- <appender name="FileAppender"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${LOG_FILE}</file>
 		<rollingPolicy
@@ -33,10 +33,10 @@
 			<onMatch>ACCEPT</onMatch>
 			<onMismatch>NEUTRAL</onMismatch>
 		</filter>
-	</appender>
+	</appender> -->
 
 	<!-- Error Log Appender -->
-	<appender name="ErrorFileAppender"
+	<!-- <appender name="ErrorFileAppender"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${ERROR_LOG_FILE}</file>
 		<rollingPolicy
@@ -52,7 +52,7 @@
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
 			<level>ERROR</level>
 		</filter>
-	</appender>
+	</appender> -->
 
 	<logger name="ch.qos" level="error" additivity="false">
 		<appender-ref ref="CONSOLE" />
@@ -72,8 +72,8 @@
 
 	<root level="INFO">
 		<appender-ref ref="Console" />
-		<appender-ref ref="FileAppender" />
-		<appender-ref ref="ErrorFileAppender" />
+		<!-- <appender-ref ref="FileAppender" />
+		<appender-ref ref="ErrorFileAppender" /> -->
 	</root>
 
 </configuration>
