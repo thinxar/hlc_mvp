@@ -1,5 +1,5 @@
 <configuration>
-	<property name="LOG_PATH" value="logs" />
+	<property name="LOG_PATH" value="/opt/palmyra/logs" />
 	<property name="LOG_FILE" value="${LOG_PATH}/application.log" />
 	<property name="ERROR_LOG_FILE" value="${LOG_PATH}/error.log" />
 
