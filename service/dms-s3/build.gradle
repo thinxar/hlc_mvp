@@ -1,8 +1,7 @@
 group = 'com.palmyralabs.dms'
 
 dependencies {
-	implementation(platform("software.amazon.awssdk:bom:2.27.21"))
-	implementation("software.amazon.awssdk:s3")
-	implementation 'software.amazon.awssdk:netty-nio-client:2.27.21'
+	implementation deps.aws.s3
+	implementation deps.aws.netty.nio
 	api project(":dms-filemgmt")
 }

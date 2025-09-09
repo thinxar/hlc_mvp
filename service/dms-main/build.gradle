@@ -29,8 +29,10 @@ dependencies {
     implementation deps.springboot.security
     implementation deps.jackson.jsr310
 
+    implementation deps.jdbc.postgresql
+
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.11'
-    implementation 'com.github.jsqlparser:jsqlparser:5.1'    
+    implementation 'com.github.jsqlparser:jsqlparser:5.3'
    	implementation project(':dms-jpa')
    	implementation project(':dms-admin')
    	implementation project(':dms-policy')
@@ -75,8 +77,4 @@ distributions {
 
 installDist {
 	into ('../dist')
-}
-
-applicationDistribution.with {
-    include 'application.yaml'
 }

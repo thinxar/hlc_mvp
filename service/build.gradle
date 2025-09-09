@@ -45,10 +45,8 @@ subprojects {
         }
     }
 
-    dependencies {
-        implementation("org.postgresql:postgresql:42.7.7")        
+    dependencies {       
 		            
-       // implementation 'org.springframework.boot:spring-boot-starter:3.3.4'
         implementation ('org.springframework.boot:spring-boot-starter-web:3.3.4') {
         	exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     	}
@@ -56,8 +54,6 @@ subprojects {
     	implementation 'org.springframework.boot:spring-boot-starter-logging:3.3.4'
         testImplementation 'org.springframework.boot:spring-boot-starter-test:3.3.4'
 
-		implementation 'software.amazon.awssdk:s3:2.25.23'
-    
         implementation deps.palmyra.spring
         implementation deps.palmyra.store.pgsql
         implementation deps.jakarta.persistence
@@ -67,10 +63,12 @@ subprojects {
         implementation deps.palmyra.extn.aclmgmt
         implementation deps.apache.log4j2.slf4j_adapter
         
-        compileOnly deps.org.lombok
-        annotationProcessor deps.org.lombok        
-    
         implementation deps.org.slf4j.api
+
+        compileOnly deps.org.lombok
+        annotationProcessor deps.org.lombok
+    
+        
         
         testImplementation 'org.mockito:mockito-core:5.18.0'
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'

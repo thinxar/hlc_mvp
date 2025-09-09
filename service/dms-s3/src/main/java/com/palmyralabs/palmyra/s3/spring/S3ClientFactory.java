@@ -35,11 +35,12 @@ public class S3ClientFactory {
 
 		NettyNioAsyncHttpClient.Builder asyncHttpClientBuilder = NettyNioAsyncHttpClient.builder()
 				.maxConcurrency(null == props.getMaxConcurrency() ? 32 : props.getMaxConcurrency())
-				.connectionTimeout(Duration.ofSeconds(20)).connectionAcquisitionTimeout(Duration.ofSeconds(20));
+				.connectionTimeout(Duration.ofSeconds(props.getConnectionTimeout()))
+				.connectionAcquisitionTimeout(Duration.ofSeconds(props.getConnectionTimeout()));
 
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(props.getCorePoolSize(), props.getMaximumPoolSize(),
-				props.getKeepAliveTime(), TimeUnit.SECONDS, new LinkedBlockingQueue<>(props.getWorkQueue()),
-				new ThreadFactoryBuilder().threadNamePrefix("sdk-asynsdf").build());
+				props.getKeepAliveTime(), TimeUnit.SECONDS, new LinkedBlockingQueue<>(props.getMaximumPoolSize() * 4),
+				new ThreadFactoryBuilder().threadNamePrefix("sdk-async").build());
 
 		// Allow idle core threads to time out
 		executor.allowCoreThreadTimeOut(true);

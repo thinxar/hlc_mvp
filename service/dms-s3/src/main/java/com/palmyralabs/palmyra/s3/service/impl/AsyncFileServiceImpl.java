@@ -45,29 +45,37 @@ public class AsyncFileServiceImpl implements AsyncFileService {
 
 			CompletableFuture<ResponsePublisher<GetObjectResponse>> cplResponse = asyncClient.getObject(request,
 					AsyncResponseTransformer.toPublisher());
-
-			ResponsePublisher<GetObjectResponse> publisher = cplResponse.join();
-
-			GetObjectResponse responseMetadata = publisher.response();
-
-			String contentType = responseMetadata.contentType();
-			if (contentType == null || contentType.isEmpty()) {
-				contentType = "application/octet-stream";
-			}
-			emitter.setContentType(contentType);
-			publisher.subscribe(new S3FileConsumer(emitter));
+			
+			cplResponse.thenAcceptAsync( objResponse -> process(objResponse, emitter)).exceptionallyAsync( e -> {handle(e, key, emitter); return null;});
+			
 		} catch (Exception t) {
 			logger.error("Error while downloading file " + key, t);
 			emitter.completeWithError(t);
 		}
 	}
 
+	private void handle(Throwable t, String key, ResponseFileEmitter emitter) {
+		logger.error("Error while downloading file " + key, t);
+		emitter.completeWithError(t);
+	}
+
+	private void process(ResponsePublisher<GetObjectResponse> publisher, ResponseFileEmitter emitter) {
+		GetObjectResponse responseMetadata = publisher.response();
+
+		String contentType = responseMetadata.contentType();
+		if (contentType == null || contentType.isEmpty()) {
+			contentType = "application/octet-stream";
+		}
+		emitter.setContentType(contentType);
+		publisher.subscribe(new S3FileConsumer(emitter));
+	}
+
 	@Override
 	@SneakyThrows
 	public void upload(String folder, String originalFilename, MultipartFile file, FileUploadListener listener) {
-		AsyncRequestBodyFromInputStreamConfiguration conf = AsyncRequestBodyFromInputStreamConfiguration
-				.builder().inputStream(file.getInputStream()).build();
-		String key = Paths.get(folder,  originalFilename).toString();
+		AsyncRequestBodyFromInputStreamConfiguration conf = AsyncRequestBodyFromInputStreamConfiguration.builder()
+				.inputStream(file.getInputStream()).build();
+		String key = Paths.get(folder, originalFilename).toString();
 		PutObjectRequest request = PutObjectRequest.builder().bucket(props.getBucketName()).key(key).build();
 		AsyncRequestBody requestBody = AsyncRequestBody.fromInputStream(conf);
 		CompletableFuture<PutObjectResponse> cl = asyncClient.putObject(request, requestBody);
@@ -79,7 +87,7 @@ public class AsyncFileServiceImpl implements AsyncFileService {
 				listener.onSuccess(folder);
 				return response;
 			}
-		});		
+		});
 	}
 
 //	@Override

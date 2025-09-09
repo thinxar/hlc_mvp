@@ -1,5 +1,5 @@
 group = 'com.palmyralabs.dms'
 
 dependencies {
-	
+	implementation deps.aws.s3
 }

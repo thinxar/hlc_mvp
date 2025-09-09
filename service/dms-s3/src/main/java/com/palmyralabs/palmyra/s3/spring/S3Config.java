@@ -22,5 +22,5 @@ public class S3Config {
     private Integer maximumPoolSize;
     private Integer maxConcurrency;
     private Long keepAliveTime;
-    private Integer workQueue;
+	private Long connectionTimeout = 5L;
 }
