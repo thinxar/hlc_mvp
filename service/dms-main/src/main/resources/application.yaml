@@ -12,7 +12,9 @@ spring:
     driverClassName: org.postgresql.Driver
     hikari:
       schema: ${DB_SCHEMA}
-      connection-timeout: 90000000
+      maximum-pool-size: 32
+      minimum-idle: 16
+      connection-timeout: 2000
       default-auto-commit: false
   servlet:
     multipart:
