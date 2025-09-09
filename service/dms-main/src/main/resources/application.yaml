@@ -19,7 +19,7 @@ spring:
       max-request-size: 25MB
 
 server:
-  port: 7070
+  port: 8080
   servlet:
     context-path: /api
     session:
