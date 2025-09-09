@@ -34,7 +34,7 @@ public class S3ClientFactory {
 				.create(AwsBasicCredentials.create(props.getAccessKey(), props.getSecretKey()));
 
 		NettyNioAsyncHttpClient.Builder asyncHttpClientBuilder = NettyNioAsyncHttpClient.builder()
-				.maxConcurrency(null == props.getMaxConcurrency() ? 32 : props.getMaxConcurrency())
+				.maxConcurrency(props.getMaxConcurrency())
 				.connectionTimeout(Duration.ofSeconds(props.getConnectionTimeout()))
 				.connectionAcquisitionTimeout(Duration.ofSeconds(props.getConnectionTimeout()));
 

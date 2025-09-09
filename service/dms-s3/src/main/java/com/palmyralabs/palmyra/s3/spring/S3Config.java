@@ -20,7 +20,7 @@ public class S3Config {
     private String endpoint;
     private Integer corePoolSize;
     private Integer maximumPoolSize;
-    private Integer maxConcurrency;
+    private Integer maxConcurrency = 64;
     private Long keepAliveTime;
 	private Long connectionTimeout = 5L;
 }
