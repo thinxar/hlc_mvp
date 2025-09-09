@@ -1,0 +1,1 @@
+docker run --name hlc_service  hlcservice
