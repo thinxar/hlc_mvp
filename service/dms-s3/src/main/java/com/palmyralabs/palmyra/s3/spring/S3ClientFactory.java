@@ -3,6 +3,7 @@ package com.palmyralabs.palmyra.s3.spring;
 import java.net.URI;
 import java.time.Duration;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -34,13 +35,21 @@ public class S3ClientFactory {
 		if (null != executor)
 			return executor;
 
-		this.executor = new ThreadPoolExecutor(props.getCorePoolSize(), props.getMaximumPoolSize(),
-				props.getKeepAliveTime(), TimeUnit.SECONDS, new LinkedBlockingQueue<>(props.getMaximumPoolSize() * 4),
-				new ThreadFactoryBuilder().threadNamePrefix("sdk-async").build());
+		synchronized (props) {
+			if(null != executor)
+				return executor;
+			
+			RejectedExecutionHandler policy = new CallerAwaitPolicy();
 
-		// Allow idle core threads to time out
-		executor.allowCoreThreadTimeOut(true);
-		return executor;
+			this.executor = new ThreadPoolExecutor(props.getCorePoolSize(), props.getMaximumPoolSize(),
+					props.getKeepAliveTime(), TimeUnit.SECONDS,
+					new LinkedBlockingQueue<>(props.getMaximumPoolSize() * 16),
+					new ThreadFactoryBuilder().threadNamePrefix("sdk-async").build(), policy);
+
+			// Allow idle core threads to time out
+			executor.allowCoreThreadTimeOut(true);
+			return executor;
+		}
 	}
 
 	@Bean
@@ -98,4 +107,25 @@ public class S3ClientFactory {
 		return Region.of(props.getRegion());
 	}
 
+	private static class CallerAwaitPolicy implements RejectedExecutionHandler {
+
+		@Override
+		public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+
+			do {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+
+				}
+
+				int capacityAvailable = executor.getQueue().remainingCapacity();
+				if (capacityAvailable > 2) {
+					executor.execute(r);
+					return;
+				}
+			} while (true);
+		}
+
+	}
 }
