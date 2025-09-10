@@ -16,6 +16,7 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.client.config.SdkAdvancedAsyncClientOption;
+import software.amazon.awssdk.http.async.SdkAsyncHttpClient;
 import software.amazon.awssdk.http.nio.netty.NettyNioAsyncHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
@@ -62,13 +63,16 @@ public class S3ClientFactory {
 				.maxConcurrency(props.getMaxConcurrency())
 				.connectionTimeout(Duration.ofSeconds(props.getConnectionTimeout()))
 				.connectionAcquisitionTimeout(Duration.ofSeconds(props.getConnectionTimeout()));
+		
+		SdkAsyncHttpClient httpClient = asyncHttpClientBuilder.build();		
 
 		ThreadPoolExecutor executor = getAwsThreadPPool();
 
 		S3AsyncClient client = S3AsyncClient.builder().region(getRegion())
 				.asyncConfiguration(
 						b -> b.advancedOption(SdkAdvancedAsyncClientOption.FUTURE_COMPLETION_EXECUTOR, executor))
-				.httpClientBuilder(asyncHttpClientBuilder).credentialsProvider(crProvider)
+				.httpClient(httpClient)
+				.credentialsProvider(crProvider)
 				.endpointOverride(getEndPoint())
 //				.endpointProvider(getEndPointProvider())
 				.forcePathStyle(true).build();
