@@ -25,7 +25,7 @@ public class AsyncStreamDelivery {
 	public ResponseFileEmitter push(File file) throws FileNotFoundException {
 		FileInputStream is = new FileInputStream(file);
 
-		ResponseFileEmitter emitter = new ResponseFileEmitter();
+		ResponseFileEmitter emitter = new ResponseFileEmitter(60 * 1000L);
 
 		fileSenderTaskExecutor.execute(new FileSender(emitter, is));
 

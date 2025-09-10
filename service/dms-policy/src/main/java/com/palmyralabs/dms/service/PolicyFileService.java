@@ -37,7 +37,7 @@ public class PolicyFileService {
 
 		if (policyFileEntity != null) {
 			if (policyFileEntity.getObjectUrl() != null) {
-				ResponseFileEmitter emitter = new ResponseFileEmitter();
+				ResponseFileEmitter emitter = new ResponseFileEmitter(60 * 1000L);
 				String key = policyFileEntity.getObjectUrl();
 				fileService.download(key, emitter);
 				return emitter;
