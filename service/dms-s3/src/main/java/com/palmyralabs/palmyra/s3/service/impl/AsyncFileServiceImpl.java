@@ -59,7 +59,7 @@ public class AsyncFileServiceImpl implements AsyncFileService {
 			});
 
 		} catch (Throwable t) {
-			logger.error("Error while downloading file " + key, t);
+			logger.error("Error while requesting file " + key, t);
 			emitter.completeWithError(t);
 		}
 	}

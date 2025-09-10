@@ -46,8 +46,7 @@ aws:
     accessKey: ${S3_ACCESSKEY}
     secretKey: ${S3_SECRETKEY}
     endpoint: ${S3_ENDPOINT}
-    corePoolSize: 16
-    maximumPoolSize: 16
+    corePoolSize: ${S3_POOL_CORE}
+    maximumPoolSize: ${S3_POOL_MAX}
     keepAliveTime: 600
-    workQueue: 25
     maxConcurrency: ${S3_CLIENT_CONCURRENCY}
