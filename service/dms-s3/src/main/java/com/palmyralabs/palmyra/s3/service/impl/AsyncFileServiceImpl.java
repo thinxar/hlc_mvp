@@ -2,9 +2,11 @@ package com.palmyralabs.palmyra.s3.service.impl;
 
 import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,9 +36,10 @@ public class AsyncFileServiceImpl implements AsyncFileService {
 	private final S3AsyncClient asyncClient;
 	private final S3Config props;
 	private static final Logger logger = LoggerFactory.getLogger(AsyncFileServiceImpl.class);
+	private ThreadPoolExecutor awsThreadPool;
 
 	public void download(String key, ResponseFileEmitter emitter) {
-		asyncDownload(key, emitter);
+		awsThreadPool.submit(() -> asyncDownload(key, emitter));
 	}
 
 	private void asyncDownload(String key, ResponseFileEmitter emitter) {
@@ -45,10 +48,17 @@ public class AsyncFileServiceImpl implements AsyncFileService {
 
 			CompletableFuture<ResponsePublisher<GetObjectResponse>> cplResponse = asyncClient.getObject(request,
 					AsyncResponseTransformer.toPublisher());
-			
-			cplResponse.thenAcceptAsync( objResponse -> process(objResponse, emitter)).exceptionallyAsync( e -> {handle(e, key, emitter); return null;});
-			
-		} catch (Exception t) {
+
+			cplResponse.handleAsync((result, e) -> {
+				if (null == e) {
+					process(result, emitter);
+				} else {
+					handle(e, key, emitter);
+				}
+				return null;
+			});
+
+		} catch (Throwable t) {
 			logger.error("Error while downloading file " + key, t);
 			emitter.completeWithError(t);
 		}
@@ -105,4 +115,9 @@ public class AsyncFileServiceImpl implements AsyncFileService {
 //			}
 //		});
 //	}
+
+	@Autowired
+	public void setAwsThreadPool(ThreadPoolExecutor executor) {
+		this.awsThreadPool = executor;
+	}
 }

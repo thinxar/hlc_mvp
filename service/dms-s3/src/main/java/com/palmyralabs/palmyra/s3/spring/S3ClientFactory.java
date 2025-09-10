@@ -27,6 +27,22 @@ public class S3ClientFactory {
 
 	private final S3Config props;
 
+	private ThreadPoolExecutor executor;
+
+	@Bean(name = "awsThreadPool")
+	public ThreadPoolExecutor getAwsThreadPPool() {
+		if (null != executor)
+			return executor;
+
+		this.executor = new ThreadPoolExecutor(props.getCorePoolSize(), props.getMaximumPoolSize(),
+				props.getKeepAliveTime(), TimeUnit.SECONDS, new LinkedBlockingQueue<>(props.getMaximumPoolSize() * 4),
+				new ThreadFactoryBuilder().threadNamePrefix("sdk-async").build());
+
+		// Allow idle core threads to time out
+		executor.allowCoreThreadTimeOut(true);
+		return executor;
+	}
+
 	@Bean
 	public S3AsyncClient amazonS3Async() {
 
@@ -38,12 +54,7 @@ public class S3ClientFactory {
 				.connectionTimeout(Duration.ofSeconds(props.getConnectionTimeout()))
 				.connectionAcquisitionTimeout(Duration.ofSeconds(props.getConnectionTimeout()));
 
-		ThreadPoolExecutor executor = new ThreadPoolExecutor(props.getCorePoolSize(), props.getMaximumPoolSize(),
-				props.getKeepAliveTime(), TimeUnit.SECONDS, new LinkedBlockingQueue<>(props.getMaximumPoolSize() * 4),
-				new ThreadFactoryBuilder().threadNamePrefix("sdk-async").build());
-
-		// Allow idle core threads to time out
-		executor.allowCoreThreadTimeOut(true);
+		ThreadPoolExecutor executor = getAwsThreadPPool();
 
 		S3AsyncClient client = S3AsyncClient.builder().region(getRegion())
 				.asyncConfiguration(

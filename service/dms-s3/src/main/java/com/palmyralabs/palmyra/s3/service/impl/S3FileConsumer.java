@@ -58,14 +58,14 @@ class S3FileConsumer implements Subscriber<ByteBuffer> {
 			if (bufferSize > 0) {
 				fileEmitter.send(buffer, bufferSize);
 			}
+			fileEmitter.complete();
 		} catch (Throwable t) {
-
+			fileEmitter.completeWithError(t);
 		}
 
 		try {
 			s.cancel();
 		} catch (Throwable t) {
 		}
-		fileEmitter.complete();
 	}
 }
