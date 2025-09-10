@@ -4,4 +4,6 @@ dependencies {
 	implementation deps.aws.s3
 	implementation deps.aws.netty.nio
 	api project(":dms-filemgmt")
+	
+	implementation("io.netty:netty-resolver-dns:4.1.126.Final")
 }

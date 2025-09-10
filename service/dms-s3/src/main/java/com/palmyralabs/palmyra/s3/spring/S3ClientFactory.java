@@ -61,6 +61,7 @@ public class S3ClientFactory {
 
 		NettyNioAsyncHttpClient.Builder asyncHttpClientBuilder = NettyNioAsyncHttpClient.builder()
 				.maxConcurrency(props.getMaxConcurrency())
+				.useNonBlockingDnsResolver(true)
 				.connectionTimeout(Duration.ofSeconds(props.getConnectionTimeout()))
 				.connectionAcquisitionTimeout(Duration.ofSeconds(props.getConnectionTimeout()));
 		
