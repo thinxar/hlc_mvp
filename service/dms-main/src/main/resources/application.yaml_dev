@@ -12,8 +12,8 @@ spring:
     driverClassName: org.postgresql.Driver
     hikari:
       schema: ${DB_SCHEMA}
-      maximum-pool-size: ${DB_POOL_MAX}
-      minimum-idle: ${DB_POOL_IDLE}
+      maximum-pool-size: 32
+      minimum-idle: 16
       connection-timeout: 2000
       default-auto-commit: false
   servlet:
@@ -25,8 +25,8 @@ server:
   port: ${SERVER_PORT}
   jetty:
     threads:
-      min: ${JETTY_MIN_THREAD}
-      max: ${JETTY_MAX_THREAD}
+      min: 128
+      max: 128
   servlet:
     context-path: /api
     session:
