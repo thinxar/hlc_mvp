@@ -51,3 +51,4 @@ aws:
     keepAliveTime: 600
     conAcqTimeout: ${S3_CON_ACQ_TIMEOUT}
     maxConcurrency: ${S3_CLIENT_CONCURRENCY}
+    clientBuffer: ${S3_CLIENT_BUFFER_KB}

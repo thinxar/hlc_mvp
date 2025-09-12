@@ -24,4 +24,5 @@ public class S3Config {
     private Long keepAliveTime;
 	private Long connectionTimeout = 5L;
 	private Long conAcqTimeout = 500L;
+	private Integer clientBuffer = 256; 
 }

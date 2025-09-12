@@ -79,7 +79,7 @@ public class AsyncFileServiceImpl implements AsyncFileService {
 			}
 			emitter.setContentType(contentType);
 			publisher.buffer(64 * 1024);
-			publisher.subscribe(new S3FileConsumer(awsThreadPool, emitter));
+			publisher.subscribe(new S3FileConsumer(awsThreadPool, emitter, props.getClientBuffer()));
 		} catch (Exception e) {
 			logger.error("Error while initializing fileEmitter", e);
 			emitter.completeWithError(e);

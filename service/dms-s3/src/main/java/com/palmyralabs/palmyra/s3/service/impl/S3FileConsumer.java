@@ -8,19 +8,23 @@ import org.reactivestreams.Subscription;
 
 import com.palmyralabs.palmyra.filemgmt.spring.FileEmitter;
 
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
-@RequiredArgsConstructor
 class S3FileConsumer implements Subscriber<ByteBuffer> {
-	private static final int BUFFER_SIZE = 1 * 1024 * 1024;
 
 	private final ThreadPoolExecutor awsThreadPool;
 	private final FileEmitter fileEmitter;
 	private Subscription s;
-
-	private byte[] buffer = new byte[BUFFER_SIZE];
+	private int BUFFER_SIZE = 1 * 1024;
+	private byte[] buffer;
 	int bufferSize = 0;
+	
+	public S3FileConsumer(ThreadPoolExecutor threadPool, FileEmitter emitter, int bufferSize) {
+		this.awsThreadPool = threadPool;
+		this.fileEmitter = emitter;
+		this.BUFFER_SIZE = bufferSize * 1024;
+		this.buffer = new byte[BUFFER_SIZE];
+	}
 
 	@Override
 	public void onSubscribe(Subscription s) {
