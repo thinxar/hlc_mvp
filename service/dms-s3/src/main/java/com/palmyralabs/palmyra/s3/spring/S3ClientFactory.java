@@ -63,7 +63,8 @@ public class S3ClientFactory {
 				.maxConcurrency(props.getMaxConcurrency())
 				.useNonBlockingDnsResolver(true)
 				.connectionTimeout(Duration.ofSeconds(props.getConnectionTimeout()))
-				.connectionAcquisitionTimeout(Duration.ofSeconds(props.getConnectionTimeout()));
+				.maxPendingConnectionAcquires(10)
+				.connectionAcquisitionTimeout(Duration.ofSeconds(props.getConAcqTimeout()));
 		
 		SdkAsyncHttpClient httpClient = asyncHttpClientBuilder.build();		
 

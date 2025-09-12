@@ -49,4 +49,5 @@ aws:
     corePoolSize: ${S3_POOL_CORE}
     maximumPoolSize: ${S3_POOL_MAX}
     keepAliveTime: 600
+    conAcqTimeout: ${S3_CON_ACQ_TIMEOUT}
     maxConcurrency: ${S3_CLIENT_CONCURRENCY}

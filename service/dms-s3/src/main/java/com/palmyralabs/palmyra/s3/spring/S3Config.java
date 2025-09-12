@@ -23,4 +23,5 @@ public class S3Config {
     private Integer maxConcurrency = 64;
     private Long keepAliveTime;
 	private Long connectionTimeout = 5L;
+	private Long conAcqTimeout = 500L;
 }
