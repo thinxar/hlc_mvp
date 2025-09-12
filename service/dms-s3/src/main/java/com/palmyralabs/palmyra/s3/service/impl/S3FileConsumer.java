@@ -1,20 +1,22 @@
 package com.palmyralabs.palmyra.s3.service.impl;
 
 import java.nio.ByteBuffer;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-import com.palmyralabs.palmyra.filemgmt.spring.ResponseFileEmitter;
+import com.palmyralabs.palmyra.filemgmt.spring.FileEmitter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 @RequiredArgsConstructor
 class S3FileConsumer implements Subscriber<ByteBuffer> {
-	private static final int BUFFER_SIZE = 64 * 1024;
+	private static final int BUFFER_SIZE = 1 * 1024 * 1024;
 
-	private final ResponseFileEmitter fileEmitter;
+	private final ThreadPoolExecutor awsThreadPool;
+	private final FileEmitter fileEmitter;
 	private Subscription s;
 
 	private byte[] buffer = new byte[BUFFER_SIZE];
@@ -54,14 +56,16 @@ class S3FileConsumer implements Subscriber<ByteBuffer> {
 
 	@Override
 	public void onComplete() {
-		try {
-			if (bufferSize > 0) {
-				fileEmitter.send(buffer, bufferSize);
+		awsThreadPool.submit(() -> {
+			try {
+				if (bufferSize > 0) {
+					fileEmitter.send(buffer, bufferSize);
+				}
+				fileEmitter.complete();
+			} catch (Throwable t) {
+				fileEmitter.completeWithError(t);
 			}
-			fileEmitter.complete();
-		} catch (Throwable t) {
-			fileEmitter.completeWithError(t);
-		}
+		});
 
 		try {
 			s.cancel();

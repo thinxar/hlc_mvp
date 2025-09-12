@@ -10,7 +10,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
-public class ResponseFileEmitter {
+public class ResponseFileEmitter implements FileEmitter{
 	
 	@Nullable
 	private String contentType;

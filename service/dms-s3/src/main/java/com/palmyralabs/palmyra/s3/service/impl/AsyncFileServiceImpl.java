@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.palmyralabs.palmyra.filemgmt.spring.ResponseFileEmitter;
+import com.palmyralabs.palmyra.filemgmt.spring.FileEmitter;
 import com.palmyralabs.palmyra.filemgmt.stream.FileUploadListener;
 import com.palmyralabs.palmyra.s3.service.AsyncFileService;
 import com.palmyralabs.palmyra.s3.spring.S3Config;
@@ -38,11 +38,11 @@ public class AsyncFileServiceImpl implements AsyncFileService {
 	private static final Logger logger = LoggerFactory.getLogger(AsyncFileServiceImpl.class);
 	private ThreadPoolExecutor awsThreadPool;
 
-	public void download(String key, ResponseFileEmitter emitter) {
+	public void download(String key, FileEmitter emitter) {
 		awsThreadPool.submit(() -> asyncDownload(key, emitter));
 	}
 
-	private void asyncDownload(String key, ResponseFileEmitter emitter) {
+	private void asyncDownload(String key, FileEmitter emitter) {
 		try {
 			GetObjectRequest request = GetObjectRequest.builder().bucket(props.getBucketName()).key(key).build();
 
@@ -64,20 +64,26 @@ public class AsyncFileServiceImpl implements AsyncFileService {
 		}
 	}
 
-	private void handle(Throwable t, String key, ResponseFileEmitter emitter) {
+	private void handle(Throwable t, String key, FileEmitter emitter) {
 		logger.error("Error while downloading file " + key, t);
 		emitter.completeWithError(t);
 	}
 
-	private void process(ResponsePublisher<GetObjectResponse> publisher, ResponseFileEmitter emitter) {
-		GetObjectResponse responseMetadata = publisher.response();
+	private void process(ResponsePublisher<GetObjectResponse> publisher, FileEmitter emitter) {
+		try {
+			GetObjectResponse responseMetadata = publisher.response();
 
-		String contentType = responseMetadata.contentType();
-		if (contentType == null || contentType.isEmpty()) {
-			contentType = "application/octet-stream";
+			String contentType = responseMetadata.contentType();
+			if (contentType == null || contentType.isEmpty()) {
+				contentType = "application/octet-stream";
+			}
+			emitter.setContentType(contentType);
+			publisher.buffer(64 * 1024);
+			publisher.subscribe(new S3FileConsumer(awsThreadPool, emitter));
+		} catch (Exception e) {
+			logger.error("Error while initializing fileEmitter", e);
+			emitter.completeWithError(e);
 		}
-		emitter.setContentType(contentType);
-		publisher.subscribe(new S3FileConsumer(emitter));
 	}
 
 	@Override
