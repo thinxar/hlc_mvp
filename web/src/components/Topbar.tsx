@@ -7,7 +7,7 @@ import { getStoreFactory } from "wire/StoreFactory";
 const Topbar = () => {
     const navigate = useNavigate();
     const storeFactory = getStoreFactory();
-    const path = PathConfig.auth
+    const path = PathConfig
 
     const logoutApi = ServiceEndpoint.auth.logout;
 

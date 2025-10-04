@@ -1,7 +1,5 @@
 const PathConfig = {
-    auth: {
-        login: `/login`,
-    }
+    login: `/login`
 }
 
 export { PathConfig };

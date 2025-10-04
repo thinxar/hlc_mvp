@@ -97,7 +97,7 @@ const PolicyResultView = () => {
                 <div className="p-2 flex justify-between">
                     <div></div>
                     <div className='flex items-center gap-3'>
-                        <div className='text-gray-100 cursor-pointer hover:underline'
+                        <div className='text-gray-100 cursor-pointer hover:underline hover:text-yellow-300'
                             onClick={endorseOpen}>
                             Create Endorsement</div>
                         <IoClose fontSize={20} className='text-white cursor-pointer hover:bg-white/20'

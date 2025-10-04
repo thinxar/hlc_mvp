@@ -1,20 +1,9 @@
-import Swal from "sweetalert2";
 import { PalmyraStoreFactory, type IEndPoint } from "@palmyralabs/palmyra-wire";
-import 'react-toastify/dist/ReactToastify.css';
 import { ServiceEndpoint } from "config/ServiceEndpoint";
+import 'react-toastify/dist/ReactToastify.css';
+import { session } from "src/common/pages/SessionErrorPage";
+import Swal from "sweetalert2";
 import { showAclErrorToast, showServerErrorToast } from "./errorToast";
-
-const goToLogin = () => {
-    const path = '/login'
-    const baseurl = ServiceEndpoint.baseUrl;
-
-    let loginPath = path;
-
-    // resetLocalStorageData();
-    // clearAuthInfo();
-    window.location.href = baseurl + loginPath;
-};
-
 
 const applicationErrorHandle = () => {
     Swal.fire({
@@ -26,25 +15,6 @@ const applicationErrorHandle = () => {
         timerProgressBar: true,
     });
 };
-
-const sessionErrorHandle = () => {
-    Swal.fire({
-        title: "Session Expired",
-        html: "<p class='custom-text'>Your session may have expired.<br>Please Login to continue..</p>",
-        confirmButtonText: 'OK',
-        allowEscapeKey: false,
-        allowOutsideClick: false,
-        customClass: {
-            title: 'custom-header',
-            confirmButton: 'custom-btn',
-            popup: 'custom-width'
-        }
-    }).then((result:any) => {
-        if (result.value) {
-            goToLogin();
-        }
-    });
-}
 
 const errorHandler = () => {
 
@@ -59,7 +29,7 @@ const errorHandler = () => {
             } else if (status == 502) {
                 applicationErrorHandle();
             } else if (status == 401) {
-                sessionErrorHandle();
+                session()
             } else if (status == 403) {
                 showAclErrorToast();
             }
@@ -92,4 +62,5 @@ export const useGridstore = (endPoint: IEndPoint, options?: Record<string, any>,
 }
 
 export default AppStoreFactory;
-export { getStoreFactory }
+export { getStoreFactory };
+
