@@ -59,6 +59,8 @@ const ServiceEndpoint = {
     },
     lookup: {
         docketType: '/masterdata/docketType',
+        endorsementType: '/masterdata/endorsementType',
+        endorsementSubType:'/masterdata/{endorsementType}/endorsementSubType',
         userType: '',
         designation: ''
     }

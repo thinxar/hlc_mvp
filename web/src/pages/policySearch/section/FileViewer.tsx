@@ -1,10 +1,9 @@
-import { FaFile } from 'react-icons/fa6';
 import { ImageViewer } from 'components/viewer/ImageViewer';
 import { PdfViewWithOverlay } from 'components/viewer/PdfViewWithOverlay';
-import { TIFFViewer } from 'components/viewer/TiffViewWithOverlay';
-import { IoClose } from 'react-icons/io5';
-import { useState } from 'react';
 import { TextHtmlViewer } from 'components/viewer/TextHtmlViewer';
+import { TIFFViewer } from 'components/viewer/TiffViewWithOverlay';
+import { useState } from 'react';
+import { FaFile } from 'react-icons/fa6';
 
 interface FileProps {
     file: any
@@ -22,10 +21,6 @@ const FileViewer = ({ fileUrl, key, file }: FileProps) => {
 
     return (<>
         {fileData ? <div className="h-auto overflow-hidden" key={key}>
-            <div className="p-2 flex justify-between">
-                <div></div>
-                <IoClose fontSize={20} className='text-white cursor-pointer hover:bg-white/20' onClick={() => window.history.back()} />
-            </div>
             <div className="p-3">
                 <div className="h-[calc(100vh-115px)] bg-white rounded-2xl flex items-center justify-center overflow-hidden">
                     {fileData?.pdfFiles?.type === 'application/pdf' ? (
@@ -60,6 +55,7 @@ const FileViewer = ({ fileUrl, key, file }: FileProps) => {
                 </div>
             </div>
         }
+        
     </>
     );
 };

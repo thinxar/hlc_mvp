@@ -11,6 +11,8 @@ import { useFormstore } from 'wire/StoreFactory';
 import { FileListViewer } from './section/FileListViewer';
 import { FileViewer } from './section/FileViewer';
 import { PolicyData } from './section/PolicyData';
+import { IoClose } from 'react-icons/io5';
+import { EndorseTemplatePicker } from '../endorsements/EndorseTemplatePicker';
 
 const PolicyResultView = () => {
     const params = useParams();
@@ -18,6 +20,7 @@ const PolicyResultView = () => {
     const [data, setData] = useState<any[]>([]);
     const [selectedFile, setSelectedFile] = useState<any>(null);
     const [opened, { open, close }] = useDisclosure(false);
+    const [endorseOpened, { open: endorseOpen, close: endorseClose }] = useDisclosure(false);
     const policyData = location?.state?.policyData;
     const BASE_URL = `${window.location.origin}/api/palmyra`;
 
@@ -91,8 +94,24 @@ const PolicyResultView = () => {
                 </Modal>
             </div>
             <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-auto">
+                <div className="p-2 flex justify-between">
+                    <div></div>
+                    <div className='flex items-center gap-3'>
+                        <div className='text-gray-100 cursor-pointer hover:underline'
+                            onClick={endorseOpen}>
+                            Create Endorsement</div>
+                        <IoClose fontSize={20} className='text-white cursor-pointer hover:bg-white/20'
+                            onClick={() => window.history.back()} />
+                    </div>
+                </div>
                 <FileViewer file={selectedFile} fileUrl={pdfUrl} key={selectedFile?.pdfFiles?.id} />
             </div>
+
+
+            <Modal opened={endorseOpened} onClose={endorseClose} onKeyDown={handleKeyClose} centered
+                size={"lg"} title={`Endorsement`}>
+                <EndorseTemplatePicker data={policyData}/>
+            </Modal>
         </div>
     );
 }

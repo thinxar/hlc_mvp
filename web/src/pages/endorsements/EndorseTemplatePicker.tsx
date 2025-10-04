@@ -1,0 +1,121 @@
+import { Button } from "@mantine/core"
+import { PalmyraNewForm } from "@palmyralabs/rt-forms"
+import { ErrorMsgConfig } from "config/ErrorMsgConfig"
+import { ServiceEndpoint } from "config/ServiceEndpoint"
+import { useRef, useState } from "react"
+import { FaFileAlt, FaPaperPlane, FaUser } from "react-icons/fa"
+import { ServerLookup } from "templates/mantineForm"
+import { StringFormat } from '@palmyralabs/ts-utils';
+
+interface IOptions {
+    data: any
+}
+const EndorseTemplatePicker = (props: IOptions) => {
+    const { data } = props;
+    const endorsementRef = useRef<any>(null);
+    const categoryRef = useRef<any>(null);
+    const [categoryId, setCategoryId] = useState<any>();
+    const errorMsg = ErrorMsgConfig.form
+
+    const policyData = [
+        { label: 'Policy Number', value: data?.policyNumber, icon: FaFileAlt },
+        { label: 'Customer Name', value: data?.customerName, icon: FaUser }
+    ]
+
+    const handleCategoryChange = (_value: any, data?: any) => {
+        if (data)
+            setCategoryId(data?.id);
+        else {
+            setCategoryId(null)
+        }
+        endorsementRef?.current?.setValue(null)
+    }
+
+    const endorsementEndpoint = StringFormat(ServiceEndpoint.lookup.endorsementSubType, {
+        endorsementType: categoryId
+    })
+    return (
+        <div className="px-2">
+
+            <div>
+                <div className="bg-white p-3 mb-1 text-center border-b-1 border-gray-200">
+                    <div className="flex items-center gap-3 mb-1 justify-center">
+                        <div className="text-2xl text-center font-bold text-gray-800">
+                            Select Endorsement Title
+                        </div>
+                    </div>
+                    <p className="text-gray-600">
+                        Fill in the details below to proceed with your endorsement
+                    </p>
+                </div>
+
+                <div className="mb-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {policyData.map((d) => {
+                            const Icon = d?.icon;
+                            return (
+                                <div className="flex items-center gap-4 p-4 rounded-lg">
+                                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <Icon className="text-white text-sm" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                                            {d?.label}
+                                        </p>
+                                        <p className="text-sm font-bold text-gray-800 mt-0.5">
+                                            {d?.value}
+                                        </p>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+
+                <div className="pb-4">
+                    <PalmyraNewForm endPoint={''}>
+                        <div className="grid grid-cols-1 md:grid-cols-1">
+                            <div className="md:col-span-1">
+                                <ServerLookup
+                                    attribute="endorsementType"
+                                    required
+                                    placeholder="Select Category"
+                                    label="Stamp Category" onChange={handleCategoryChange}
+                                    invalidMessage={errorMsg.mandatory}
+                                    queryOptions={{ endPoint: ServiceEndpoint.lookup.endorsementType }}
+                                    ref={categoryRef}
+                                    lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
+                                />
+                            </div>
+
+                            <div className="md:col-span-1">
+                                <ServerLookup
+                                    attribute="endorsementSubType"
+                                    required
+                                    placeholder="Select Endorsement"
+                                    label="Endorsement"
+                                     disabled={(categoryId == undefined) && true}
+                                    invalidMessage={errorMsg.mandatory}
+                                    queryOptions={{ endPoint: endorsementEndpoint }}
+                                    ref={endorsementRef}
+                                    lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex justify-center mt-8">
+                            <Button
+                                className="filled-button text-white px-8 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 font-semibold"
+                                leftSection={<FaPaperPlane className="text-sm" />}
+                            >
+                                Submit
+                            </Button>
+                        </div>
+                    </PalmyraNewForm>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export { EndorseTemplatePicker }
