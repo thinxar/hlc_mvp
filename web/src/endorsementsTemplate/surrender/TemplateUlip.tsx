@@ -33,7 +33,7 @@ const TemplateUlip = (props: any) => {
                         <TextField attribute="value4" />
                         after deducting the dues if any , from the said amounts.
                     </div>
-                    <div className="text-end mt-4 mb-2 mt-15">
+                    <div className="text-end mb-2 mt-15">
                         <p>for LIFE INSURANCE CORPORATION OF INDIA</p>
                         <p className="mt-7">p. Sr/Branch Manager.</p>
                     </div >
