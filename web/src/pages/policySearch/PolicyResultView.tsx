@@ -44,7 +44,7 @@ const PolicyResultView = () => {
                 }
             }));
             const file = mappedPolicies.find((f: any) =>
-                f?.pdfFiles?.fileName?.includes('Bond')
+                f?.pdfFiles?.fileName?.toLowerCase()?.includes('bond')
             );
             setSelectedFile(file)
             setData(mappedPolicies);

@@ -30,7 +30,7 @@ const FileListViewer = ({ data, policyId, selectedFile, setSelectedFile }: FileP
             acc[type] = [];
         }
 
-        if (fileName.includes("Bond")) {
+        if (fileName.toLowerCase().includes("bond")) {
             acc[type].unshift(item);
         } else {
             acc[type].push(item);
@@ -39,6 +39,9 @@ const FileListViewer = ({ data, policyId, selectedFile, setSelectedFile }: FileP
     }, {});
 
     const docketTypes = Object.keys(groupedByDocketType);
+
+    console.log(selectedFile, "selectedFile");
+    
 
     return (<>
         {data.length !== 0 ? (
