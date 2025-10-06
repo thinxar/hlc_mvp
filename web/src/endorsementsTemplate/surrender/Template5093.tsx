@@ -1,7 +1,7 @@
 import { PalmyraForm } from "@palmyralabs/rt-forms";
 import { TextField } from "templates/mantineForm";
 
-const Template_5093 = (props: any) => {
+const Template5093 = (props: any) => {
     return (
         <div className="form-container flex items-center justify-center bg-white text-blue-500 font-[500] template-sec">
             <div className="border-double border-4 border-gray-500 p-3 w-196">
@@ -31,15 +31,15 @@ const Template_5093 = (props: any) => {
                     </div>
                     <div className="p-3 pt-0 pb-0 mt-12">
                         It is hereby declared that at the request of the within named Life Assured the sum assured under the within written Policy has been reduced to Rs.
-                        <TextField attribute="rs" className="float-right " />
+                        <TextField attribute="value1" className="float-right " />
                         inclusive of all bonuses already declared free from payment of premiums due as from
-                        <TextField attribute="s" />
+                        <TextField attribute="value2" />
                         and from the deduction of the existing loan and interest amounting to Rs.
-                        <TextField attribute="g" />
+                        <TextField attribute="value3" />
                         . It is further declared that the Policy will not participate in the profits
-                        <TextField attribute="gr" />
+                        <TextField attribute="value4" />
                         and will become payable as within mentioned. The sum of Rs.
-                        <TextField attribute="grs" />
+                        <TextField attribute="value5" />
                         has been paid as Surrender Value of the portion of the sum assured dropped.
                     </div>
                     <div className="text-end mb-2 mt-15">
@@ -52,4 +52,4 @@ const Template_5093 = (props: any) => {
     );
 };
 
-export { Template_5093 }
+export { Template5093 }

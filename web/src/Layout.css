@@ -1112,6 +1112,13 @@ pre {
   color: white !important;
 }
 
+
+.template-sec {
+  /* height: calc(100vh - 120px);
+  overflow: auto;
+  margin-bottom: 5em; */
+}
+
 .template-sec .py-form-field-container.py-form-field-data {
   display: inline-flex !important;
 }

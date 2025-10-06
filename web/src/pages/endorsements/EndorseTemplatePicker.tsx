@@ -1,11 +1,13 @@
-import { Button } from "@mantine/core"
+import { Button, Modal } from "@mantine/core"
+import { useDisclosure } from "@mantine/hooks"
 import { PalmyraNewForm } from "@palmyralabs/rt-forms"
+import { StringFormat } from '@palmyralabs/ts-utils'
 import { ErrorMsgConfig } from "config/ErrorMsgConfig"
 import { ServiceEndpoint } from "config/ServiceEndpoint"
 import { useRef, useState } from "react"
 import { FaFileAlt, FaPaperPlane, FaUser } from "react-icons/fa"
 import { ServerLookup } from "templates/mantineForm"
-import { StringFormat } from '@palmyralabs/ts-utils';
+import { EndorseTemplateView } from "./EndorseTemplateView"
 
 interface IOptions {
     data: any
@@ -15,6 +17,8 @@ const EndorseTemplatePicker = (props: IOptions) => {
     const endorsementRef = useRef<any>(null);
     const categoryRef = useRef<any>(null);
     const [categoryId, setCategoryId] = useState<any>();
+    const [endorse, setEndorse] = useState<any>('');
+    const [opened, { open, close }] = useDisclosure(false);
     const errorMsg = ErrorMsgConfig.form
 
     const policyData = [
@@ -31,9 +35,18 @@ const EndorseTemplatePicker = (props: IOptions) => {
         endorsementRef?.current?.setValue(null)
     }
 
+    const handleEndorseChange = (value: any, data?: any) => {
+        if (data) {
+            setEndorse(value);
+        } else {
+            setEndorse('')
+        }
+    }
+
     const endorsementEndpoint = StringFormat(ServiceEndpoint.lookup.endorsementSubType, {
         endorsementType: categoryId
     })
+
     return (
         <div className="px-2">
 
@@ -93,8 +106,8 @@ const EndorseTemplatePicker = (props: IOptions) => {
                                     attribute="endorsementSubType"
                                     required
                                     placeholder="Select Endorsement"
-                                    label="Endorsement"
-                                     disabled={(categoryId == undefined) && true}
+                                    label="Endorsement" onChange={handleEndorseChange}
+                                    disabled={(categoryId == undefined) && true}
                                     invalidMessage={errorMsg.mandatory}
                                     queryOptions={{ endPoint: endorsementEndpoint }}
                                     ref={endorsementRef}
@@ -104,7 +117,7 @@ const EndorseTemplatePicker = (props: IOptions) => {
                         </div>
 
                         <div className="flex justify-center mt-8">
-                            <Button
+                            <Button onClick={open}
                                 className="filled-button text-white px-8 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 font-semibold"
                                 leftSection={<FaPaperPlane className="text-sm" />}
                             >
@@ -114,6 +127,21 @@ const EndorseTemplatePicker = (props: IOptions) => {
                     </PalmyraNewForm>
                 </div>
             </div>
+
+            <Modal opened={opened} onClose={close} centered size={"auto"} title="Endorsement"
+                classNames={{ body: "p-0 flex flex-col max-h-[80vh]" }} styles={{
+                    body: {
+                        padding: 0
+                    }
+                }} closeOnClickOutside={false}
+            >
+                <div className="flex items-center justify-between px-2">
+                    <div className="text-blue-700">Policy No: <span className="text-gray-950">{data?.policyNumber}</span></div>
+                    <div className="text-blue-700">Claims: <span className="text-gray-950">{endorse}</span></div>
+                    <div></div>
+                </div>
+                <EndorseTemplateView endorsementTitle={endorse} />
+            </Modal>
         </div>
     )
 }
