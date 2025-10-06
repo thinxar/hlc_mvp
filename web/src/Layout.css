@@ -1111,3 +1111,22 @@ pre {
 .user-form-container-no .mantine-Input-section {
   color: white !important;
 }
+
+.template-sec .py-form-field-container.py-form-field-data {
+  display: inline-flex !important;
+}
+
+.template-sec .py-form-field-container {
+  width: auto;
+  padding: 5px 10px 4px 7px !important;
+}
+
+.template-sec .mantine-InputWrapper-root {
+  padding: 0 !important;
+}
+
+.template-sec .mantine-Input-input {
+  min-height: 27px !important;
+  line-height: 1.7 !important;
+  height: 25px !important;
+}
