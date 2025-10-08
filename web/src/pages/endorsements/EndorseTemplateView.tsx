@@ -23,6 +23,7 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle, policyNo }) =>
   const code = Object.keys(templateMap).find((key) => {
     return normalizedTitle.includes(normalize(key));
   });
+console.log(code ,"code");
 
   const endorseText = endorsementTitle == '' ? '--' : endorsementTitle;
   if (!code) {
@@ -56,7 +57,7 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle, policyNo }) =>
   return <div>
     <ScrollArea className="flex-1 overflow-y-auto p-2">
       <div className="form-container flex items-center justify-center bg-white text-blue-500 font-[500] template-sec">
-        <div className="border-double border-4 border-gray-500 p-3 w-190">
+        <div className="border-double border-4 border-gray-500 p-3 ">
           {!isPreview ? (
             <EditorComponent formRef={formRef} formData={formData} />
           ) : ViewerComponent ? (
