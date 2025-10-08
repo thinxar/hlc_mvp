@@ -97,11 +97,16 @@ public class FileToTsxConverter {
 		while (matcher.find()) {
 			String refName = matcher.group(1).trim();
 			String replacement = "";
-			if (isEdit)
-				replacement = "<TextField attribute=\"" + refName + "\" type=\"text\" />";
-			else
-				replacement = "<TextView attribute=\"" + refName + "\" type=\"text\" />";
-			matcher.appendReplacement(replaced, Matcher.quoteReplacement(replacement));
+			 if (isEdit) {
+			        if (refName.equalsIgnoreCase("polNumber")) {
+			            replacement = "<TextField attribute=\"" + refName + "\" type=\"text\" readOnly />";
+			        } else {
+			            replacement = "<TextField attribute=\"" + refName + "\" type=\"text\" />";
+			        }
+			    } else {
+			        replacement = "<TextView attribute=\"" + refName + "\" type=\"text\" />";
+			    }
+			    matcher.appendReplacement(replaced, Matcher.quoteReplacement(replacement));
 		}
 		matcher.appendTail(replaced);
  
@@ -110,15 +115,18 @@ public class FileToTsxConverter {
 				? "import { " + datePickerImport + textFieldImport + "} from 'templates/mantineForm';\n"
 				: "import { TextView } from 'templates/mantineForm';";
         String tsxTemplate = importString + "import { PalmyraForm } from '@palmyralabs/rt-forms';\n\n" + "const "
-                + finalFileName + " = (props: any) => {\n" + "  return (\n" + "    <PalmyraForm ref={props.formRef}>\n"
+                + finalFileName + " = (props: any) => {\n" + "  return (\n" + "    <PalmyraForm ref={props.formRef} formData={props.formData}>\n"
                 + tsxContent + "\n" + "    </PalmyraForm>\n" + "  );\n" + "};\n\n" + "export {" + finalFileName
                 + "};\n";
         
         File outputFile = new File(outputDir, finalFileName + outputExtension);
+        File existingFile = findFileInDirectory(outputDir, finalFileName + outputExtension);
 		int count = 1;
-		while (outputFile.exists()) {
-			outputFile = new File(outputDir, finalFileName + count + outputExtension);
-			count++;
+
+		while (existingFile != null && existingFile.exists()) {
+		    outputFile = new File(outputDir, finalFileName + count + outputExtension);
+		    existingFile = findFileInDirectory(outputDir, finalFileName + count + outputExtension);
+		    count++;
 		}
 		try (FileWriter writer = new FileWriter(outputFile)) {
 		    writer.write(tsxTemplate);
@@ -158,4 +166,20 @@ public class FileToTsxConverter {
         matcher.appendTail(sb);
         return sb.toString();
     }
+    
+	private static File findFileInDirectory(File directory, String fileName) {
+	    File[] files = directory.listFiles();
+	    if (files == null) return null;
+	    for (File file : files) {
+	        if (file.isDirectory()) {
+	            File found = findFileInDirectory(file, fileName);
+	            if (found != null) {
+	                return found;
+	            }
+	        } else if (file.getName().equalsIgnoreCase(fileName)) {
+	            return file;
+	        }
+	    }
+	    return null;
+	}
 }

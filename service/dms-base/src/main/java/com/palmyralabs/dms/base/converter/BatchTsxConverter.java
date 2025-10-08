@@ -114,23 +114,28 @@ public class BatchTsxConverter {
 		Matcher matcher = pattern.matcher(htmlContent);
 		StringBuffer replaced = new StringBuffer();
 		while (matcher.find()) {
-			String refName = matcher.group(1).trim();
-			String replacement = "";
-			if (isEdit)
-				replacement = "<TextField attribute=\"" + refName + "\" type=\"text\" />";
-			else
-				replacement = "<TextView attribute=\"" + refName + "\" type=\"text\" />";
-			matcher.appendReplacement(replaced, Matcher.quoteReplacement(replacement));
+		    String refName = matcher.group(1).trim();
+		    String replacement = "";
+		    if (isEdit) {
+		        if (refName.equalsIgnoreCase("polNumber")) {
+		            replacement = "<TextField attribute=\"" + refName + "\" type=\"text\" readOnly />";
+		        } else {
+		            replacement = "<TextField attribute=\"" + refName + "\" type=\"text\" />";
+		        }
+		    } else {
+		        replacement = "<TextView attribute=\"" + refName + "\" type=\"text\" />";
+		    }
+		    matcher.appendReplacement(replaced, Matcher.quoteReplacement(replacement));
 		}
-		matcher.appendTail(replaced);
 
+		matcher.appendTail(replaced);
 		String tsxContent = replaced.toString();
 		String importString = isEdit
 				? "import { " + datePickerImport + textFieldImport + "} from 'templates/mantineForm';\n"
 				: "import { TextView } from 'templates/mantineForm';";
 		String tsxTemplate = importString + "import { PalmyraForm } from '@palmyralabs/rt-forms';\n\n" + "const "
 				+ finalFileName + " = (props: any) => {\n" + "  return (\n"
-				+ "           <PalmyraForm ref={props.formRef}>\n" + tsxContent + "\n" + "           </PalmyraForm>\n"
+				+ "           <PalmyraForm ref={props.formRef} formData={props.formData}>\n" + tsxContent + "\n" + "           </PalmyraForm>\n"
 				+ "  );\n" + "};\n\n" + "export {" + finalFileName + "};\n";
 		// Preserve directory structure
 		File relativeDir = new File(outputRoot,
@@ -140,11 +145,17 @@ public class BatchTsxConverter {
 		}
 
 		File outputFile = new File(relativeDir, finalFileName + outputExtension);
+
+		// Check if filename already exists ANYWHERE under the outputRoot directory
+		File existingFile = findFileInDirectory(outputRoot, finalFileName + outputExtension);
 		int count = 1;
-		while (outputFile.exists()) {
-			outputFile = new File(relativeDir, finalFileName + count + outputExtension);
-			count++;
+
+		while (existingFile != null && existingFile.exists()) {
+		    outputFile = new File(relativeDir, finalFileName + count + outputExtension);
+		    existingFile = findFileInDirectory(outputRoot, finalFileName + count + outputExtension);
+		    count++;
 		}
+
 
 		try (FileWriter writer = new FileWriter(outputFile)) {
 			writer.write(tsxTemplate);
@@ -197,4 +208,21 @@ public class BatchTsxConverter {
 
 		return sb.toString();
 	}
+	
+	private static File findFileInDirectory(File directory, String fileName) {
+	    File[] files = directory.listFiles();
+	    if (files == null) return null;
+	    for (File file : files) {
+	        if (file.isDirectory()) {
+	            File found = findFileInDirectory(file, fileName);
+	            if (found != null) {
+	                return found;
+	            }
+	        } else if (file.getName().equalsIgnoreCase(fileName)) {
+	            return file;
+	        }
+	    }
+	    return null;
+	}
+
 }
