@@ -133,10 +133,7 @@ public class BatchTsxConverter {
 		String importString = isEdit
 				? "import { " + datePickerImport + textFieldImport + "} from 'templates/mantineForm';\n"
 				: "import { TextView } from 'templates/mantineForm';";
-		String tsxTemplate = importString + "import { PalmyraForm } from '@palmyralabs/rt-forms';\n\n" + "const "
-				+ finalFileName + " = (props: any) => {\n" + "  return (\n"
-				+ "           <PalmyraForm ref={props.formRef} formData={props.formData}>\n" + tsxContent + "\n" + "           </PalmyraForm>\n"
-				+ "  );\n" + "};\n\n" + "export {" + finalFileName + "};\n";
+	
 		// Preserve directory structure
 		File relativeDir = new File(outputRoot,
 				rootDir.toPath().relativize(inputFile.getParentFile().toPath()).toString());
@@ -151,12 +148,17 @@ public class BatchTsxConverter {
 		int count = 1;
 
 		while (existingFile != null && existingFile.exists()) {
-		    outputFile = new File(relativeDir, finalFileName + count + outputExtension);
-		    existingFile = findFileInDirectory(outputRoot, finalFileName + count + outputExtension);
+			finalFileName = finalFileName + count;
+		    outputFile = new File(relativeDir, finalFileName+ outputExtension);
+		    existingFile = findFileInDirectory(outputRoot, finalFileName+ outputExtension);
 		    count++;
 		}
 
-
+		String tsxTemplate = importString + "import { PalmyraForm } from '@palmyralabs/rt-forms';\n\n" + "const "
+				+ finalFileName + " = (props: any) => {\n" + "  return (\n"
+				+ "           <PalmyraForm ref={props.formRef} formData={props.formData}>\n" + tsxContent + "\n" + "           </PalmyraForm>\n"
+				+ "  );\n" + "};\n\n" + "export {" + finalFileName + "};\n";
+		
 		try (FileWriter writer = new FileWriter(outputFile)) {
 			writer.write(tsxTemplate);
 		}

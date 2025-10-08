@@ -114,20 +114,23 @@ public class FileToTsxConverter {
 		String importString = isEdit
 				? "import { " + datePickerImport + textFieldImport + "} from 'templates/mantineForm';\n"
 				: "import { TextView } from 'templates/mantineForm';";
-        String tsxTemplate = importString + "import { PalmyraForm } from '@palmyralabs/rt-forms';\n\n" + "const "
-                + finalFileName + " = (props: any) => {\n" + "  return (\n" + "    <PalmyraForm ref={props.formRef} formData={props.formData}>\n"
-                + tsxContent + "\n" + "    </PalmyraForm>\n" + "  );\n" + "};\n\n" + "export {" + finalFileName
-                + "};\n";
         
         File outputFile = new File(outputDir, finalFileName + outputExtension);
         File existingFile = findFileInDirectory(outputDir, finalFileName + outputExtension);
 		int count = 1;
 
 		while (existingFile != null && existingFile.exists()) {
-		    outputFile = new File(outputDir, finalFileName + count + outputExtension);
-		    existingFile = findFileInDirectory(outputDir, finalFileName + count + outputExtension);
+			finalFileName = finalFileName + count;
+		    outputFile = new File(outputDir, finalFileName+ outputExtension);
+		    existingFile = findFileInDirectory(outputDir, finalFileName+ outputExtension);
 		    count++;
 		}
+		
+		 String tsxTemplate = importString + "import { PalmyraForm } from '@palmyralabs/rt-forms';\n\n" + "const "
+	                + finalFileName + " = (props: any) => {\n" + "  return (\n" + "    <PalmyraForm ref={props.formRef} formData={props.formData}>\n"
+	                + tsxContent + "\n" + "    </PalmyraForm>\n" + "  );\n" + "};\n\n" + "export {" + finalFileName
+	                + "};\n";
+		 
 		try (FileWriter writer = new FileWriter(outputFile)) {
 		    writer.write(tsxTemplate);
 		}
