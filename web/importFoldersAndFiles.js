@@ -21,8 +21,6 @@ async function importFoldersAndFiles() {
 
     const folders = items.filter((item) => item.isDirectory()).map((folder) => folder.name);
 
-    console.log("Found folders:", folders);
-
     const { rows: folderRows } = await pool.query("SELECT MAX(id) as max_id FROM dms.mst_endorsement_type");
     let currentFolderId = folderRows[0].max_id ? folderRows[0].max_id + 1 : 1;
 
@@ -34,7 +32,6 @@ async function importFoldersAndFiles() {
         "INSERT INTO dms.mst_endorsement_type (id, name, code, created_by) VALUES ($1, $2, $3, $4)",
         [currentFolderId, folder, folder, 'admin']
       );
-      console.log(`Inserted Folder: ${folder} with id ${currentFolderId}`);
 
       const folderPath = path.join(basePath, folder);
       const files = fs.readdirSync(folderPath, { withFileTypes: true })
@@ -52,7 +49,6 @@ async function importFoldersAndFiles() {
             "INSERT INTO dms.mst_endorsement_sub_type (id, name,code, endorsement_type, created_by) VALUES ($1, $2, $3, $4,$5)",
             [currentSubTypeId, cleanName, cleanName, currentFolderId, 'admin']
           );
-          console.log(`Inserted File: ${file} with id ${currentSubTypeId} under folder id ${currentFolderId}`);
           currentSubTypeId++;
         } 
       }

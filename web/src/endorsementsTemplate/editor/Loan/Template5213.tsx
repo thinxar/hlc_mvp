@@ -3,7 +3,7 @@ import { PalmyraForm } from '@palmyralabs/rt-forms';
 
 const Template5213 = (props: any) => {
   return (
-           <PalmyraForm ref={props.formRef}>
+           <PalmyraForm ref={props.formRef} formData={props.formData}>
 <table width="600" >
 <th>
 <h5 className="text-right">Form No. 5213</h5>

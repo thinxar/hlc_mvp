@@ -18,6 +18,7 @@ const EndorseTemplatePicker = (props: IOptions) => {
     const categoryRef = useRef<any>(null);
     const [categoryId, setCategoryId] = useState<any>();
     const [endorse, setEndorse] = useState<any>('');
+    const [isValid, setValid] = useState<boolean>(false);
     const [opened, { open, close }] = useDisclosure(false);
     const errorMsg = ErrorMsgConfig.form
 
@@ -86,7 +87,7 @@ const EndorseTemplatePicker = (props: IOptions) => {
                 </div>
 
                 <div className="pb-4">
-                    <PalmyraNewForm endPoint={''}>
+                    <PalmyraNewForm endPoint={''} onValidChange={setValid}>
                         <div className="grid grid-cols-1 md:grid-cols-1">
                             <div className="md:col-span-1">
                                 <ServerLookup
@@ -118,7 +119,8 @@ const EndorseTemplatePicker = (props: IOptions) => {
 
                         <div className="flex justify-center mt-8">
                             <Button onClick={open}
-                                className="filled-button text-white px-8 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 font-semibold"
+                                className={isValid ? 'py-filled-button' : 'py-disabled-button'}
+                                disabled={!isValid}
                                 leftSection={<FaPaperPlane className="text-sm" />}
                             >
                                 Submit
@@ -135,12 +137,12 @@ const EndorseTemplatePicker = (props: IOptions) => {
                     }
                 }} closeOnClickOutside={false}
             >
-                <div className="flex items-center justify-between px-2">
+                <div className="flex items-center justify-between px-4">
                     <div className="text-blue-700">Policy No: <span className="text-gray-950">{data?.policyNumber}</span></div>
                     <div className="text-blue-700">Claims: <span className="text-gray-950">{endorse}</span></div>
                     <div></div>
                 </div>
-                <EndorseTemplateView endorsementTitle={endorse} />
+                <EndorseTemplateView endorsementTitle={endorse} policyNo={data?.policyNumber}/>
             </Modal>
         </div>
     )

@@ -40,9 +40,6 @@ const FileListViewer = ({ data, policyId, selectedFile, setSelectedFile }: FileP
 
     const docketTypes = Object.keys(groupedByDocketType);
 
-    console.log(selectedFile, "selectedFile");
-    
-
     return (<>
         {data.length !== 0 ? (
             <Accordion variant="filled" radius="md" className="h-full flex flex-col" defaultValue={docketTypes[0]}>

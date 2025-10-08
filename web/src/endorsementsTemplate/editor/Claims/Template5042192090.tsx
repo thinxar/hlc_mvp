@@ -3,7 +3,7 @@ import { PalmyraForm } from '@palmyralabs/rt-forms';
 
 const Template5042192090 = (props: any) => {
   return (
-           <PalmyraForm ref={props.formRef}>
+           <PalmyraForm ref={props.formRef} formData={props.formData}>
 <table width="600" >
 <th>
 <h5 className="text-right">Form No.5042</h5>
@@ -24,7 +24,7 @@ const Template5042192090 = (props: any) => {
 <tr>
 <td width="100"></td>
 <td width="250"><p className="text-align: justify;">
-<b>Re: Policy No.</b> <TextField attribute="polNumber" type="text" /><td width="300" align="left">on Life of <TextField attribute="value4" type="text" /> </td></p></td>
+<b>Re: Policy No.</b> <TextField attribute="polNumber" type="text" readOnly /><td width="300" align="left">on Life of <TextField attribute="value4" type="text" /> </td></p></td>
 <td width="25"></td>
 </tr>
 </table>

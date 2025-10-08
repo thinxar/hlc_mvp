@@ -10,6 +10,13 @@
   --card-box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
 }
 
+.mantine-Popover-dropdown {
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  z-index: 999999 !important;
+}
+
+
 /* -- dark mode icon */
 .dark-mode-toggle-icon {
   cursor: pointer;

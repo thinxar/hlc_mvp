@@ -4,15 +4,20 @@ import { MdDone, MdOutlinePreview } from "react-icons/md";
 import { ErrorDisplay } from "./EmptyTemplateMsg";
 import { templateMap } from "./TemplateMapper";
 import { IoMdCreate } from "react-icons/io";
+import { formatRFCDate } from "utils/FormateDate";
 
 interface Props {
   endorsementTitle: string;
+  policyNo: string
 }
 
 const normalize = (str: string) => str.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle }) => {
+const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle, policyNo }) => {
+  const initialFormData = { date: formatRFCDate(new Date()), policyNumber: policyNo };
+
   const formRef = useRef<any>(null);
   const [isPreview, setIsPreview] = useState(false);
+  const [formData, setFormData] = useState(initialFormData);
   const normalizedTitle = normalize(endorsementTitle);
 
   const code = Object.keys(templateMap).find((key) => {
@@ -33,8 +38,9 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle }) => {
   const handleSave = () => {
     if (formRef.current && formRef.current.getData) {
       const formData = formRef?.current?.getData();
+      setFormData(formData)
       // localStorage.setItem(`formData_${code}`, JSON.stringify(formData));
-      console.log(`✅ Saved to localStorage: formData_${code}`, formData);
+      console.log(`Saved to localStorage: formData_${code}`, formData);
     } else {
       console.warn("⚠️ No form data available or ref not set.");
     }
@@ -42,6 +48,8 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle }) => {
 
   const handleTogglePreview = () => {
     if (!isPreview) handleSave();
+    const formData = formRef?.current?.getData();
+    setFormData(formData)
     setIsPreview(!isPreview);
   };
 
@@ -50,9 +58,9 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle }) => {
       <div className="form-container flex items-center justify-center bg-white text-blue-500 font-[500] template-sec">
         <div className="border-double border-4 border-gray-500 p-3 w-190">
           {!isPreview ? (
-            <EditorComponent formRef={formRef} />
+            <EditorComponent formRef={formRef} formData={formData} />
           ) : ViewerComponent ? (
-            <ViewerComponent formRef={formRef} />
+            <ViewerComponent formRef={formRef} formData={formData} />
           ) : (
             <div className="text-gray-500 italic">No viewer available</div>
           )}

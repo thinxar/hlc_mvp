@@ -3,14 +3,14 @@ import { PalmyraForm } from '@palmyralabs/rt-forms';
 
 const Template3775 = (props: any) => {
   return (
-           <PalmyraForm ref={props.formRef}>
+           <PalmyraForm ref={props.formRef} formData={props.formData}>
 <table width="600" >
 <th>
 <h5 className="text-right">Form No.3775(Revised)</h5>
 <h3 className="text-center">LIFE INSURANCE CORPORATION OF INDIA</h3>
 <h4 className="text-center"><u>Endorsement for granting DAB</u></h4>
 <br />
-<h4 className="text-center"><b>Policy No: </b> <TextField attribute="polNumber" type="text" /></h4>
+<h4 className="text-center"><b>Policy No: </b> <TextField attribute="polNumber" type="text" readOnly /></h4>
 <br />
 <table width="600">
 <tr>

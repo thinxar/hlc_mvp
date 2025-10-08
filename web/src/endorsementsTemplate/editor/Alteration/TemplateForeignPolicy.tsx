@@ -3,7 +3,7 @@ import { PalmyraForm } from '@palmyralabs/rt-forms';
 
 const TemplateForeignPolicy = (props: any) => {
   return (
-           <PalmyraForm ref={props.formRef}>
+           <PalmyraForm ref={props.formRef} formData={props.formData}>
 <table width="600" >
 <th>
 <h4 className="text-right">Endorsement For Foreign Policy</h4>
@@ -13,7 +13,7 @@ const TemplateForeignPolicy = (props: any) => {
 <table width="600" align="center" border={0}>
 <tr>
 <td width="50"></td>
-<td width="270" align="left" > Policy Number : <TextField attribute="polNumber" type="text" /> </td>
+<td width="270" align="left" > Policy Number : <TextField attribute="polNumber" type="text" readOnly /> </td>
 <td width="200" align="left" >Name : <TextField attribute="value2" type="text" /> </td>
 <td width="80"></td>
 </tr>

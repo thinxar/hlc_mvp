@@ -3,7 +3,7 @@ import { PalmyraForm } from '@palmyralabs/rt-forms';
 
 const TemplateForeclosureofPolicy = (props: any) => {
   return (
-           <PalmyraForm ref={props.formRef}>
+           <PalmyraForm ref={props.formRef} formData={props.formData}>
 <table width="600" >
 <th>
 <h3 className="text-center">LIFE INSURANCE CORPORATION OF INDIA</h3>
@@ -18,7 +18,7 @@ const TemplateForeclosureofPolicy = (props: any) => {
 <table width="550" border={0}>
 <tr>
 <td ></td>
-<td  align="center">Policy number <TextField attribute="polNumber" type="text" /> surrendered to loan on <TextField attribute="value3" type="text" /> .</td>
+<td  align="center">Policy number <TextField attribute="polNumber" type="text" readOnly /> surrendered to loan on <TextField attribute="value3" type="text" /> .</td>
 </tr>
 <tr>
 <td ></td>

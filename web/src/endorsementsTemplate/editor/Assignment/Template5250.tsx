@@ -3,7 +3,7 @@ import { PalmyraForm } from '@palmyralabs/rt-forms';
 
 const Template5250 = (props: any) => {
   return (
-           <PalmyraForm ref={props.formRef}>
+           <PalmyraForm ref={props.formRef} formData={props.formData}>
 
 <table width="600" >
 <th>
@@ -14,7 +14,7 @@ const Template5250 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="justify">I/We <TextField attribute="value1" type="text" /> and <TextField attribute="value2" type="text" /> the beneficiary/ies named in the within Policy No. <TextField attribute="polNumber" type="text" /> issued by the Life Insurance Corporation of India on the life of <TextField attribute="value4" type="text" />. Under the provisions of Section 6 of the Married Women's Property Act 1874, in consideration of natural love and affection do as beneficial owner/s hereby assign absolutely my/our beneficial interest in the said policy to my/our beneficial interest in the said policy to my/our beneficial interest in the said policy to my/our (relationship) <TextField attribute="value18" type="text" />(Shri/Smt.)<TextField attribute="value5" type="text" /> aged <TextField attribute="value6" type="text" /> years his/her heirs, executors and administrators.</p></td>
+<td width="550"><p className="justify">I/We <TextField attribute="value1" type="text" /> and <TextField attribute="value2" type="text" /> the beneficiary/ies named in the within Policy No. <TextField attribute="polNumber" type="text" readOnly /> issued by the Life Insurance Corporation of India on the life of <TextField attribute="value4" type="text" />. Under the provisions of Section 6 of the Married Women's Property Act 1874, in consideration of natural love and affection do as beneficial owner/s hereby assign absolutely my/our beneficial interest in the said policy to my/our beneficial interest in the said policy to my/our beneficial interest in the said policy to my/our (relationship) <TextField attribute="value18" type="text" />(Shri/Smt.)<TextField attribute="value5" type="text" /> aged <TextField attribute="value6" type="text" /> years his/her heirs, executors and administrators.</p></td>
 <td width="25"></td>
 </tr>
 </table>
