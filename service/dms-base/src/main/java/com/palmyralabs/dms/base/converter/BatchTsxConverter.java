@@ -88,7 +88,11 @@ public class BatchTsxConverter {
 				.replaceAll("nowrap", "").replaceAll("(?i)<hr\\s+color=([^\\s\">/]+)\\s*/?>", "<hr color=\"$1\" />") // ✅
 				.replaceAll("(?i)(<tr\\b[^>]*?)\\s+width\\s*=\\s*\"[^\"]*\"", "$1")
 				.replaceAll("(?i)<table([^>]*?)\\s+align=['\"]?justify['\"]?([^>]*?)>", "<table$1 align=\"center\"$2>")
-				.replaceAll("(?i)<table([^>]*?)\\s+margin=['\"][^'\"]*['\"]([^>]*?)>", "<table$1$2>");
+				.replaceAll("(?i)<table([^>]*?)\\s+margin=['\"][^'\"]*['\"]([^>]*?)>", "<table$1$2>")
+				.replaceAll("(?i)<p\\s+className=[\"']text-align:\\s*left;[\"']>", "<p className=\"text-left\">")
+				.replaceAll("(?i)<p\\s+className=[\"']text-align:\\s*right;[\"']>", "<p className=\"text-right\">")
+				.replaceAll("(?i)<p\\s+className=[\"']text-align:\\s*center;[\"']>", "<p className=\"text-center\">")
+				.replaceAll("(?i)<p\\s+className=[\"']text-align:\\s*justify;[\"']>", "<p className=\"text-justify\">");
 		if (isEdit) {
 			// DatePicker logic
 			if (htmlContent.contains("%%CurrDate%%")) {
