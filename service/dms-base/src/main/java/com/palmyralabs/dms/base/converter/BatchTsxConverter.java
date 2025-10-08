@@ -97,7 +97,7 @@ public class BatchTsxConverter {
 			// DatePicker logic
 			if (htmlContent.contains("%%CurrDate%%")) {
 				htmlContent = htmlContent.replace("%%CurrDate%%",
-						" <DatePicker attribute=\"currDate\" placeholder=\"dd-mm-yyyy\" />");
+						" <DatePicker attribute=\"currDate\" placeholder=\"dd-mm-yyyy\" readOnly/>");
 				datePickerImport = "DatePicker,";
 			} else {
 				datePickerImport = "";
