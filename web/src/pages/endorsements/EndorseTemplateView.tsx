@@ -1,8 +1,9 @@
 import { Button, ScrollArea } from "@mantine/core";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { MdDone, MdOutlinePreview } from "react-icons/md";
 import { ErrorDisplay } from "./EmptyTemplateMsg";
 import { templateMap } from "./TemplateMapper";
+import { IoMdCreate } from "react-icons/io";
 
 interface Props {
   endorsementTitle: string;
@@ -11,6 +12,7 @@ interface Props {
 const normalize = (str: string) => str.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
 const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle }) => {
   const formRef = useRef<any>(null);
+  const [isPreview, setIsPreview] = useState(false);
   const normalizedTitle = normalize(endorsementTitle);
 
   const code = Object.keys(templateMap).find((key) => {
@@ -22,10 +24,11 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle }) => {
     return <ErrorDisplay endorsementTitle={endorseText} type="invalid" />;
   }
 
-  const TemplateComponent: any = code ? templateMap[code] : null;
-  if (!TemplateComponent) {
-    return <ErrorDisplay code={code} type="notfound" />;
-  }
+  const templateEntry = templateMap[code];
+  if (!templateEntry) return <ErrorDisplay code={code} type="notfound" />;
+
+  const EditorComponent = templateEntry.editor;
+  const ViewerComponent = templateEntry.viewer;
 
   const handleSave = () => {
     if (formRef.current && formRef.current.getData) {
@@ -37,20 +40,38 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle }) => {
     }
   };
 
+  const handleTogglePreview = () => {
+    if (!isPreview) handleSave();
+    setIsPreview(!isPreview);
+  };
+
   return <div>
     <ScrollArea className="flex-1 overflow-y-auto p-2">
       <div className="form-container flex items-center justify-center bg-white text-blue-500 font-[500] template-sec">
         <div className="border-double border-4 border-gray-500 p-3 w-190">
-          <TemplateComponent formRef={formRef} />
+          {!isPreview ? (
+            <EditorComponent formRef={formRef} />
+          ) : ViewerComponent ? (
+            <ViewerComponent formRef={formRef} />
+          ) : (
+            <div className="text-gray-500 italic">No viewer available</div>
+          )}
         </div>
       </div>
     </ScrollArea>
     <div className="sticky bottom-0 py-2 bg-gray-100 flex justify-center mt-4 gap-2">
       <Button
         className="filled-button text-white px-8 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2 font-semibold"
-        leftSection={<MdOutlinePreview className="text-sm" />}
+        onClick={handleTogglePreview}
+        leftSection={
+          isPreview ? (
+            <IoMdCreate className="text-sm" />
+          ) : (
+            <MdOutlinePreview className="text-sm" />
+          )
+        }
       >
-        {"Preview Mode"}
+        {isPreview ? "Back to Edit" : "Preview Mode"}
       </Button>
 
       <Button
