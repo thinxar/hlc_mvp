@@ -17,8 +17,8 @@ public class BatchTsxConverter {
 	private static boolean isEdit = true;
  
 	public static void main(String[] args) {
-		String inputDir = "D:/Project_xl_sheets/hlic/endorse_new";
-		String outputDir = "D:/Project_xl_sheets/hlic/Template";
+		String inputDir = "/home/palmyra/suresh/endorsement_Templates/endorse_new/";
+		String outputDir = "/home/palmyra/suresh/convertedTsx/";
 		// String outputDir = "/home/palmyra/Desktop/TestFiles/output";
  
 		File inputDirectory = new File(inputDir);
@@ -132,7 +132,6 @@ public class BatchTsxConverter {
 				+ finalFileName + " = (props: any) => {\n" + "  return (\n"
 				+ "           <PalmyraForm ref={props.formRef}>\n" + tsxContent + "\n" + "           </PalmyraForm>\n"
 				+ "  );\n" + "};\n\n" + "export {" + finalFileName + "};\n";
- 
 		// Preserve directory structure
 		File relativeDir = new File(outputRoot,
 				rootDir.toPath().relativize(inputFile.getParentFile().toPath()).toString());
@@ -140,11 +139,16 @@ public class BatchTsxConverter {
 			relativeDir.mkdirs();
 		}
  
+		// Generate output file with auto-increment if already exists
 		File outputFile = new File(relativeDir, finalFileName + outputExtension);
-		try (FileWriter writer = new FileWriter(outputFile)) {
-			writer.write(tsxTemplate);
+		int count = 1;
+		while (outputFile.exists()) {
+		    outputFile = new File(relativeDir, finalFileName + "_" + count + outputExtension);
+		    count++;
 		}
- 
+		try (FileWriter writer = new FileWriter(outputFile)) {
+		    writer.write(tsxTemplate);
+		}
 		System.out.println("Converted: " + inputFile.getAbsolutePath() + " -> " + outputFile.getAbsolutePath());
 	}
  
