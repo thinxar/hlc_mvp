@@ -100,6 +100,9 @@ public class FileToTsxConverter {
 		StringBuffer replaced = new StringBuffer();
 		while (matcher.find()) {
 			String refName = matcher.group(1).trim();
+			 if (!refName.isEmpty()) {
+			        refName = refName.substring(0, 1).toLowerCase() + refName.substring(1);
+			    }
 			String replacement = "";
 			 if (isEdit) {
 			        if (refName.equalsIgnoreCase("polNumber")) {

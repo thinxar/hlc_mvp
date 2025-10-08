@@ -14,7 +14,7 @@ public class BatchTsxConverter {
 	private static String outputExtension = ".tsx";
 	private static String datePickerImport = "";
 	private static String textFieldImport = "";
-	private static boolean isEdit = false;
+	private static boolean isEdit = true;
 
 	public static void main(String[] args) {
 		String inputDir = "/home/palmyra/suresh/endorsement_Templates/endorse_new/";
@@ -119,6 +119,9 @@ public class BatchTsxConverter {
 		StringBuffer replaced = new StringBuffer();
 		while (matcher.find()) {
 		    String refName = matcher.group(1).trim();
+		    if (!refName.isEmpty()) {
+		        refName = refName.substring(0, 1).toLowerCase() + refName.substring(1);
+		    }
 		    String replacement = "";
 		    if (isEdit) {
 		        if (refName.equalsIgnoreCase("polNumber")) {
