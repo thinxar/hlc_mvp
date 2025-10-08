@@ -95,7 +95,7 @@ public class FileToTsxConverter {
 			}
 		}
  
-		Pattern pattern = Pattern.compile("%%(?!CurrDate)([^%]+)%%");
+    	Pattern pattern = Pattern.compile("%%(.*?)%%");
 		Matcher matcher = pattern.matcher(htmlContent);
 		StringBuffer replaced = new StringBuffer();
 		while (matcher.find()) {
@@ -108,7 +108,7 @@ public class FileToTsxConverter {
 			            replacement = "<TextField attribute=\"" + refName + "\" type=\"text\" />";
 			        }
 			    } else {
-			        replacement = "<TextView attribute=\"" + refName + "\" type=\"text\" />";
+			    	replacement = "<TextView attribute=\"" + refName + "\" />";
 			    }
 			    matcher.appendReplacement(replaced, Matcher.quoteReplacement(replacement));
 		}

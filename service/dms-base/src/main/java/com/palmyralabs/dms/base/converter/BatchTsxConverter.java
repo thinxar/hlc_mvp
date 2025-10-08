@@ -14,7 +14,7 @@ public class BatchTsxConverter {
 	private static String outputExtension = ".tsx";
 	private static String datePickerImport = "";
 	private static String textFieldImport = "";
-	private static boolean isEdit = true;
+	private static boolean isEdit = false;
 
 	public static void main(String[] args) {
 		String inputDir = "/home/palmyra/suresh/endorsement_Templates/endorse_new/";
@@ -114,7 +114,7 @@ public class BatchTsxConverter {
 			}
 		}
 
-		Pattern pattern = Pattern.compile("%%(?!CurrDate)([^%]+)%%");
+		Pattern pattern = Pattern.compile("%%(.*?)%%");
 		Matcher matcher = pattern.matcher(htmlContent);
 		StringBuffer replaced = new StringBuffer();
 		while (matcher.find()) {
@@ -127,7 +127,7 @@ public class BatchTsxConverter {
 		            replacement = "<TextField attribute=\"" + refName + "\" type=\"text\" />";
 		        }
 		    } else {
-		        replacement = "<TextView attribute=\"" + refName + "\" type=\"text\" />";
+		        replacement = "<TextView attribute=\"" + refName + "\" />";
 		    }
 		    matcher.appendReplacement(replaced, Matcher.quoteReplacement(replacement));
 		}
