@@ -68,7 +68,8 @@ public class FileToTsxConverter {
 				.replaceAll("(?i)<table([^>]*?)border=([\"']?)(\\d+)\\2", "<table$1border={$3}")
 				.replaceAll("nowrap", "").replaceAll("(?i)<hr\\s+color=([^\\s\">/]+)\\s*/?>", "<hr color=\"$1\" />") // ✅
 				.replaceAll("(?i)(<tr\\b[^>]*?)\\s+width\\s*=\\s*\"[^\"]*\"", "$1")
-				.replaceAll("(?i)<table([^>]*?)\\s+align=['\"]?justify['\"]?([^>]*?)>", "<table$1 align=\"center\"$2>");
+				.replaceAll("(?i)<table([^>]*?)\\s+align=['\"]?justify['\"]?([^>]*?)>", "<table$1 align=\"center\"$2>")
+				.replaceAll("(?i)<table([^>]*?)\\s+margin=['\"][^'\"]*['\"]([^>]*?)>", "<table$1$2>");
     	if (isEdit) {
 			// DatePicker logic
 			if (htmlContent.contains("%%CurrDate%%")) {
@@ -112,10 +113,16 @@ public class FileToTsxConverter {
                 + finalFileName + " = (props: any) => {\n" + "  return (\n" + "    <PalmyraForm ref={props.formRef}>\n"
                 + tsxContent + "\n" + "    </PalmyraForm>\n" + "  );\n" + "};\n\n" + "export {" + finalFileName
                 + "};\n";
+        
         File outputFile = new File(outputDir, finalFileName + outputExtension);
-        try (FileWriter writer = new FileWriter(outputFile)) {
-            writer.write(tsxTemplate);
-        }
+		int count = 1;
+		while (outputFile.exists()) {
+			outputFile = new File(outputDir, finalFileName + count + outputExtension);
+			count++;
+		}
+		try (FileWriter writer = new FileWriter(outputFile)) {
+		    writer.write(tsxTemplate);
+		}
         System.out.println("Converted single file: " + inputFile.getName() + " -> " + outputFile.getAbsolutePath());
     }
     private static String removeTagContent(String html, String tagName) {
@@ -124,10 +131,20 @@ public class FileToTsxConverter {
     private static String formatFileName(String fileName) {
         if (fileName == null || fileName.isEmpty())
             return fileName;
-        String cleaned = fileName.replaceAll("[()\\-_,\\s]+", "");
+        
+        int dotIndex = fileName.lastIndexOf('.');
+		String namePart = (dotIndex >= 0) ? fileName.substring(0, dotIndex) : fileName;
+		String extension = (dotIndex >= 0) ? fileName.substring(dotIndex) : "";
+		
+        String cleaned = namePart.replaceAll("[()\\-_,\\s]+", "");
         String digits = cleaned.replaceAll("\\D+", "");
         String letters = cleaned.replaceAll("\\d+", "");
-        return !digits.isEmpty() ? "Template" + digits : "Template" + letters;
+        
+        if (!digits.isEmpty()) {
+			return isEdit ? "Template"+ digits + extension : "TemplateV" + digits + extension;
+		} else {
+			return isEdit ? "Template"+ letters + extension: "TemplateV" + letters + extension;
+		}
     }
     public static String makeTagsLowercase(String html) {
         if (html == null || html.isEmpty())

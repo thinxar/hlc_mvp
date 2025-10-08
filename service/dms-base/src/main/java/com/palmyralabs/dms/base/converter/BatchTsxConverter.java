@@ -1,5 +1,5 @@
 package com.palmyralabs.dms.base.converter;
- 
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,30 +8,30 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
- 
+
 public class BatchTsxConverter {
 	private static String inputExtension = ".txt";
 	private static String outputExtension = ".tsx";
 	private static String datePickerImport = "";
 	private static String textFieldImport = "";
 	private static boolean isEdit = true;
- 
+
 	public static void main(String[] args) {
 		String inputDir = "/home/palmyra/suresh/endorsement_Templates/endorse_new/";
 		String outputDir = "/home/palmyra/suresh/convertedTsx/";
 		// String outputDir = "/home/palmyra/Desktop/TestFiles/output";
- 
+
 		File inputDirectory = new File(inputDir);
 		File outputDirectory = new File(outputDir);
- 
+
 		if (!inputDirectory.exists() || !inputDirectory.isDirectory()) {
 			System.err.println("Input directory not found or not a directory: " + inputDir);
 			return;
 		}
- 
+
 		processDirectory(inputDirectory, inputDirectory, outputDirectory);
 	}
- 
+
 	private static void processDirectory(File rootDir, File currentDir, File outputRoot) {
 		for (File file : currentDir.listFiles()) {
 			if (file.isDirectory()) {
@@ -51,7 +51,7 @@ public class BatchTsxConverter {
 			}
 		}
 	}
- 
+
 	private static void convertFile(File rootDir, File inputFile, File outputRoot) throws IOException {
 		String fileName = inputFile.getName().replace(inputExtension, "");
 		String finalFileName = formatFileName(fileName);
@@ -63,11 +63,11 @@ public class BatchTsxConverter {
 			byte[] bytes = Files.readAllBytes(inputFile.toPath());
 			htmlContent = new String(bytes, StandardCharsets.ISO_8859_1);
 		}
- 
+
 		htmlContent = removeTagContent(htmlContent, "style");
 		htmlContent = removeTagContent(htmlContent, "script");
 		htmlContent = makeTagsLowercase(htmlContent);
- 
+
 		htmlContent = htmlContent.replaceAll("(?s)<style.*?>.*?</style>", "").replaceAll("\r\n", "\n")
 				.replaceAll("&nbsp;", " ").trim().replaceAll("(?i)<tbody[^>]*>", "").replaceAll("(?i)</tbody>", "")
 				.replaceAll("(?i)<br\\s*/?>", "<br />").replaceAll("\\bstyle\\b", "className")
@@ -87,8 +87,8 @@ public class BatchTsxConverter {
 				.replaceAll("(?i)<table([^>]*?)border=([\"']?)(\\d+)\\2", "<table$1border={$3}")
 				.replaceAll("nowrap", "").replaceAll("(?i)<hr\\s+color=([^\\s\">/]+)\\s*/?>", "<hr color=\"$1\" />") // ✅
 				.replaceAll("(?i)(<tr\\b[^>]*?)\\s+width\\s*=\\s*\"[^\"]*\"", "$1")
-				.replaceAll("(?i)<table([^>]*?)\\s+align=['\"]?justify['\"]?([^>]*?)>", "<table$1 align=\"center\"$2>");
- 
+				.replaceAll("(?i)<table([^>]*?)\\s+align=['\"]?justify['\"]?([^>]*?)>", "<table$1 align=\"center\"$2>")
+				.replaceAll("(?i)<table([^>]*?)\\s+margin=['\"][^'\"]*['\"]([^>]*?)>", "<table$1$2>");
 		if (isEdit) {
 			// DatePicker logic
 			if (htmlContent.contains("%%CurrDate%%")) {
@@ -98,7 +98,7 @@ public class BatchTsxConverter {
 			} else {
 				datePickerImport = "";
 			}
- 
+
 			// Check if any other placeholder (%%...%% except CurrDate) exists
 			// We'll look for %%...%% placeholders excluding CurrDate
 			Pattern otherPlaceholderPattern = Pattern.compile("%%(?!CurrDate)([^%]+)%%");
@@ -109,7 +109,7 @@ public class BatchTsxConverter {
 				textFieldImport = "";
 			}
 		}
- 
+
 		Pattern pattern = Pattern.compile("%%(?!CurrDate)([^%]+)%%");
 		Matcher matcher = pattern.matcher(htmlContent);
 		StringBuffer replaced = new StringBuffer();
@@ -123,7 +123,7 @@ public class BatchTsxConverter {
 			matcher.appendReplacement(replaced, Matcher.quoteReplacement(replacement));
 		}
 		matcher.appendTail(replaced);
- 
+
 		String tsxContent = replaced.toString();
 		String importString = isEdit
 				? "import { " + datePickerImport + textFieldImport + "} from 'templates/mantineForm';\n"
@@ -138,64 +138,63 @@ public class BatchTsxConverter {
 		if (!relativeDir.exists()) {
 			relativeDir.mkdirs();
 		}
- 
-		// Generate output file with auto-increment if already exists
+
 		File outputFile = new File(relativeDir, finalFileName + outputExtension);
 		int count = 1;
 		while (outputFile.exists()) {
-		    outputFile = new File(relativeDir, finalFileName + "_" + count + outputExtension);
-		    count++;
+			outputFile = new File(relativeDir, finalFileName + count + outputExtension);
+			count++;
 		}
+
 		try (FileWriter writer = new FileWriter(outputFile)) {
-		    writer.write(tsxTemplate);
+			writer.write(tsxTemplate);
 		}
 		System.out.println("Converted: " + inputFile.getAbsolutePath() + " -> " + outputFile.getAbsolutePath());
 	}
- 
+
 	private static String removeTagContent(String html, String tagName) {
 		return html.replaceAll("(?is)<" + tagName + ".*?>.*?</" + tagName + ">", "");
 	}
- 
+
 	private static String formatFileName(String fileName) {
 		if (fileName == null || fileName.isEmpty()) {
 			return fileName;
 		}
- 
+
 		// Split filename and extension
 		int dotIndex = fileName.lastIndexOf('.');
 		String namePart = (dotIndex >= 0) ? fileName.substring(0, dotIndex) : fileName;
 		String extension = (dotIndex >= 0) ? fileName.substring(dotIndex) : "";
- 
+
 		// Remove unwanted characters
 		String cleaned = namePart.replaceAll("[()\\-_,\\s]+", "");
- 
+
 		// Extract digits and letters
 		String digits = cleaned.replaceAll("\\D+", ""); // numbers only
 		String letters = cleaned.replaceAll("\\d+", ""); // letters only
- 
+
 		// Decide output based on presence of digits
 		if (!digits.isEmpty()) {
-			return "Template" + digits + extension;
+			return isEdit ? "Template"+ digits + extension : "TemplateV" + digits + extension;
 		} else {
-			return "Template" + letters + extension;
+			return isEdit ? "Template"+ letters + extension: "TemplateV" + letters + extension;
 		}
 	}
- 
+
 	public static String makeTagsLowercase(String html) {
 		if (html == null || html.isEmpty())
 			return html;
- 
+
 		Pattern pattern = Pattern.compile("<[^>]+>");
 		Matcher matcher = pattern.matcher(html);
- 
+
 		StringBuffer sb = new StringBuffer();
 		while (matcher.find()) {
 			String tagContent = matcher.group();
 			matcher.appendReplacement(sb, Matcher.quoteReplacement(tagContent.toLowerCase()));
 		}
 		matcher.appendTail(sb);
- 
+
 		return sb.toString();
 	}
 }
- 
