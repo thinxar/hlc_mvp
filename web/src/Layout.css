@@ -1127,6 +1127,7 @@ pre {
 
 .template-sec .py-form-field-container.py-form-field-data {
   display: inline-flex !important;
+  color: black;
 }
 
 .template-sec .py-form-field-container {

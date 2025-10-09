@@ -40,19 +40,16 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle, policyNo }) =>
       const formData = formRef?.current?.getData();
       setFormData(formData)
       // localStorage.setItem(`formData_${code}`, JSON.stringify(formData));
-      console.log(`Saved to localStorage: formData_${code}`, formData);
     } else {
       console.warn("⚠️ No form data available or ref not set.");
     }
   };
 
   const handleTogglePreview = () => {
-    if (!isPreview) handleSave();
     const formData = formRef?.current?.getData();
     setFormData(formData)
     setIsPreview(!isPreview);
   };
-  console.log('fd', isPreview);
 
   return <div>
     <ScrollArea className="flex-1 overflow-y-auto p-2">

@@ -109,7 +109,7 @@ const PolicyResultView = () => {
 
 
             <Modal opened={endorseOpened} onClose={endorseClose} onKeyDown={handleKeyClose} centered
-                size={"lg"} title={`Endorsement`}>
+                size={"lg"} title={`Endorsement`} >
                 <EndorseTemplatePicker data={policyData}/>
             </Modal>
         </div>

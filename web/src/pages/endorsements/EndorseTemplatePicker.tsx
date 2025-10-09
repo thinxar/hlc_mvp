@@ -137,11 +137,11 @@ const EndorseTemplatePicker = (props: IOptions) => {
                 }} closeOnClickOutside={false}
             >
                 <div className="flex items-center justify-between px-4">
-                    <div className="text-blue-700">Policy No: <span className="text-gray-950">{data?.policyNumber}</span></div>
-                    <div className="text-blue-700">Claims: <span className="text-gray-950">{endorse}</span></div>
+                    <div className="text-blue-800">Policy No: <span className="text-gray-950">{data?.policyNumber}</span></div>
+                    <div className="text-blue-800">Claims: <span className="text-gray-950">{endorse}</span></div>
                     <div></div>
                 </div>
-                <EndorseTemplateView endorsementTitle={endorse} policyNo={data?.policyNumber}/>
+                <EndorseTemplateView endorsementTitle={endorse} policyNo={data?.policyNumber} />
             </Modal>
         </div>
     )

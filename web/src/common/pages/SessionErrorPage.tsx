@@ -15,7 +15,7 @@ export const SessionErrorPage = ({ isOpen, onLogin }: any) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-auto h-[calc(100vh)]">
+        <div className="fixed inset-0 z-999 flex items-center justify-center p-4 overflow-auto h-[calc(100vh)]">
             <div
                 className="absolute  inset-0 bg-gradient-to-br from-gray-900/90 to-black/80 backdrop-blur-sm"
                 style={{
