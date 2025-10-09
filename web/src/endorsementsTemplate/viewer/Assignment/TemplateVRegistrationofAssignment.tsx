@@ -13,16 +13,16 @@ const TemplateVRegistrationofAssignment = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="250" align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td width="300" align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td width="250" align="left"> Place: <TextView attribute="branchName" /> </td>
+<td width="300" align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;">
-<center>Policy No." type="text" />polNumber<TextView attribute="</center>
+<td width="550"><p className="text-justify">
+<center>Policy No. <TextView attribute="polNumber" /> </center>
 </p>
 </td>
 </tr>
@@ -32,7 +32,7 @@ const TemplateVRegistrationofAssignment = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> Registered on" type="text" />value4<TextView attribute="<br /> Type of Assignment" type="text" />value5<TextView attribute="<br /> Name of the Assignee (1)" type="text" />value6<TextView attribute="<br /> Name of the Assignee (2)" type="text" />value7<TextView attribute="<br /> Name of the Guardian (in case of minor assignee)" type="text" />value8<TextView attribute="<br /> Address of the Assignee" type="text" />value9<TextView attribute="<br /> Telephone No (1)" type="text" />value10<TextView attribute="&nbsp (2)" type="text" />value11<TextView attribute="<br /> Email id of Assignee" type="text" />value12<TextView attribute="<br /> Bank Loan Account Number" type="text" />value13%%
+<td width="550" align="left"><p className="text-justify"> Registered on <TextView attribute="value4" /> <br /> Type of Assignment <TextView attribute="value5" /> <br /> Name of the Assignee (1) <TextView attribute="value6" /> <br /> Name of the Assignee (2) <TextView attribute="value7" /> <br /> Name of the Guardian (in case of minor assignee) <TextView attribute="value8" /> <br /> Address of the Assignee <TextView attribute="value9" /> <br /> Telephone No (1) <TextView attribute="value10" /> &nbsp (2) <TextView attribute="value11" /> <br /> Email id of Assignee <TextView attribute="value12" /> <br /> Bank Loan Account Number <TextView attribute="value13" />
 </p>
 </td>
 <td width="25"></td>

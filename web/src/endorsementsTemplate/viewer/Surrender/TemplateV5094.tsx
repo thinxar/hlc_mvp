@@ -12,19 +12,20 @@ const TemplateV5094 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
-<center> Policy Number :" type="text" />polNumber<TextView attribute="</center>
+<center> Policy Number : <TextView attribute="polNumber" />
+</center>
 <br />
 <br />
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> At the request of the within named Life Assured the within written Policy which stands automatically reduced to Rs." type="text" />value4<TextView attribute="by non-payment of the Premium due" type="text" />value5<TextView attribute="has been reduced to Rs." type="text" />value6<TextView attribute="inclusive of all bonuses already declared free from the" type="text" />value7<TextView attribute="deduction of the existing loan and interest amounting to Rs." type="text" />value8<TextView attribute=". It is further declared that the Policy will not participate in the profits to be declared subsequent to the date of lapse and will become payable as within mentioned. The sum of Rs." type="text" />value9%% has been paid as Surrender Value of the portion of the sum assured dropped. </p></td>
+<td width="550" align="left"><p className="text-justify"> At the request of the within named Life Assured the within written Policy which stands automatically reduced to Rs. <TextView attribute="value4" /> by non-payment of the Premium due <TextView attribute="value5" /> has been reduced to Rs. <TextView attribute="value6" /> inclusive of all bonuses already declared free from the <TextView attribute="value7" /> deduction of the existing loan and interest amounting to Rs. <TextView attribute="value8" /> . It is further declared that the Policy will not participate in the profits to be declared subsequent to the date of lapse and will become payable as within mentioned. The sum of Rs. <TextView attribute="value9" /> has been paid as Surrender Value of the portion of the sum assured dropped. </p></td>
 <td width="25"></td>
 </tr>
 </table>

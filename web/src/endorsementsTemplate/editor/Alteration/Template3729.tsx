@@ -13,8 +13,8 @@ const Template3729 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -36,7 +36,7 @@ const Template3729 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Age at entry Admitted <TextField attribute="value5" type="text" /> years. <br /> Date of commencement of Policy <TextField attribute="value6" type="text" /> . <br /> Due Dates of Premiums <TextField attribute="value7" type="text" /> each year. <br /> <TextField attribute="value8" type="text" /> Premiums payable from <TextField attribute="value9" type="text" /> altered to Rs <TextField attribute="value10" type="text" /> . <br /> Date of Last Payment <TextField attribute="value11" type="text" /> . <br /> Date of Maturity <TextField attribute="value12" type="text" /> .<br /> Premium Payment Period <TextField attribute="value13" type="text" /> years. </p></td>
+<td width="550"><p className="text-justify"> Age at entry Admitted <TextField attribute="value5" type="text" /> years. <br /> Date of commencement of Policy <TextField attribute="value6" type="text" /> . <br /> Due Dates of Premiums <TextField attribute="value7" type="text" /> each year. <br /> <TextField attribute="value8" type="text" /> Premiums payable from <TextField attribute="value9" type="text" /> altered to Rs <TextField attribute="value10" type="text" /> . <br /> Date of Last Payment <TextField attribute="value11" type="text" /> . <br /> Date of Maturity <TextField attribute="value12" type="text" /> .<br /> Premium Payment Period <TextField attribute="value13" type="text" /> years. </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -46,7 +46,7 @@ const Template3729 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Received/Refunded Rs. <TextField attribute="value14" type="text" /> in respect of difference/excess of the premiums paid with interest thereon and Rs.<TextField attribute="value15" type="text" /> as interest for dating back. </p></td>
+<td width="550"><p className="text-justify"> Received/Refunded Rs. <TextField attribute="value14" type="text" /> in respect of difference/excess of the premiums paid with interest thereon and Rs.<TextField attribute="value15" type="text" /> as interest for dating back. </p></td>
 <td width="25"></td>
 </tr>
 </table>

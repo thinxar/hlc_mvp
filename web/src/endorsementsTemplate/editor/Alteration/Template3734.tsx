@@ -14,8 +14,8 @@ const Template3734 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -28,7 +28,7 @@ const Template3734 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Satisfactory evidence having been produced regarding the life Assured's age the following alterations are hereby made in the Policy. </p></td>
+<td width="550"><p className="text-justify"> Satisfactory evidence having been produced regarding the life Assured's age the following alterations are hereby made in the Policy. </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -38,7 +38,7 @@ const Template3734 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Age at entry Admitted: Male Life <TextField attribute="value4" type="text" /> years/Female Life <TextField attribute="value5" type="text" /> years. <br />
+<td width="550"><p className="text-justify"> Age at entry Admitted: Male Life <TextField attribute="value4" type="text" /> years/Female Life <TextField attribute="value5" type="text" /> years. <br />
 <hr /> <TextField attribute="value6" type="text" /> premiums payable from <TextField attribute="value7" type="text" /> altered to Rs. <TextField attribute="value8" type="text" /> . </p></td>
 <td width="25"></td>
 </tr>

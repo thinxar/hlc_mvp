@@ -13,8 +13,8 @@ const Template3711 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -26,7 +26,7 @@ const Template3711 = (props: any) => {
 <tr>
 <td width="25"></td>
 <td width="550" align="right">
-<p className="text-align: justify;"> Satisfactory evidence having been produced, the age of the within named Life Assured is hereby admitted as <TextField attribute="value4" type="text" /> years nearer birthday at entry,and not <TextField attribute="value5" type="text" /> years as stated in the Proposal for Assurance. </p></td>
+<p className="text-justify"> Satisfactory evidence having been produced, the age of the within named Life Assured is hereby admitted as <TextField attribute="value4" type="text" /> years nearer birthday at entry,and not <TextField attribute="value5" type="text" /> years as stated in the Proposal for Assurance. </p></td>
 <td width="25"></td>
 </tr>
 </table>

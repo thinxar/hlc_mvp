@@ -11,9 +11,9 @@ const TemplateV3561 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"> Place:<TextView attribute="BranchName" type="text" /> </td>
+<td width="550" align="left"> Place:<TextView attribute="branchName" /> </td>
 <td width="25"></td>
-<td width="550" align="right"> Date:%%CurrDate<TextView attribute="</td>
+<td width="550" align="right"> Date:<TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -23,7 +23,7 @@ const TemplateV3561 = (props: any) => {
 <tr>
 <td width="25"></td>
 <td width="550" align="center">
-<b>Re : Policy No.</b>" type="text" />polNumber<TextView attribute="</td>
+<b>Re : Policy No.</b> <TextView attribute="polNumber" /> </td>
 </tr>
 </table>
 <br />
@@ -31,7 +31,7 @@ const TemplateV3561 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> At the request of the Life Assured the Policy is altered to With Profits Plan and in consequence the following alterations are hereby made in the Policy :</p>
+<td width="550" align="left"><p className="text-justify"> At the request of the Life Assured the Policy is altered to With Profits Plan and in consequence the following alterations are hereby made in the Policy :</p>
 </td><td width="25"></td>
 </tr>
 </table>
@@ -40,13 +40,13 @@ const TemplateV3561 = (props: any) => {
 <table width="600">
 <tr>
 <td width="50"></td>
-<td width="500" align="left"><p className="text-align: justify;"> Altered to With Profits from" type="text" />value4<TextView attribute=".<br />" type="text" />value5<TextView attribute="Premiums from" type="text" />value6<TextView attribute="@ Rs" type="text" />value7<TextView attribute=".<br /> To participate in profits for the Biennium commencing on" type="text" />value8<TextView attribute="</p></td><td width="50"></td>
+<td width="500" align="left"><p className="text-justify"> Altered to With Profits from <TextView attribute="value4" /> .<br /> <TextView attribute="value5" /> Premiums from <TextView attribute="value6" /> @ Rs <TextView attribute="value7" /> .<br /> To participate in profits for the Biennium commencing on <TextView attribute="value8" /> </p></td><td width="50"></td>
 </tr>
 </table>
 <table width="600">
 <tr>
 <td width="50"></td>
-<td width="500" align="left"><p className="text-align: justify;"> Table No" type="text" />value9<TextView attribute=".<br /> Received Rs" type="text" />value10%% being the amount required to give effect	to the alteration. </p></td><td width="50"></td>
+<td width="500" align="left"><p className="text-justify"> Table No <TextView attribute="value9" /> .<br /> Received Rs <TextView attribute="value10" /> being the amount required to give effect	to the alteration. </p></td><td width="50"></td>
 </tr>
 </table>
 <br />

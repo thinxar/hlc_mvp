@@ -13,7 +13,7 @@ interface Props {
 
 const normalize = (str: string) => str.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
 const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle, policyNo }) => {
-  const initialFormData = { date: formatRFCDate(new Date()), policyNumber: policyNo };
+  const initialFormData = { currDate: formatRFCDate(new Date()), polNumber: policyNo };
 
   const formRef = useRef<any>(null);
   const [isPreview, setIsPreview] = useState(false);
@@ -23,7 +23,6 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle, policyNo }) =>
   const code = Object.keys(templateMap).find((key) => {
     return normalizedTitle.includes(normalize(key));
   });
-console.log(code ,"code");
 
   const endorseText = endorsementTitle == '' ? '--' : endorsementTitle;
   if (!code) {
@@ -53,11 +52,12 @@ console.log(code ,"code");
     setFormData(formData)
     setIsPreview(!isPreview);
   };
+  console.log('fd', isPreview);
 
   return <div>
     <ScrollArea className="flex-1 overflow-y-auto p-2">
-      <div className="form-container flex items-center justify-center bg-white text-blue-500 font-[500] template-sec">
-        <div className="border-double border-4 border-gray-500 p-3 ">
+      <div className="form-container flex items-center justify-center bg-white text-blue-700  text-justify template-sec">
+        <div className="border-double border-4 border-blue-800 p-3 ">
           {!isPreview ? (
             <EditorComponent formRef={formRef} formData={formData} />
           ) : ViewerComponent ? (

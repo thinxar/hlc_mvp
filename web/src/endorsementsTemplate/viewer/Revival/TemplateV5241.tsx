@@ -6,7 +6,7 @@ const TemplateV5241 = (props: any) => {
 <table width="600" >
 <th>
 <h3 className="text-right">Annexure-3</h3>
-<p className="text-center">	Policy No. : <TextView attribute="polNumber" type="text" /> </p>
+<p className="text-center">	Policy No. : <TextView attribute="polNumber" /> </p>
 <h3 className="text-center">Endorsement to Policy Document for Revival<br />(For LIC New Endorsement Plus)</h3>
 <table width="600">
 <tr>

@@ -14,15 +14,15 @@ const TemplateOtherEndorsement = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="250" align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td width="300" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td width="250" align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td width="300" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;">
+<td width="550"><p className="text-justify">
 <center>Policy No. <TextField attribute="polNumber" type="text" readOnly /> </center>
 </p>
 </td>
@@ -32,7 +32,7 @@ const TemplateOtherEndorsement = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: left;"> Ref : <TextField attribute="value4" type="text" /> <br />
+<td width="550" align="left"><p className="text-left"> Ref : <TextField attribute="value4" type="text" /> <br />
 <br /> Enter text as per requirement. : <br /> <TextField attribute="value5" type="text" /> <br />
 </p>
 </td>

@@ -11,21 +11,21 @@ const TemplateVForeclosureofPolicy = (props: any) => {
 <table width="550" border={0}>
 <tr>
 <td ></td>
-<td  align="center">Name of branch <TextView attribute="value1" type="text" /> code no. <TextView attribute="value2" type="text" /> .</td>
+<td  align="center">Name of branch <TextView attribute="value1" /> code no. <TextView attribute="value2" /> .</td>
 </tr>
 </table><br />
 <table width="550" border={0}>
 <tr>
 <td ></td>
-<td  align="center">Policy number <TextView attribute="polNumber" type="text" /> surrendered to loan on <TextView attribute="value3" type="text" /> .</td>
+<td  align="center">Policy number <TextView attribute="polNumber" /> surrendered to loan on <TextView attribute="value3" /> .</td>
 </tr>
 <tr>
 <td ></td>
-<td  align="center">Loan of Rs. <TextView attribute="value4" type="text" /> , loan interest of Rs. <TextView attribute="value5" type="text" /> recovered from </td>
+<td  align="center">Loan of Rs. <TextView attribute="value4" /> , loan interest of Rs. <TextView attribute="value5" /> recovered from </td>
 </tr>
 <tr>
 <td ></td>
-<td  align="center">surrender value of Rs. <TextView attribute="value6" type="text" /> x-charge of Rs. <TextView attribute="value7" type="text" /> credited/debited. </td>
+<td  align="center">surrender value of Rs. <TextView attribute="value6" /> x-charge of Rs. <TextView attribute="value7" /> credited/debited. </td>
 </tr>
 </table>
 <br /><br />

@@ -13,20 +13,21 @@ const TemplateV504290 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="350" align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td width="200" align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td width="350" align="left"> Place: <TextView attribute="branchName" /> </td>
+<td width="200" align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
 <br />
-<center> Ref: Policy No." type="text" />polNumber<TextView attribute="on the Life of" type="text" />value4<TextView attribute="</center>
+<center> Ref: Policy No. <TextView attribute="polNumber" /> on the Life of <TextView attribute="value4" />
+</center>
 <br />
 <br />
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" ><p className="text-align: justify;"> The within-named Life Assured having died on" type="text" />value5<TextView attribute="and proof of his death having been duly furnished,it is hereby declared that the within-written policy stands fully paid-up for Rs." type="text" />value6%% payable on the date of Maturity, and is free from payment of future premiums. The policy will not participate in future profits.
+<td width="550" ><p className="text-justify"> The within-named Life Assured having died on<TextView attribute="value5" /> and proof of his death having been duly furnished,it is hereby declared that the within-written policy stands fully paid-up for Rs.<TextView attribute="value6" /> payable on the date of Maturity, and is free from payment of future premiums. The policy will not participate in future profits.
 </p></td>
 <td width="25"></td>
 </tr>

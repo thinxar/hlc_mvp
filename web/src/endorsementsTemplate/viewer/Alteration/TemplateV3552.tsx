@@ -12,20 +12,21 @@ const TemplateV3552 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
 <center>
-<b>Re : Policy No.</b>" type="text" />polNumber<TextView attribute="</center>
+<b>Re : Policy No.</b> <TextView attribute="polNumber" />
+</center>
 <br />
 <br />
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="justify"> Notwithstanding anything within mentioned to the contrary, it is hereby declared that the mode of payment of premiums under the within written Policy is altered to monthly system and the monthly premiums from" type="text" />value4<TextView attribute="to" type="text" />value5<TextView attribute="inclusive shall be payable at the rate of Rs." type="text" />value6%% only, if they are paid through (i) Banker's Order (ii) Trustees of a Staff Provident or Superannuation Fund or (iii) Collections made by or under the supervision of his employer and remitted to the Corporation.</p>
+<td width="550"><p className="justify"> Notwithstanding anything within mentioned to the contrary, it is hereby declared that the mode of payment of premiums under the within written Policy is altered to monthly system and the monthly premiums from <TextView attribute="value4" /> to <TextView attribute="value5" /> inclusive shall be payable at the rate of Rs. <TextView attribute="value6" /> only, if they are paid through (i) Banker's Order (ii) Trustees of a Staff Provident or Superannuation Fund or (iii) Collections made by or under the supervision of his employer and remitted to the Corporation.</p>
 </td>
 <td width="25"></td>
 </tr>

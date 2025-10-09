@@ -14,8 +14,8 @@ const Template3736 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -27,7 +27,7 @@ const Template3736 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Satisfactory evidence with respect to the ages of the within-named Lives Assured having been produced, their ages have been admitted as <TextField attribute="value4" type="text" /> years and <TextField attribute="value5" type="text" /> years nearer birthday at entry respectively, the age of Mr./Mrs. <TextField attribute="value6" type="text" /> having been found to be <TextField attribute="value7" type="text" /> years instead of <TextField attribute="value8" type="text" /> years as stated in his/her Proposal of Assurance. </p></td>
+<td width="550"><p className="text-justify"> Satisfactory evidence with respect to the ages of the within-named Lives Assured having been produced, their ages have been admitted as <TextField attribute="value4" type="text" /> years and <TextField attribute="value5" type="text" /> years nearer birthday at entry respectively, the age of Mr./Mrs. <TextField attribute="value6" type="text" /> having been found to be <TextField attribute="value7" type="text" /> years instead of <TextField attribute="value8" type="text" /> years as stated in his/her Proposal of Assurance. </p></td>
 <td width="25"></td>
 </tr>
 </table>

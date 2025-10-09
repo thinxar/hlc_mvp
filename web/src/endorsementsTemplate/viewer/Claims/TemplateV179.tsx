@@ -8,12 +8,12 @@ const TemplateV179 = (props: any) => {
 <br />
 <h3 className="text-center">LIFE INSURANCE CORPORATION OF INDIA</h3>
 <h5 className="text-center">
-<u> <TextView attribute="value97" type="text" /> DIVISIONAL OFFICE <br /> BRANCH : <TextView attribute="value98" type="text" /> </u>
+<u> <TextView attribute="value97" /> DIVISIONAL OFFICE <br /> BRANCH : <TextView attribute="value98" /> </u>
 </h5>
 <table width="600">
 <tr>
 <td width="100"></td>
-<td width="250" > Policy No. : <TextView attribute="polNumber" type="text" /> <td width="300" align="left">On the life of : <TextView attribute="value99" type="text" /> </td>
+<td width="250" > Policy No. : <TextView attribute="polNumber" /> <td width="300" align="left">On the life of : <TextView attribute="value99" /> </td>
 </td>
 <td width="25"></td>
 </tr>
@@ -22,7 +22,7 @@ const TemplateV179 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Consequent upon payment of Maturity claim under above policy on <TextView attribute="value3" type="text" /> of Rs. <TextView attribute="value4" type="text" /> </p></td>
+<td width="550"><p className="text-justify"> Consequent upon payment of Maturity claim under above policy on <TextView attribute="value3" /> of Rs. <TextView attribute="value4" /> </p></td>
 <td width="25"></td>
 <br />
 </tr>
@@ -30,7 +30,7 @@ const TemplateV179 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> As per plan condition Free life cover for Rs <TextView attribute="value5" type="text" /> granted for next 5 years which shall be available from <TextView attribute="value6" type="text" /> to <TextView attribute="value7" type="text" /> Hence forth, policy will be free from payment of any premiums. Maturity claim/surrender/ loan/ Accident Benefit cover will not be available during this free term insurance cover. </p></td>
+<td width="550"><p className="text-justify"> As per plan condition Free life cover for Rs <TextView attribute="value5" /> granted for next 5 years which shall be available from <TextView attribute="value6" /> to <TextView attribute="value7" /> Hence forth, policy will be free from payment of any premiums. Maturity claim/surrender/ loan/ Accident Benefit cover will not be available during this free term insurance cover. </p></td>
 <td width="25"></td>
 <br />
 </tr>
@@ -39,7 +39,7 @@ const TemplateV179 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"> DATE: %%CurrDate%% <br />
+<td width="550"> DATE: <TextView attribute="currDate" /> <br />
 <br />
 </td>
 </tr>

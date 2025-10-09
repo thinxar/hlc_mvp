@@ -12,7 +12,7 @@ const Template5059 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> "Notwithstanding anything within mentioned to the contrary, it is hereby declared and agreed that <TextField attribute="value8" type="text" /> (Qly. Hly. Yly.) installment premium payable under the policy stands increased from Rs. <TextField attribute="value1" type="text" /> to Rs. <TextField attribute="value2" type="text" />, with effect from <TextField attribute="value3" type="text" /> , which includes an extra premium of Rs. <TextField attribute="value4" type="text" /> . </p></td>
+<td width="550"><p className="text-justify"> "Notwithstanding anything within mentioned to the contrary, it is hereby declared and agreed that <TextField attribute="value8" type="text" /> (Qly. Hly. Yly.) installment premium payable under the policy stands increased from Rs. <TextField attribute="value1" type="text" /> to Rs. <TextField attribute="value2" type="text" />, with effect from <TextField attribute="value3" type="text" /> , which includes an extra premium of Rs. <TextField attribute="value4" type="text" /> . </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -28,7 +28,7 @@ const Template5059 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Dated at <TextField attribute="value5" type="text" /> this <TextField attribute="value6" type="text" /> day of <TextField attribute="value7" type="text" /> year . </p></td>
+<td width="550"><p className="text-justify"> Dated at <TextField attribute="value5" type="text" /> this <TextField attribute="value6" type="text" /> day of <TextField attribute="value7" type="text" /> year . </p></td>
 <td width="25"></td>
 </tr>
 </table>

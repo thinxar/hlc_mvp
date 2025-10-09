@@ -13,8 +13,8 @@ const TemplateV5042192090 = (props: any) => {
 <table width="600" >
 <tr>
 <td width="25"></td>
-<td align="left" width="250"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td width="300" align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left" width="250"> Place: <TextView attribute="branchName" /> </td>
+<td width="300" align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -22,8 +22,8 @@ const TemplateV5042192090 = (props: any) => {
 <table width="600">
 <tr>
 <td width="100"></td>
-<td width="250"><p className="text-align: justify;">
-<b>Re: Policy No.</b>" type="text" />polNumber<TextView attribute="<td width="300" align="left">on Life of" type="text" />value4<TextView attribute="</td></p></td>
+<td width="250"><p className="text-justify">
+<b>Re: Policy No.</b> <TextView attribute="polNumber" /><td width="300" align="left">on Life of <TextView attribute="value4" /> </td></p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -32,7 +32,7 @@ const TemplateV5042192090 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> The Within-named Life Assured having died on" type="text" />value5<TextView attribute="and proof of his death having been duly furnished, it is hereby declared that the within-written policy is now free from payment of future premiums. </p></td>
+<td width="550"><p className="text-justify"> The Within-named Life Assured having died on <TextView attribute="value5" /> and proof of his death having been duly furnished, it is hereby declared that the within-written policy is now free from payment of future premiums. </p></td>
 <td width="25"></td>
 <br />
 </tr>
@@ -41,7 +41,7 @@ const TemplateV5042192090 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"> *Rs." type="text" />value6%% will be deducted from the claim amount. <br />
+<td width="550"> *Rs. <TextView attribute="value6" /> will be deducted from the claim amount. <br />
 <br />
 </td>
 </tr>

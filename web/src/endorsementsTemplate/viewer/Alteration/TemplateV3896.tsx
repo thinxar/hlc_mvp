@@ -11,8 +11,8 @@ const TemplateV3896 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="250" align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td width="500" align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td width="250" align="left"> Place: <TextView attribute="branchName" /> </td>
+<td width="500" align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -21,7 +21,7 @@ const TemplateV3896 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> At the request of the Life Assured (Proposer) the following alterations are hereby made in the Policy :-
+<td width="550" align="left"><p className="text-justify"> At the request of the Life Assured (Proposer) the following alterations are hereby made in the Policy :-
 </p>
 </td>
 <td width="25"></td>
@@ -33,7 +33,7 @@ const TemplateV3896 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> Plan of Assurance :" type="text" />value4<TextView attribute=". <br /> Cash option: Rs." type="text" />value5<TextView attribute=". Table No" type="text" />value6<TextView attribute=". Bonus Rs." type="text" />value7<TextView attribute=". <br />" type="text" />value8<TextView attribute="premiums from" type="text" />value9<TextView attribute="to" type="text" />value10<TextView attribute=". inclusive at Rs" type="text" />value11<TextView attribute=". <br /> Deferred Date:" type="text" />value12<TextView attribute=". Date of Maturity" type="text" />value13<TextView attribute=". </p></td>
+<td width="550" align="left"><p className="text-justify"> Plan of Assurance : <TextView attribute="value4" /> . <br /> Cash option: Rs. <TextView attribute="value5" /> . Table No <TextView attribute="value6" /> . Bonus Rs. <TextView attribute="value7" /> . <br /> <TextView attribute="value8" /> premiums from <TextView attribute="value9" /> to <TextView attribute="value10" /> . inclusive at Rs <TextView attribute="value11" /> . <br /> Deferred Date: <TextView attribute="value12" /> . Date of Maturity <TextView attribute="value13" /> . </p></td>
 <td width="25"></td>
 </tr>
 </table><br /><br />
@@ -42,7 +42,7 @@ const TemplateV3896 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" ><p className="text-align: justify;"> Received Rs" type="text" />value14%% being the amount required to give effect to the alteration. </p></td>
+<td width="550" ><p className="text-justify"> Received Rs <TextView attribute="value14" /> being the amount required to give effect to the alteration. </p></td>
 <td width="25"></td>
 </tr>
 </table>

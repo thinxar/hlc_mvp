@@ -13,14 +13,14 @@ const TemplateV3546 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
 <center>
-<b>Re : Policy No.</b>" type="text" />polNumber<TextView attribute="</center>
+<b>Re : Policy No.</b> <TextView attribute="polNumber" /> </center>
 <br />
 <br />
 <table>
@@ -37,33 +37,33 @@ const TemplateV3546 = (props: any) => {
 <table>
 <tr>
 <td width="75"></td>
-<td width="500"> Nature of Alteration" type="text" />value4<TextView attribute=". </td>
+<td width="500"> Nature of Alteration <TextView attribute="value4" /> . </td>
 <td width="25"></td>
 </tr>
 <tr>
 <td ></td>
-<td > Date of Commencement" type="text" />value5<TextView attribute=". </td>
+<td > Date of Commencement <TextView attribute="value5" /> . </td>
 <td ></td>
 </tr>
 <tr>
 <td ></td>
-<td > Due Date of Premium" type="text" />value6<TextView attribute=". </td>
+<td > Due Date of Premium <TextView attribute="value6" /> . </td>
 <td ></td>
 <tr>
 <td></td>
 <td>
-<p className="justify">" type="text" />value7<TextView attribute="Premium from" type="text" />value8<TextView attribute="to" type="text" />value9<TextView attribute=".</p>
+<p className="justify"> <TextView attribute="value7" /> Premium from <TextView attribute="value8" /> to <TextView attribute="value9" /> .</p>
 </td>
 <td></td>
 </tr>
 <tr>
 <td></td>
-<td>Inclusive at Rs" type="text" />value10<TextView attribute=". </td>
+<td>Inclusive at Rs <TextView attribute="value10" /> . </td>
 <td></td>
 </tr>
 <tr>
 <td></td>
-<td>Date of Maturity" type="text" />value11<TextView attribute=". </td>
+<td>Date of Maturity <TextView attribute="value11" /> . </td>
 <td></td>
 </tr>
 </tr>
@@ -74,7 +74,7 @@ const TemplateV3546 = (props: any) => {
 <tr>
 <td width="25"></td>
 <td width="550">
-<p className="justify"> Received Rs" type="text" />value12<TextView attribute="being the amount required towards balance of the first Premium Paid / to cover risk from" type="text" />value13<TextView attribute="to" type="text" />value14<TextView attribute="inclusive. </p></td>
+<p className="justify"> Received Rs <TextView attribute="value12" /> being the amount required towards balance of the first Premium Paid / to cover risk from <TextView attribute="value13" /> to <TextView attribute="value14" /> inclusive. </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -107,7 +107,7 @@ const TemplateV3546 = (props: any) => {
 <tr>
 <td width="50"></td>
 <td width="525">
-<i>When date of commencement is altered under C.D.A Policy insert "Deferred Date" type="text" />value15<TextView attribute="" after "Date Commencement" type="text" />value16%%" in the above schedule.</i>
+<i>When date of commencement is altered under C.D.A Policy insert "Deferred Date <TextView attribute="value15" />" after "Date Commencement <TextView attribute="value16" />" in the above schedule.</i>
 </td>
 <td width="25"></td>
 </tr>

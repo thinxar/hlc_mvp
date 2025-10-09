@@ -11,7 +11,7 @@ const TemplateV52495248 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> The Withinnamed assured has by a Deed Poll dated <TextView attribute="value1" type="text" /> given additonal powers to the Trustee/s to raise loans on the security of the within policy from L.I.C. of India for the benefit of beneficiary/ies provided he/she/they is/are major and competent to contract. </p></td>
+<td width="550" align="left"><p className="text-justify"> The Withinnamed assured has by a Deed Poll dated <TextView attribute="value1" /> given additonal powers to the Trustee/s to raise loans on the security of the within policy from L.I.C. of India for the benefit of beneficiary/ies provided he/she/they is/are major and competent to contract. </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -20,7 +20,7 @@ const TemplateV52495248 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" ><p className="text-align: justify;"> Dated at <TextView attribute="value2" type="text" /> this <TextView attribute="value3" type="text" /> day of <TextView attribute="value4" type="text" /> Year	. </p></td>
+<td width="550" ><p className="text-justify"> Dated at <TextView attribute="value2" /> this <TextView attribute="value3" /> day of <TextView attribute="value4" /> Year	. </p></td>
 <td width="25"></td>
 </tr>
 </table>

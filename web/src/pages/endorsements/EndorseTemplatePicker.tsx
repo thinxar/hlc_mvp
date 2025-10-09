@@ -46,11 +46,10 @@ const EndorseTemplatePicker = (props: IOptions) => {
 
     const endorsementEndpoint = StringFormat(ServiceEndpoint.lookup.endorsementSubType, {
         endorsementType: categoryId
-    })
+    }) + '?_limit=-1'
 
     return (
         <div className="px-2">
-
             <div>
                 <div className="bg-white p-3 mb-1 text-center border-b-1 border-gray-200">
                     <div className="flex items-center gap-3 mb-1 justify-center">
@@ -96,7 +95,7 @@ const EndorseTemplatePicker = (props: IOptions) => {
                                     placeholder="Select Category"
                                     label="Stamp Category" onChange={handleCategoryChange}
                                     invalidMessage={errorMsg.mandatory}
-                                    queryOptions={{ endPoint: ServiceEndpoint.lookup.endorsementType }}
+                                    queryOptions={{ endPoint: ServiceEndpoint.lookup.endorsementType + '?_limit=-1' }}
                                     ref={categoryRef}
                                     lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
                                 />
@@ -130,7 +129,7 @@ const EndorseTemplatePicker = (props: IOptions) => {
                 </div>
             </div>
 
-            <Modal opened={opened} onClose={close} centered size={"auto"} title="Endorsement"
+            <Modal opened={opened} onClose={close} centered size={"xl"} title="Endorsement"
                 classNames={{ body: "p-0 flex flex-col max-h-[80vh]" }} styles={{
                     body: {
                         padding: 0

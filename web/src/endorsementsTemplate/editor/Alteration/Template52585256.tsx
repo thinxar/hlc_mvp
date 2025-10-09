@@ -13,7 +13,7 @@ const Template52585256 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="250" align="left"><p className="text-align: justify;"> Place: <TextField attribute="BranchName" type="text" /> <td width="300" align="right">Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" />
+<td width="250" align="left"><p className="text-justify"> Place: <TextField attribute="branchName" type="text" /> <td width="300" align="right">Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/>
 </td>
 </p>
 </td>
@@ -23,7 +23,7 @@ const Template52585256 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;">
+<td width="550" align="left"><p className="text-justify">
 <br /><br />At the request of the within-named Life Assured, the within Policy is issued under the Married Women's Property Act, 1874, in entire cancellation of the earlier policy issued in his own favour bearing the same number and dated <TextField attribute="value3" type="text" /> which earlier policy in original has been delivered to the Life Insurance Corporation of India for cancellation,the within policy being entitled to the same privileges to which the said original policy was entitled. </p></td>
 <td width="25"></td>
 </tr>

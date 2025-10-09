@@ -12,21 +12,22 @@ const TemplateV3551 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
 <center>
-<b>Re : Policy No. </b>" type="text" />polNumber<TextView attribute="</center>
+<b>Re : Policy No. </b> <TextView attribute="polNumber" />
+</center>
 <br />
 <br />
 <table>
 <tr>
 <td width="25"></td>
 <td width="550">
-<p className="justify"> Notwithstanding anything within mentioned to the contrary, it is hereby declared and agreed that the monthly premiums from" type="text" />value4<TextView attribute="shall be payable at the rate of Rs" type="text" />value5%% only, if they are paid through (i) Banker's Order (ii) Trustees of a Staff Provident or Superannuation Fund, (iii) Co-operative Society or (iv) collections made by or under the supervision of his employer and remitted to the Corporation.</p>
+<p className="justify"> Notwithstanding anything within mentioned to the contrary, it is hereby declared and agreed that the monthly premiums from <TextView attribute="value4" /> shall be payable at the rate of Rs <TextView attribute="value5" /> only, if they are paid through (i) Banker's Order (ii) Trustees of a Staff Provident or Superannuation Fund, (iii) Co-operative Society or (iv) collections made by or under the supervision of his employer and remitted to the Corporation.</p>
 </td>
 <td width="25"></td>
 </tr>

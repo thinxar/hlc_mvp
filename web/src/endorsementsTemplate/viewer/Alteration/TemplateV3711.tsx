@@ -12,19 +12,20 @@ const TemplateV3711 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
-<center> Re : Policy Number :" type="text" />polNumber<TextView attribute="</center>
+<center> Re : Policy Number : <TextView attribute="polNumber" />
+</center>
 <br />
 <table width="600">
 <tr>
 <td width="25"></td>
 <td width="550" align="right">
-<p className="text-align: justify;"> Satisfactory evidence having been produced, the age of the within named Life Assured is hereby admitted as" type="text" />value4<TextView attribute="years nearer birthday at entry,and not" type="text" />value5%% years as stated in the Proposal for Assurance. </p></td>
+<p className="text-justify"> Satisfactory evidence having been produced, the age of the within named Life Assured is hereby admitted as <TextView attribute="value4" /> years nearer birthday at entry,and not <TextView attribute="value5" /> years as stated in the Proposal for Assurance. </p></td>
 <td width="25"></td>
 </tr>
 </table>

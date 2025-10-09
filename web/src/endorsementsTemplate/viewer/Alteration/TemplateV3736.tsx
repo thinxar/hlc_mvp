@@ -13,19 +13,20 @@ const TemplateV3736 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
-<center> Re : Policy Number :" type="text" />polNumber<TextView attribute="</center>
+<center> Re : Policy Number : <TextView attribute="polNumber" />
+</center>
 <br />
 <br />
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Satisfactory evidence with respect to the ages of the within-named Lives Assured having been produced, their ages have been admitted as" type="text" />value4<TextView attribute="years and" type="text" />value5<TextView attribute="years nearer birthday at entry respectively, the age of Mr./Mrs." type="text" />value6<TextView attribute="having been found to be" type="text" />value7<TextView attribute="years instead of" type="text" />value8%% years as stated in his/her Proposal of Assurance. </p></td>
+<td width="550"><p className="text-justify"> Satisfactory evidence with respect to the ages of the within-named Lives Assured having been produced, their ages have been admitted as <TextView attribute="value4" /> years and <TextView attribute="value5" /> years nearer birthday at entry respectively, the age of Mr./Mrs. <TextView attribute="value6" /> having been found to be <TextView attribute="value7" /> years instead of <TextView attribute="value8" /> years as stated in his/her Proposal of Assurance. </p></td>
 <td width="25"></td>
 </tr>
 </table>

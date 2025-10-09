@@ -13,7 +13,7 @@ const TemplateV5250 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="justify">I/We <TextView attribute="value1" type="text" /> and <TextView attribute="value2" type="text" /> the beneficiary/ies named in the within Policy No. <TextView attribute="polNumber" type="text" /> issued by the Life Insurance Corporation of India on the life of <TextView attribute="value4" type="text" />. Under the provisions of Section 6 of the Married Women's Property Act 1874, in consideration of natural love and affection do as beneficial owner/s hereby assign absolutely my/our beneficial interest in the said policy to my/our beneficial interest in the said policy to my/our beneficial interest in the said policy to my/our (relationship) <TextView attribute="value18" type="text" />(Shri/Smt.)<TextView attribute="value5" type="text" /> aged <TextView attribute="value6" type="text" /> years his/her heirs, executors and administrators.</p></td>
+<td width="550"><p className="justify">I/We <TextView attribute="value1" /> and <TextView attribute="value2" /> the beneficiary/ies named in the within Policy No. <TextView attribute="polNumber" /> issued by the Life Insurance Corporation of India on the life of <TextView attribute="value4" />. Under the provisions of Section 6 of the Married Women's Property Act 1874, in consideration of natural love and affection do as beneficial owner/s hereby assign absolutely my/our beneficial interest in the said policy to my/our beneficial interest in the said policy to my/our beneficial interest in the said policy to my/our (relationship) <TextView attribute="value18" />(Shri/Smt.)<TextView attribute="value5" /> aged <TextView attribute="value6" /> years his/her heirs, executors and administrators.</p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -21,7 +21,7 @@ const TemplateV5250 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="justify">Dated <TextView attribute="value7" type="text" /> this <TextView attribute="value8" type="text" /> day of <TextView attribute="value9" type="text" /> year .</p>
+<td width="550"><p className="justify">Dated <TextView attribute="value7" /> this <TextView attribute="value8" /> day of <TextView attribute="value9" /> year .</p>
 </td>
 <td width="25"></td>
 </tr>
@@ -39,28 +39,28 @@ const TemplateV5250 = (props: any) => {
 <td width="25"></td>
 <td width="50" align="right">(1)</td>
 <td width="250">Signature</td>
-<td width="250"><p className="justify"><TextView attribute="value10" type="text" /></p></td>
+<td width="250"><p className="justify"><TextView attribute="value10" /></p></td>
 <td width="25"></td>
 </tr>
 <tr>
 <td></td>
 <td></td>
 <td>Full Name</td>
-<td><p className="justify"><TextView attribute="value11" type="text" /></p></td>
+<td><p className="justify"><TextView attribute="value11" /></p></td>
 <td></td>
 </tr>
 <tr>
 <td></td>
 <td></td>
 <td>Designation</td>
-<td><p className="justify"><TextView attribute="value12" type="text" /></p></td>
+<td><p className="justify"><TextView attribute="value12" /></p></td>
 <td></td>
 </tr>
 <tr>
 <td></td>
 <td></td>
 <td>Address</td>
-<td><p className="justify"><TextView attribute="value13" type="text" /></p></td>
+<td><p className="justify"><TextView attribute="value13" /></p></td>
 <td></td>
 </tr>
 </table>
@@ -84,28 +84,28 @@ const TemplateV5250 = (props: any) => {
 <td width="25"></td>
 <td width="50" align="right">(2)</td>
 <td width="250">Signature</td>
-<td width="250"><p className="justify"><TextView attribute="value14" type="text" /></p></td>
+<td width="250"><p className="justify"><TextView attribute="value14" /></p></td>
 <td width="25"></td>
 </tr>
 <tr>
 <td></td>
 <td></td>
 <td>Full Name</td>
-<td><p className="justify"><TextView attribute="value15" type="text" /></p></td>
+<td><p className="justify"><TextView attribute="value15" /></p></td>
 <td></td>
 </tr>
 <tr>
 <td></td>
 <td></td>
 <td>Designation</td>
-<td><p className="justify"><TextView attribute="value16" type="text" /></p></td>
+<td><p className="justify"><TextView attribute="value16" /></p></td>
 <td></td>
 </tr>
 <tr>
 <td></td>
 <td></td>
 <td>Address</td>
-<td><p className="justify"><TextView attribute="value17" type="text" /></p></td>
+<td><p className="justify"><TextView attribute="value17" /></p></td>
 <td></td>
 </tr>
 </table>

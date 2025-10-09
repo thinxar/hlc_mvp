@@ -13,8 +13,8 @@ const Template3568 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -26,7 +26,7 @@ const Template3568 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> The Life Assured having exercised the option to receive in lieu of the claim amount a life Annuity <TextField attribute="value4" type="text" /> annuity payable for <TextField attribute="value5" type="text" /> years certain and so long thereafter as he may be alive having desired to receive the Annuity by <TextField attribute="value6" type="text" /> instalments, it is hereby declared he claim amount is payable on the terms and conditions as provided in this behalf in the endorsement dated <TextField attribute="value7" type="text" /> </p></td>
+<td width="550"><p className="text-justify"> The Life Assured having exercised the option to receive in lieu of the claim amount a life Annuity <TextField attribute="value4" type="text" /> annuity payable for <TextField attribute="value5" type="text" /> years certain and so long thereafter as he may be alive having desired to receive the Annuity by <TextField attribute="value6" type="text" /> instalments, it is hereby declared he claim amount is payable on the terms and conditions as provided in this behalf in the endorsement dated <TextField attribute="value7" type="text" /> </p></td>
 <td width="25"></td>
 </tr>
 </table>

@@ -11,14 +11,15 @@ const TemplateV3553 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
 <center>
-<b>Re : Policy No.</b>" type="text" />polNumber<TextView attribute="</center>
+<b>Re : Policy No.</b> <TextView attribute="polNumber" />
+</center>
 <br />
 <br />
 <table>
@@ -33,23 +34,23 @@ const TemplateV3553 = (props: any) => {
 <tr>
 <td width="50"></td>
 <td width="525">
-<p className="justify">Date of Commencement" type="text" />value4<TextView attribute="Age at entry" type="text" />value5<TextView attribute="years.</p>
+<p className="justify">Date of Commencement <TextView attribute="value4" /> Age at entry <TextView attribute="value5" /> years.</p>
 </td>
 <td width="25"></td>
 </tr>
 <tr>
 <td></td>
-<td>Due date of Premium" type="text" />value6<TextView attribute=".</td>
+<td>Due date of Premium <TextView attribute="value6" />.</td>
 <td></td>
 </tr>
 <tr>
 <td></td>
-<td><p className="justify">Premium from" type="text" />value7<TextView attribute="to" type="text" />value8<TextView attribute="inclusive at Rs." type="text" />value9<TextView attribute=".</p></td>
+<td><p className="justify">Premium from <TextView attribute="value7" /> to <TextView attribute="value8" /> inclusive at Rs. <TextView attribute="value9" />.</p></td>
 <td></td>
 </tr>
 <tr>
 <td></td>
-<td>Date of Maturity" type="text" />value10<TextView attribute=".</td>
+<td>Date of Maturity <TextView attribute="value10" />.</td>
 <td></td>
 </tr>
 </table>
@@ -57,7 +58,7 @@ const TemplateV3553 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="justify">The sum of Rs." type="text" />value11<TextView attribute="has been refunded / received in respect of the excess / difference of the premiums paid.</p></td>
+<td width="550"><p className="justify">The sum of Rs. <TextView attribute="value11" /> has been refunded / received in respect of the excess / difference of the premiums paid.</p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -94,14 +95,14 @@ const TemplateV3553 = (props: any) => {
 <td width="50"></td>
 <td width="525">
 
-<i>Under C.D.A Policy insert after "Date of Maturity" type="text" />value12<TextView attribute="" </i>
+<i>Under C.D.A Policy insert after "Date of Maturity <TextView attribute="value12" />" </i>
 
 </td>
 <td width="25"></td>
 </tr>
 <tr>
 <td></td>
-<td><i>"Cash Option Rs." type="text" />value13<TextView attribute="Deferred Date" type="text" />value14%%"</i></td>
+<td><i>"Cash Option Rs. <TextView attribute="value13" /> Deferred Date <TextView attribute="value14" />"</i></td>
 <td></td>
 </tr>
 </table>

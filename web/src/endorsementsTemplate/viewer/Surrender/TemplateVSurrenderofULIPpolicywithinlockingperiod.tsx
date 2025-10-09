@@ -12,8 +12,8 @@ const TemplateVSurrenderofULIPpolicywithinlockingperiod = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -23,7 +23,7 @@ const TemplateVSurrenderofULIPpolicywithinlockingperiod = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> The within Policy is Surrendered on" type="text" />value4<TextView attribute="at the request of within Life Assured and /or Assignee" type="text" />value5<TextView attribute="<br /><br /> The present Surrender Value of the above Policy amounts to Rs" type="text" />value6<TextView attribute="/- . <br /><br /> Since the Policy has beein issued subject to 3 years Lock-in Period from date of Commencement of the Policy , the above mentioned Surrender Value is payable on" type="text" />value7%% after deducting the dues if any , from the said amounts. </p></td>
+<td width="550"><p className="text-justify"> The within Policy is Surrendered on <TextView attribute="value4" /> at the request of within Life Assured and /or Assignee <TextView attribute="value5" /> <br /><br /> The present Surrender Value of the above Policy amounts to Rs <TextView attribute="value6" /> /- . <br /><br /> Since the Policy has beein issued subject to 3 years Lock-in Period from date of Commencement of the Policy , the above mentioned Surrender Value is payable on <TextView attribute="value7" /> after deducting the dues if any , from the said amounts. </p></td>
 <td width="25"></td>
 </tr>
 </table>

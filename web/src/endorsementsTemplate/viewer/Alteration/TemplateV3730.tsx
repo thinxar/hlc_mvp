@@ -13,13 +13,13 @@ const TemplateV3730 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
-<center> Re : Policy Number :" type="text" />polNumber<TextView attribute="</center>
+<center> Re : Policy Number :<TextView attribute="polNumber" /> </center>
 <br />
 <br />
 <table>
@@ -35,7 +35,7 @@ const TemplateV3730 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Age at entry Admitted" type="text" />value4<TextView attribute="years. <br />" type="text" />value5<TextView attribute="premium payable from" type="text" />value6<TextView attribute="altered to" type="text" />value7<TextView attribute=". <br /> Inclusive Paid-up Assurance to Rs." type="text" />value8<TextView attribute=". <br /> Increased Cash Payment Rs." type="text" />value9<TextView attribute=". </p></td>
+<td width="550"><p className="text-justify"> Age at entry Admitted <TextView attribute="value4" /> years. <br /> <TextView attribute="value5" /> premium payable from <TextView attribute="value6" /> altered to <TextView attribute="value7" /> . <br /> Inclusive Paid-up Assurance to Rs. <TextView attribute="value8" /> . <br /> Increased Cash Payment Rs. <TextView attribute="value9" /> . </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -45,7 +45,7 @@ const TemplateV3730 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"> Received/Refunded Rs." type="text" />value10%% in respect of difference/excess of the premiums paid with interest thereon. </td>
+<td width="550"> Received/Refunded Rs. <TextView attribute="value10" /> in respect of difference/excess of the premiums paid with interest thereon. </td>
 <td width="25"></td>
 </tr>
 </table>

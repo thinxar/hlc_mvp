@@ -22,21 +22,21 @@ const TemplateV5146 = (props: any) => {
 <tr>
 <td width="25"></td>
 <td width="550" align="justify">
-<b>1</b> The Life Insurance Corporation of India, having received satisfactory evidence that <TextView attribute="value0" type="text" /> (Shri/Smt.) <TextView attribute="value1" type="text" /> the within mentioned <TextView attribute="value15" type="text" /> (Male/Female) Life Assured died on <TextView attribute="value2" type="text" /> has settled the claim for (Basic)Sum Assured (Plus Double Accident Benefit) on <TextView attribute="value3" type="text" /> in favour of <TextView attribute="value16" type="text" /> (Shri/Smt.) <TextView attribute="value4" type="text" /> (Name of Claimant) <br /><br /> [See Note (A) below.]
+<b>1</b> The Life Insurance Corporation of India, having received satisfactory evidence that <TextView attribute="value0" /> (Shri/Smt.) <TextView attribute="value1" /> the within mentioned <TextView attribute="value15" /> (Male/Female) Life Assured died on <TextView attribute="value2" /> has settled the claim for (Basic)Sum Assured (Plus Double Accident Benefit) on <TextView attribute="value3" /> in favour of <TextView attribute="value16" /> (Shri/Smt.) <TextView attribute="value4" /> (Name of Claimant) <br /><br /> [See Note (A) below.]
 <br />
 <br />
 <p className="justify">
-<b>2</b> As the Claimant under the Policy by virtue of he/she being <TextView attribute="value5" type="text" /> under the Policy. </p>
+<b>2</b> As the Claimant under the Policy by virtue of he/she being <TextView attribute="value5" /> under the Policy. </p>
 <br />
 <br /> [ See Note (B) Below.]<br />
 <br />
 <p className="justify">
-<b>3</b> It is hereby agreed and declared that the Policy shall continue to be a (fully) paid up Policy for Rs. <TextView attribute="value6" type="text" /> on the life of Surviving Life Assured Shri/Smt <TextView attribute="value7" type="text" /> and payable on the Date of Maturity, viz. <TextView attribute="value8" type="text" /> to him/her or in the event of his/her earlier death, to his/her Assigns or Proving Executors or Administrators to his/her estate or limited to the money payable under this Policy from a competent court.
+<b>3</b> It is hereby agreed and declared that the Policy shall continue to be a (fully) paid up Policy for Rs. <TextView attribute="value6" /> on the life of Surviving Life Assured Shri/Smt <TextView attribute="value7" /> and payable on the Date of Maturity, viz. <TextView attribute="value8" /> to him/her or in the event of his/her earlier death, to his/her Assigns or Proving Executors or Administrators to his/her estate or limited to the money payable under this Policy from a competent court.
 </p>
 <br /><br /> [See Note (C) below.] <br />
 <br />
 <p className="justify">
-<b>4</b> The Double Accident Benefit and Extended Disability Benefit mentioned in the Policy conditions shall cease to operate on the life of surviving Life Assured Shri/Smt. <TextView attribute="value9" type="text" /> from the Date of Death of the Life Assured. <TextView attribute="value10" type="text" /> (Name) as mentioned above except to the extent of Death or Disability due to accident during the remaining part of the Policy year ending after the date of death of the Life Assured. <TextView attribute="value11" type="text" /> (Name)
+<b>4</b> The Double Accident Benefit and Extended Disability Benefit mentioned in the Policy conditions shall cease to operate on the life of surviving Life Assured Shri/Smt. <TextView attribute="value9" /> from the Date of Death of the Life Assured. <TextView attribute="value10" /> (Name) as mentioned above except to the extent of Death or Disability due to accident during the remaining part of the Policy year ending after the date of death of the Life Assured. <TextView attribute="value11" /> (Name)
 </p>
 <br /><br /> [ See Note (D) below.]
 </td>
@@ -47,7 +47,7 @@ const TemplateV5146 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"> Dated at<TextView attribute="value12" type="text" /> this day of<TextView attribute="value13" type="text" /> . </td><td width="25"></td>
+<td width="550"> Dated at<TextView attribute="value12" /> this day of<TextView attribute="value13" /> . </td><td width="25"></td>
 </tr>
 </table>
 <br />
@@ -73,7 +73,7 @@ const TemplateV5146 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="justify"> Note: C: To delete this word "Fully" and insert the amount of Paid- up value after "Rs<TextView attribute="value14" type="text" />if the Policy is a reduced Paid-up.</p>
+<td width="550"><p className="justify"> Note: C: To delete this word "Fully" and insert the amount of Paid- up value after "Rs<TextView attribute="value14" />if the Policy is a reduced Paid-up.</p>
 </td><td width="25"></td>
 </tr>
 </table>

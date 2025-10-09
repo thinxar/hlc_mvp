@@ -14,8 +14,8 @@ const Template5042192090 = (props: any) => {
 <table width="600" >
 <tr>
 <td width="25"></td>
-<td align="left" width="250"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td width="300" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td align="left" width="250"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td width="300" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -23,7 +23,7 @@ const Template5042192090 = (props: any) => {
 <table width="600">
 <tr>
 <td width="100"></td>
-<td width="250"><p className="text-align: justify;">
+<td width="250"><p className="text-justify">
 <b>Re: Policy No.</b> <TextField attribute="polNumber" type="text" readOnly /><td width="300" align="left">on Life of <TextField attribute="value4" type="text" /> </td></p></td>
 <td width="25"></td>
 </tr>
@@ -33,7 +33,7 @@ const Template5042192090 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> The Within-named Life Assured having died on <TextField attribute="value5" type="text" /> and proof of his death having been duly furnished, it is hereby declared that the within-written policy is now free from payment of future premiums. </p></td>
+<td width="550"><p className="text-justify"> The Within-named Life Assured having died on <TextField attribute="value5" type="text" /> and proof of his death having been duly furnished, it is hereby declared that the within-written policy is now free from payment of future premiums. </p></td>
 <td width="25"></td>
 <br />
 </tr>

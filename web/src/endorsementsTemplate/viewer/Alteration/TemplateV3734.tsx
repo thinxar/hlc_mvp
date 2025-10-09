@@ -13,21 +13,21 @@ const TemplateV3734 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
 <center>
-<b>Re : Policy Number :" type="text" />polNumber<TextView attribute="</b>
+<b>Re : Policy Number : <TextView attribute="polNumber" /></b>
 </center>
 <br />
 <br />
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Satisfactory evidence having been produced regarding the life Assured's age the following alterations are hereby made in the Policy. </p></td>
+<td width="550"><p className="text-justify"> Satisfactory evidence having been produced regarding the life Assured's age the following alterations are hereby made in the Policy. </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -37,8 +37,8 @@ const TemplateV3734 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Age at entry Admitted: Male Life" type="text" />value4<TextView attribute="years/Female Life" type="text" />value5<TextView attribute="years. <br />
-<hr />" type="text" />value6<TextView attribute="premiums payable from" type="text" />value7<TextView attribute="altered to Rs." type="text" />value8<TextView attribute=". </p></td>
+<td width="550"><p className="text-justify"> Age at entry Admitted: Male Life <TextView attribute="value4" /> years/Female Life <TextView attribute="value5" /> years. <br />
+<hr /> <TextView attribute="value6" /> premiums payable from <TextView attribute="value7" /> altered to Rs. <TextView attribute="value8" /> . </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -48,7 +48,7 @@ const TemplateV3734 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"> Received/Refunded Rs." type="text" />value9%% in respect of difference/excess of the premiums paid with interest thereon. </td>
+<td width="550"> Received/Refunded Rs. <TextView attribute="value9" /> in respect of difference/excess of the premiums paid with interest thereon. </td>
 <td width="25"></td>
 </tr>
 </table>

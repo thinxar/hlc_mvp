@@ -12,8 +12,8 @@ const Template3543 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -26,7 +26,7 @@ const Template3543 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> At the request of the Life Assured the following alterations are hereby made in the Policy: </p></td>
+<td width="550"><p className="text-justify"> At the request of the Life Assured the following alterations are hereby made in the Policy: </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -34,7 +34,7 @@ const Template3543 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Sum Assured reduced to Rs. <TextField attribute="value4" type="text" /> from the premium due <TextField attribute="value5" type="text" />. <TextField attribute="value6" type="text" /> premiums from <TextField attribute="value7" type="text" /> @ Rs. <TextField attribute="value8" type="text" /> . </p></td>
+<td width="550"><p className="text-justify"> Sum Assured reduced to Rs. <TextField attribute="value4" type="text" /> from the premium due <TextField attribute="value5" type="text" />. <TextField attribute="value6" type="text" /> premiums from <TextField attribute="value7" type="text" /> @ Rs. <TextField attribute="value8" type="text" /> . </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -42,7 +42,7 @@ const Template3543 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> The sum of Rs. <TextField attribute="value9" type="text" /> has been paid as surrender value* inclusive of cash value of bonus in respect of the portion of the Sum Assured dropped. *Bonus already vested till date shall stand reduced proportionately. </p></td>
+<td width="550"><p className="text-justify"> The sum of Rs. <TextField attribute="value9" type="text" /> has been paid as surrender value* inclusive of cash value of bonus in respect of the portion of the Sum Assured dropped. *Bonus already vested till date shall stand reduced proportionately. </p></td>
 <td width="25"></td>
 </tr>
 </table>

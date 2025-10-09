@@ -12,21 +12,21 @@ const TemplateV3554 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
 <center>
-<b>Re : Policy No." type="text" />polNumber<TextView attribute="</b>
+<b>Re : Policy No. <TextView attribute="polNumber" /></b>
 </center>
 <br />
 <br />
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="justify">At the request of the Life Assured, the Policy has been split up into" type="text" />value4<TextView attribute="Policies for Rs." type="text" />value5<TextView attribute="and Rs." type="text" />value6<TextView attribute="(respectively/each) and in consequence the following alterations are hereby made in the within written Policy.</p></td>
+<td width="550"><p className="justify">At the request of the Life Assured, the Policy has been split up into <TextView attribute="value4" /> Policies for Rs. <TextView attribute="value5" /> and Rs. <TextView attribute="value6" /> (respectively/each) and in consequence the following alterations are hereby made in the within written Policy.</p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -34,12 +34,12 @@ const TemplateV3554 = (props: any) => {
 <table>
 <tr>
 <td width="75"></td>
-<td width="500"><p className="justify">" type="text" />value7<TextView attribute="Sum Assured reduced to Rs." type="text" />value8<TextView attribute=".</p></td>
+<td width="500"><p className="justify"><TextView attribute="value7" /> Sum Assured reduced to Rs. <TextView attribute="value8" /> .</p></td>
 <td width="25"></td>
 </tr>
 <tr>
 <td></td>
-<td><p className="justify">" type="text" />value9<TextView attribute="Premium from" type="text" />value10<TextView attribute="@ Rs." type="text" />value11<TextView attribute=".</p></td>
+<td><p className="justify"><TextView attribute="value9" /> Premium from <TextView attribute="value10" /> @ Rs. <TextView attribute="value11" /> .</p></td>
 <td></td>
 </tr>
 </table>
@@ -47,7 +47,7 @@ const TemplateV3554 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="justify">The fresh Policy/ies for Rs." type="text" />value12<TextView attribute="has/have been issued under No/s" type="text" />value13%% .</p></td>
+<td width="550"><p className="justify">The fresh Policy/ies for Rs. <TextView attribute="value12" /> has/have been issued under No/s <TextView attribute="value13" /> .</p></td>
 <td width="25"></td>
 </tr>
 </table>

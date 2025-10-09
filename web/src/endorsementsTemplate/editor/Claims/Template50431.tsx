@@ -1,7 +1,7 @@
 import { DatePicker,TextField,} from 'templates/mantineForm';
 import { PalmyraForm } from '@palmyralabs/rt-forms';
 
-const Template5043 = (props: any) => {
+const Template50431 = (props: any) => {
   return (
            <PalmyraForm ref={props.formRef} formData={props.formData}>
 <table width="600" >
@@ -14,9 +14,9 @@ const Template5043 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="275" align="left"> Place:<TextField attribute="BranchName" type="text" /> </td>
+<td width="275" align="left"> Place:<TextField attribute="branchName" type="text" /> </td>
 <td width="25"></td>
-<td width="275" align="right"> Date: <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td width="275" align="right"> Date: <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -59,4 +59,4 @@ Re. Policy No.<TextField attribute="polNumber" type="text" readOnly /> on the Li
   );
 };
 
-export {Template5043};
+export {Template50431};

@@ -14,9 +14,9 @@ const Template3544 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
+<td width="550" align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
 <td width="25"></td>
-<td width="550" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td width="550" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>

@@ -14,8 +14,8 @@ const Template504290 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="350" align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td width="200" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td width="350" align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td width="200" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -28,7 +28,7 @@ const Template504290 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" ><p className="text-align: justify;"> The within-named Life Assured having died on<TextField attribute="value5" type="text" /> and proof of his death having been duly furnished,it is hereby declared that the within-written policy stands fully paid-up for Rs.<TextField attribute="value6" type="text" /> payable on the date of Maturity, and is free from payment of future premiums. The policy will not participate in future profits.
+<td width="550" ><p className="text-justify"> The within-named Life Assured having died on<TextField attribute="value5" type="text" /> and proof of his death having been duly furnished,it is hereby declared that the within-written policy stands fully paid-up for Rs.<TextField attribute="value6" type="text" /> payable on the date of Maturity, and is free from payment of future premiums. The policy will not participate in future profits.
 </p></td>
 <td width="25"></td>
 </tr>

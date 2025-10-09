@@ -13,9 +13,9 @@ const TemplateV3544 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
+<td width="550" align="left"> Place: <TextView attribute="branchName" /> </td>
 <td width="25"></td>
-<td width="550" align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td width="550" align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -23,7 +23,7 @@ const TemplateV3544 = (props: any) => {
 <tr>
 <td width="25"></td>
 <td width="550" align="center">
-<b>Re : Policy No." type="text" />polNumber<TextView attribute="</b>
+<b>Re : Policy No. <TextView attribute="polNumber" /></b>
 </td>
 </tr>
 </table>
@@ -32,7 +32,7 @@ const TemplateV3544 = (props: any) => {
 <tr>
 <td width="25"></td>
 <td width="550">
-<p className="justify"> At the request of the" type="text" />value4<TextView attribute="(Proposer/Life Assured) the following alterations are here by made in the Policy :</p>
+<p className="justify"> At the request of the <TextView attribute="value4" /> (Proposer/Life Assured) the following alterations are here by made in the Policy :</p>
 </td>
 <td width="25"></td>
 </tr>
@@ -45,21 +45,21 @@ const TemplateV3544 = (props: any) => {
 <tr>
 <td width="25"></td>
 <td width="550">
-<p className="justify"> Sum Assured reduced to Rs" type="text" />value5<TextView attribute="From" type="text" />value6<TextView attribute="(due date of the Premium) .</p>
+<p className="justify"> Sum Assured reduced to Rs <TextView attribute="value5" /> From <TextView attribute="value6" /> (due date of the Premium) .</p>
 </td>
 <td width="25"></td>
 </tr>
 <tr>
 <td width="25"></td>
 <td width="550">
-<p className="justify"> Cash Option reduced to Rs." type="text" />value7<TextView attribute="premium from" type="text" />value8<TextView attribute="at Rs." type="text" />value9<TextView attribute=".</p>
+<p className="justify"> Cash Option reduced to Rs. <TextView attribute="value7" /> premium from <TextView attribute="value8" /> at Rs. <TextView attribute="value9" /> .</p>
 </td>
 <td width="25"></td>
 </tr>
 <tr>
 <td width="25"></td>
 <td width="550">
-<p className="justify"> The sum of Rs" type="text" />value10%% has been paid as surrender value of the portion of the Sum Assured dropped. </p></td>
+<p className="justify"> The sum of Rs <TextView attribute="value10" /> has been paid as surrender value of the portion of the Sum Assured dropped. </p></td>
 <td width="25"></td>
 </tr>
 </table>

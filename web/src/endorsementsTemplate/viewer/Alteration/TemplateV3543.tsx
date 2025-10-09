@@ -11,20 +11,21 @@ const TemplateV3543 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
 <center>
-<b>Re : Policy No.</b>" type="text" />polNumber<TextView attribute="</center>
+<b>Re : Policy No.</b> <TextView attribute="polNumber" />
+</center>
 <br />
 <br />
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> At the request of the Life Assured the following alterations are hereby made in the Policy: </p></td>
+<td width="550"><p className="text-justify"> At the request of the Life Assured the following alterations are hereby made in the Policy: </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -32,7 +33,7 @@ const TemplateV3543 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Sum Assured reduced to Rs." type="text" />value4<TextView attribute="from the premium due" type="text" />value5<TextView attribute="." type="text" />value6<TextView attribute="premiums from" type="text" />value7<TextView attribute="@ Rs." type="text" />value8<TextView attribute=". </p></td>
+<td width="550"><p className="text-justify"> Sum Assured reduced to Rs. <TextView attribute="value4" /> from the premium due <TextView attribute="value5" />. <TextView attribute="value6" /> premiums from <TextView attribute="value7" /> @ Rs. <TextView attribute="value8" /> . </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -40,7 +41,7 @@ const TemplateV3543 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> The sum of Rs." type="text" />value9%% has been paid as surrender value* inclusive of cash value of bonus in respect of the portion of the Sum Assured dropped. *Bonus already vested till date shall stand reduced proportionately. </p></td>
+<td width="550"><p className="text-justify"> The sum of Rs. <TextView attribute="value9" /> has been paid as surrender value* inclusive of cash value of bonus in respect of the portion of the Sum Assured dropped. *Bonus already vested till date shall stand reduced proportionately. </p></td>
 <td width="25"></td>
 </tr>
 </table>

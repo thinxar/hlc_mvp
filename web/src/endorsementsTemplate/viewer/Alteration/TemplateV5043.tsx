@@ -12,21 +12,23 @@ const TemplateV5043 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="250" align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td width="500" align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td width="250" align="left"> Place: <TextView attribute="branchName" /> </td>
+<td width="500" align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
-<center> Re : Policy No." type="text" />polNumber<TextView attribute="on life of" type="text" />value4<TextView attribute="</center>
+<center> Re : Policy No. <TextView attribute="polNumber" /> on life of <TextView attribute="value4" />
+</center>
 <br />
 <br />
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;">
-The Within-named Proposer having died on" type="text" />value5<TextView attribute="(Date of Death) and satisfactory proof of his death having been duly furnished, it is hereby declared that the payment of premiums due
-from" type="text" />value6<TextView attribute="upto the Deferred Date. Viz" type="text" />value7<TextView attribute="will cease. The revised premium of Rs" type="text" />value8<TextView attribute="shall be payable on the specified due dates commencing on and after the Deferred Date" type="text" />value9%% till the "Date of Last Payment" specified in the within-mentioned Policy Schedule.
+<td width="550"><p className="text-justify">
+The Within-named Proposer having died on <TextView attribute="value5" /> (Date of Death) and satisfactory proof of his death having been duly furnished, it is hereby declared that the payment of premiums due
+from <TextView attribute="value6" /> upto the Deferred Date. Viz <TextView attribute="value7" /> will cease. The revised premium of Rs <TextView attribute="value8" /> shall be payable on the specified due dates commencing on and after the Deferred Date
+<TextView attribute="value9" /> till the "Date of Last Payment" specified in the within-mentioned Policy Schedule.
 </p>
 </td>
 <td width="25"></td>

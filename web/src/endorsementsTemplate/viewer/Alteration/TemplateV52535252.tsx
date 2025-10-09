@@ -13,7 +13,7 @@ const TemplateV52535252 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> The beneficiary/ies <TextView attribute="value1" type="text" /> has/have by a Deed Poll of Release dated <TextView attribute="value2" type="text" /> released, renounced and surrendered all his/her/their right, title, interest, beneficial interest, and claims in respect of the within Policy of Assurance and the Life Assured, Shri <TextView attribute="value3" type="text" /> shall hold the within Policy for his own benefit as though no trust in favour of the Beneficiary/ies had been created. </p></td>
+<td width="550" align="left"><p className="text-justify"> The beneficiary/ies <TextView attribute="value1" /> has/have by a Deed Poll of Release dated <TextView attribute="value2" /> released, renounced and surrendered all his/her/their right, title, interest, beneficial interest, and claims in respect of the within Policy of Assurance and the Life Assured, Shri <TextView attribute="value3" /> shall hold the within Policy for his own benefit as though no trust in favour of the Beneficiary/ies had been created. </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -22,7 +22,7 @@ const TemplateV52535252 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" ><p className="text-align: justify;"> Dated at <TextView attribute="value4" type="text" /> this <TextView attribute="value5" type="text" /> day of <TextView attribute="value6" type="text" /> . </p></td>
+<td width="550" ><p className="text-justify"> Dated at <TextView attribute="value4" /> this <TextView attribute="value5" /> day of <TextView attribute="value6" /> . </p></td>
 <td width="25"></td>
 </tr>
 </table>

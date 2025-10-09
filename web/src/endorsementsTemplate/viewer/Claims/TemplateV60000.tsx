@@ -12,7 +12,7 @@ const TemplateV60000 = (props: any) => {
 <table width="550">
 <tr>
 <td width="25"></td>
-<td width="500" ><p className="justify"> Paid Rs <TextView attribute="value1" type="text" /> being the <TextView attribute="value2" type="text" /> (1st/2nd) Installment of the claim amount payable on the within mentioned life assured&#39;s surviving <TextView attribute="value3" type="text" /> years as per the Policy Provisions. </p>
+<td width="500" ><p className="justify"> Paid Rs <TextView attribute="value1" /> being the <TextView attribute="value2" /> (1st/2nd) Installment of the claim amount payable on the within mentioned life assured&#39;s surviving <TextView attribute="value3" /> years as per the Policy Provisions. </p>
 </td>
 <td width="25"></td>
 </tr>

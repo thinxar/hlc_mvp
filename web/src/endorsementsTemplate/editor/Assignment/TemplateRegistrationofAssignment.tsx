@@ -14,15 +14,15 @@ const TemplateRegistrationofAssignment = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="250" align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td width="300" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td width="250" align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td width="300" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;">
+<td width="550"><p className="text-justify">
 <center>Policy No. <TextField attribute="polNumber" type="text" readOnly /> </center>
 </p>
 </td>
@@ -33,7 +33,7 @@ const TemplateRegistrationofAssignment = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> Registered on <TextField attribute="value4" type="text" /> <br /> Type of Assignment <TextField attribute="value5" type="text" /> <br /> Name of the Assignee (1) <TextField attribute="value6" type="text" /> <br /> Name of the Assignee (2) <TextField attribute="value7" type="text" /> <br /> Name of the Guardian (in case of minor assignee) <TextField attribute="value8" type="text" /> <br /> Address of the Assignee <TextField attribute="value9" type="text" /> <br /> Telephone No (1) <TextField attribute="value10" type="text" /> &nbsp (2) <TextField attribute="value11" type="text" /> <br /> Email id of Assignee <TextField attribute="value12" type="text" /> <br /> Bank Loan Account Number <TextField attribute="value13" type="text" />
+<td width="550" align="left"><p className="text-justify"> Registered on <TextField attribute="value4" type="text" /> <br /> Type of Assignment <TextField attribute="value5" type="text" /> <br /> Name of the Assignee (1) <TextField attribute="value6" type="text" /> <br /> Name of the Assignee (2) <TextField attribute="value7" type="text" /> <br /> Name of the Guardian (in case of minor assignee) <TextField attribute="value8" type="text" /> <br /> Address of the Assignee <TextField attribute="value9" type="text" /> <br /> Telephone No (1) <TextField attribute="value10" type="text" /> &nbsp (2) <TextField attribute="value11" type="text" /> <br /> Email id of Assignee <TextField attribute="value12" type="text" /> <br /> Bank Loan Account Number <TextField attribute="value13" type="text" />
 </p>
 </td>
 <td width="25"></td>

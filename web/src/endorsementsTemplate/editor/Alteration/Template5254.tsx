@@ -22,7 +22,7 @@ const Template5254 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" ><p className="text-align: justify;"> Re: Policy No <TextField attribute="polNumber" type="text" readOnly /> on the life of <TextField attribute="value3" type="text" /> issued under the M.W.P. Act, 1874. </p></td>
+<td width="550" ><p className="text-justify"> Re: Policy No <TextField attribute="polNumber" type="text" readOnly /> on the life of <TextField attribute="value3" type="text" /> issued under the M.W.P. Act, 1874. </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -30,14 +30,14 @@ const Template5254 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> The above policy was issued under the provisions of the Married Women's Property Act for the benefit of <TextField attribute="value4" type="text" /> who has/have released his/her/their interest in the policy as per the Deed Poll of Release dated <TextField attribute="value5" type="text" /> </p></td>
+<td width="550" align="left"><p className="text-justify"> The above policy was issued under the provisions of the Married Women's Property Act for the benefit of <TextField attribute="value4" type="text" /> who has/have released his/her/their interest in the policy as per the Deed Poll of Release dated <TextField attribute="value5" type="text" /> </p></td>
 <td width="25"></td>
 </tr>
 </table>
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> We, the life assured and the trustee/s now request you to cancel the enclosed policy and issue a fresh one in its place in favour of the assured under the Married Women's Property Act for the benefit of <TextField attribute="value6" type="text" /> as per the enclosed form requesting for cancellation of existing policy and issue of a fresh one under the M.W.P. Act executed by the Life Assured. </p></td>
+<td width="550" align="left"><p className="text-justify"> We, the life assured and the trustee/s now request you to cancel the enclosed policy and issue a fresh one in its place in favour of the assured under the Married Women's Property Act for the benefit of <TextField attribute="value6" type="text" /> as per the enclosed form requesting for cancellation of existing policy and issue of a fresh one under the M.W.P. Act executed by the Life Assured. </p></td>
 <td width="25"></td>
 </tr>
 </table>

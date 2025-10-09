@@ -12,8 +12,8 @@ const Template3896 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="250" align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td width="500" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td width="250" align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td width="500" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -22,7 +22,7 @@ const Template3896 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> At the request of the Life Assured (Proposer) the following alterations are hereby made in the Policy :-
+<td width="550" align="left"><p className="text-justify"> At the request of the Life Assured (Proposer) the following alterations are hereby made in the Policy :-
 </p>
 </td>
 <td width="25"></td>
@@ -34,7 +34,7 @@ const Template3896 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> Plan of Assurance : <TextField attribute="value4" type="text" /> . <br /> Cash option: Rs. <TextField attribute="value5" type="text" /> . Table No <TextField attribute="value6" type="text" /> . Bonus Rs. <TextField attribute="value7" type="text" /> . <br /> <TextField attribute="value8" type="text" /> premiums from <TextField attribute="value9" type="text" /> to <TextField attribute="value10" type="text" /> . inclusive at Rs <TextField attribute="value11" type="text" /> . <br /> Deferred Date: <TextField attribute="value12" type="text" /> . Date of Maturity <TextField attribute="value13" type="text" /> . </p></td>
+<td width="550" align="left"><p className="text-justify"> Plan of Assurance : <TextField attribute="value4" type="text" /> . <br /> Cash option: Rs. <TextField attribute="value5" type="text" /> . Table No <TextField attribute="value6" type="text" /> . Bonus Rs. <TextField attribute="value7" type="text" /> . <br /> <TextField attribute="value8" type="text" /> premiums from <TextField attribute="value9" type="text" /> to <TextField attribute="value10" type="text" /> . inclusive at Rs <TextField attribute="value11" type="text" /> . <br /> Deferred Date: <TextField attribute="value12" type="text" /> . Date of Maturity <TextField attribute="value13" type="text" /> . </p></td>
 <td width="25"></td>
 </tr>
 </table><br /><br />
@@ -43,7 +43,7 @@ const Template3896 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" ><p className="text-align: justify;"> Received Rs <TextField attribute="value14" type="text" /> being the amount required to give effect to the alteration. </p></td>
+<td width="550" ><p className="text-justify"> Received Rs <TextField attribute="value14" type="text" /> being the amount required to give effect to the alteration. </p></td>
 <td width="25"></td>
 </tr>
 </table>

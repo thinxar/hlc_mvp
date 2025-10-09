@@ -12,8 +12,8 @@ const TemplateV3559 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -23,7 +23,7 @@ const TemplateV3559 = (props: any) => {
 <tr>
 <td width="25"></td>
 <td width="550" align="center">
-<b>Re : Policy Number :</b>" type="text" />polNumber<TextView attribute="</td>
+<b>Re : Policy Number :</b> <TextView attribute="polNumber" /> </td>
 </tr>
 </table>
 <br />
@@ -31,7 +31,7 @@ const TemplateV3559 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> At the request of the within named Life Assured the endorsement dated" type="text" />value4<TextView attribute="is cancelled and it is hereby agreed and declared that in consequence of the Life Assured being engaged in" type="text" />value5<TextView attribute="an extra premium of Rs." type="text" />value6<TextView attribute="per thousand sum assured per annum is payable for" type="text" />value7<TextView attribute="years from" type="text" />value8<TextView attribute="and in terms thereof the" type="text" />value9<TextView attribute="premiums from" type="text" />value10<TextView attribute="to" type="text" />value11<TextView attribute="inclusive shall be payable at the rate of Rs" type="text" />value12<TextView attribute="instead of as within mentioned. The" type="text" />value13<TextView attribute="premiums from" type="text" />value14<TextView attribute="shall be payable at the rate of Rs" type="text" />value15%% </p></td>
+<td width="550"><p className="text-justify"> At the request of the within named Life Assured the endorsement dated<TextView attribute="value4" /> is cancelled and it is hereby agreed and declared that in consequence of the Life Assured being engaged in<TextView attribute="value5" /> an extra premium of Rs.<TextView attribute="value6" /> per thousand sum assured per annum is payable for<TextView attribute="value7" /> years from<TextView attribute="value8" /> and in terms thereof the<TextView attribute="value9" /> premiums from<TextView attribute="value10" /> to<TextView attribute="value11" /> inclusive shall be payable at the rate of Rs<TextView attribute="value12" /> instead of as within mentioned. The<TextView attribute="value13" /> premiums from<TextView attribute="value14" /> shall be payable at the rate of Rs<TextView attribute="value15" /> </p></td>
 <td width="25"></td>
 </tr>
 </table>

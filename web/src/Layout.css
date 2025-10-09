@@ -1121,9 +1121,8 @@ pre {
 
 
 .template-sec {
-  /* height: calc(100vh - 120px);
-  overflow: auto;
-  margin-bottom: 5em; */
+  font-weight: 100 !important;
+  font-family: initial;
 }
 
 .template-sec .py-form-field-container.py-form-field-data {
@@ -1141,6 +1140,16 @@ pre {
 
 .template-sec .mantine-Input-input {
   min-height: 27px !important;
-  line-height: 1.7 !important;
   height: 25px !important;
+  width: 100px !important;
+  font-weight: normal !important;
+}
+
+.template-sec .mantine-DatePickerInput-input {
+  padding-top: 3px;
+  padding-right: 10px;
+}
+
+.template-sec .mantine-DatePickerInput-section[data-position="right"] {
+  display: none;
 }

@@ -12,8 +12,8 @@ const TemplateV5208 = (props: any) => {
 <table width="550" border={0}>
 <tr>
 <td width="50"></td>
-<td width="550" align="left"><p className="text-align: justify;"> We, Life Insurance Corporation Of India, do hereby reassign absolutely all the rights, title and interest in the within Policy of Assurance No. <TextView attribute="value1" type="text" /> and the moneys thereby secured and all Benefits attached thereto to <TextView attribute="value2" type="text" /> and <TextView attribute="value3" type="text" /> for value received .<br /><br />
-Date this <TextView attribute="value4" type="text" /> day of <TextView attribute="value5" type="text" />
+<td width="550" align="left"><p className="text-justify"> We, Life Insurance Corporation Of India, do hereby reassign absolutely all the rights, title and interest in the within Policy of Assurance No. <TextView attribute="value1" /> and the moneys thereby secured and all Benefits attached thereto to <TextView attribute="value2" /> and <TextView attribute="value3" /> for value received .<br /><br />
+Date this <TextView attribute="value4" /> day of <TextView attribute="value5" />
 </p></td></tr></table>
 <br />
 <br />
@@ -38,18 +38,18 @@ Date this <TextView attribute="value4" type="text" /> day of <TextView attribute
 <tr>
 <td width="25"></td>
 <td width="150" align="left">Witness: </td>
-<td width="400" align="left"><TextView attribute="value6" type="text" /></td>
+<td width="400" align="left"><TextView attribute="value6" /></td>
 </tr>
 <tr>
 <td width="25"></td>
 <td width="150" align="left">Full Name: </td>
-<td width="400" align="left"><TextView attribute="value7" type="text" /></td>
+<td width="400" align="left"><TextView attribute="value7" /></td>
 </tr>
 </table>
 <tr>
 <td width="25"></td>
 <td width="150" align="left">Designation: </td>
-<td width="400" align="left"><TextView attribute="value8" type="text" /></td>
+<td width="400" align="left"><TextView attribute="value8" /></td>
 </tr>
 </th>
 </table>

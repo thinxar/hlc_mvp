@@ -12,29 +12,20 @@ const TemplateV3728 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
-<center> Re : Policy Number :" type="text" />polNumber<TextView attribute="</center>
+<center> Re : Policy Number :<TextView attribute="polNumber" />
+</center>
 <br />
 <br />
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Satisfactory evidence having been produced regarding the Life Assured's age the following alterations are hereby made in the Policy. </p></td>
-<td width="25"></td>
-</tr>
-</table>
-<br />
-<div className="border-top-className: solid; border-top-width: 2; padding-top: 1"></div>
-<br />
-<table width="600">
-<tr>
-<td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Age at entry Admitted" type="text" />value4<TextView attribute="years. <br />" type="text" />value5<TextView attribute="premium payable from" type="text" />value6<TextView attribute="to" type="text" />value7<TextView attribute=". <br /> Inclusive altered to Rs." type="text" />value8<TextView attribute=". <br /> Date of maturity" type="text" />value9<TextView attribute=". <br />Premium Paying Period" type="text" />value10<TextView attribute="years. </p></td>
+<td width="550"><p className="text-justify"> Satisfactory evidence having been produced regarding the Life Assured's age the following alterations are hereby made in the Policy. </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -44,7 +35,17 @@ const TemplateV3728 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Received/Refunded Rs." type="text" />value11%% in respect of difference/excess of the premiums paid with interest thereon. </p></td>
+<td width="550"><p className="text-justify"> Age at entry Admitted <TextView attribute="value4" /> years. <br /> <TextView attribute="value5" /> premium payable from <TextView attribute="value6" /> to <TextView attribute="value7" /> . <br /> Inclusive altered to Rs.<TextView attribute="value8" /> . <br /> Date of maturity <TextView attribute="value9" /> . <br />Premium Paying Period <TextView attribute="value10" /> years. </p></td>
+<td width="25"></td>
+</tr>
+</table>
+<br />
+<div className="border-top-className: solid; border-top-width: 2; padding-top: 1"></div>
+<br />
+<table width="600">
+<tr>
+<td width="25"></td>
+<td width="550"><p className="text-justify"> Received/Refunded Rs. <TextView attribute="value11" /> in respect of difference/excess of the premiums paid with interest thereon. </p></td>
 <td width="25"></td>
 </tr>
 </table>

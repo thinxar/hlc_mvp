@@ -15,7 +15,7 @@ const TemplateV5259 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: justify;"> (Place & Date) <TextView attribute="value1" type="text" /> At the request of the within named Life Assured, the within policy is issued under the provisions of the Married Women's Property Act, 1874,in entire cancellation of the earlier policy bearing the same number and dated <TextView attribute="value2" type="text" /> also issued under the provisions of the said Act upon the beneficiary thereunder having released and renounced his/her interest, right and title thereunder which earlier policy in original has been delivered to the L.I.C. for cancellation, the within policy being entitled to the same privileges to which the original policy was entitled. </p></td>
+<td width="550" align="left"><p className="text-justify"> (Place & Date) <TextView attribute="value1" /> At the request of the within named Life Assured, the within policy is issued under the provisions of the Married Women's Property Act, 1874,in entire cancellation of the earlier policy bearing the same number and dated <TextView attribute="value2" /> also issued under the provisions of the said Act upon the beneficiary thereunder having released and renounced his/her interest, right and title thereunder which earlier policy in original has been delivered to the L.I.C. for cancellation, the within policy being entitled to the same privileges to which the original policy was entitled. </p></td>
 <td width="25"></td>
 </tr>
 </table>

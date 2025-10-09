@@ -23,7 +23,7 @@ const Template111 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Consequent upon payment of Maturity claim under above policy on <TextField attribute="value3" type="text" /> of Rs. <TextField attribute="value4" type="text" /> </p></td>
+<td width="550"><p className="text-justify"> Consequent upon payment of Maturity claim under above policy on <TextField attribute="value3" type="text" /> of Rs. <TextField attribute="value4" type="text" /> </p></td>
 <td width="25"></td>
 <br />
 </tr>
@@ -31,7 +31,7 @@ const Template111 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> As per plan condition Free life cover for Rs <TextField attribute="value5" type="text" /> granted for next 10 years which shall be available from <TextField attribute="value6" type="text" /> to <TextField attribute="value7" type="text" /> Hence forth, policy will be free from payment of any premiums. Maturity claim/surrender/ loan/ Accident Benefit cover will not be available during this free term insurance cover. </p></td>
+<td width="550"><p className="text-justify"> As per plan condition Free life cover for Rs <TextField attribute="value5" type="text" /> granted for next 10 years which shall be available from <TextField attribute="value6" type="text" /> to <TextField attribute="value7" type="text" /> Hence forth, policy will be free from payment of any premiums. Maturity claim/surrender/ loan/ Accident Benefit cover will not be available during this free term insurance cover. </p></td>
 <td width="25"></td>
 <br />
 </tr>
@@ -40,7 +40,7 @@ const Template111 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"> DATE:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> <br />
+<td width="550"> DATE:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> <br />
 <br />
 </td>
 </tr>

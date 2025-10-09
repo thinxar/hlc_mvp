@@ -13,7 +13,7 @@ const TemplateReinstatementofforeclosedpolicy = (props: any) => {
 <table width="550" border={0}>
 <tr>
 <td width="50"></td>
-<td width="550" align="center"> &#147;Loan Reinstated&#148; on  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> .
+<td width="550" align="center"> &#147;Loan Reinstated&#148; on  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> .
 </td></tr></table>
 <br />
 <table width="600">

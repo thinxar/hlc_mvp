@@ -13,19 +13,19 @@ const TemplateV3733 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place:<TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date:%%CurrDate<TextView attribute="</td>
+<td align="left"> Place:<TextView attribute="branchName" /> </td>
+<td align="right"> Date:<TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
-<center> Re : Policy Number :" type="text" />polNumber<TextView attribute="</center>
+<center> Re : Policy Number :<TextView attribute="polNumber" /> </center>
 <br />
 <br />
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;">" type="text" />value4<TextView attribute="(Place and Date) On production of satisfactory evidence the Life Assured's age at entry proved to be" type="text" />value5<TextView attribute="years. To give him advantage of lower age at entry the following alterations are hereby made in the Policy. </p></td>
+<td width="550"><p className="text-justify"> <TextView attribute="value4" />(Place and Date) On production of satisfactory evidence the Life Assured's age at entry proved to be<TextView attribute="value5" /> years. To give him advantage of lower age at entry the following alterations are hereby made in the Policy. </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -35,7 +35,7 @@ const TemplateV3733 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Age at entry Admitted" type="text" />value6<TextView attribute="years. <br /> Date of commencement of Policy" type="text" />value7<TextView attribute=". <br /> Due Dates of Premiums" type="text" />value8<TextView attribute="each year. <br />" type="text" />value9<TextView attribute="Premiums payable from" type="text" />value10<TextView attribute="altered to Rs." type="text" />value11<TextView attribute=". <br /> Date of Last Payment" type="text" />value12<TextView attribute=". Date of Maturity" type="text" />value13<TextView attribute=". <br /> Free Paid-up Non-participating Assurance Rs." type="text" />value14<TextView attribute=". </p></td>
+<td width="550"><p className="text-justify"> Age at entry Admitted <TextView attribute="value6" /> years. <br /> Date of commencement of Policy <TextView attribute="value7" /> . <br /> Due Dates of Premiums <TextView attribute="value8" /> each year. <br /> <TextView attribute="value9" /> Premiums payable from <TextView attribute="value10" /> altered to Rs. <TextView attribute="value11" /> . <br /> Date of Last Payment <TextView attribute="value12" /> . Date of Maturity <TextView attribute="value13" /> . <br /> Free Paid-up Non-participating Assurance Rs. <TextView attribute="value14" /> . </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -45,7 +45,7 @@ const TemplateV3733 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Received Rs." type="text" />value15<TextView attribute="in respect of difference of the premiums paid with interest thereon and Rs." type="text" />value16%% as interest for dating back. </p></td>
+<td width="550"><p className="text-justify"> Received Rs.<TextView attribute="value15" /> in respect of difference of the premiums paid with interest thereon and Rs.<TextView attribute="value16" /> as interest for dating back. </p></td>
 <td width="25"></td>
 </tr>
 </table>

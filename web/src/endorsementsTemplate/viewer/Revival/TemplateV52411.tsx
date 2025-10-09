@@ -1,12 +1,12 @@
 import { TextView } from 'templates/mantineForm';import { PalmyraForm } from '@palmyralabs/rt-forms';
 
-const TemplateV5241 = (props: any) => {
+const TemplateV52411 = (props: any) => {
   return (
            <PalmyraForm ref={props.formRef} formData={props.formData}>
 <table width="600" >
 <th>
 <h3 className="text-right">Annexure-2</h3>
-<p className="text-center">Policy No. : <TextView attribute="polNumber" type="text" /> </p>
+<p className="text-center">Policy No. : <TextView attribute="polNumber" /> </p>
 <h3 className="text-center">Endorsement to Policy Document for Revival <br />(For Non-Linked Products/Riders)</h3>
 <table width="600">
 <tr>
@@ -53,4 +53,4 @@ const TemplateV5241 = (props: any) => {
   );
 };
 
-export {TemplateV5241};
+export {TemplateV52411};

@@ -12,7 +12,7 @@ const Template3579 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> <TextField attribute="value1" type="text" /> (Place and Date) The Life Assured having exercised the option of Converting the Policy at the end of five years into an endowment Assurance Policy for a term of <TextField attribute="value2" type="text" /> years <TextField attribute="value3" type="text" /> (with/without) profit it is hereby declared that the following alterations are hereby made in the Policy. </p></td>
+<td width="550"><p className="text-justify"> <TextField attribute="value1" type="text" /> (Place and Date) The Life Assured having exercised the option of Converting the Policy at the end of five years into an endowment Assurance Policy for a term of <TextField attribute="value2" type="text" /> years <TextField attribute="value3" type="text" /> (with/without) profit it is hereby declared that the following alterations are hereby made in the Policy. </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -20,7 +20,7 @@ const Template3579 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> <TextField attribute="value4" type="text" /> premiums from <TextField attribute="value5" type="text" /> to <TextField attribute="value6" type="text" /> inclusive at Rs. <TextField attribute="value7" type="text" /> Date of maturity <TextField attribute="value8" type="text" /> </p></td>
+<td width="550"><p className="text-justify"> <TextField attribute="value4" type="text" /> premiums from <TextField attribute="value5" type="text" /> to <TextField attribute="value6" type="text" /> inclusive at Rs. <TextField attribute="value7" type="text" /> Date of maturity <TextField attribute="value8" type="text" /> </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -28,7 +28,7 @@ const Template3579 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> The policy will participate in profits from the date of conversion, viz., <TextField attribute="value9" type="text" /> at the rate applicable to Endowment Assurance Policies. </p></td>
+<td width="550"><p className="text-justify"> The policy will participate in profits from the date of conversion, viz., <TextField attribute="value9" type="text" /> at the rate applicable to Endowment Assurance Policies. </p></td>
 <td width="25"></td>
 </tr>
 </table>

@@ -12,7 +12,7 @@ const TemplateVMaturityJeevanDhara = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" ><p className="justify"> Notwithstanding anything mentioned in the Schedule to this policy under the heading &#147;Bonus&#148; The Bonus Guaranteed Maturity addition under the policy has been paid in lump sum with the consent of the annuitant policy holder Assignee and hence it will not be added to the Government to Give amount. <br />Amt. Paid Rs. <TextView attribute="value1" type="text" /> .
+<td width="550" ><p className="justify"> Notwithstanding anything mentioned in the Schedule to this policy under the heading &#147;Bonus&#148; The Bonus Guaranteed Maturity addition under the policy has been paid in lump sum with the consent of the annuitant policy holder Assignee and hence it will not be added to the Government to Give amount. <br />Amt. Paid Rs. <TextView attribute="value1" /> .
 </p>
 </td>
 <td width="25"></td>

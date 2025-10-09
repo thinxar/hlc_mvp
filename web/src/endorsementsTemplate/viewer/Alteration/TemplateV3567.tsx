@@ -12,12 +12,12 @@ const TemplateV3567 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="200" align ="left"> Place: <TextView attribute="BranchName" type="text" /> <td width="350" align="right"> Date: %%CurrDate<TextView attribute="</td></td></tr></table><br />
+<td width="200" align ="left"> Place: <TextView attribute="branchName" /> <td width="350" align="right"> Date: <TextView attribute="currDate" /> </td></td></tr></table><br />
 <br />
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" ><p className="text-align: justify;"> Notwithstanding anything within mentioned to the contrary it is hereby declared that on a written request of the within named Life Assured made prior to the date of maturity, that is" type="text" />value3<TextView attribute=", the Life Assured may, in the event of his surviving to the date of maturity and provided the policy is in force for the full sum Assured elect in lieu of the sum Assured any one of the following options under the following plan :- </p></td>
+<td width="550" ><p className="text-justify"> Notwithstanding anything within mentioned to the contrary it is hereby declared that on a written request of the within named Life Assured made prior to the date of maturity, that is <TextView attribute="value3" />, the Life Assured may, in the event of his surviving to the date of maturity and provided the policy is in force for the full sum Assured elect in lieu of the sum Assured any one of the following options under the following plan :- </p></td>
 <td width="25"></td>
 </tr></table><br />
 <table width="600" >
@@ -46,22 +46,22 @@ const TemplateV3567 = (props: any) => {
 </tr></table></td>
 <td width="410" >
 <table border={0}>
-<tr><td width="100" align="center" >" type="text" />value4<TextView attribute="</td>
-<td width="100" align="center">" type="text" />value5<TextView attribute="</td>
-<td width="110" align="center">" type="text" />value6<TextView attribute="</td>
-<td width="100" align="center">" type="text" />value7<TextView attribute="</td>
+<tr><td width="100" align="center" > <TextView attribute="value4" /> </td>
+<td width="100" align="center"> <TextView attribute="value5" /> </td>
+<td width="110" align="center"> <TextView attribute="value6" /> </td>
+<td width="100" align="center"> <TextView attribute="value7" /> </td>
 </tr></table></td>
 <tr ><td width="20"></td>
 <td width="150" align="center" >
 <table border={0}>
-<tr><td width="20" valign="top" > (b) </td><td width="130" align="left" > Payable for" type="text" />value8<TextView attribute="years certain and so long hereafter as the assured may be alive</td>
+<tr><td width="20" valign="top" > (b) </td><td width="130" align="left" > Payable for <TextView attribute="value8" /> years certain and so long hereafter as the assured may be alive</td>
 </tr></table></td>
 <td width="410" >
 <table border={0}>
-<tr><td width="100" height="20" align="center" >" type="text" />value9<TextView attribute="</td>
-<td width="100" align="center" >" type="text" />value10<TextView attribute="</td>
-<td width="110" align="center" >" type="text" />value11<TextView attribute="</td>
-<td width="100" align="center" >" type="text" />value12<TextView attribute="</td>
+<tr><td width="100" height="20" align="center" > <TextView attribute="value9" /> </td>
+<td width="100" align="center" > <TextView attribute="value10" /> </td>
+<td width="110" align="center" > <TextView attribute="value11" /> </td>
+<td width="100" align="center" > <TextView attribute="value12" /> </td>
 </tr></table></td>
 </tr>
 </tr>
@@ -71,21 +71,21 @@ const TemplateV3567 = (props: any) => {
 <br /><br />
 <table width="600" >
 <tr><td width="25"></td>
-<td width="550" ><p className="text-align: justify;">1.	<i>Commencement of payment of Instalments :</i>The first instalment of the Annuity will become
+<td width="550" ><p className="text-justify">1.	<i>Commencement of payment of Instalments :</i>The first instalment of the Annuity will become
 payable one year, six months, three months or one month after the date of maturity of the policy
 according as the mode of payment of the Annuity is yearly, half- yearly, quarterly or monthly.
 </p>
-<p className="text-align: justify;">2.	<i>Duration of payment of Instalments :</i> In the case of Annuity for life, instalments will be
-continued to be paid so long as the Assured is alive. In the case of Annuity for" type="text" />value13<TextView attribute="years certain and so long thereafter as the Assured may be alive the instalments will be continued to be
-paid for" type="text" />value14%% years certain whether the Assured is then alive or not and if he
+<p className="text-justify">2.	<i>Duration of payment of Instalments :</i> In the case of Annuity for life, instalments will be
+continued to be paid so long as the Assured is alive. In the case of Annuity for <TextView attribute="value13" /> years certain and so long thereafter as the Assured may be alive the instalments will be continued to be
+paid for <TextView attribute="value14" /> years certain whether the Assured is then alive or not and if he
 survives the period, will be continued to be paid so long as he is alive.
 </p>
-<p className="text-align: justify;">3.<i>Cessation of Instalments :</i> In all cases where the instalments are to terminate on death,
+<p className="text-justify">3.<i>Cessation of Instalments :</i> In all cases where the instalments are to terminate on death,
 the instalments will cease with payment of the instalment due before the date of death of the Assured,
 and no payment shall be made for such time as may elapse between the day immediately preceding
 the death of the Life Assured on which an instalment fell due and the day of his death.
 </p>
-<p className="text-align: justify;">4. In all cases where an instalment is payable only if the Life Assured is alive, the subsistence the Assured's life at 12 O'clock on the day on which such instalment falls due will be required to certified from time to time in such manner as may be required.
+<p className="text-justify">4. In all cases where an instalment is payable only if the Life Assured is alive, the subsistence the Assured's life at 12 O'clock on the day on which such instalment falls due will be required to certified from time to time in such manner as may be required.
 </p></td></tr></table>
 <br />
 <br />

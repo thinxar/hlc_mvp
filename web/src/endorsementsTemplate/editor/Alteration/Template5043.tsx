@@ -13,8 +13,8 @@ const Template5043 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="250" align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td width="500" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td width="250" align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td width="500" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -26,7 +26,7 @@ const Template5043 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;">
+<td width="550"><p className="text-justify">
 The Within-named Proposer having died on <TextField attribute="value5" type="text" /> (Date of Death) and satisfactory proof of his death having been duly furnished, it is hereby declared that the payment of premiums due
 from <TextField attribute="value6" type="text" /> upto the Deferred Date. Viz <TextField attribute="value7" type="text" /> will cease. The revised premium of Rs <TextField attribute="value8" type="text" /> shall be payable on the specified due dates commencing on and after the Deferred Date
 <TextField attribute="value9" type="text" /> till the "Date of Last Payment" specified in the within-mentioned Policy Schedule.

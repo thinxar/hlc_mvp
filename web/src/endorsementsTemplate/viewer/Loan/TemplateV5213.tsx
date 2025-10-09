@@ -14,8 +14,8 @@ payable on a specified future date or by installments.</i></h4>
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="275" align="left"> Place : <TextView attribute="BranchName" type="text" /> </td>
-<td width="275" align="right"> Date : %%CurrDate<TextView attribute="</td>
+<td width="275" align="left"> Place : <TextView attribute="branchName" /> </td>
+<td width="275" align="right"> Date : <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -23,7 +23,7 @@ payable on a specified future date or by installments.</i></h4>
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> The Corporation doth hereby agree and declare that it does not claim any right, title or interest in the Policy which is hereby released from the assignment dated" type="text" />value3%% executed in favour of the Corporation as if it had not been made and the Policy is free from such assignment. The claim under the Policy will be settled only on proper evidence of title being produced. </p></td>
+<td width="550"><p className="text-justify"> The Corporation doth hereby agree and declare that it does not claim any right, title or interest in the Policy which is hereby released from the assignment dated <TextView attribute="value3" /> executed in favour of the Corporation as if it had not been made and the Policy is free from such assignment. The claim under the Policy will be settled only on proper evidence of title being produced. </p></td>
 <td width="25"></td>
 </tr>
 </table>

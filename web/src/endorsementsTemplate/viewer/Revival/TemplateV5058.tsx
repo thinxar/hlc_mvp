@@ -13,8 +13,8 @@ const TemplateV5058 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="275" align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td width="275" align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td width="275" align="left"> Place: <TextView attribute="branchName" /> </td>
+<td width="275" align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -23,7 +23,7 @@ const TemplateV5058 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> It is hereby declared that the within written Policy which lapsed by non- payment of the premium due" type="text" />value3<TextView attribute="is revived under the Special Revival Scheme at the request of the within named Life Assured made to the Corporation on" type="text" />value4<TextView attribute="that the risk under the within mentioned Policy so revived has been commenced on" type="text" />value5<TextView attribute="and that the premium has been charged for age" type="text" />value6<TextView attribute="years and will be payable at the enhanced rate of Rs." type="text" />value7<TextView attribute="from" type="text" />value8<TextView attribute="to" type="text" />value9<TextView attribute="inclusive for a period of" type="text" />value10<TextView attribute="years instead of" type="text" />value11<TextView attribute="as within mentioned. *Consequently this Policy shall mature on" type="text" />value12<TextView attribute="instead of" type="text" />value13%% as within mentioned. It is further declared that together with the Proposal and Declaration for Assurance and the statements contained and referred to therein in statements made by the Assured in the Personal Statement regarding Health completed by the Assured for Revival will form the basis of this assurance. </p></td>
+<td width="550"><p className="text-justify"> It is hereby declared that the within written Policy which lapsed by non- payment of the premium due <TextView attribute="value3" /> is revived under the Special Revival Scheme at the request of the within named Life Assured made to the Corporation on <TextView attribute="value4" /> that the risk under the within mentioned Policy so revived has been commenced on <TextView attribute="value5" /> and that the premium has been charged for age <TextView attribute="value6" /> years and will be payable at the enhanced rate of Rs. <TextView attribute="value7" /> from <TextView attribute="value8" /> to <TextView attribute="value9" /> inclusive for a period of <TextView attribute="value10" /> years instead of <TextView attribute="value11" /> as within mentioned. *Consequently this Policy shall mature on <TextView attribute="value12" /> instead of <TextView attribute="value13" /> as within mentioned. It is further declared that together with the Proposal and Declaration for Assurance and the statements contained and referred to therein in statements made by the Assured in the Personal Statement regarding Health completed by the Assured for Revival will form the basis of this assurance. </p></td>
 <td width="25"></td>
 </tr>
 </table>

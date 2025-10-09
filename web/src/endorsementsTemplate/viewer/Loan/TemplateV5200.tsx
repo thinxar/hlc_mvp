@@ -14,8 +14,8 @@ const TemplateV5200 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -24,7 +24,7 @@ const TemplateV5200 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td><p className="justify">(Date of repayment)" type="text" />value3<TextView attribute="Rs. (amount in figures)" type="text" />value4<TextView attribute="Amount Rupees (amount in words)" type="text" />value5%%. Loan repaid in part.	</p>
+<td><p className="justify">(Date of repayment) <TextView attribute="value3" /> Rs. (amount in figures) <TextView attribute="value4" /> Amount Rupees (amount in words) <TextView attribute="value5" />. Loan repaid in part.	</p>
 </td>
 <td width="25"></td>
 </tr>

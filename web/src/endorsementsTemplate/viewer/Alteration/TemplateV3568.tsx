@@ -12,19 +12,20 @@ const TemplateV3568 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
-<center> Re : Policy No." type="text" />polNumber<TextView attribute="</center>
+<center> Re : Policy No. <TextView attribute="polNumber" />
+</center>
 <br />
 <br />
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> The Life Assured having exercised the option to receive in lieu of the claim amount a life Annuity" type="text" />value4<TextView attribute="annuity payable for" type="text" />value5<TextView attribute="years certain and so long thereafter as he may be alive having desired to receive the Annuity by" type="text" />value6<TextView attribute="instalments, it is hereby declared he claim amount is payable on the terms and conditions as provided in this behalf in the endorsement dated" type="text" />value7%% </p></td>
+<td width="550"><p className="text-justify"> The Life Assured having exercised the option to receive in lieu of the claim amount a life Annuity <TextView attribute="value4" /> annuity payable for <TextView attribute="value5" /> years certain and so long thereafter as he may be alive having desired to receive the Annuity by <TextView attribute="value6" /> instalments, it is hereby declared he claim amount is payable on the terms and conditions as provided in this behalf in the endorsement dated <TextView attribute="value7" /> </p></td>
 <td width="25"></td>
 </tr>
 </table>

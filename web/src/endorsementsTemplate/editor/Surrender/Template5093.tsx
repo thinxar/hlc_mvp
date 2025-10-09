@@ -14,8 +14,8 @@ const Template5093 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextField attribute="BranchName" type="text" /> </td>
-<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" /> </td>
+<td align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+<td align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly/> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -27,7 +27,7 @@ const Template5093 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> It is hereby declared that at the request of the within named Life Assured the sum assured under the within written Policy has been reduced to Rs. <TextField attribute="value4" type="text" /> inclusive of all bonuses already declared free from payment of premiums due as from <TextField attribute="value5" type="text" /> and from the deduction of the existing loan and interest amounting to Rs. <TextField attribute="value6" type="text" /> It is further declared that the Policy will not participate in the profits <TextField attribute="value7" type="text" /> and will become payable as within mentioned. The sum of Rs. <TextField attribute="value8" type="text" /> has been paid as Surrender Value of the portion of the sum assured dropped. </p></td>
+<td width="550"><p className="text-justify"> It is hereby declared that at the request of the within named Life Assured the sum assured under the within written Policy has been reduced to Rs. <TextField attribute="value4" type="text" /> inclusive of all bonuses already declared free from payment of premiums due as from <TextField attribute="value5" type="text" /> and from the deduction of the existing loan and interest amounting to Rs. <TextField attribute="value6" type="text" /> It is further declared that the Policy will not participate in the profits <TextField attribute="value7" type="text" /> and will become payable as within mentioned. The sum of Rs. <TextField attribute="value8" type="text" /> has been paid as Surrender Value of the portion of the sum assured dropped. </p></td>
 <td width="25"></td>
 </tr>
 </table>

@@ -1,7 +1,7 @@
 import { TextField,} from 'templates/mantineForm';
 import { PalmyraForm } from '@palmyralabs/rt-forms';
 
-const Template5241 = (props: any) => {
+const Template52411 = (props: any) => {
   return (
            <PalmyraForm ref={props.formRef} formData={props.formData}>
 <table width="600" >
@@ -54,4 +54,4 @@ const Template5241 = (props: any) => {
   );
 };
 
-export {Template5241};
+export {Template52411};

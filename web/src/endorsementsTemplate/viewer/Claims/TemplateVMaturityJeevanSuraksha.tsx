@@ -13,7 +13,7 @@ const TemplateVMaturityJeevanSuraksha = (props: any) => {
 <tr>
 <td width="25"></td>
 <td width="550">
-<p className="justify"> N.C.O. Rs. <TextView attribute="value1" type="text" /> . 25% of NCO opted <TextView attribute="value2" type="text" /> (Yes/No)YES/NO option for annuity 25% of NCO Rs. <TextView attribute="value3" type="text" /> on Annuity Amt <TextView attribute="value4" type="text" /> W.E.F <TextView attribute="value5" type="text" /> .
+<p className="justify"> N.C.O. Rs. <TextView attribute="value1" /> . 25% of NCO opted <TextView attribute="value2" /> (Yes/No)YES/NO option for annuity 25% of NCO Rs. <TextView attribute="value3" /> on Annuity Amt <TextView attribute="value4" /> W.E.F <TextView attribute="value5" /> .
 </p>
 
 </td>

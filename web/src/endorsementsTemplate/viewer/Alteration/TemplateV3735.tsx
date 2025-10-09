@@ -13,29 +13,20 @@ const TemplateV3735 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
-<center> Re : Policy Number :" type="text" />polNumber<TextView attribute="</center>
+<center> Re : Policy Number : <TextView attribute="polNumber" />
+</center>
 <br />
 <br />
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> On production of satisfactory evidence regarding the ages of the Lives Assured the" type="text" />value15<TextView attribute="(Male/Female) Life Assured's age at entry proved to be" type="text" />value4<TextView attribute="years. To give" type="text" />value16<TextView attribute="(him/her) advantage of lower age at entry the following alterations are hereby made in the Policy. </p></td>
-<td width="25"></td>
-</tr>
-</table>
-<br />
-<div className="border-top-className: solid; border-top-width: 2; padding-top: 1"></div>
-<br />
-<table>
-<tr>
-<td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Age at entry Admitted:" type="text" />value17<TextView attribute="(Male/Female) Life" type="text" />value5<TextView attribute="years. Date of commencement of Policy" type="text" />value6<TextView attribute=". <br /> Due Dates of Premiums" type="text" />value7<TextView attribute="each year. <br />" type="text" />value8<TextView attribute="Premiums payable from" type="text" />value9<TextView attribute="altered to Rs." type="text" />value10<TextView attribute=". <br /> Date of Last Payment" type="text" />value11<TextView attribute=". <br /> Date of maturity" type="text" />value12<TextView attribute=". </p></td>
+<td width="550"><p className="text-justify"> On production of satisfactory evidence regarding the ages of the Lives Assured the <TextView attribute="value15" /> (Male/Female) Life Assured's age at entry proved to be <TextView attribute="value4" /> years. To give <TextView attribute="value16" /> (him/her) advantage of lower age at entry the following alterations are hereby made in the Policy. </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -45,7 +36,17 @@ const TemplateV3735 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Received Rs." type="text" />value13<TextView attribute="in respect of difference of the premiums paid with interest thereon and Rs." type="text" />value14%% as interest for dating back. </p></td>
+<td width="550"><p className="text-justify"> Age at entry Admitted: <TextView attribute="value17" /> (Male/Female) Life <TextView attribute="value5" /> years. Date of commencement of Policy <TextView attribute="value6" /> . <br /> Due Dates of Premiums <TextView attribute="value7" /> each year. <br /> <TextView attribute="value8" /> Premiums payable from <TextView attribute="value9" /> altered to Rs. <TextView attribute="value10" /> . <br /> Date of Last Payment <TextView attribute="value11" />. <br /> Date of maturity <TextView attribute="value12" />. </p></td>
+<td width="25"></td>
+</tr>
+</table>
+<br />
+<div className="border-top-className: solid; border-top-width: 2; padding-top: 1"></div>
+<br />
+<table>
+<tr>
+<td width="25"></td>
+<td width="550"><p className="text-justify"> Received Rs. <TextView attribute="value13" /> in respect of difference of the premiums paid with interest thereon and Rs. <TextView attribute="value14" /> as interest for dating back. </p></td>
 <td width="25"></td>
 </tr>
 </table>

@@ -12,13 +12,14 @@ const TemplateV3897 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <br />
-<center> Re : Policy No." type="text" />polNumber<TextView attribute="</center>
+<center> Re : Policy No. <TextView attribute="polNumber" />
+</center>
 <br />
 <br />
 <table>
@@ -33,12 +34,12 @@ const TemplateV3897 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550">Plan of Assurance" type="text" />value4<TextView attribute=".</td>
+<td width="550">Plan of Assurance <TextView attribute="value4" />.</td>
 <td width="25"></td>
 </tr>
 <tr>
 <td></td>
-<td><p className="justify">" type="text" />value5<TextView attribute="premiums from" type="text" />value6<TextView attribute="to" type="text" />value7<TextView attribute="inclusive at Rs" type="text" />value8<TextView attribute=".</p></td>
+<td><p className="justify"><TextView attribute="value5" /> premiums from <TextView attribute="value6" /> to <TextView attribute="value7" /> inclusive at Rs <TextView attribute="value8" />.</p></td>
 <td></td>
 </tr>
 <tr>
@@ -48,12 +49,12 @@ const TemplateV3897 = (props: any) => {
 </tr>
 <tr>
 <td></td>
-<td>Date of Maturity" type="text" />value9<TextView attribute=".</td>
+<td>Date of Maturity <TextView attribute="value9" />.</td>
 <td></td>
 </tr>
 <tr>
 <td></td>
-<td><p className="justify">Table No." type="text" />value10<TextView attribute="Bonus Rs." type="text" />value11<TextView attribute=".</p></td>
+<td><p className="justify">Table No. <TextView attribute="value10" /> Bonus Rs. <TextView attribute="value11" />.</p></td>
 <td></td>
 </tr>
 </table>
@@ -63,7 +64,7 @@ const TemplateV3897 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td><p className="justify">Received Rs." type="text" />value12%% Being the amount required to give effect to the alteration.</p></td>
+<td><p className="justify">Received Rs. <TextView attribute="value12" /> Being the amount required to give effect to the alteration.</p></td>
 </tr>
 </table>
 <br />

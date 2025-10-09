@@ -11,7 +11,7 @@ const TemplateV5059 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> "Notwithstanding anything within mentioned to the contrary, it is hereby declared and agreed that <TextView attribute="value8" type="text" /> (Qly. Hly. Yly.) installment premium payable under the policy stands increased from Rs. <TextView attribute="value1" type="text" /> to Rs. <TextView attribute="value2" type="text" />, with effect from <TextView attribute="value3" type="text" /> , which includes an extra premium of Rs. <TextView attribute="value4" type="text" /> . </p></td>
+<td width="550"><p className="text-justify"> "Notwithstanding anything within mentioned to the contrary, it is hereby declared and agreed that <TextView attribute="value8" /> (Qly. Hly. Yly.) installment premium payable under the policy stands increased from Rs. <TextView attribute="value1" /> to Rs. <TextView attribute="value2" />, with effect from <TextView attribute="value3" /> , which includes an extra premium of Rs. <TextView attribute="value4" /> . </p></td>
 <td width="25"></td>
 </tr>
 </table>
@@ -27,7 +27,7 @@ const TemplateV5059 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;"> Dated at <TextView attribute="value5" type="text" /> this <TextView attribute="value6" type="text" /> day of <TextView attribute="value7" type="text" /> year . </p></td>
+<td width="550"><p className="text-justify"> Dated at <TextView attribute="value5" /> this <TextView attribute="value6" /> day of <TextView attribute="value7" /> year . </p></td>
 <td width="25"></td>
 </tr>
 </table>

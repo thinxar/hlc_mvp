@@ -13,16 +13,16 @@ const TemplateVOtherEndorsement = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="250" align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td width="300" align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td width="250" align="left"> Place: <TextView attribute="branchName" /> </td>
+<td width="300" align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550"><p className="text-align: justify;">
-<center>Policy No." type="text" />polNumber<TextView attribute="</center>
+<td width="550"><p className="text-justify">
+<center>Policy No. <TextView attribute="polNumber" /> </center>
 </p>
 </td>
 </tr>
@@ -31,8 +31,8 @@ const TemplateVOtherEndorsement = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"><p className="text-align: left;"> Ref :" type="text" />value4<TextView attribute="<br />
-<br /> Enter text as per requirement. : <br />" type="text" />value5%% <br />
+<td width="550" align="left"><p className="text-left"> Ref : <TextView attribute="value4" /> <br />
+<br /> Enter text as per requirement. : <br /> <TextView attribute="value5" /> <br />
 </p>
 </td>
 <td width="25"></td>

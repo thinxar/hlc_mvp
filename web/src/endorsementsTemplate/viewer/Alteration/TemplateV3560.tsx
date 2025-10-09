@@ -13,9 +13,9 @@ const TemplateV3560 = (props: any) => {
 <table width="600">
 <tr>
 <td width="25"></td>
-<td width="550" align="left"> Place:<TextView attribute="BranchName" type="text" /> </td>
+<td width="550" align="left"> Place:<TextView attribute="branchName" /> </td>
 <td width="25"></td>
-<td width="550" align="right"> Date:%%CurrDate<TextView attribute="</td>
+<td width="550" align="right"> Date:<TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -24,7 +24,7 @@ const TemplateV3560 = (props: any) => {
 <tr>
 <td width="25"></td>
 <td width="550" align="center">
-<b>Re : Policy Number </b>:" type="text" />polNumber<TextView attribute="</td>
+<b>Re : Policy Number </b>:<TextView attribute="polNumber" /> </td>
 </tr>
 </table>
 <br />
@@ -32,7 +32,7 @@ const TemplateV3560 = (props: any) => {
 <table width="600">
 <tr>
 <td width="50"></td>
-<td width="550" align="left"><p className="text-align: justify;"> At the request of the within named Life Assured the endorsement dated" type="text" />value4<TextView attribute="is cancelled and it is hereby agreed and declared that in lieu thereof an extra premium of Rs." type="text" />value5<TextView attribute="per thousand sum assured per annum is payable under the Policy. In consequence the" type="text" />value6<TextView attribute="premiums due as from" type="text" />value7<TextView attribute="shall be payable at the rate of Rs." type="text" />value8%% instead of as within mentioned. </p></td>
+<td width="550" align="left"><p className="text-justify"> At the request of the within named Life Assured the endorsement dated <TextView attribute="value4" /> is cancelled and it is hereby agreed and declared that in lieu thereof an extra premium of Rs.<TextView attribute="value5" /> per thousand sum assured per annum is payable under the Policy. In consequence the<TextView attribute="value6" /> premiums due as from<TextView attribute="value7" /> shall be payable at the rate of Rs.<TextView attribute="value8" /> instead of as within mentioned. </p></td>
 <td width="25"></td>
 </tr>
 </table>

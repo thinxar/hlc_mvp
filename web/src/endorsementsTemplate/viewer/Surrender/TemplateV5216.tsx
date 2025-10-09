@@ -12,8 +12,8 @@ const TemplateV5216 = (props: any) => {
 <br /><table width="600">
 <tr>
 <td width="25"></td>
-<td align="left"> Place: <TextView attribute="BranchName" type="text" /> </td>
-<td align="right"> Date: %%CurrDate<TextView attribute="</td>
+<td align="left"> Place: <TextView attribute="branchName" /> </td>
+<td align="right"> Date: <TextView attribute="currDate" /> </td>
 <td width="25"></td>
 </tr>
 </table>
@@ -22,7 +22,7 @@ const TemplateV5216 = (props: any) => {
 <table>
 <tr>
 <td width="25"></td>
-<td width="550"><p className="justify">The within policy which was surrendered on (Date of Surrender)" type="text" />value3<TextView attribute="at the request of the within Life Assured and/or Assignee (Name of the Assignee)" type="text" />value4<TextView attribute="is hereby reinstated on (Date of reinstatement)" type="text" />value5<TextView attribute="and all the remarks in regard to cancellation" type="text" />value6<TextView attribute="(and/or) surrender of the Policy placed on the within Policy document are hereby revoked. All the terms and conditions of the Policy and the assignment or nomination, if any, existing and in force immediately prior to the surrender of the Policy on (Date of Surrender)" type="text" />value7%% are also hereby reinstated and shall be valid as if the Policy had not been surrendered.</p></td>
+<td width="550"><p className="justify">The within policy which was surrendered on (Date of Surrender) <TextView attribute="value3" /> at the request of the within Life Assured and/or Assignee (Name of the Assignee) <TextView attribute="value4" /> is hereby reinstated on (Date of reinstatement) <TextView attribute="value5" /> and all the remarks in regard to cancellation <TextView attribute="value6" /> (and/or) surrender of the Policy placed on the within Policy document are hereby revoked. All the terms and conditions of the Policy and the assignment or nomination, if any, existing and in force immediately prior to the surrender of the Policy on (Date of Surrender) <TextView attribute="value7" /> are also hereby reinstated and shall be valid as if the Policy had not been surrendered.</p></td>
 <td width="25"></td>
 </tr>
 </table>
