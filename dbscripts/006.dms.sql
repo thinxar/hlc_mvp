@@ -91,3 +91,17 @@ VALUES
   (3,'POI', null,'admin',current_timestamp),
   (4,'Proposal', null,'admin',current_timestamp),
   (5,'Medical', null,'admin',current_timestamp);
+
+INSERT INTO mst_document_type(id, document, description, created_by, created_on)
+VALUES
+(6, 'Others', NULL, 'admin', current_timestamp),
+(7, 'Proposal Form', 'Proposal Form', 'admin', current_timestamp),
+(8, 'KYC Documents', 'KYC Documents', 'admin', current_timestamp),
+(9, 'Proposal Enclosures', 'Proposal Enclosures', 'admin', current_timestamp),
+(10, 'Signature Page', 'Signature Page', 'admin', current_timestamp),
+(11, 'Proposal Review Slip', 'Proposal Review Slip', 'admin', current_timestamp),
+(12, 'Policy Bond', 'Policy Bond', 'admin', current_timestamp),
+(13, 'Surrender', 'Surrender', 'admin', current_timestamp),
+(14, 'NEFT', 'NEFT', 'admin', current_timestamp),
+(15, 'Endorsements', 'Endorsements', 'admin', current_timestamp),
+(16, 'E Service', 'E Service', 'admin', current_timestamp);
