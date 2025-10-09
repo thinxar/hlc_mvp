@@ -117,7 +117,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
     return (
       <div className="w-full h-[calc(100vh-115px)] overflow-hidden p-4 flex flex-col gap-4">
         <div className="flex justify-between items-center">
-          <div className="text-base font-semibold">{file?.pdfFiles?.fileName}</div>
+          <div className="text-base font-semibold pr-text">{file?.pdfFiles?.fileName}</div>
         </div>
         <div className="flex justify-between items-center">
           <div className="flex flex-wrap items-center gap-2 p-2">

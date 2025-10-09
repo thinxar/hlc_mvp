@@ -1,22 +1,23 @@
-import { Box, Button, Loader, Modal, Text } from '@mantine/core';
+import { Box, Loader, Modal, Text } from '@mantine/core';
 import { PalmyraNewForm } from '@palmyralabs/rt-forms';
 import { StringFormat, topic } from '@palmyralabs/ts-utils';
+import { ServiceEndpoint } from 'config/ServiceEndpoint';
 import { useRef, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { BiSolidCloudUpload } from 'react-icons/bi';
-import { FaUpload } from 'react-icons/fa6';
+import { BiCloudUpload } from 'react-icons/bi';
+import { FiTrash2, FiUpload } from 'react-icons/fi';
 import { IoMdClose } from 'react-icons/io';
+import { RiLoader2Fill } from 'react-icons/ri';
 import { toast } from 'react-toastify';
-import Image from '../../../public/images/image.png';
-import Pdf from '../../../public/images/pdf.png';
-import Tiff from '../../../public/images/tiff.png';
-import TextFile from '../../../public/images/text.png';
-import Html from '../../../public/images/html.png';
-import './FileDropZone.css';
-import { ServiceEndpoint } from 'config/ServiceEndpoint';
 import { ServerLookup } from 'templates/mantineForm';
 import { handleError } from 'wire/ErrorHandler';
 import { useFormstore } from 'wire/StoreFactory';
+import Html from '../../../public/images/html.png';
+import Image from '../../../public/images/image.png';
+import Pdf from '../../../public/images/pdf.png';
+import TextFile from '../../../public/images/text.png';
+import Tiff from '../../../public/images/tiff.png';
+import './FileDropZone.css';
 
 interface IOptions {
     onClose?: any
@@ -91,9 +92,9 @@ const FileDropZone = (props: IOptions) => {
                     </div>
                 </div>
                 <div className='file-name text-sm p-2 text-center break-all'>{file.path.split("/").pop()}</div>
-                <div className='flex items-center justify-between absolute top-0 w-full'>
+                <div className='flex items-center justify-between absolute top-2 right-1 w-full'>
                     <div></div>
-                    <IoMdClose onClick={() => removeFile(file)} className='file-remove-icon' />
+                    <IoMdClose onClick={() => removeFile(file)} className='text-gray-800 cursor-pointer' />
                 </div>
                 <div className='file-name text-sm font-semibold text-center p-1'>
                     {file.size < 1024 * 1024
@@ -155,7 +156,7 @@ const FileDropZone = (props: IOptions) => {
             <PalmyraNewForm endPoint={''}>
                 <ServerLookup attribute="docketType" required placeholder="Select Docket Type"
                     label={"Docket Type"} invalidMessage={"This field is mandatory"} onChange={handleChange}
-                    queryOptions={{ endPoint: ServiceEndpoint.lookup.docketType }} ref={lookupRef}
+                    queryOptions={{ endPoint: ServiceEndpoint.lookup.docketType + '?_limit=-1' }} ref={lookupRef}
                     lookupOptions={{ idAttribute: 'id', labelAttribute: 'document' }} />
             </PalmyraNewForm>
             {fileList.length == 0 ? <section className="dropzone-container">
@@ -165,18 +166,21 @@ const FileDropZone = (props: IOptions) => {
                         <div className='dropzone-input-container'>
                             <input {...getInputProps()} />
                         </div>
-                        <div className='text-center'>
-                            <div>
-                                <div className='flex justify-center'><BiSolidCloudUpload className='upload-icon' /></div>
-                                <div className='text-xx file-text'>Drop file here</div>
-
-                                <div className='text file-text'>OR</div>
-                                <div className='text-xxx file-text'>
-                                    Browse file</div>
-                                <div className='text file-text'>
-                                    <br />
-                                    Supported format: {'PDF, TIFF , PNG , JPG, JPEG'}
-                                </div>
+                        <div className={`flex flex-col items-center space-y-3`}>
+                            <div className={`p-3 rounded-full bg-blue-100`}>
+                                <BiCloudUpload className={`w-7 h-7 text-gray-500`} />
+                            </div>
+                            <div className="space-y-2 text-center">
+                                <p className={`font-medium text-gray-900`}>
+                                    Drop file here
+                                    <p className={`text-sm text-gray-500`}>OR</p>
+                                    <p className={` font-medium text-blue-900`}>
+                                        Browse file
+                                    </p>
+                                    <div className={`text-sm space-y-1 text-gray-500`}>
+                                        <p>Supported formats: {'PDF, TIFF , PNG , JPG, JPEG'}</p>
+                                    </div>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -185,7 +189,7 @@ const FileDropZone = (props: IOptions) => {
                 {isBtnEnable && files}
                 <div></div>
             </div>}
-            <div className='upload-img-btn-container'>
+            {/* <div className='upload-img-btn-container'>
                 {isBtnEnable &&
                     <Button onClick={handleCancel}
                         className='filled-button'
@@ -199,6 +203,32 @@ const FileDropZone = (props: IOptions) => {
                     leftSection={<FaUpload className='button-icon' />}>
                     Upload
                 </Button>
+            </div> */}
+            <div className="flex justify-center gap-4 mt-6">
+                {isBtnEnable && (
+                    <button
+                        onClick={handleCancel}
+                        className={`cursor-pointer flex items-center gap-2 px-6 py-3 border border-gray-300 rounded-lg font-medium transition-colors text-gray-700 hover:bg-gray-50'
+                            }`}
+                    >
+                        <FiTrash2 className="w-4 h-4" />
+                        Remove All
+                    </button>
+                )}
+
+                <button
+                    onClick={handleUploadFile}
+                    disabled={!isBtnEnable || loading}
+                    className={`cursor-pointer flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${isBtnEnable && !loading
+                        ? 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl'
+                        : false
+                            ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        }`}
+                >
+                    {loading ? <RiLoader2Fill className="w-4 h-4 animate-spin" /> : <FiUpload className="w-4 h-4" />}
+                    {loading ? 'Uploading...' : 'Upload'}
+                </button>
             </div>
             <Modal opened={loading} onClose={() => { }} centered withCloseButton={false}
                 transitionProps={{ transition: 'fade', duration: 200 }}>

@@ -5,7 +5,7 @@ const EmptyList = ({ data }: any) => {
 
     if (!hasSearched) {
         return (
-            <div className="text-center text-white/60 py-20">
+            <div className="text-center text-gray/60 py-20">
                 <CiSearch className="w-16 h-16 mx-auto mb-4 opacity-50" />
                 <h3 className="text-xl font-semibold mb-2">Search for Policy Documents</h3>
                 <p>Enter a policy number and click search to view available documents</p>
@@ -14,7 +14,7 @@ const EmptyList = ({ data }: any) => {
     }
 
     return (
-        <div className="text-center text-white/60 py-20">
+        <div className="text-center text-gray/60 py-20">
             <div className="w-16 h-16 mx-auto mb-4 opacity-50" />
             <h3 className="text-xl font-semibold mb-2">No Policy Found</h3>
             <p>No policy documents found.</p>

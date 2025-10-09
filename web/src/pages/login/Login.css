@@ -135,9 +135,9 @@
 }
 
 .login-btn {
-  background-color: rgb(252, 200, 0) !important;
+  background-color: var(--primary-color) !important;
   width: 100% !important;
-  color: rgb(0, 89, 138) !important;
+  color: white !important;
   font-weight: bold !important;
   border-radius: 10px !important;
   font-size: 18px;
@@ -206,9 +206,9 @@ input:focus {
   cursor: pointer;
 }
 
-.login-form .mantine-InputWrapper-label {
+/* .login-form .mantine-InputWrapper-label {
   color: white !important;
-}
+} */
 
 .login-page-container .language-switcher-container {
   /* background-color: var(--dark-mode-bgcolor); */

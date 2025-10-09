@@ -1,23 +1,31 @@
-import { toast } from "react-toastify"
+import { toast, TypeOptions } from "react-toastify"
 
-const showServerErrorToast = () => {
-    toast.error("Something went wrong Please try again later.. ")
-}
+const showToast = (
+    type: TypeOptions,
+    message?: string,
+    fallback?: string
+) => {
+    //@ts-ignore
+    const fn: any = toast[type];
+    if (fn) {
+        fn(message || fallback || "Something went wrong");
+    }
+};
 
-const showAclErrorToast = () => {
-    const errorMessage = 'You are not authorized to perform this operation.';
-    toast.error(errorMessage);
-}
-
-const alreadyExists = () => {
-    toast.error("Data Already Exist")
-}
-
-const savedSuccessfully = (input: any) => {
-    toast.success(`${input} Saved Successfully`);
-}
+export const Toast = {
+    serverError: () => showToast("error", ErrorMsgConfig.toast.serverError),
+    aclError: () => showToast("error", ErrorMsgConfig.toast.acl),
+    resetPasswordSuccess: () => showToast("success", ErrorMsgConfig.toast.resetPwd),
+    alreadyExists: () => showToast("error", ErrorMsgConfig.toast.dataExist),
+    invalidLogin: () => showToast("warning", ErrorMsgConfig.toast.invalidLogin),
+    onSaveSuccess: (msg?: string) =>
+        showToast("success", `${msg ? msg : 'Data Saved Successfully'}`),
+    onSaveFailure: (msg?: string) =>
+        showToast("error", `${msg ? msg : 'Failed to save data'}`),
+};
 
 import { useNavigate } from 'react-router-dom';
+import { ErrorMsgConfig } from "config/ErrorMsgConfig";
 
 const useNavigation = () => {
     const navigate = useNavigate();
@@ -54,5 +62,3 @@ const getPxcel = (percentage: string, minHeight: string) => {
 };
 
 export { useNavigation, redirectToPage, getPxcel }
-
-export { showServerErrorToast, alreadyExists, savedSuccessfully, showAclErrorToast }

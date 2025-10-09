@@ -3,18 +3,17 @@
     flex-wrap: wrap;
     gap: 10px;
     overflow: auto;
-    border: 2px dashed rgb(206, 204, 204);
-    padding: 0.5em;
+    padding: 1em;
     border-radius: 10px;
     width: 100%;
 }
 
 .filled-button {
-    background-color: rgb(0, 89, 138);
+    background-color: rgba(var(--primary-color-rgb), 1);
     color: rgb(255, 255, 255)
 }
 
-.filled-button:hover{
+.filled-button:hover {
     background-color: rgb(252, 200, 0);
     color: rgb(0, 89, 138);
 }
@@ -60,12 +59,13 @@
 }
 
 .dropzone-container {
-    margin-top: 1em;
+    margin-top: 10px;
     display: flex;
     align-items: center;
     gap: 10px;
-    background-color: rgba(238, 235, 235, 0.5);
-    color: rgba(0, 0, 0, 0.7)
+    background-color: rgba(238, 235, 235, 0.25);
+    color: rgba(0, 0, 0, 0.7);
+    border-radius: 20px;
 }
 
 .dropzone .text-xx {
@@ -93,8 +93,8 @@
 }
 
 .dropzone {
-    background-color: rgba(var(--dark-color-rgb), 0.02);
-    border: 2px dashed rgba(var(--dark-color-rgb), 0.15);
+    background-color: rgba(var(--primary-color-rgb), 0.08);
+    border: 2px dashed rgba(var(--primary-color-rgb), 0.5);
     text-align: center;
     display: flex;
     align-items: center;

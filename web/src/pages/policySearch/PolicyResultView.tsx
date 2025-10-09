@@ -11,7 +11,7 @@ import { useFormstore } from 'wire/StoreFactory';
 import { FileListViewer } from './section/FileListViewer';
 import { FileViewer } from './section/FileViewer';
 import { PolicyData } from './section/PolicyData';
-import { IoClose } from 'react-icons/io5';
+import { IoChevronBackOutline, IoClose } from 'react-icons/io5';
 import { EndorseTemplatePicker } from '../endorsements/EndorseTemplatePicker';
 
 const PolicyResultView = () => {
@@ -75,7 +75,15 @@ const PolicyResultView = () => {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[40%_60%] lg:grid-cols-[31%_69%] xl:grid-cols-[23%_77%] 2xl:grid-cols-[22%_78%]
         transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-55px)]">
-            <div className=" overflow-y-auto bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-hidden">
+
+            <div className="policy-sec overflow-y-auto bg-gray/5 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-hidden">
+                <div className="pr-bg-color sticky top-0 z-50 text-xl font-bold p-2 rounded-t-lg flex items-center gap-2 text-white">
+                    <IoChevronBackOutline
+                        onClick={() => window.history.back()}
+                        className="cursor-pointer"
+                    />
+                    Policy / {policyData.policyNumber}
+                </div>
                 <div className=''>
                     <PolicyData data={policyData} />
                 </div>
@@ -89,18 +97,18 @@ const PolicyResultView = () => {
                         <FaUpload fontSize={14} /> Upload
                     </button>
                 </div>
-                <Modal opened={opened} onClose={close} onKeyDown={handleKeyClose} centered size={"40%"} title="File Upload">
+                <Modal opened={opened} onClose={close} onKeyDown={handleKeyClose} centered size={"lg"} title="File Upload">
                     <FileDropZone onClose={close} policyId={params?.policyId} />
                 </Modal>
             </div>
-            <div className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 flex flex-col overflow-auto">
+            <div className="bg-gray-100 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-auto">
                 <div className="p-2 flex justify-between">
                     <div></div>
                     <div className='flex items-center gap-3'>
-                        <div className='text-gray-100 cursor-pointer hover:underline hover:text-yellow-300'
+                        <div className='pr-text font-semibold cursor-pointer hover:underline'
                             onClick={endorseOpen}>
                             Create Endorsement</div>
-                        <IoClose fontSize={20} className='text-white cursor-pointer hover:bg-white/20'
+                        <IoClose fontSize={20} className='text-gray cursor-pointer hover:bg-gray/20'
                             onClick={() => window.history.back()} />
                     </div>
                 </div>
@@ -110,7 +118,7 @@ const PolicyResultView = () => {
 
             <Modal opened={endorseOpened} onClose={endorseClose} onKeyDown={handleKeyClose} centered
                 size={"lg"} title={`Endorsement`} >
-                <EndorseTemplatePicker data={policyData}/>
+                <EndorseTemplatePicker data={policyData} />
             </Modal>
         </div>
     );

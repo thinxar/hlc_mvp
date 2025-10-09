@@ -31,7 +31,7 @@ const ImageViewer = ({ endPoint, file }: any) => {
     return (
         <div className="mx-auto p-5 w-full h-full">
             <div className="flex justify-between p-4">
-                <div className="text-base font-semibold">
+                <div className="text-base font-semibold pr-text">
                     {file?.pdfFiles?.fileName}
                 </div>
                 {/* <div className="text-sky-800">

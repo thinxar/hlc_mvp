@@ -23,7 +23,7 @@ const EndorseTemplatePicker = (props: IOptions) => {
     const errorMsg = ErrorMsgConfig.form
 
     const policyData = [
-        { label: 'Policy Number', value: data?.policyNumber, icon: FaFileAlt },
+        { label: 'Policy No', value: data?.policyNumber, icon: FaFileAlt },
         { label: 'Customer Name', value: data?.customerName, icon: FaUser }
     ]
 
@@ -52,12 +52,12 @@ const EndorseTemplatePicker = (props: IOptions) => {
         <div className="px-2">
             <div>
                 <div className="bg-white p-3 mb-1 text-center border-b-1 border-gray-200">
-                    <div className="flex items-center gap-3 mb-1 justify-center">
-                        <div className="text-2xl text-center font-bold text-gray-800">
+                    <div className="flex items-center gap-3 mb-1 justify-center pr-bgcolor">
+                        <div className="text-2xl text-center font-bold text-white">
                             Select Endorsement Title
                         </div>
                     </div>
-                    <p className="text-gray-600">
+                    <p className="pr-text">
                         Fill in the details below to proceed with your endorsement
                     </p>
                 </div>
@@ -72,10 +72,10 @@ const EndorseTemplatePicker = (props: IOptions) => {
                                         <Icon className="text-white text-sm" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                                        <p className="text-sm pr-text tracking-wide">
                                             {d?.label}
                                         </p>
-                                        <p className="text-sm font-bold text-gray-800 mt-0.5">
+                                        <p className="text-sm font-bold pr-text mt-0.5">
                                             {d?.value}
                                         </p>
                                     </div>
@@ -137,8 +137,8 @@ const EndorseTemplatePicker = (props: IOptions) => {
                 }} closeOnClickOutside={false}
             >
                 <div className="flex items-center justify-between px-4">
-                    <div className="text-blue-800">Policy No: <span className="text-gray-950">{data?.policyNumber}</span></div>
-                    <div className="text-blue-800">Claims: <span className="text-gray-950">{endorse}</span></div>
+                    <div className="pr-text">Policy No: <span className="pr-text font-semibold">{data?.policyNumber}</span></div>
+                    <div className="pr-text">Claims: <span className="pr-text font-semibold">{endorse}</span></div>
                     <div></div>
                 </div>
                 <EndorseTemplateView endorsementTitle={endorse} policyNo={data?.policyNumber} />

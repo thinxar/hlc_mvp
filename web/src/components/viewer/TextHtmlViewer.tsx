@@ -38,7 +38,7 @@ const TextHtmlViewer = ({ endPoint, file }: any) => {
   return (
     <div className="mx-auto p-5 w-full h-full">
       <div className="flex justify-between p-4">
-        <div className="text-base font-semibold">{fileName}</div>
+        <div className="text-base font-semibold pr-text">{fileName}</div>
       </div>
 
       <div className="h-[80vh] overflow-auto p-4 border border-gray-200 rounded-2xl bg-white text-black">

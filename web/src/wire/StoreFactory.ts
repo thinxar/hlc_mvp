@@ -3,7 +3,7 @@ import { ServiceEndpoint } from "config/ServiceEndpoint";
 import 'react-toastify/dist/ReactToastify.css';
 import { session } from "src/common/pages/SessionErrorPage";
 import Swal from "sweetalert2";
-import { showAclErrorToast, showServerErrorToast } from "./errorToast";
+import { Toast } from "./errorToast";
 
 const applicationErrorHandle = () => {
     Swal.fire({
@@ -25,13 +25,13 @@ const errorHandler = () => {
                 return false;
             }
             else if (status == 500) {
-                showServerErrorToast();
+                Toast.serverError();
             } else if (status == 502) {
                 applicationErrorHandle();
             } else if (status == 401) {
                 session()
             } else if (status == 403) {
-                showAclErrorToast();
+                Toast.aclError()
             }
         } else {
             applicationErrorHandle();
