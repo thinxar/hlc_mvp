@@ -1,8 +1,9 @@
 import { PathConfig } from "config/PathConfig";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
-import { BiLogOutCircle } from "react-icons/bi"
-import { Outlet, useNavigate } from "react-router-dom";
+import { BiLogOutCircle } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 import { getStoreFactory } from "wire/StoreFactory";
+import LicLogo from '../../public/images/lic_logo.jpg'
 
 const Topbar = () => {
     const navigate = useNavigate();
@@ -21,17 +22,18 @@ const Topbar = () => {
     };
 
     return (<>
-        <div className="text-red-600 px-4 py-2 flex justify-end fixed z-99 w-full">
-            <div className='flex items-center gap-2 cursor-pointer' onClick={handleLogOut}>
+        <div className=" px-4  flex justify-between z-99 w-full 
+        border-b border-gray-200 items-center">
+            <div>
+                <img src={LicLogo} className="h-13 w-24"/>
+            </div>
+            <div className="pr-text font-semibold text-lg">Life Insurance Corporation of India</div>
+            <div className='flex text-red-600 items-center gap-2 cursor-pointer' onClick={handleLogOut}>
                 <BiLogOutCircle /> Logout
             </div>
-            <div></div>
-        </div>
-        <div className="mt-5">
-            <Outlet />
         </div>
     </>
     )
 }
 
-export { Topbar }
+export { Topbar };

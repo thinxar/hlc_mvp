@@ -141,7 +141,7 @@ const EndorseTemplatePicker = (props: IOptions) => {
                     <div className="pr-text">Claims: <span className="pr-text font-semibold">{endorse}</span></div>
                     <div></div>
                 </div>
-                <EndorseTemplateView endorsementTitle={endorse} policyNo={data?.policyNumber} />
+                <EndorseTemplateView endorsementTitle={endorse} policyData={data} onClose={close}/>
             </Modal>
         </div>
     )

@@ -5,20 +5,30 @@ import { ErrorDisplay } from "./EmptyTemplateMsg";
 import { templateMap } from "./TemplateMapper";
 import { IoMdCreate } from "react-icons/io";
 import { formatRFCDate } from "utils/FormateDate";
+import { useFormstore } from "wire/StoreFactory";
+import { ServiceEndpoint } from "config/ServiceEndpoint";
+import { handleError } from "wire/ErrorHandler";
+import { Toast } from "wire/errorToast";
+import { StringFormat, topic } from '@palmyralabs/ts-utils';
 
 interface Props {
   endorsementTitle: string;
-  policyNo: string
+  policyData: any
+  onClose: any
 }
 
 const normalize = (str: string) => str.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle, policyNo }) => {
-  const initialFormData = { currDate: formatRFCDate(new Date()), polNumber: policyNo };
+const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle, policyData, onClose }: any) => {
+  const initialFormData = { currDate: formatRFCDate(new Date()), polNumber: policyData?.policyNumber };
 
   const formRef = useRef<any>(null);
   const [isPreview, setIsPreview] = useState(false);
   const [formData, setFormData] = useState(initialFormData);
   const normalizedTitle = normalize(endorsementTitle);
+
+  const endorseCreateEndPoint = StringFormat(ServiceEndpoint.policy.endorseCreateApi, {
+    policyId: policyData?.id
+  });
 
   const code = Object.keys(templateMap).find((key) => {
     return normalizedTitle.includes(normalize(key));
@@ -38,6 +48,15 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle, policyNo }) =>
   const handleSave = () => {
     if (formRef.current && formRef.current.getData) {
       const formData = formRef?.current?.getData();
+      const req = {
+        endorsementSubType: endorsementTitle,
+        formData: formData
+      }
+      useFormstore(endorseCreateEndPoint).post(req).then((_d) => {
+        topic.publish("fileUpload", "fileUpload");
+        onClose();
+        Toast.onSaveSuccess("Endorsement Save Successfully.")
+      }).catch(handleError)
       setFormData(formData)
       // localStorage.setItem(`formData_${code}`, JSON.stringify(formData));
     } else {

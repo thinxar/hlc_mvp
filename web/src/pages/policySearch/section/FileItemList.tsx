@@ -1,13 +1,14 @@
 import { Tooltip } from '@mantine/core';
 import { StringFormat } from '@palmyralabs/ts-utils';
+import { ServiceEndpoint } from 'config/ServiceEndpoint';
 import { BiLinkExternal } from 'react-icons/bi';
 import { CiCalendar, CiHardDrive } from 'react-icons/ci';
+import { formatDateTime } from 'utils/FormateDate';
+import Html from '../../../../public/images/html.png';
 import Image from '../../../../public/images/image.png';
 import Pdf from '../../../../public/images/pdf.png';
-import Tiff from '../../../../public/images/tiff.png';
 import Text from '../../../../public/images/text.png';
-import Html from '../../../../public/images/html.png';
-import { ServiceEndpoint } from 'config/ServiceEndpoint';
+import Tiff from '../../../../public/images/tiff.png';
 
 interface FileProps {
     file: any
@@ -64,7 +65,7 @@ const FileItemList = ({ file, isSelected, onClick, policyId }: FileProps) => {
                         </span>}
                         {file.pdfFiles?.date && <span className="flex items-center space-x-1">
                             <CiCalendar className="w-3 h-3" />
-                            <span>{file.date}</span>
+                            <span>{formatDateTime(file?.pdfFiles?.date,'DD-MM-YYYY')}</span>
                         </span>}
                     </div>
                 </div>

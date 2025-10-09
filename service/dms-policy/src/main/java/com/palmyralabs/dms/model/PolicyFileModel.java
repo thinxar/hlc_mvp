@@ -8,6 +8,7 @@ import com.palmyralabs.palmyra.base.format.Mandatory;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.sf.jsqlparser.expression.DateTimeLiteralExpression.DateTime;
 
 @Getter
 @Setter
@@ -33,5 +34,8 @@ public class PolicyFileModel {
 
 	@PalmyraField
 	private String objectUrl;
+	
+	@PalmyraField
+	private DateTime createdOn;
 
 }

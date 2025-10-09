@@ -15,8 +15,8 @@ const FileViewer = ({ fileUrl, key, file }: FileProps) => {
     const [fileData, _setFileData] = useState(file);
 
     // const overlays = [
-    //     { page: 1, imageUrl: '/images/licseal.jpg', x: 100, y: 150, width: 100, height: 100 },
-    //     { page: 2, imageUrl: '/images/licseal.jpg', x: 100, y: 100, width: 250, height: 250 }
+    //     { page: 1, imageUrl: img, x: 100, y: 150, width: 100, height: 100 },
+    //     { page: 2, imageUrl: './images/licseal.jpg', x: 100, y: 100, width: 250, height: 250 }
     // ];
 
     return (<>

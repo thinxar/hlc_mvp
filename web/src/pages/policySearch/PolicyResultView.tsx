@@ -37,7 +37,7 @@ const PolicyResultView = () => {
                     name: item.name,
                     fileName: item.fileName,
                     size: item.fileSize,
-                    date: item.date,
+                    date: item.createdOn,
                     type: item.fileType,
                     docketType: item.docketType,
                     path: item.path || ''

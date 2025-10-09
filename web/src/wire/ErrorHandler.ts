@@ -1,30 +1,32 @@
-import { toast } from "react-toastify";
+import { ErrorMsgConfig } from "config/ErrorMsgConfig";
+import { Toast } from "./errorToast";
 
-const SERVER_ERROR = 'Server error occurred, Please try again later!'
-const AUTH_ERROR = 'You are not authorized to perform this operation.'
-const INVALID_LOGIN = 'Invalid Credentials'
+let lastServerErrorTime = 0;
+const SERVER_ERROR_COOLDOWN = 5000;
 
 const handleError = (error: any) => {
     if (error.response) {
         const { status, data } = error.response;
         let errorMessage = data?.errorMessage;
-        if (status === 500 || status === 400) {
-            const errorMessage = data?.errorMessage || SERVER_ERROR;
-            toast.error(errorMessage);
+        if (status === 500) {
+            const now = Date.now();
+            if (now - lastServerErrorTime > SERVER_ERROR_COOLDOWN) {
+                errorMessage = data?.errorMessage;
+                Toast.onSaveFailure(errorMessage || ErrorMsgConfig.toast.serverError)
+                lastServerErrorTime = now;
+            }
         } else if (status === 401) {
-            const errorMessage = data?.errorMessage || INVALID_LOGIN;
-            toast.error(errorMessage);
+            const errorMessage = data?.errorMessage || ErrorMsgConfig.toast.invalidLogin;
+            Toast.onSaveFailure(errorMessage)
         } else if (status === 403) {
-            const errorMessage = AUTH_ERROR;
-            toast.error(errorMessage);
-        }
-
-        if (status !== 200) {
-            toast.error(errorMessage != '' ? errorMessage : SERVER_ERROR);
+            const errorMessage = ErrorMsgConfig.toast.acl;
+            Toast.onSaveFailure(errorMessage);
+        } else {
+            Toast.onSaveFailure(errorMessage && errorMessage !== '' ? errorMessage : ErrorMsgConfig.toast.serverError);
         }
     } else {
-        toast.error(SERVER_ERROR);
+        Toast.onSaveFailure(ErrorMsgConfig.toast.serverError);
     }
 };
 
-export { handleError }
+export { handleError };

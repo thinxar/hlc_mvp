@@ -1,7 +1,6 @@
 import { BiShield } from 'react-icons/bi';
 import './Login.css';
 import LoginForm from './LoginForm';
-import { colorConfig } from 'src/themes/colorConfig';
 
 const LoginPage = () => {
 
@@ -11,7 +10,7 @@ const LoginPage = () => {
             flex items-center justify-center p-4`}>
                 <div className="w-full max-w-md">
                     <div className="text-center mb-8">
-                        <div className={`inline-flex items-center justify-center w-20 h-20 bg-[${colorConfig.lic.blue}] rounded-full mb-4 shadow-lg`}>
+                        <div className={`inline-flex items-center justify-center w-20 h-20 pr-bgcolor rounded-full mb-4 shadow-lg`}>
                             <BiShield className="w-12 h-12 text-white" />
                         </div>
                         <h1 className="text-3xl font-bold text-gray-800 mb-2">
