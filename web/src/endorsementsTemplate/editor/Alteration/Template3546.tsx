@@ -49,24 +49,24 @@ const Template3546 = (props: any) => {
               <td ></td>
               <td > Due Date of Premium <TextField attribute="value6" type="text" /> . </td>
               <td ></td>
-              </tr> 
-              <tr>
-                <td></td>
-                <td>
-                  <p className="justify"> <TextField attribute="value7" type="text" /> Premium from <TextField attribute="value8" type="text" /> to <TextField attribute="value9" type="text" /> .</p>
-                </td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>Inclusive at Rs <TextField attribute="value10" type="text" /> . </td>
-                <td></td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>Date of Maturity <TextField attribute="value11" type="text" /> . </td>
-                <td></td>
-              </tr>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <p className="justify"> <TextField attribute="value7" type="text" /> Premium from <TextField attribute="value8" type="text" /> to <TextField attribute="value9" type="text" /> .</p>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>Inclusive at Rs <TextField attribute="value10" type="text" /> . </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>Date of Maturity <TextField attribute="value11" type="text" /> . </td>
+              <td></td>
+            </tr>
             {/* </tr> */}
           </table>
           <br />
