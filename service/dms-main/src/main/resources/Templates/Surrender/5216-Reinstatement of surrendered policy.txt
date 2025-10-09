@@ -1,0 +1,60 @@
+<font color=blue size=3>
+<style type="text/css">
+table {color: blue}
+</style>
+<table width="600"  border="1" >
+<tbody align="left">
+
+<th>
+<h5 align=right>Form No. 5216</h5>
+<h3 align=center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+<h5 align=center><U>FORM OF ENDORSEMENT FOR REINSTATEMENT OF SURRENDERED POLIC</U>Y</h5>
+<br><TABLE width = 600>
+<TR>
+	<td width = 25></td>
+	<TD align = left>
+		Place: %%BranchName%%
+	</TD>
+	<TD align = right>
+		Date: %%CurrDate%%
+	</TD>
+	<td width = 25></td>
+</TR>
+</TABLE>
+<br>
+<br>
+
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=550><p align=justify>The within policy which was surrendered on (Date of Surrender) %%value3%% at the request of the within Life Assured and/or Assignee (Name of the Assignee) %%value4%% is hereby reinstated on (Date of reinstatement) %%value5%% and all the remarks in regard to cancellation %%value6%% (and/or) surrender of the Policy placed on the within Policy document are hereby revoked. All the terms and conditions of the Policy and the assignment or nomination, if any, existing and in force immediately prior to the surrender of the Policy on (Date of Surrender) %%value7%% are also hereby reinstated and shall be valid as if the Policy had not been surrendered.</p></TD>
+	<TD width =25></TD>
+</TR>
+</TABLE>
+<br>
+<br>
+<TABLE width = 600>
+<TR>
+	<TD width =100></TD>
+	<TD width = 500 align=right>
+	for LIFE INSURANCE CORPORATION OF INDIA
+	</TD>
+</TR>
+</TABLE>
+<Br>
+<TABLE width =600>
+<TR>
+	<TD width = 300></TD>
+	<TD width = 300 align=center>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+</TR>
+</TABLE>
+<br>
+<br>
+</th>
+</tbody>
+</table>

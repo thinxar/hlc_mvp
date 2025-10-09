@@ -1,0 +1,152 @@
+<font color=blue size=3>
+<style type="text/css">
+table {color: blue}
+</style>
+<table width="600"  border="1" >
+<tbody align="left">
+<th>
+<h5 align=right>Form No. 3546</h5>
+<h3 align=center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+<h5 align=center><U>ALTERATION IN MODE OF PAYMENT & DOC (AGE AT ENTRY REMAIN UNALTERED)</U></h5>
+<br>
+<TABLE width = 600>
+<TR>
+	<td width = 25></td>
+	<TD align = left>
+		Place: %%BranchName%%
+	</TD>
+	<TD align = right>
+		Date: %%CurrDate%%
+	</TD>
+	<td width = 25></td>
+</TR>
+</TABLE>
+<br>
+<center>
+	<b>Re : Policy No.</b> %%polNumber%% 
+</center>
+<br>
+<br>
+
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=550>
+	<p align=justify>
+	At the request of the Life Assured / Proposer the following alterations are hereby made in the Policy:-</p>
+	</TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<br>
+<TABLE>
+<TR>
+	<TD width=75></TD>
+	<TD width=500>
+		Nature of Alteration %%value4%% .
+	</TD>
+	<TD width=25></TD>
+</TR>
+<TR>
+	<TD ></TD>
+	<TD >
+		Date of Commencement %%value5%% .
+	</TD>
+	<TD ></TD>
+</TR>
+<TR>
+	<TD ></TD>
+	<TD >
+		Due Date of Premium %%value6%% .
+	</TD>
+	<TD ></TD>
+	
+	<TR>
+		<TD></TD>
+		<TD>
+		<p align=justify>
+		%%value7%% Premium from %%value8%%
+		to %%value9%% .</p>
+		</TD>
+		<TD></TD>
+	</TR>
+	
+	<TR>
+		<TD></TD>
+		<TD>Inclusive at Rs %%value10%% .
+		</TD>
+		<TD></TD>
+	</TR>
+
+	<TR>
+		<TD></TD>
+		<TD>Date of Maturity %%value11%% .
+		</TD>
+		<TD></TD>
+	</TR>
+
+</TR>
+</TABLE>
+<br>
+<br>
+
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=550>
+	<p align=justify>
+	Received Rs %%value12%% being the amount required towards balance of the first Premium Paid / to cover risk from %%value13%% to %%value14%% inclusive.
+	</p></TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<br>
+<TABLE width = 600>
+<TR>
+	<TD width =100></TD>
+	<TD width = 500 align=right>
+	for LIFE INSURANCE CORPORATION OF INDIA
+	</TD>
+</TR>
+</TABLE>
+<Br>
+<TABLE width =600>
+<TR>
+	<TD width = 300></TD>
+	<TD width = 300 align=center>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+</TR>
+</TABLE>
+
+<br>
+<br>
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD>
+	<I>Note for office use:</I>
+	</TD>
+
+</TR>
+</TABLE><BR>
+<TABLE>
+<TR>
+	<TD width=50></TD>
+	<TD width=525><font size=2>
+	<I>When date of commencement is altered under C.D.A Policy insert "Deferred Date %%value15%%" after "Date Commencement %%value16%%" in the above schedule.</I>
+	</TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<BR><BR>
+
+</th>
+</tbody>
+</table>
+</font>

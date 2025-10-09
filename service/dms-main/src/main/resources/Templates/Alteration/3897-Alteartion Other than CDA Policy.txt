@@ -1,0 +1,107 @@
+<font color=blue size=3>
+<style type="text/css">
+table {color: blue}
+</style>
+<table width="600"  border="1" >
+<tbody align="left">
+<th>
+<h5 align=right>Form No. 3897</h5>
+<h3 align=center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+<h4 align=center><U>Alteration in class or term of assurance or reduction in PPT under a policy other than CDA policies.</U></h4><br>
+<TABLE width = 600>
+<TR>
+	<td width = 25></td>
+	<TD align = left>
+		Place: %%BranchName%%
+	</TD>
+	<TD align = right>
+		Date: %%CurrDate%%
+	</TD>
+	<td width = 25></td>
+</TR>
+</TABLE>
+<br>
+<center>
+	Re : Policy No. %%polNumber%%
+</center>
+<br>
+<br>
+
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD><p align=justify>At the request of Life Assured the following alterations are hereby made in the proposer Policy.</p></TD>
+</TR>
+</TABLE>
+<BR>
+<HR color=blue />
+<BR>
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=550>Plan of Assurance %%value4%%.</TD>
+	<TD width=25></TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD><p align=justify>%%value5%% premiums from %%value6%% to %%value7%% inclusive at Rs %%value8%%.</p></TD>
+	<TD></TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD></TD>
+	<TD></TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD>Date of Maturity %%value9%%.</TD>
+	<TD></TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD><p align=justify>Table No. %%value10%% Bonus Rs. %%value11%%.</p></TD>
+	<TD></TD>
+</TR>
+
+</TABLE>
+<BR>
+<HR color=blue />
+<BR>
+
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD><p align=justify>Received Rs. %%value12%% Being the amount required to give effect to the alteration.</p></TD>
+</TR>
+</TABLE>
+<br>
+<br>
+<TABLE width = 600>
+<TR>
+	<TD width =100></TD>
+	<TD width = 500 align=right>
+	for LIFE INSURANCE CORPORATION OF INDIA
+	</TD>
+</TR>
+</TABLE>
+<Br>
+<TABLE width =600>
+<TR>
+	<TD width = 300></TD>
+	<TD width = 300 align=center>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+</TR>
+</TABLE>
+<Br>
+<br>
+</th>
+</tbody>
+</table>

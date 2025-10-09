@@ -1,0 +1,76 @@
+
+<style type="text/css">
+table {color: blue}
+</style>
+ 
+<table width="600"  border="1" >
+<tbody align="left">
+  <th>
+ 
+    <h5 align=right>Form No. 5042-A</h5>
+<h3 align=center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+<h5 align=center><U>FORM OF ENDORSEMENT WHERE FULL SUM ASSURED IS PAYABLE AT MATURITY UNDER PLAN 90 (WHERE THE CLAIM IS CONSIDERED BASED ON RELAXATION RULES)</U></h5>
+<Br>
+
+<Br>
+
+ <TABLE WIDTH=600>
+ <TR>
+	 <TD width=25></TD>
+	 <TD width=350 align=left>
+	 Place:
+	 %%BranchName%%
+	 </TD>
+	  <TD width=200 align=right>
+	 Date:
+	 %%CurrDate%%
+	 </TD>
+	  <TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<br>
+<center>
+	Ref:  Policy No.&nbsp;%%polNumber%%&nbsp;on the Life of&nbsp;%%value4%%
+</center>
+<Br>
+<Br>
+<TABLE WIDTH=600>
+<TR>
+	<TD WIDTH=25></TD>
+	<TD WIDTH=550 ><p style="text-align: justify;">
+	The within-named Life Assured having died on%%value5%%
+	and proof of his death having been duly furnished,it is hereby declared that the within-written policy stands fully paid-up for Rs.%%value6%%
+	payable on the date of Maturity, and is free from payment of future premiums. The policy will not participate in future profits.
+</p></TD>
+<td width=25></td>
+</TR>
+</TABLE>
+<br>
+<Br>
+<Br>
+<TABLE width = 600>
+<TR>
+	<TD width =100></TD>
+	<TD width = 475 align= right>
+	for LIFE INSURANCE CORPORATION OF INDIA
+	</TD>
+</TR>
+</TABLE>
+<Br>
+<TABLE width =600>
+<TR>
+	<TD width = 300></TD>
+	<TD width = 250 align=right>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+</TR>
+</TABLE>
+<Br>
+<Br>
+</th>
+</tbody>
+</table>

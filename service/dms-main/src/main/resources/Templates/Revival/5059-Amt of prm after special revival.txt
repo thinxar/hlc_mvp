@@ -1,0 +1,78 @@
+<style type="text/css">
+table {color: blue}</style>
+<table width=600 border="1">
+  <tbody align=left>
+  <th>
+<H5 align=right>Form No. 5059</H5>
+<H3 align=center>LIFE INSURANCE CORPORATION OF INDIA</H3>
+<h5 align=center><U>AMOUNT OF PREMIUM AFTER SPECIAL REVIVAL</U></h5>
+<TABLE width=600>
+<TR>
+	<TD width=25></TD>
+	<TD width=550><p style="text-align: justify;">
+		"Notwithstanding anything within mentioned to the contrary, it is hereby declared and agreed that %%value8%%&nbsp;(Qly. Hly. Yly.) installment premium payable under the policy stands increased from Rs.
+		%%value1%%
+		to Rs.
+		%%value2%%,
+		with effect from
+		%%value3%%
+		,&nbsp;which includes an extra premium of Rs. %%value4%% .
+	</p></TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<TABLE width=600>
+<tr>
+	<td width=25></td>
+	<td width=550>
+		All other terms and conditions remain unchanged.
+	</td>
+	<td width=25></td>
+</TR>
+</TABLE>
+<br>
+<TABLE width=600>
+<TR>
+	<TD width=25></TD>
+	<TD width=550><p style="text-align: justify;">
+		Dated at
+		%%value5%%
+		this
+		%%value6%%
+		day of
+		%%value7%%
+		year .
+	</p></TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<br>
+<TABLE width = 600>
+<TR>
+	<TD width =25></TD>
+	<TD width = 550 align=right>
+	for LIFE INSURANCE CORPORATION OF INDIA
+	</TD>
+		<TD width =25></TD>
+</TR>
+</TABLE>
+<Br>
+<TABLE width =600>
+<TR>
+	<TD width = 25></TD>
+	<TD width = 550 align=right>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+	<TD width = 25></TD>
+</TR>
+</TABLE>
+<BR>
+<BR>
+</th>
+</tbody>
+</table>

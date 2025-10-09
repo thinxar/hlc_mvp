@@ -1,0 +1,73 @@
+<style type="text/css">
+table {color: blue}
+</style>
+<table width="600"  border="1" >
+<tbody align="left">
+<th>
+<h5 align=right>Form No.3579</h5>
+<h3 align=center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+    <h4 align=center><u>(Where option for Conversion into Endowment is exercised)</u></h4><br>
+<TABLE>
+    <TR>
+    	<TD width=25></TD>
+    	<TD width=550><p style="text-align: justify;">
+			%%value1%% (Place and Date) The Life Assured having exercised the option of Converting the Policy at the end of five years into an endowment Assurance Policy for a term of
+			%%value2%%
+			years %%value3%% (with/without) profit it is hereby declared that the following alterations are hereby made in the Policy.
+		</p></TD>
+    	<TD width=25></TD>
+   </TR>
+</TABLE>
+<br>
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=550><p style="text-align: justify;">
+		%%value4%% premiums from %%value5%% to %%value6%% inclusive at Rs. %%value7%% Date of maturity %%value8%% 
+	</p></TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=550><p style="text-align: justify;">
+		The policy will participate in profits from the date of conversion, viz.,
+		%%value9%%
+		at the rate applicable to Endowment Assurance Policies.
+	</p></TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<br>
+<br>
+<TABLE width = 600>
+<TR>
+	<TD width = 25></TD>
+	<TD width = 550 align=right>
+	for LIFE INSURANCE CORPORATION OF INDIA
+	</TD>
+	<TD width = 25></TD>
+</TR>
+</TABLE>
+<Br>
+<TABLE width =600>
+<TR>
+	<TD width = 25></TD>
+	<TD width = 550 align=right>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+	<TD width = 25></TD>
+</TR>
+</TABLE>
+
+<br>
+<br>
+</th>
+</tbody>
+</table>

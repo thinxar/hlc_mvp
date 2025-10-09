@@ -1,0 +1,84 @@
+
+<style type="text/css">
+table {color: blue}
+</style>
+
+<table width="600"  border="1" >
+<tbody align="left">
+<th>
+<h5 align=right>Form No. 5043</h5>
+<h3 align=center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+<h5 align=center><U>ENDORSEMENT TO BE USED WHEN PREMIUM WAIVER BENEFIT IS ADMITTED</U></h5>
+<BR>
+<BR>
+
+<TABLE WIDTH=600>
+<TR>
+	<TD WIDTH=25></TD>
+		<TD WIDTH=275 ALIGN=LEFT>
+		Place:%%BranchName%%
+		</TD>
+	
+	<TD WIDTH=25></TD>
+		<TD WIDTH=275 ALIGN=RIGHT>
+		Date:%%CurrDate%%
+		</TD>
+	<td width=25></TD>
+</TR>
+</TABLE>
+
+<br>
+<br>
+		
+<center>
+Re. Policy No.%%polNumber%% on the Life of %%value4%%
+</center>
+
+<br>
+<br>
+
+<TABLE WIDTH=600>
+<TR>
+	<TD WIDTH=25></TD>
+		<TD WIDTH=550 ALIGN=LEFT><p align=justify>
+		The Within-named Proposer having died on%%value5%%
+		(Date of Death) and satisfactory proof of his death having been duly furnished, it is hereby declared that the payment of premiums due from %%value6%%
+		upto the Deferred Date, Viz.,%%value7%%
+		will cease.</p> The revised premium of Rs.%%value8%%
+		shall be payable on the specified due dates commencing on and after the Deferred Date.%%value9%%
+		till the "Date of Last Payment" specified in the within-mentioned Policy Schedule.
+		</TD>
+		<TD width =25></TD>
+</TR>
+</TABLE>
+ 
+<br>
+<br>
+
+<TABLE width = 600>
+<TR>
+	<TD width =25></TD>
+	<TD width = 550 align=right>
+	for LIFE INSURANCE CORPORATION OF INDIA
+	</TD>
+		<TD width = 25></TD>
+</TR>
+</TABLE>
+<Br>
+<TABLE width =600>
+<TR>
+	<TD width = 25></TD>
+	<TD width = 550 align=right>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+		<TD width = 25></TD>
+</TR>
+</TABLE>
+<Br>
+<br>
+</th>
+</tbody>
+</table>   

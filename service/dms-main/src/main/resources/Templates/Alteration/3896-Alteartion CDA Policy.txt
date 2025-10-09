@@ -1,0 +1,118 @@
+
+
+<style type="text/css">
+table {color: blue}
+</style>
+
+<table width="600"  border="1" >
+<tbody align="left">
+  <th>
+     <h5 align=right>Form No. 3896</h5>
+
+	 <h3 align=center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+<h4 align=center><U>Reduction in the deferment period or the term of the assurance after expiry of the deferment period under CDA policies.</U></h4><br>
+<table>
+	<tr>
+		<td width=25></td>
+			<td width=250 align=left>
+				Place:
+				%%BranchName%%
+			</td>
+		
+			<td width=500 align=right>
+				Date:
+				%%CurrDate%%
+			</td>
+			<td width=25></td>
+	</tr>
+</table>
+				<br>
+				<br>
+<table>
+	<tr>
+		<td width=25></td>
+			<td width=550 align=left><p style="text-align: justify;">
+				At the request of the Life Assured (Proposer) the following alterations are hereby made in the Policy :-
+</p>
+			</td>
+		<td width=25></td>
+	</tr>
+</table>
+
+<br>
+<div style="border-top-style: solid; border-top-width: 2; padding-top: 1"></div>
+<br><br>
+<table width=600>
+	<tr>
+		<td width=25></td>
+			<td width=550 align=left><p style="text-align: justify;">
+				Plan of Assurance :
+				 %%value4%% .
+				<br>
+				Cash option: Rs.
+				 %%value5%% .
+				Table No
+				 %%value6%% .
+				Bonus Rs.
+				 %%value7%% .
+				<br>
+				%%value8%%
+				 premiums from
+				 %%value9%%
+				to
+				 %%value10%% .
+				inclusive at Rs
+				 %%value11%% .
+				<br>
+				Deferred Date:
+				%%value12%% .
+				Date of Maturity
+				%%value13%% .
+			</p></td>
+		<td width=25></td>
+	</tr>
+</table><br><br>
+<div style="border-top-style: solid; border-top-width: 2; padding-top: 1"></div>
+		<br><br>		
+<table width=600>
+	<tr>
+		<td width=25></td>
+			<td width=550 ><p style="text-align: justify;">
+				Received Rs
+				%%value14%%
+				being the amount required to give effect to the alteration.
+			</p></td>
+		<td width=25></td>
+	</tr>
+</table>
+				
+
+<Br>
+<Br>
+<TABLE width = 600>
+<TR>
+	<TD width =25></TD>
+	<TD width = 550 align=right>
+	for LIFE INSURANCE CORPORATION OF INDIA
+	</TD>
+		<TD width = 25></TD>
+</TR>
+</TABLE>
+<Br>
+<TABLE width =600>
+<TR>
+	<TD width = 25></TD>
+	<TD width = 550 align=right>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+		<TD width = 25></TD>
+</TR>
+</TABLE>
+<Br>
+<br>
+</th>
+</tbody>
+</table>

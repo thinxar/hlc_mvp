@@ -1,0 +1,152 @@
+ 
+<style type="text/css">
+table {color: blue}
+</style>
+ 
+<table width="600"  border="1" >
+<tbody align="left">
+  <th>
+    <h5 align=right>Form No.5146</h5>
+	<h3 align=Center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+<h4 align=center><U>Claim</U></h4><Br>
+<br>
+<table width=600>
+<tr>
+	<td width=35></td>
+	<td width=550 align=left>
+	<b>Endorsement No.</b>
+	</td>
+</tr>
+</table>
+<br>
+<TABLE width =600>
+<TR>
+	<TD width = 25></TD>
+		<TD width = 550 align=justify>
+		<B>1</B> The Life Insurance Corporation of India, having received satisfactory evidence that %%value0%% (Shri/Smt.)
+		%%value1%%
+		the within mentioned %%value15%% (Male/Female) Life Assured died on 
+		%%value2%%
+		has settled the claim for (Basic)Sum Assured (Plus Double Accident Benefit) on
+		%%value3%%
+		in favour of %%value16%% (Shri/Smt.)
+		%%value4%%
+		(Name of Claimant)
+		<Br><Br>
+		[See Note (A) below.]
+<Br>
+<br>
+		<p align=justify>
+		<B>2</B> As the Claimant under the Policy by virtue of he/she being
+		%%value5%%
+		under the Policy.
+	</p>
+		<br>	<Br>
+		[ See Note (B) Below.]<Br>
+<Br>
+		<p align=justify>
+		<B>3</B> It is hereby agreed and declared that the Policy shall continue to be a (fully) paid up Policy for Rs. 
+		%%value6%%
+		on the life of Surviving Life Assured Shri/Smt
+		%%value7%%
+		and payable on the Date of Maturity, viz.
+		%%value8%%
+		to him/her or in the event of his/her earlier death, to his/her Assigns or Proving Executors or Administrators to his/her estate or limited to the money payable under this Policy from a competent court.
+</p>
+<Br><Br>
+		[See Note (C) below.]
+	
+
+<Br>
+<br>
+		<p align=justify>
+		<B>4</B> The Double Accident Benefit and Extended Disability Benefit mentioned in the Policy conditions shall cease to operate on the life of surviving Life Assured Shri/Smt.
+		%%value9%%
+		from the Date of Death of the Life Assured.
+		%%value10%%
+		(Name) as mentioned above except to the extent of Death or Disability due to accident during the remaining part of the Policy year ending after the date of death of the Life Assured.
+		%%value11%%
+		(Name)
+</p>
+<Br><Br>
+		[ See Note (D) below.]
+</td>
+</tr>
+</table>
+
+<Br>
+<Br>
+<table width=600>
+<tr>
+	<td width=25></td>
+		<td width=550>
+			Dated at%%value12%%
+			this day of%%value13%% . 
+		</td><td width=25></td>
+</tr>
+</table>
+
+<Br>
+<Br>
+
+<table width=600>
+<tr>
+	<td width=25></td>
+		<td width=550><p align=justify>
+			Note: A: To delete these words if D.A.B. is not covered under the Policy on the Life of Life Assured who died.</p>
+		</td><td width=25></td>
+</tr>
+</table>
+
+<Br>
+<Br>
+
+<table width=600>
+<tr>
+	<td width=25></td>
+		<td width=550><p align=justify>
+			Note: B:  To insert the exact status of the claimant such as (a) Surviving Life Assured, or (b) Assignee, or (c) Nominee under Section 39 of Insurance Act or (4) Executors, Administrators, Legal Representative, Etc.</p>
+		</td><td width=25></td>
+</tr>
+</table>
+
+<Br>
+<Br>
+
+<table width=600>
+<tr>
+	<td width=25></td>
+		<td width=550><p align=justify>
+			Note: C: To delete this word "Fully" and insert the amount of Paid- up value after "Rs%%value14%%if the Policy is a reduced Paid-up.</p>
+		</td><td width=25></td>
+</tr>
+</table>
+
+<Br>
+
+<table width=600>
+<tr>
+	<td width=25></td>
+		<td width=550><p align=justify>
+			Note: D: To delete the entire paragraph if DAB, <u><b>is not covered</b></u> on the life of the surviving Life Assured.</p>
+		</td><td width=25></td>
+</tr>
+</table>
+<br>
+<TABLE width =600>
+<TR>
+	<TD width = 25></TD>
+	<TD width = 550 align=right>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+		<TD width = 25></TD>
+</TR>
+</TABLE>
+<br>
+
+</th>
+</tbody>
+</table>

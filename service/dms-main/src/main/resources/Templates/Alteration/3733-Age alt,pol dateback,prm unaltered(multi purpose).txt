@@ -1,0 +1,110 @@
+<style type="text/css">
+table {color: blue}
+</style>
+
+<table width="600"  border="1" >
+<tbody align="left">
+<th>
+<h5 align=right>Form No.  3733</h5>
+<h3 align=center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+<h5 align=center><u>AGE PROVED HIGHER, POLICY TO BE DATED BACK, PREMIUM UNALTERED (MULTI-PURPOSE)</u></h5>
+<br>
+<br>
+<TABLE width = 600>
+<TR>
+	<td width = 25></td>
+	<TD align = left>
+		Place:%%BranchName%%
+	</TD>
+	<TD align = right>
+		Date:%%CurrDate%%
+	</TD>
+	<td width = 25></td>
+</TR>
+</TABLE>
+<br>
+<center>
+	Re : Policy Number :%%polNumber%% 
+</center>
+<Br>
+<br>
+<TABLE width = 600>
+<TR>
+	<TD width=25></TD>
+	<TD width=550><p style="text-align: justify;">
+		%%value4%%(Place and Date) On production of satisfactory evidence the Life Assured's age at entry proved to be%%value5%%
+		years. To give him advantage of lower age
+		at entry the following alterations are hereby made in the Policy.
+	</p></TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<div style="border-top-style: solid; border-top-width: 2; padding-top: 1"></div>
+<br>
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=550><p style="text-align: justify;">
+		Age at entry Admitted %%value6%%
+		years.
+		<br>
+		Date of commencement of Policy %%value7%% .
+		<br>
+		Due Dates of Premiums %%value8%% 
+		 each year.
+		<br>
+		%%value9%% Premiums payable from %%value10%%
+		altered to Rs. %%value11%% .
+		<br>
+		Date of Last Payment %%value12%% .
+		Date of Maturity %%value13%% .
+		<br>
+		Free Paid-up Non-participating Assurance Rs. %%value14%% .
+	</p></TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<div style="border-top-style: solid; border-top-width: 2; padding-top: 1"></div>
+<br>
+<TABLE width = 600>
+<TR>
+	<TD width=25></TD>
+	<TD width=550><p style="text-align: justify;">
+		Received Rs.%%value15%%
+		in respect of difference of the premiums paid with interest thereon and Rs.%%value16%%
+		as interest for dating back.
+	</p></TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<br>
+<TABLE width = 600>
+<TR>
+	<TD width =25></TD>
+	<TD width = 550 align=right>
+	for LIFE INSURANCE CORPORATION OF INDIA
+	</TD>
+		<TD width = 25></TD>
+</TR>
+</TABLE>
+<Br>
+<TABLE width =600>
+<TR>
+	<TD width = 25></TD>
+	<TD width = 550 align=right>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>	
+		<TD width = 25></TD>
+</TR>
+</TABLE>
+<Br>
+<br>
+</th>
+</tbody>
+</table>
