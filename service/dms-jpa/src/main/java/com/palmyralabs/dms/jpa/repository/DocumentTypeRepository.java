@@ -8,5 +8,5 @@ import com.palmyralabs.dms.jpa.entity.DocumentTypeEntity;
 
 public interface DocumentTypeRepository extends JpaRepository<DocumentTypeEntity, Integer>{
 
-	Optional<DocumentTypeEntity> findByCode(String docketType);
+	Optional<DocumentTypeEntity> findByCode(String code);
 }

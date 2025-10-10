@@ -33,7 +33,7 @@ public class EndorsementService {
 	private String inputExtension = ".txt";
 	private String outputExtension = ".html";
 
-	public String createEndorsement(EndorsementRequest request, Integer policyId, String docketType)
+	public String createEndorsement(EndorsementRequest request, Integer policyId, String code)
 			throws IOException {
 
 		String endorsementSubtype = request.getEndorsementSubType();
@@ -60,7 +60,7 @@ public class EndorsementService {
 		byte[] fileContent = sb.toString().getBytes();
 		MultipartFile multipartFile = new MockMultipartFile(fileName, fileName, "text/html", fileContent);
 
-		DocumentTypeEntity docketTypeEntity = getDocumentTypeEntity(docketType);
+		DocumentTypeEntity docketTypeEntity = getDocumentTypeEntity(code);
 		Integer docketTypeId =docketTypeEntity.getId().intValue();
 		
 		policyFileService.upload(multipartFile, policyId, docketTypeId);
@@ -100,8 +100,8 @@ public class EndorsementService {
 		return lowerCaseMap;
 	}
 	
-	private DocumentTypeEntity getDocumentTypeEntity(String docketType) {
-		return docketTypeRepo.findByCode(docketType)
+	private DocumentTypeEntity getDocumentTypeEntity(String code) {
+		return docketTypeRepo.findByCode(code)
 				.orElseThrow(() -> new InvaidInputException("INV001", "docketType not found"));
 	}
 

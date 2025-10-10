@@ -42,9 +42,9 @@ public class PolicyFileController {
 
 	@PostMapping("/{policyId}/endorsement/{docketType}")
 	public ResponseEntity<String> createEndorsement(@RequestBody EndorsementRequest request,
-			@PathVariable("policyId") Integer policyId, @PathVariable("docketType") String docketType)
+			@PathVariable("policyId") Integer policyId, @PathVariable("docketType") String code)
 			throws IOException {
-		return ResponseEntity.ok(endorseService.createEndorsement(request,policyId,docketType));
+		return ResponseEntity.ok(endorseService.createEndorsement(request,policyId,code));
 	}
 
 }
