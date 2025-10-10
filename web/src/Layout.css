@@ -315,7 +315,7 @@ pre {
 }
 
 .py-grid-header {
-  background-color: rgba(0, 30, 70, 0.3) !important;
+  background-color: var(--primary-color) !important;
 }
 
 .py-grid-header tr td {
@@ -1118,7 +1118,8 @@ pre {
 
 /* tailwind-style-classname */
 
-.pr-text {
+.pr-text,
+.mantine-Modal-title {
   color: var(--primary-color);
   word-break: break-all;
 }

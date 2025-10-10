@@ -163,7 +163,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
             {pages[page].canvas ? (
               <div
                 ref={containerRef}
-                className="overflow-auto h-[90vh] bg-gray-50"
+                className="overflow-auto h-[100vh] bg-gray-50"
               >
                 <canvas ref={canvasRef} />
               </div>

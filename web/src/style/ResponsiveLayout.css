@@ -1,0 +1,62 @@
+/* --2xl-- */
+@media screen and (max-width:100rem) {}
+
+/* --xl-- */
+@media screen and (max-width:88rem) {}
+
+/* --lg-- */
+@media screen and (max-width:78rem) {
+
+    .gutter-container {
+        max-width: calc((100vw) * 0.65) !important;
+    }
+
+    .py-form-field-container,
+    .py-field-group-container-1columns .py-form-group .py-form-field-container,
+    .py-field-group-container-1columns .py-form-field-container {
+        display: block !important;
+    }
+
+    .py-form-field-container .py-form-field-label,
+    .py-form-field-container .py-form-field-data,
+    .py-field-group-container-2columns .py-form-group,
+    .py-field-group-container-2columns .py-form-field-container,
+    .py-field-group-container-2columns .py-form-field-container-2colspan .py-form-field-data,
+    .py-field-group-container-2columns .py-form-field-container-2colspan .py-form-field-label {
+        width: 100% !important;
+    }
+}
+
+/* --md-X-- */
+@media screen and (max-width:60rem) {
+    .noc-layout .mantine-Tabs-tab[data-active] {
+        border-bottom-color: white !important;
+        border-right-color: rgba(var(--dark-color-rgb), 0.15) !important;
+    }
+
+    .mantine-Tabs-tab {
+        border-radius: 20px 20px 0 0px !important;
+    }
+
+    
+}
+
+/* --md-- */
+@media screen and (max-width:48rem) {
+
+    .gutter-container {
+        max-width: calc((100vw) * 0.85) !important;
+    }
+    
+}
+
+/* --sm-- */
+@media screen and (max-width:40rem) {
+
+    .mantine-Tabs-tab[data-active] {
+        border-color: rgba(var(--primary-color-rgb), 0.85);
+        border-bottom-color: white;
+    }
+
+    
+}

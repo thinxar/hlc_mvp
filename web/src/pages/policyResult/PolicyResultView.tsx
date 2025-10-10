@@ -1,18 +1,19 @@
 import { Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { StringFormat, topic } from '@palmyralabs/ts-utils';
-import { useEffect, useState } from 'react';
-import { FaUpload } from "react-icons/fa";
-import { useLocation, useParams } from 'react-router-dom';
 import { FileDropZone } from 'components/fileUpload/FileDropZone';
 import { ServiceEndpoint } from 'config/ServiceEndpoint';
+import { useEffect, useState } from 'react';
+import { FaUpload } from "react-icons/fa";
+import { IoChevronBackOutline } from 'react-icons/io5';
+import { useLocation, useParams } from 'react-router-dom';
+import { handleKeyAction } from 'utils/FormateDate';
 import { handleError } from 'wire/ErrorHandler';
 import { useFormstore } from 'wire/StoreFactory';
-import { FileListViewer } from './section/FileListViewer';
-import { FileViewer } from './section/FileViewer';
-import { PolicyData } from './section/PolicyData';
-import { IoChevronBackOutline, IoClose } from 'react-icons/io5';
-import { EndorseTemplatePicker } from '../endorsements/EndorseTemplatePicker';
+import { FileListViewer } from '../policySearch/section/FileListViewer';
+import { FileViewer } from '../policySearch/section/FileViewer';
+import { PolicyData } from '../policySearch/section/PolicyData';
+import { PolicyHeaderSection } from './section/PolicyHeaderSection';
 
 const PolicyResultView = () => {
     const params = useParams();
@@ -20,7 +21,6 @@ const PolicyResultView = () => {
     const [data, setData] = useState<any[]>([]);
     const [selectedFile, setSelectedFile] = useState<any>(null);
     const [opened, { open, close }] = useDisclosure(false);
-    const [endorseOpened, { open: endorseOpen, close: endorseClose }] = useDisclosure(false);
     const policyData = location?.state?.policyData;
     const BASE_URL = `${window.location.origin}/api/palmyra`;
 
@@ -54,12 +54,6 @@ const PolicyResultView = () => {
     useEffect(() => {
         handleFetch()
     }, [])
-
-    const handleKeyClose = (event: any) => {
-        if (event.keyCode === 27) {
-            close();
-        }
-    }
 
     useEffect(() => {
         const handle = topic.subscribe("fileUpload", (_t: string, data: any) => {
@@ -97,29 +91,15 @@ const PolicyResultView = () => {
                         <FaUpload fontSize={14} /> Upload
                     </button>
                 </div>
-                <Modal opened={opened} onClose={close} onKeyDown={handleKeyClose} centered size={"lg"} title="File Upload">
+                <Modal opened={opened} onClose={close} onKeyDown={handleKeyAction("Escape", close)}
+                    centered size={"lg"} title="File Upload">
                     <FileDropZone onClose={close} policyId={params?.policyId} />
                 </Modal>
             </div>
             <div className="bg-gray-100 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-auto">
-                <div className="p-2 flex justify-between">
-                    <div></div>
-                    <div className='flex items-center gap-3'>
-                        <div className='pr-text font-semibold cursor-pointer hover:underline'
-                            onClick={endorseOpen}>
-                            Create Endorsement</div>
-                        <IoClose fontSize={20} className='text-gray cursor-pointer hover:bg-gray/20'
-                            onClick={() => window.history.back()} />
-                    </div>
-                </div>
+                <PolicyHeaderSection data={policyData} />
                 <FileViewer file={selectedFile} fileUrl={pdfUrl} key={selectedFile?.pdfFiles?.id} />
             </div>
-
-
-            <Modal opened={endorseOpened} onClose={endorseClose} onKeyDown={handleKeyClose} centered
-                size={"lg"} title={`Endorsement`} >
-                <EndorseTemplatePicker data={policyData} />
-            </Modal>
         </div>
     );
 }

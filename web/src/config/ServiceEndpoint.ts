@@ -56,7 +56,7 @@ const ServiceEndpoint = {
         searchPolicyByIdApi: '/policy/{policyId}/file',
         getFileApi: '/policy/{policyId}/file/{fileId}',
         fileUploadApi: '/policy/{policyId}/docketType/{docketTypeId}/file',
-        endorseCreateApi:'/policy/{policyId}/endorsement/15'
+        endorseCreateApi:'/policy/{policyId}/endorsement/{docketType}'
     },
     lookup: {
         docketType: '/masterdata/docketType',

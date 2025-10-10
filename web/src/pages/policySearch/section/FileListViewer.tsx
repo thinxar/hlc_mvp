@@ -35,6 +35,12 @@ const FileListViewer = ({ data, policyId, selectedFile, setSelectedFile }: FileP
         } else {
             acc[type].push(item);
         }
+
+        acc[type].sort(
+            (a: any, b: any) =>
+                new Date(b.pdfFiles.date).getTime() - new Date(a.pdfFiles.date).getTime()
+        );
+
         return acc;
     }, {});
 

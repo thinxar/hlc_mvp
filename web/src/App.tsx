@@ -6,9 +6,11 @@ import { MainLayout } from './common/layout/MainLayout';
 import './Layout.css';
 import { HomePage } from './pages/home/HomePage';
 import LoginPage from './pages/login/LoginPage';
-import { PolicyResultPage } from './pages/policySearch/PolicyResultPage';
+import { PolicyResultPage } from './pages/policyResult/PolicyResultPage';
 import './themes/blue/Colors.css';
 import './themes/colorDef.css';
+import './style/FieldGroupContainer.css';
+import './style/ResponsiveLayout.css';
 
 function App() {
 

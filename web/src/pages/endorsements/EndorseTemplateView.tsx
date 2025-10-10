@@ -10,6 +10,7 @@ import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { handleError } from "wire/ErrorHandler";
 import { Toast } from "wire/errorToast";
 import { StringFormat, topic } from '@palmyralabs/ts-utils';
+import { DocketTypeConfig } from "config/DocketTypeConfig";
 
 interface Props {
   endorsementTitle: string;
@@ -27,7 +28,7 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle, policyData, on
   const normalizedTitle = normalize(endorsementTitle);
 
   const endorseCreateEndPoint = StringFormat(ServiceEndpoint.policy.endorseCreateApi, {
-    policyId: policyData?.id
+    policyId: policyData?.id, docketType: DocketTypeConfig.endorsement
   });
 
   const code = Object.keys(templateMap).find((key) => {
@@ -58,7 +59,6 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle, policyData, on
         Toast.onSaveSuccess("Endorsement Save Successfully.")
       }).catch(handleError)
       setFormData(formData)
-      // localStorage.setItem(`formData_${code}`, JSON.stringify(formData));
     } else {
       console.warn("⚠️ No form data available or ref not set.");
     }

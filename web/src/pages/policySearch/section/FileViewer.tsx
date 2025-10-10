@@ -4,6 +4,7 @@ import { TextHtmlViewer } from 'components/viewer/TextHtmlViewer';
 import { TIFFViewer } from 'components/viewer/TiffViewWithOverlay';
 import { useState } from 'react';
 import { FaFile } from 'react-icons/fa6';
+// import img from '../../../../public/images/lic_logo.jpg'
 
 interface FileProps {
     file: any
@@ -61,3 +62,4 @@ const FileViewer = ({ fileUrl, key, file }: FileProps) => {
 };
 
 export { FileViewer };
+
