@@ -19,4 +19,8 @@ public class DocumentTypeModel {
 	
 	@PalmyraField
 	private String description;
+	
+	@PalmyraField
+	private String code;
+	
 }

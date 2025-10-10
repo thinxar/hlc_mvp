@@ -40,11 +40,11 @@ public class PolicyFileController {
 		return ResponseEntity.ok(result);
 	}
 
-	@PostMapping("/{policyId}/endorsement/{docketTypeId}")
+	@PostMapping("/{policyId}/endorsement/{docketType}")
 	public ResponseEntity<String> createEndorsement(@RequestBody EndorsementRequest request,
-			@PathVariable("policyId") Integer policyId, @PathVariable("docketTypeId") Integer docketTypeId)
+			@PathVariable("policyId") Integer policyId, @PathVariable("docketType") String docketType)
 			throws IOException {
-		return ResponseEntity.ok(endorseService.createEndorsement(request,policyId,docketTypeId));
+		return ResponseEntity.ok(endorseService.createEndorsement(request,policyId,docketType));
 	}
 
 }

@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.palmyralabs.dms.base.exception.InvaidInputException;
+import com.palmyralabs.dms.jpa.entity.DocumentTypeEntity;
+import com.palmyralabs.dms.jpa.repository.DocumentTypeRepository;
 import com.palmyralabs.dms.model.EndorsementRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -24,13 +26,14 @@ import lombok.RequiredArgsConstructor;
 public class EndorsementService {
 
 	private final PolicyFileService policyFileService;
+	private final DocumentTypeRepository docketTypeRepo;
 
 	private final String inputDir = "src/main/resources/Templates/";
 
 	private String inputExtension = ".txt";
 	private String outputExtension = ".html";
 
-	public String createEndorsement(EndorsementRequest request, Integer policyId, Integer docketTypeId)
+	public String createEndorsement(EndorsementRequest request, Integer policyId, String docketType)
 			throws IOException {
 
 		String endorsementSubtype = request.getEndorsementSubType();
@@ -57,6 +60,9 @@ public class EndorsementService {
 		byte[] fileContent = sb.toString().getBytes();
 		MultipartFile multipartFile = new MockMultipartFile(fileName, fileName, "text/html", fileContent);
 
+		DocumentTypeEntity docketTypeEntity = getDocumentTypeEntity(docketType);
+		Integer docketTypeId =docketTypeEntity.getId().intValue();
+		
 		policyFileService.upload(multipartFile, policyId, docketTypeId);
 		return "file uploaded successfully";
 	}
@@ -92,6 +98,11 @@ public class EndorsementService {
 			}
 		}
 		return lowerCaseMap;
+	}
+	
+	private DocumentTypeEntity getDocumentTypeEntity(String docketType) {
+		return docketTypeRepo.findByCode(docketType)
+				.orElseThrow(() -> new InvaidInputException("INV001", "docketType not found"));
 	}
 
 }

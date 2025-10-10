@@ -84,24 +84,21 @@ CREATE TABLE dms_policy_file (
 
 CREATE INDEX idx_pfile_policy_id ON dms_policy_file (policy_id);
 
-INSERT INTO mst_document_type (id,document, description,created_by,created_on)
-VALUES 
-  (1,'Policy', null,'admin',current_timestamp),
-  (2,'POA', null,'admin',current_timestamp),
-  (3,'POI', null,'admin',current_timestamp),
-  (4,'Proposal', null,'admin',current_timestamp),
-  (5,'Medical', null,'admin',current_timestamp);
-
-INSERT INTO mst_document_type(id, document, description, created_by, created_on)
+INSERT INTO mst_document_type(id, document, description, created_by, last_upd_by, created_on, last_upd_on, code)
 VALUES
-(6, 'Others', NULL, 'admin', current_timestamp),
-(7, 'Proposal Form', 'Proposal Form', 'admin', current_timestamp),
-(8, 'KYC Documents', 'KYC Documents', 'admin', current_timestamp),
-(9, 'Proposal Enclosures', 'Proposal Enclosures', 'admin', current_timestamp),
-(10, 'Signature Page', 'Signature Page', 'admin', current_timestamp),
-(11, 'Proposal Review Slip', 'Proposal Review Slip', 'admin', current_timestamp),
-(12, 'Policy Bond', 'Policy Bond', 'admin', current_timestamp),
-(13, 'Surrender', 'Surrender', 'admin', current_timestamp),
-(14, 'NEFT', 'NEFT', 'admin', current_timestamp),
-(15, 'Endorsements', 'Endorsements', 'admin', current_timestamp),
-(16, 'E Service', 'E Service', 'admin', current_timestamp);
+(1, 'Policy', NULL, 'admin', NULL, '2025-08-20 11:53:09.612', '2025-08-20 11:53:09.612', '101'),
+(2, 'POA', NULL, 'admin', NULL, '2025-08-20 11:53:09.612', '2025-08-20 11:53:09.612', '102'),
+(3, 'POI', NULL, 'admin', NULL, '2025-08-20 11:53:09.612', '2025-08-20 11:53:09.612', '103'),
+(4, 'Proposal', NULL, 'admin', NULL, '2025-08-20 11:53:09.612', '2025-08-20 11:53:09.612', '104'),
+(5, 'Medical', NULL, 'admin', NULL, '2025-08-20 11:53:09.612', '2025-08-20 11:53:09.612', '105'),
+(6, 'Others', NULL, 'admin', NULL, '2025-08-20 11:53:09.612', '2025-08-20 11:53:09.612', '106'),
+(7, 'Proposal Form', 'Proposal Form', 'admin', NULL, '2025-09-08 13:53:54.205', '2025-09-08 13:53:54.205', '107'),
+(8, 'KYC Documents', 'KYC Documents', 'admin', NULL, '2025-09-08 13:53:54.205', '2025-09-08 13:53:54.205', '108'),
+(9, 'Proposal Enclosures', 'Proposal Enclosures', 'admin', NULL, '2025-09-08 13:53:54.205', '2025-09-08 13:53:54.205', '109'),
+(10, 'Signature Page', 'Signature Page', 'admin', NULL, '2025-09-08 13:53:54.205', '2025-09-08 13:53:54.205', '110'),
+(11, 'Proposal Review Slip', 'Proposal Review Slip', 'admin', NULL, '2025-09-08 13:53:54.205', '2025-09-08 13:53:54.205', '111'),
+(12, 'Policy Bond', 'Policy Bond', 'admin', NULL, '2025-09-08 13:53:54.205', '2025-09-08 13:53:54.205', '112'),
+(13, 'Surrender', 'Surrender', 'admin', NULL, '2025-09-08 13:53:54.205', '2025-09-08 13:53:54.205', '113'),
+(14, 'NEFT', 'NEFT', 'admin', NULL, '2025-09-08 13:53:54.205', '2025-09-08 13:53:54.205', '114'),
+(15, 'Endorsements', 'Endorsements', 'admin', NULL, '2025-09-08 13:53:54.205', '2025-09-08 13:53:54.205', '115'),
+(16, 'E Service', 'E Service', 'admin', NULL, '2025-09-08 13:53:54.205', '2025-09-08 13:53:54.205', '116');
