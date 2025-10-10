@@ -13,6 +13,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
   const [zoom, setZoom] = useState(0.85);
 
   const canvasRef: any = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const imgLoaded = async () => {
     try {
@@ -73,6 +74,12 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
   }, [tiff])
 
   useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [page]);
+
+  useEffect(() => {
     if (!canvasRef.current || pages.length === 0) return;
 
     const displayCanvas = canvasRef.current;
@@ -83,7 +90,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
     if (!currentPage || !currentPage.canvas) return;
 
     const originalCanvas = currentPage.canvas;
-    
+
     const scaledWidth = originalCanvas.width * zoom
     const scaledHeight = originalCanvas.height * zoom
 
@@ -154,7 +161,12 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
         <div className="w-full flex-1 overflow-auto border border-gray-400 shadow-2xl rounded-2xl bg-white p-2">
           <div className="w-fit h-fit min-w-full min-h-full grid place-content-center">
             {pages[page].canvas ? (
-              <canvas ref={canvasRef} />
+              <div
+                ref={containerRef}
+                className="overflow-auto h-[90vh] bg-gray-50"
+              >
+                <canvas ref={canvasRef} />
+              </div>
             ) : (
               <div className="p-4 font-semibold">
                 Page {pages[page].index + 1}: Not able to render
