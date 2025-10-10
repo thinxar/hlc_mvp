@@ -16,6 +16,9 @@ public class EndorsementSummaryModel {
 	private Long id;
 	
 	@PalmyraField
+	private Integer policyId;
+	
+	@PalmyraField
 	private String fileName;
 	
 	@PalmyraField
