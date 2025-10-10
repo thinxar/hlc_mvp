@@ -24,7 +24,7 @@ public class EndorsementService {
 
 	private final PolicyFileService policyFileService;
 
-	private final String inputDir = "D:/base_mydev/customer_project/hlc_mvp/service/dms-main/src/main/resources/Templates/";
+	private final String inputDir = "src/main/resources/Templates/";
 
 	private String inputExtension = ".txt";
 	private String outputExtension = ".html";
