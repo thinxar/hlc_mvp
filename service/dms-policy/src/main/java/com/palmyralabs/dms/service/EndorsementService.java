@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.palmyralabs.dms.base.exception.InvaidInputException;
 import com.palmyralabs.dms.model.EndorsementRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -34,29 +35,28 @@ public class EndorsementService {
 
 		String endorsementSubtype = request.getEndorsementSubType();
 		if (endorsementSubtype == null || endorsementSubtype.isEmpty()) {
-			throw new IllegalArgumentException("endorsementSubType not found");
+			throw new InvaidInputException("INV012","endorsementSubType is empty");
 		}
 		File templateFile = findTemplateFile(new File(inputDir), endorsementSubtype + inputExtension);
 		if (templateFile == null) {
-			throw new IllegalArgumentException("Template file not found for: " + endorsementSubtype);
+			throw new IOException(endorsementSubtype+" not found in dir: " +inputDir);
 		}
 		String content = new String(Files.readAllBytes(templateFile.toPath()));
-		
-		Map<String, Object>lowerCaseMap = processJsonData(request.getFormData());
+		Map<String, Object>formDataMap = processFormData(request.getFormData());
 		Pattern pattern = Pattern.compile("%%(\\w+)%%");
 		Matcher matcher = pattern.matcher(content);
 		StringBuffer sb = new StringBuffer();
 
 		while (matcher.find()) {
 			String placeholder = matcher.group(1).toLowerCase();
-			Object value = lowerCaseMap.getOrDefault(placeholder, "");
+			Object value = formDataMap.getOrDefault(placeholder, "");
 			matcher.appendReplacement(sb, "<b>" + value + "</b>");
 		}
 		matcher.appendTail(sb);
-		String outputFileName = endorsementSubtype + outputExtension;
-		
+		String fileName = endorsementSubtype + outputExtension;
 		byte[] fileContent = sb.toString().getBytes();
-		MultipartFile multipartFile = new MockMultipartFile(outputFileName, outputFileName, "text/html", fileContent);
+		MultipartFile multipartFile = new MockMultipartFile(fileName, fileName, "text/html", fileContent);
+
 		policyFileService.upload(multipartFile, policyId, docketTypeId);
 		return "file uploaded successfully";
 	}
@@ -75,7 +75,7 @@ public class EndorsementService {
 		}
 		return null;
 	}
-	private Map<String, Object> processJsonData(Object jsonObj) {
+	private Map<String, Object> processFormData(Object jsonObj) {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> jsonMap = mapper.convertValue(jsonObj, new TypeReference<Map<String, Object>>() {
 		});
