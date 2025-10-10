@@ -22,5 +22,8 @@ public class EndorsementSummaryModel {
 	private String fileName;
 	
 	@PalmyraField
+	private String fileType;
+	
+	@PalmyraField
 	private DateTime createdOn;
 }
