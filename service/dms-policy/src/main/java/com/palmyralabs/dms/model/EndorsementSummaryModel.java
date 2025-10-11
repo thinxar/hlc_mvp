@@ -26,4 +26,7 @@ public class EndorsementSummaryModel {
 	
 	@PalmyraField
 	private DateTime createdOn;
+	
+	@PalmyraField
+	private String createdBy;
 }

@@ -1,7 +1,3 @@
-import { Tooltip } from '@mantine/core';
-import { StringFormat } from '@palmyralabs/ts-utils';
-import { ServiceEndpoint } from 'config/ServiceEndpoint';
-import { BiLinkExternal } from 'react-icons/bi';
 import { CiCalendar, CiHardDrive } from 'react-icons/ci';
 import { formatDateTime } from 'utils/FormateDate';
 import Html from '../../../../public/images/html.png';
@@ -17,14 +13,7 @@ interface FileProps {
     policyId: any
 }
 
-const FileItemList = ({ file, isSelected, onClick, policyId }: FileProps) => {
-    const BASE_URL = `${window.location.origin}/api/palmyra`;
-    const endPoint = StringFormat(ServiceEndpoint.policy.getFileApi, { policyId: policyId, fileId: file?.pdfFiles?.id });
-    const fileUrl = BASE_URL + endPoint;
-
-    const handleNavigate = () => {
-        window.open(fileUrl, '_blank');
-    }
+const FileItemList = ({ file, isSelected, onClick }: FileProps) => {
 
     const iconMap: Record<string, { src: string; className: string }> = {
         'application/pdf': { src: Pdf, className: 'w-7 h-7' },
@@ -48,12 +37,6 @@ const FileItemList = ({ file, isSelected, onClick, policyId }: FileProps) => {
                 <div className="flex-1 min-w-0">
                     <div className='flex items-center justify-between'>
                         <h3 className="font-semibold text-black truncate">{file?.pdfFiles?.fileName}</h3>
-                        <div className="text-gray-500 cursor-pointer"
-                            onClick={handleNavigate}>
-                            <Tooltip label="Open in new window">
-                                <BiLinkExternal className="w-4 h-4" />
-                            </Tooltip>
-                        </div>
                     </div>
                     {/* <p className="text-sm text-gray-600 truncate">{file?.pdfFiles?.fileName}</p> */}
                     <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
@@ -65,12 +48,12 @@ const FileItemList = ({ file, isSelected, onClick, policyId }: FileProps) => {
                         </span>}
                         {file.pdfFiles?.date && <span className="flex items-center space-x-1">
                             <CiCalendar className="w-3 h-3" />
-                            <span>{formatDateTime(file?.pdfFiles?.date,'DD-MM-YYYY')}</span>
+                            <span>{formatDateTime(file?.pdfFiles?.date, 'DD-MM-YYYY')}</span>
                         </span>}
                     </div>
                 </div>
                 <div className={`p-1 rounded-lg bg-white/10`}>
-                    {getFileType(file.pdfFiles?.type)}
+                    {getFileType(file.pdfFiles?.fileType)}
                 </div>
             </div>
         </div>
@@ -78,3 +61,4 @@ const FileItemList = ({ file, isSelected, onClick, policyId }: FileProps) => {
 };
 
 export { FileItemList };
+

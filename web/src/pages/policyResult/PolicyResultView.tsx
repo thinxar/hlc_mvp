@@ -38,7 +38,7 @@ const PolicyResultView = () => {
                     fileName: item.fileName,
                     size: item.fileSize,
                     date: item.createdOn,
-                    type: item.fileType,
+                    fileType: item.fileType,
                     docketType: item.docketType,
                     path: item.path || ''
                 }
@@ -98,7 +98,7 @@ const PolicyResultView = () => {
             </div>
             <div className="bg-gray-100 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-auto">
                 <PolicyHeaderSection data={policyData} />
-                <FileViewer file={selectedFile} fileUrl={pdfUrl} key={selectedFile?.pdfFiles?.id} />
+                <FileViewer file={selectedFile?.pdfFiles} fileUrl={pdfUrl} key={selectedFile?.pdfFiles?.id} />
             </div>
         </div>
     );

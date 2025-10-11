@@ -3,7 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { IoAddCircle, IoClose } from "react-icons/io5"
 import { MdHistory } from "react-icons/md";
 import { EndorseTemplatePicker } from "src/pages/endorsements/EndorseTemplatePicker";
-import { EndorsementHistoryGrid } from "src/pages/endorsements/history/EndorsementHistoryGrid";
+import { EndorsementSummaryGrid } from "src/pages/endorsements/history/EndorsementSummaryGrid";
 import { handleKeyAction } from "utils/FormateDate";
 
 interface IOptions {
@@ -47,8 +47,8 @@ const PolicyHeaderSection = (props: IOptions) => {
             </Modal>
 
             <Modal opened={secondOpened} onClose={secondHandlers.close} onKeyDown={handleKeyAction("Escape", secondHandlers.close)}
-                centered size={"lg"} title={`Endorsement Summary`} >
-                <EndorsementHistoryGrid />
+                centered size={"xl"} title={`Endorsement Summary`} >
+                <EndorsementSummaryGrid data={data} />
             </Modal>
         </div>
     )

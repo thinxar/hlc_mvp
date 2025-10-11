@@ -22,9 +22,9 @@ const FileViewer = ({ fileUrl, key, file }: FileProps) => {
 
     return (<>
         {fileData ? <div className="h-auto overflow-hidden" key={key}>
-            <div className="p-3">
+            <div className="p-">
                 <div className="h-[calc(100vh-115px)] bg-white rounded-2xl flex items-center justify-center overflow-hidden">
-                    {fileData?.pdfFiles?.type === 'application/pdf' ? (
+                    {fileData?.fileType === 'application/pdf' ? (
                         <PdfViewWithOverlay
                             pdfUrlFromApi={fileUrl}
                             imageUrlFromApi={[]}
@@ -33,7 +33,7 @@ const FileViewer = ({ fileUrl, key, file }: FileProps) => {
                             scale={0.7}
                             file={fileData}
                         />
-                    ) : fileData?.pdfFiles?.type === 'image/tiff' ? (
+                    ) : fileData?.fileType === 'image/tiff' ? (
                         <TIFFViewer
                             // overlays={overlays}
                             tiff={fileUrl}
@@ -42,7 +42,7 @@ const FileViewer = ({ fileUrl, key, file }: FileProps) => {
                             buttonColor="#141414"
                             file={fileData}
                         />
-                    ) : fileData?.pdfFiles?.type === 'text/plain' || fileData?.pdfFiles?.type === 'text/html' ? (
+                    ) : fileData?.fileType === 'text/plain' || fileData?.fileType === 'text/html' ? (
                         <TextHtmlViewer endPoint={fileUrl} file={fileData} />
                     ) : <> <ImageViewer endPoint={fileUrl} file={fileData} /></>}
                 </div>

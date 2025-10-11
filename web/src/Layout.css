@@ -153,7 +153,6 @@
 
 .py-selectable-pagination-left-content-container {
   font-size: 15px;
-  color: white;
 }
 
 .py-selectable-pagination-select-field>div {
@@ -316,6 +315,8 @@ pre {
 
 .py-grid-header {
   background-color: var(--primary-color) !important;
+  position: sticky;
+  top: 0;
 }
 
 .py-grid-header tr td {
@@ -327,7 +328,7 @@ pre {
 .py-grid-data-cell {
   /* border-right: 1px solid rgba(140, 138, 138, 0.3); */
   border-right: 1px solid var(--border-color);
-  color: white;
+  /* color: white; */
 }
 
 .py-form-group-title {
@@ -498,6 +499,7 @@ pre {
   border-radius: 8px;
   max-height: 73vh;
   margin-top: 14px;
+  overflow-y: auto;
 }
 
 .py-form-field-label {

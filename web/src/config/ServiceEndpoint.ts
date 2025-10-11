@@ -56,12 +56,15 @@ const ServiceEndpoint = {
         searchPolicyByIdApi: '/policy/{policyId}/file',
         getFileApi: '/policy/{policyId}/file/{fileId}',
         fileUploadApi: '/policy/{policyId}/docketType/{docketTypeId}/file',
-        endorseCreateApi:'/policy/{policyId}/endorsement/{docketType}'
+        endorsement: {
+            endorseCreateApi: '/policy/{policyId}/endorsement/{docketType}',
+            summary: '/policy/{policyId}/endorsement/summary'
+        }
     },
     lookup: {
         docketType: '/masterdata/docketType',
         endorsementType: '/masterdata/endorsementType',
-        endorsementSubType:'/masterdata/{endorsementType}/endorsementSubType',
+        endorsementSubType: '/masterdata/{endorsementType}/endorsementSubType',
         userType: '',
         designation: ''
     }

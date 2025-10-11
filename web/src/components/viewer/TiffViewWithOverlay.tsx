@@ -106,7 +106,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
     return (
       <div className="mx-auto p-5 w-full h-full">
         <div className="flex justify-between p-4">
-          <div className="text-base font-semibold">{file?.pdfFiles?.fileName}</div>
+          <div className="text-base font-semibold">{file?.fileName}</div>
         </div>
         <div className="flex flex-col items-center justify-center min-h-100 text-black">
           <Loader type="bars" color="blue" />
@@ -124,7 +124,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
     return (
       <div className="w-full h-[calc(100vh-115px)] overflow-hidden p-4 flex flex-col gap-4">
         <div className="flex justify-between items-center">
-          <div className="text-base font-semibold pr-text">{file?.pdfFiles?.fileName}</div>
+          <div className="text-base font-semibold pr-text">{file?.fileName}</div>
         </div>
         <div className="flex justify-between items-center">
           <div className="flex flex-wrap items-center gap-2 p-2">

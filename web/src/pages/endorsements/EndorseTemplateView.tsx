@@ -27,7 +27,7 @@ const EndorseTemplateView: React.FC<Props> = ({ endorsementTitle, policyData, on
   const [formData, setFormData] = useState(initialFormData);
   const normalizedTitle = normalize(endorsementTitle);
 
-  const endorseCreateEndPoint = StringFormat(ServiceEndpoint.policy.endorseCreateApi, {
+  const endorseCreateEndPoint = StringFormat(ServiceEndpoint.policy.endorsement.endorseCreateApi, {
     policyId: policyData?.id, docketType: DocketTypeConfig.endorsement
   });
 

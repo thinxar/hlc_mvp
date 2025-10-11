@@ -7,7 +7,7 @@ const TextHtmlViewer = ({ endPoint, file }: any) => {
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
-  const fileName = file?.pdfFiles?.fileName || 'file';
+  const fileName = file?.fileName || 'file';
   const fileExtension = fileName.split('.').pop()?.toLowerCase();
 
   useEffect(() => {
