@@ -27,7 +27,7 @@ const Topbar = () => {
             <div>
                 <img src={LicLogo} className="h-13 w-24"/>
             </div>
-            <div className="pr-text font-semibold text-lg">Life Insurance Corporation of India</div>
+            <div className="pr-text font-semibold text-lg">Life Insurance Corporation</div>
             <div className='flex text-red-600 items-center gap-2 cursor-pointer' onClick={handleLogOut}>
                 <BiLogOutCircle /> Logout
             </div>

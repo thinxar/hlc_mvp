@@ -5,9 +5,9 @@ const LoginHeader = () => {
     return (
         <div className=''>
             {/* <div>Login</div> <br></br> */}
-            <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+            {/* <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
                 Login
-            </h2>
+            </h2> */}
         </div>
     )
 }
