@@ -2,7 +2,7 @@ package com.palmyralabs.dms.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -28,59 +28,50 @@ public class EndorsementService {
 	private final PolicyFileService policyFileService;
 	private final DocumentTypeRepository docketTypeRepo;
 
-	private final String inputDir = "src/main/resources/Templates/";
-
 	private String inputExtension = ".txt";
 	private String outputExtension = ".html";
 
-	public String createEndorsement(EndorsementRequest request, Integer policyId, String code)
-			throws IOException {
-
+	public String createEndorsement(EndorsementRequest request, Integer policyId, String code) throws IOException {
 		String endorsementSubtype = request.getEndorsementSubType();
 		if (endorsementSubtype == null || endorsementSubtype.isEmpty()) {
-			throw new InvaidInputException("INV012","endorsementSubType is empty");
+			throw new InvaidInputException("INV012", "endorsementSubType is empty");
 		}
-		File templateFile = findTemplateFile(new File(inputDir), endorsementSubtype + inputExtension);
-		if (templateFile == null) {
-			throw new IOException(endorsementSubtype+" not found in dir: " +inputDir);
-		}
-		String content = new String(Files.readAllBytes(templateFile.toPath()));
-		Map<String, Object>formDataMap = processFormData(request.getFormData());
-		Pattern pattern = Pattern.compile("%%(\\w+)%%");
-		Matcher matcher = pattern.matcher(content);
-		StringBuffer sb = new StringBuffer();
+		String templateFileName = endorsementSubtype + inputExtension;
+		String startDir = System.getProperty("user.dir");
+		String folderName = findParentFolderName(new File(startDir), templateFileName);
+		String finalPath = folderName + "/" + templateFileName;
 
-		while (matcher.find()) {
-			String placeholder = matcher.group(1).toLowerCase();
-			Object value = formDataMap.getOrDefault(placeholder, "");
-			matcher.appendReplacement(sb, "<b>" + value + "</b>");
-		}
-		matcher.appendTail(sb);
-		String fileName = endorsementSubtype + outputExtension;
-		byte[] fileContent = sb.toString().getBytes();
-		MultipartFile multipartFile = new MockMultipartFile(fileName, fileName, "text/html", fileContent);
-
-		DocumentTypeEntity docketTypeEntity = getDocumentTypeEntity(code);
-		Integer docketTypeId =docketTypeEntity.getId().intValue();
-		
-		policyFileService.upload(multipartFile, policyId, docketTypeId);
-		return "file uploaded successfully";
-	}
-
-	private File findTemplateFile(File dir, String fileName) {
-		if (!dir.exists() || !dir.isDirectory())
-			return null;
-		for (File file : dir.listFiles()) {
-			if (file.isDirectory()) {
-				File found = findTemplateFile(file, fileName);
-				if (found != null)
-					return found;
-			} else if (file.getName().equalsIgnoreCase(fileName)) {
-				return file;
+		ClassLoader classLoader = getClass().getClassLoader();
+		try (InputStream is = classLoader.getResourceAsStream(finalPath)) {
+			if (is == null) {
+				throw new IOException(templateFileName + " not found in classpath under" + folderName);
 			}
+
+			String content = new String(is.readAllBytes());
+
+			Map<String, Object> formDataMap = processFormData(request.getFormData());
+			Pattern pattern = Pattern.compile("%%(\\w+)%%");
+			Matcher matcher = pattern.matcher(content);
+			StringBuffer sb = new StringBuffer();
+			while (matcher.find()) {
+				String placeholder = matcher.group(1).toLowerCase();
+				Object value = formDataMap.getOrDefault(placeholder, "");
+				matcher.appendReplacement(sb, "<b>" + value + "</b>");
+			}
+			matcher.appendTail(sb);
+
+			String fileName = endorsementSubtype + outputExtension;
+			byte[] fileContent = sb.toString().getBytes();
+			MultipartFile multipartFile = new MockMultipartFile(fileName, fileName, "text/html", fileContent);
+
+			DocumentTypeEntity docketTypeEntity = getDocumentTypeEntity(code);
+			Integer docketTypeId = docketTypeEntity.getId().intValue();
+			policyFileService.upload(multipartFile, policyId, docketTypeId);
+
+			return "file uploaded successfully";
 		}
-		return null;
 	}
+
 	private Map<String, Object> processFormData(Object jsonObj) {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> jsonMap = mapper.convertValue(jsonObj, new TypeReference<Map<String, Object>>() {
@@ -99,7 +90,24 @@ public class EndorsementService {
 		}
 		return lowerCaseMap;
 	}
-	
+
+	public String findParentFolderName(File dir, String fileName) {
+		File[] files = dir.listFiles();
+		if (files == null)
+			return null;
+
+		for (File file : files) {
+			if (file.isDirectory()) {
+				String result = findParentFolderName(file, fileName);
+				if (result != null)
+					return result;
+			} else if (file.getName().equalsIgnoreCase(fileName)) {
+				return file.getParentFile().getName();
+			}
+		}
+		return null;
+	}
+
 	private DocumentTypeEntity getDocumentTypeEntity(String code) {
 		return docketTypeRepo.findByCode(code)
 				.orElseThrow(() -> new InvaidInputException("INV001", "docketType not found"));
