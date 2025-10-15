@@ -36,39 +36,31 @@ public class EndorsementService {
 		if (endorsementSubtype == null || endorsementSubtype.isEmpty()) {
 			throw new InvaidInputException("INV012", "endorsementSubType is empty");
 		}
-		String templateFileName = endorsementSubtype + inputExtension;
+		String fileName = endorsementSubtype + inputExtension;
 		String startDir = System.getProperty("user.dir");
-		String folderName = findParentFolderName(new File(startDir), templateFileName);
-		String finalPath = folderName + "/" + templateFileName;
+		String folderName = findParentFolderName(new File(startDir), fileName);
+		String finalPath = folderName + "/" + fileName;
 
 		ClassLoader classLoader = getClass().getClassLoader();
 		try (InputStream is = classLoader.getResourceAsStream(finalPath)) {
 			if (is == null) {
-				throw new IOException(templateFileName + " not found in classpath under" + folderName);
+				throw new IOException(fileName + " not found in classpath under" + folderName);
 			}
-
+			
 			String content = new String(is.readAllBytes());
-
 			Map<String, Object> formDataMap = processFormData(request.getFormData());
-			Pattern pattern = Pattern.compile("%%(\\w+)%%");
-			Matcher matcher = pattern.matcher(content);
-			StringBuffer sb = new StringBuffer();
-			while (matcher.find()) {
-				String placeholder = matcher.group(1).toLowerCase();
-				Object value = formDataMap.getOrDefault(placeholder, "");
-				matcher.appendReplacement(sb, "<b>" + value + "</b>");
-			}
-			matcher.appendTail(sb);
-
-			String fileName = endorsementSubtype + outputExtension;
+			StringBuffer sb = setFormDataValues(content, formDataMap);
+			String htmlFileName = endorsementSubtype + outputExtension;
 			byte[] fileContent = sb.toString().getBytes();
-			MultipartFile multipartFile = new MockMultipartFile(fileName, fileName, "text/html", fileContent);
-
+			
+			MultipartFile multipartFile = new MockMultipartFile(htmlFileName, htmlFileName, "text/html", fileContent);
 			DocumentTypeEntity docketTypeEntity = getDocumentTypeEntity(code);
 			Integer docketTypeId = docketTypeEntity.getId().intValue();
 			policyFileService.upload(multipartFile, policyId, docketTypeId);
-
+			
 			return "file uploaded successfully";
+		} catch (Exception e) {
+			throw new IOException(e);
 		}
 	}
 
@@ -89,6 +81,19 @@ public class EndorsementService {
 			}
 		}
 		return lowerCaseMap;
+	}
+
+	private StringBuffer setFormDataValues(String content, Map<String, Object> formDataMap) {
+		Pattern pattern = Pattern.compile("%%(\\w+)%%");
+		Matcher matcher = pattern.matcher(content);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+			String placeholder = matcher.group(1).toLowerCase();
+			Object value = formDataMap.getOrDefault(placeholder, "");
+			matcher.appendReplacement(sb, "<b>" + value + "</b>");
+		}
+		matcher.appendTail(sb);
+		return sb;
 	}
 
 	public String findParentFolderName(File dir, String fileName) {

@@ -16,7 +16,7 @@ import com.zitlab.palmyra.store.QueryFilter;
 
 @Component
 @CrudMapping(mapping = "/policy/{policyId}/endorsement/summary", type = EndorsementSummaryModel.class, secondaryMapping = "/policy/{policyId}/endorsement/summary/{id}")
-public class EndorsementHandler extends AbstractHandler implements QueryHandler, ReadHandler {
+public class EndorsementSummaryHandler extends AbstractHandler implements QueryHandler, ReadHandler {
 
 	@Override
 	public void preProcess(FilterCriteria criteria, HandlerContext ctx) {
