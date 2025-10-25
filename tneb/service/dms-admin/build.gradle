@@ -1,0 +1,13 @@
+group = 'com.palmyralabs.dms'
+
+dependencies {	
+	api project(':dms-base')
+	api project(':dms-masterdata')
+	api project(':dms-jpa')
+	
+	
+	implementation deps.spring.security_web
+	implementation deps.spring.security_config
+	implementation deps.jakarta.persistence
+	implementation deps.jakarta.servlet_api
+}

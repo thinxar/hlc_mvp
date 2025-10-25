@@ -1,0 +1,130 @@
+<font color=blue size=3>
+<style type="text/css">
+table {color: blue}
+</style>
+<table width="600"  border="1" >
+<tbody align="left">
+
+<th>
+<h5 align=right>Form No. 5250</h5>
+<h3 align=center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+<h4 align=center><U>Assignment</U></h4>
+<br>
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=550><p align=justify>I/We %%value1%% and %%value2%% the beneficiary/ies named in the within Policy No. %%polNumber%% issued by the Life Insurance Corporation of India on the life of %%value4%%. Under the provisions of Section 6 of the Married Women's Property Act 1874, in consideration of natural love and affection do as beneficial owner/s hereby assign absolutely my/our beneficial interest in the said policy to my/our beneficial interest in the said policy to my/our beneficial interest in the said policy to my/our (relationship) %%value18%%(Shri/Smt.)%%value5%% aged %%value6%% years his/her heirs, executors and administrators.</p></TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=550><p align=justify>Dated %%value7%% this %%value8%% day of %%value9%% year .</p>
+	</TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<BR>
+<BR>
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD>Witness:</TD>
+</TR>
+</TABLE>
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=50 align=right>(1)</TD>
+	<TD width=250>Signature</TD>
+	<TD width=250><p align=justify>%%value10%%</p></TD>
+	<TD width=25></TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD></TD>
+	<TD>Full Name</TD>
+	<TD><p align=justify>%%value11%%</p></TD>
+	<TD></TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD></TD>
+	<TD>Designation</TD>
+	<TD><p align=justify>%%value12%%</p></TD>
+	<TD></TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD></TD>
+	<TD>Address</TD>
+	<TD><p align=justify>%%value13%%</p></TD>
+	<TD></TD>
+</TR>
+
+</TABLE>
+<br><br>
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=550 align=right>Signature/s of the					
+</TD>
+	<TD width=25></TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD align=right><SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+</TD>
+	<TD></TD>
+</TR>
+
+</TABLE>
+<BR>
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=50 align=right>(2)</TD>
+	<TD width=250>Signature</TD>
+	<TD width=250><p align=justify>%%value14%%</p></TD>
+	<TD width=25></TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD></TD>
+	<TD>Full Name</TD>
+	<TD><p align=justify>%%value15%%</p></TD>
+	<TD></TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD></TD>
+	<TD>Designation</TD>
+	<TD><p align=justify>%%value16%%</p></TD>
+	<TD></TD>
+</TR>
+
+<TR>
+	<TD></TD>
+	<TD></TD>
+	<TD>Address</TD>
+	<TD><p align=justify>%%value17%%</p></TD>
+	<TD></TD>
+</TR>
+
+</TABLE>
+<BR>
+<br>
+</th>
+
+</tbody>
+</table>

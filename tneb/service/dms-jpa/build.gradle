@@ -1,0 +1,13 @@
+apply from: '../deps.gradle'
+
+group = 'com.palmyralabs.dms'
+
+dependencies {
+	api deps.springboot.jpa
+	implementation 'com.github.jsqlparser:jsqlparser:5.1'
+	
+	implementation deps.spring.security_web
+	implementation deps.spring.security_config
+	implementation deps.jakarta.persistence
+	implementation deps.jakarta.servlet_api
+}

@@ -1,0 +1,51 @@
+spring:
+  jpa:
+    show-sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:postgresql://192.168.1.11:5432/postgres
+    username: dbuser
+    password: secret
+    default-auto-commit: false
+    driverClassName: org.postgresql.Driver
+    hikari:
+      schema: tneb_dms
+      connection-timeout: 90000000
+      default-auto-commit: false
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
+
+server:
+  port: 7070
+  jetty:
+    threads:
+      min: 128
+      max: 128
+  servlet:
+    context-path: /api
+    session:
+      timeout: 220m
+
+app:
+ fileStore:
+   baseFolder: "/home/palmyra/Desktop/"
+
+palmyra:
+  database: 
+    schemas: tneb_dms
+aws:
+  s3:
+    bucketName: tnebbucket
+    region: ap-south-1
+    accessKey: AKIAIOSFODNN7EXAMPLE
+    secretKey: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    endpoint: http://192.168.1.11:9000
+    corePoolSize: 25
+    maximumPoolSize: 25
+    keepAliveTime: 600
+    workQueue: 25
+    maxConcurrency: 32

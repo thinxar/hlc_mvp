@@ -1,0 +1,35 @@
+<style type="text/css">
+table {color: blue}
+</style>
+
+<table width="600"  border="1" >
+<tbody align="left">
+ 
+  <th>
+  <h3 align=Center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+  <h4 align=center> <U>Re-instatement of Foreclosed policy</U> </h4>
+ 
+
+	<TABLE width=550 border=0>
+	<TR>
+	<TD width=50></TD>
+	<TD width=550 align=CENTER>
+ &#147;Loan Reinstated&#148; on %%CurrDate%% .
+</TD></TR></TABLE>
+<br>
+<TABLE width =600>
+<TR>
+	<TD width = 25></TD>
+	<TD width = 550 align=right>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+		<TD width = 25></TD>
+</TR>
+</TABLE><br>
+</th>
+
+</tbody>
+</table>

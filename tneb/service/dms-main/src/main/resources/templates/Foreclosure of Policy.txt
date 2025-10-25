@@ -1,0 +1,50 @@
+<style type="text/css"> 
+table {color: blue}
+</style>
+
+
+<table width="600"  border="1" >
+<tbody align="left">
+ 
+  <th>
+  <h3 align=Center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+  <h4 align=center><U>Foreclosure of policy</U> </h4>
+ 
+	<TABLE width=550 border=0>
+	<TR>
+	<TD ></TD>
+	<TD nowrap align="center">Name of branch&nbsp;%%value1%% &nbsp;code no.&nbsp;%%value2%% .</TD>
+	</TR>
+	</Table><Br>
+	<TABLE width=550 border=0>
+	<TR>
+	<TD ></TD>
+	<TD nowrap align="center">Policy number&nbsp;%%polNumber%%&nbsp;surrendered to loan on&nbsp;%%value3%% .</TD>
+	</TR>
+	<Tr>
+	<TD ></TD>
+	<TD nowrap align="center">Loan of Rs.&nbsp;%%value4%% ,&nbsp;loan interest of Rs.&nbsp; %%value5%%&nbsp;recovered from </TD>
+	</TR>
+	<Tr>
+	<TD ></TD>
+	<TD nowrap align="center">surrender value of Rs.&nbsp;%%value6%%&nbsp;x-charge of Rs.&nbsp;%%value7%%&nbsp;credited/debited. </TD>
+	</TR>
+	</TABLE>
+	<Br><br>
+	<TABLE width =600>
+	<TR>
+		<TD width = 25></TD>
+		<TD width = 550 align=right>
+			<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+		</TD>
+		<TD width = 25></TD>
+	</TR>
+	</TABLE>
+<br>
+</th>
+
+</tbody>
+</table>
