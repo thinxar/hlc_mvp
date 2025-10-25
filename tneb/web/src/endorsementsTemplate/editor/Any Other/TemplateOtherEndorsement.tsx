@@ -1,0 +1,58 @@
+import { DatePicker, TextArea, TextField, } from 'templates/mantineForm';
+import { PalmyraForm } from '@palmyralabs/rt-forms';
+
+const TemplateOtherEndorsement = (props: any) => {
+  return (
+    <PalmyraForm ref={props.formRef} formData={props.formData}>
+
+      <table width="600" >
+        <th>
+          <h5 className="text-right"></h5>
+          <h3 className="text-center">LIFE INSURANCE CORPORATION OF INDIA</h3>
+          <h4 className="text-center"><u>Other Endorsement</u></h4>
+          <br />
+          <table width="600">
+            <tr>
+              <td width="25"></td>
+              <td width="250" align="left"> Place: <TextField attribute="branchName" type="text" /> </td>
+              <td width="300" align="right"> Date:  <DatePicker attribute="currDate" placeholder="dd-mm-yyyy" readOnly /> </td>
+              <td width="25"></td>
+            </tr>
+          </table>
+          <table width="600">
+            <tr>
+              <td width="25"></td>
+              <td width="550"><p className="text-justify">
+                <center>Policy No. <TextField attribute="polNumber" type="text" readOnly /> </center>
+              </p>
+              </td>
+            </tr>
+          </table>
+          <br />
+          <table width="600">
+            <tr>
+              <td width="25"></td>
+              <td width="550" align="left"><p className="text-left"> Ref : <TextField attribute="value4" type="text" /> <br />
+                <br /> Enter text as per requirement. : <br /> <TextArea attribute="value5" /> <br />
+              </p>
+              </td>
+              <td width="25"></td>
+            </tr>
+          </table>
+          <br />
+          <table width="600">
+            <tr>
+              <td width="25"></td>
+              <td width="550" align="right"> {/* <SignatureOfApprover> */} <br /> p.Sr/Branch Manager. </td>
+              <td width="25"></td>
+            </tr>
+          </table>
+          <br />
+          <br />
+        </th>
+      </table>
+    </PalmyraForm>
+  );
+};
+
+export { TemplateOtherEndorsement };

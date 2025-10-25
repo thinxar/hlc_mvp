@@ -1,0 +1,41 @@
+import { TextField,} from 'templates/mantineForm';
+import { PalmyraForm } from '@palmyralabs/rt-forms';
+
+const TemplateMaturityJeevanSuraksha = (props: any) => {
+  return (
+           <PalmyraForm ref={props.formRef} formData={props.formData}>
+<table width="600" >
+<th><br />
+<h2 className="text-center">Life Insurance Corporation of India</h2>
+<h5 className="text-center"><u>ENDORSEMENT TO BE USED UNDER &#147;JEEVAN SURAKSHA &#148; PLAN</u></h5>
+<br />
+<br />
+<table width="600">
+<tr>
+<td width="25"></td>
+<td width="550">
+<p className="justify"> N.C.O. Rs. <TextField attribute="value1" type="text" /> . 25% of NCO opted <TextField attribute="value2" type="text" /> (Yes/No)YES/NO option for annuity 25% of NCO Rs. <TextField attribute="value3" type="text" /> on Annuity Amt <TextField attribute="value4" type="text" /> W.E.F <TextField attribute="value5" type="text" /> .
+</p>
+
+</td>
+<td width="25"></td>
+</tr>
+</table>
+<br />
+<br />
+<table width="600">
+<tr>
+<td width="25"></td>
+<td width="550" align="right"> {/* <SignatureOfApprover> */} <br /> p.Sr/Branch Manager. </td>
+<td width="25"></td>
+</tr>
+</table>
+<br />
+<br />
+</th>
+</table>
+           </PalmyraForm>
+  );
+};
+
+export {TemplateMaturityJeevanSuraksha};

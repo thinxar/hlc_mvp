@@ -1,0 +1,64 @@
+import { CiCalendar, CiHardDrive } from 'react-icons/ci';
+import { formatDateTime } from 'utils/FormateDate';
+import Html from '../../../../public/images/html.png';
+import Image from '../../../../public/images/image.png';
+import Pdf from '../../../../public/images/pdf.png';
+import Text from '../../../../public/images/text.png';
+import Tiff from '../../../../public/images/tiff.png';
+
+interface FileProps {
+    file: any
+    isSelected: boolean,
+    onClick: () => void,
+    policyId: any
+}
+
+const FileItemList = ({ file, isSelected, onClick }: FileProps) => {
+
+    const iconMap: Record<string, { src: string; className: string }> = {
+        'application/pdf': { src: Pdf, className: 'w-7 h-7' },
+        'image/tiff': { src: Tiff, className: 'w-8 h-8' },
+        'text/html': { src: Html, className: 'w-7 h-7' },
+        'text/plain': { src: Text, className: 'w-9 h-9' },
+    };
+
+    const getFileType = (type: string) => {
+        const { src, className } = iconMap[type] || { src: Image, className: 'w-7 h-7' };
+        return <img src={src} className={className} />;
+    };
+
+    return (
+        <div onClick={onClick} className={`cursor-pointer p-2 rounded-xl transition-all duration-400 ease-in border-l-[10px] 
+                min-h-[65px] mt-2 ${isSelected
+                ? 'bg-slate-100 shadow-lg border-yellow-400'
+                : 'bg-white/92 hover:border-white/20 hover:bg-white/80 border-transparent'
+            }`}>
+            <div className="flex items-start space-x-1">
+                <div className="flex-1 min-w-0">
+                    <div className='flex items-center justify-between'>
+                        <h3 className="font-semibold text-black truncate">{file?.pdfFiles?.fileName}</h3>
+                    </div>
+                    {/* <p className="text-sm text-gray-600 truncate">{file?.pdfFiles?.fileName}</p> */}
+                    <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                        {file.pdfFiles?.size && <span className="flex items-center space-x-1">
+                            <CiHardDrive className="w-3 h-3" />
+                            {file.pdfFiles?.size < 1024 * 1024
+                                ? `${(file.pdfFiles?.size / 1024).toFixed(2)} KB`
+                                : `${(file.pdfFiles?.size / 1024 / 1024).toFixed(2)} MB`}
+                        </span>}
+                        {file.pdfFiles?.date && <span className="flex items-center space-x-1">
+                            <CiCalendar className="w-3 h-3" />
+                            <span>{formatDateTime(file?.pdfFiles?.date, 'DD-MM-YYYY')}</span>
+                        </span>}
+                    </div>
+                </div>
+                <div className={`p-1 rounded-lg bg-white/10`}>
+                    {getFileType(file.pdfFiles?.fileType)}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export { FileItemList };
+
