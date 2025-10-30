@@ -1,12 +1,11 @@
-import { useEffect, useState, useRef, forwardRef } from "react";
+import { useEffect, useState, useRef, forwardRef, useMemo } from "react";
 import axios from "axios";
 import UTIF from "utif2";
 import { Loader } from "@mantine/core";
 import { GoDash, GoPlus } from "react-icons/go";
 import { MdOutlineKeyboardArrowUp, MdOutlineKeyboardArrowDown } from "react-icons/md";
 
-
-export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any) {
+export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file, overlays }: any) {
   const [pages, setPages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -14,6 +13,16 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
 
   const canvasRef: any = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const overlayMap = useMemo(() => {
+    const map: Record<number, any[]> = {};
+    overlays.forEach((o: any) => {
+      const index = o.page - 1;
+      if (!map[index]) map[index] = [];
+      map[index].push(o);
+    });
+    return map;
+  }, [overlays]);
 
   const imgLoaded = async () => {
     try {
@@ -56,6 +65,23 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
           ctx!.putImageData(img, 0, 0)
 
           canvases.push({ index: i, canvas })
+
+          const currentPage = i;
+          const currentOverlays = overlayMap[currentPage] || [];
+
+          await Promise.all(
+            currentOverlays.map((overlay: any) =>
+              new Promise<void>((resolve) => {
+                const image = new Image();
+                image.crossOrigin = 'anonymous';
+                image.src = overlay.imageUrl;
+                image.onload = () => {
+                  ctx.drawImage(image, overlay.x, overlay.y, overlay.width, overlay.height);
+                  resolve();
+                };
+              })
+            )
+          );
         } catch (err: any) {
           console.warn(`Page ${i + 1} skipped:`, err.message);
           canvases.push({ index: i, error: err.message });
@@ -163,7 +189,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file }: any
             {pages[page].canvas ? (
               <div
                 ref={containerRef}
-                className="overflow-auto h-[100vh] bg-gray-50"
+                className="overflow-auto h-screen bg-gray-50"
               >
                 <canvas ref={canvasRef} />
               </div>
