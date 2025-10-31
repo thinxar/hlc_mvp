@@ -1,4 +1,5 @@
-import Image from '../../../public/images/lic_logo.jpg';
+import { TitleConfig } from 'templates/FlexImport';
+import { LicLogo } from 'templates/FlexImport'
 import './Login.css';
 import LoginForm from './LoginForm';
 
@@ -15,10 +16,10 @@ const LoginPage = () => {
                             {/* <img src={Image}/> */}
                         {/* </div> */}
                         <div className='flex items-center justify-center'>
-                               <img src={Image} className='h-20 w-30'/>
+                               <img src={LicLogo} className='h-20 w-30'/>
                         </div>
                         <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                            Life Insurance Corporation
+                            {TitleConfig.appTitle.text}
                         </h1>
                         {/* <p className="text-gray-600">of India</p> */}
                     </div>

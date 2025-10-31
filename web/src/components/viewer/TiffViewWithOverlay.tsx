@@ -16,7 +16,7 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({ tiff, file, overl
 
   const overlayMap = useMemo(() => {
     const map: Record<number, any[]> = {};
-    overlays.forEach((o: any) => {
+    overlays?.forEach((o: any) => {
       const index = o.page - 1;
       if (!map[index]) map[index] = [];
       map[index].push(o);

@@ -1,4 +1,5 @@
 import LoginInput from './LoginInput';
+import { TitleConfig } from 'templates/FlexImport';
 
 const LoginHeader = () => {
 
@@ -18,7 +19,7 @@ const LoginCopyright = () => {
         <div className='mt-5 text-center'>
             {/* <span className="text-slate-200">©{currentYear} Life Insurance Corporation of India</span> */}
             <p className="text-xs text-gray-500 mt-4">
-                ©{currentYear} Life Insurance Corporation of India. All rights reserved.
+                ©{currentYear} {TitleConfig.appTitle.text} of India. All rights reserved.
             </p>
         </div>
     )
