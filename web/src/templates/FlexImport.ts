@@ -1,5 +1,5 @@
-import { TitleConfig } from "config/TitleConfig";
-import LicLogo from '../../public/images/lic_logo.jpg'
+import { TitleConfig } from "../demo/config/TitleConfig";
+import LicLogo from '../../public/images/demo/abc.png'
 
 
 export { TitleConfig, LicLogo }
