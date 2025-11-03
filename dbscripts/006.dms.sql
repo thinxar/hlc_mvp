@@ -84,6 +84,17 @@ CREATE TABLE dms_policy_file (
 
 CREATE INDEX idx_pfile_policy_id ON dms_policy_file (policy_id);
 
+CREATE TABLE dms.mst_fixed_stamp (
+	id int8 NOT NULL,
+	"name" varchar(128) NOT NULL,
+	code varchar(128) NOT NULL,
+	description varchar(250) NULL,
+	created_by varchar(128) NOT NULL,
+	last_upd_by varchar(128) NULL,
+	created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL
+);
+
 INSERT INTO mst_document_type(id, document, description, created_by, last_upd_by, created_on, last_upd_on, code)
 VALUES
 (1, 'Policy', NULL, 'admin', NULL, '2025-08-20 11:53:09.612', '2025-08-20 11:53:09.612', '101'),
