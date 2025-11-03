@@ -84,7 +84,7 @@ CREATE TABLE dms_policy_file (
 
 CREATE INDEX idx_pfile_policy_id ON dms_policy_file (policy_id);
 
-CREATE TABLE dms.mst_fixed_stamp (
+CREATE TABLE mst_fixed_stamp (
 	id int8 NOT NULL,
 	"name" varchar(128) NOT NULL,
 	code varchar(128) NOT NULL,
