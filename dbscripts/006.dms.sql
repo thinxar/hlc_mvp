@@ -1,47 +1,48 @@
 CREATE TABLE dms_policy (
-    id bigserial NOT NULL,
-    policy_number bigint NOT NULL,
-    customer_id varchar(16) NULL,
-    customer_name varchar(50) NULL,
-    customer_dob date NULL,
-    doc date NULL,
-    division_code bigint NULL,
-    branch_code varchar(4) NULL,
-    batch_number varchar(13) NULL,
-    box_number varchar(16) NULL,
-    rms_status int4 NULL,
-    upload_label varchar(50) NULL,
-    field1 bigint NULL,
-    field2 varchar(16) NULL,
-    field3 varchar(500) NULL,
-    mobile_number varchar(12) NULL,
-    policy_status int8 NULL,
-    created_by varchar(128) NOT NULL,
-    last_upd_by varchar(128) NULL,
-    created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
-    CONSTRAINT uq_dms_policy UNIQUE (policy_number, branch_code),
-    CONSTRAINT dms_policy_pkey PRIMARY KEY (id)
+	id bigserial NOT NULL,
+	policy_number int8 NOT NULL,
+	doc date NULL,
+	customer_id varchar(16) NULL,
+	customer_name varchar(50) NULL,
+	customer_dob date NULL,
+	division_code int8 NULL,
+	branch_code varchar(4) NULL,
+	batch_number varchar(13) NULL,
+	box_number varchar(16) NULL,
+	rms_status int4 NULL,
+	upload_label varchar(50) NULL,
+	field1 int8 NULL,
+	field2 varchar(16) NULL,
+	field3 varchar(500) NULL,
+	mobile_number varchar(12) NULL,
+	policy_status int8 NULL,
+	created_by varchar(128) NOT NULL,
+	last_upd_by varchar(128) NULL,
+	created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	CONSTRAINT dms_policy_pkey PRIMARY KEY (id),
+	CONSTRAINT uq_dms_policy UNIQUE (policy_number, branch_code)
 );
 
 CREATE INDEX idx_policy_number ON dms_policy (policy_number);
 
 CREATE TABLE mst_document_type (
-	id BIGINT NOT NULL,
-	document varchar(128) NOT NULL,
+	id int8 NOT NULL,
+	"document" varchar(128) NOT NULL,
 	description varchar(250) NULL,
 	created_by varchar(128) NOT NULL,
 	last_upd_by varchar(128) NULL,
 	created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	code varchar(16) DEFAULT '1' NOT NULL,
 	CONSTRAINT dms_document_type_pkey PRIMARY KEY (id),
 	CONSTRAINT uq_mst_document_type_document UNIQUE (document)
 );
 
 CREATE TABLE mst_endorsement_type (
-	id BIGINT NOT NULL,
-	name varchar(64) NOT NULL,
-    code varchar(64) NOT NULL,
+	id int8 NOT NULL,
+	"name" varchar(64) NOT NULL,
+	code varchar(64) NOT NULL,
 	description varchar(250) NULL,
 	created_by varchar(128) NOT NULL,
 	last_upd_by varchar(128) NULL,
@@ -51,35 +52,35 @@ CREATE TABLE mst_endorsement_type (
 );
 
 CREATE TABLE mst_endorsement_sub_type (
-	id BIGINT NOT NULL,
-    endorsement_type int8 NOT NULL,
-	name varchar(128) NOT NULL,
-    code varchar(128) NOT NULL,
+	id int8 NOT NULL,
+	endorsement_type int8 NOT NULL,
+	"name" varchar(128) NOT NULL,
+	code varchar(128) NOT NULL,
 	description varchar(250) NULL,
 	created_by varchar(128) NOT NULL,
 	last_upd_by varchar(128) NULL,
 	created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
 	CONSTRAINT mst_endorsement_sub_type_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_mst_endorsement_sub_type_endorsement_type FOREIGN KEY (endorsement_type) REFERENCES mst_endorsement_type(id)
+	CONSTRAINT fk_mst_endorsement_sub_type_endorsement_type FOREIGN KEY (endorsement_type) REFERENCES dms.mst_endorsement_type(id)
 );
 
 CREATE TABLE dms_policy_file (
-    id bigserial NOT NULL,
-    policy_id int8 NOT NULL,
-    file_name varchar(128) NULL,
-    file_size int8 NULL,
-    file_type varchar(16) NULL,
-    docket_type bigint NULL,
-    object_url varchar(500) NULL,
-    created_by varchar(128) NOT NULL,
-    last_upd_by varchar(128) NULL,
-    created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
-    CONSTRAINT dms_policy_file_pkey PRIMARY KEY (id),
-    constraint uq_dms_policy_file_object_url unique (object_url),
-    CONSTRAINT fk_dms_policy_file_id FOREIGN KEY (policy_id) REFERENCES dms_policy(id),
-    CONSTRAINT fk_dms_docket_type FOREIGN KEY (docket_type) REFERENCES mst_document_type(id)
+	id bigserial NOT NULL,
+	policy_id int8 NOT NULL,
+	file_name varchar(128) NULL,
+	file_size int8 NULL,
+	file_type varchar(32) NULL,
+	docket_type int8 NULL,
+	object_url varchar(500) NULL,
+	created_by varchar(128) NOT NULL,
+	last_upd_by varchar(128) NULL,
+	created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	CONSTRAINT dms_policy_file_pkey PRIMARY KEY (id),
+	CONSTRAINT uq_dms_policy_file_object_url UNIQUE (object_url),
+	CONSTRAINT fk_dms_docket_type FOREIGN KEY (docket_type) REFERENCES dms.mst_document_type(id),
+	CONSTRAINT fk_dms_policy_file_id FOREIGN KEY (policy_id) REFERENCES dms.dms_policy(id)
 );
 
 CREATE INDEX idx_pfile_policy_id ON dms_policy_file (policy_id);
