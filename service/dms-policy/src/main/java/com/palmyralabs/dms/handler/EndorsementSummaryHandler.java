@@ -28,7 +28,7 @@ public class EndorsementSummaryHandler extends AbstractHandler implements QueryH
 	
 	@Override
 	public QueryFilter applyQueryFilter(QueryFilter filter, HandlerContext ctx) {
-		filter.addCondition(Criteria.EQ("docketType", 15));
+		filter.addCondition(Criteria.EQ("docketType", 5));
 		filter.addOrderDesc("id");
 		return QueryHandler.super.applyQueryFilter(filter, ctx);
 	}
