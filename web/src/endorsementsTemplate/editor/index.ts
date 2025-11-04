@@ -76,3 +76,13 @@ export * from './Surrender/Template5094.tsx';
 export * from './Surrender/Template5095.tsx';
 export * from './Surrender/Template5216.tsx';
 export * from './Surrender/TemplateSurrenderofULIPpolicywithinlockingperiod.tsx';
+export * from './Endorsement1/Template1.tsx'
+export * from './Endorsement1/Template2.tsx'
+export * from './Endorsment2/Template3.tsx'
+export * from './Endorsment2/Template4.tsx'
+export * from './Endorsement3/Template5.tsx'
+export * from './Endorsement3/Template6.tsx'
+export * from './Endorsement4/Template7.tsx'
+export * from './Endorsement4/Template8.tsx'
+export * from './Endorsement5/Template9.tsx'
+export * from './Endorsement5/Template10.tsx'

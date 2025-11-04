@@ -1,0 +1,47 @@
+import { TextView } from 'templates/mantineForm'; import { PalmyraForm } from '@palmyralabs/rt-forms';
+
+const TemplateV8 = (props: any) => {
+  return (
+    <PalmyraForm ref={props.formRef} formData={props.formData}>
+      <table width="600" align="center">
+        <h1 className='text-center font-bold'>Policy Premium Payment Reminder</h1>
+
+        <tr><th>
+          <br /><br />
+          <table width="600">
+            <tr>
+              <td width="25"></td>
+              <td align="left">Place: : <TextView attribute="place" /></td>
+              <td align="right">Date: : <TextView attribute="date" /></td>
+              <td width="25"></td>
+            </tr>
+          </table>
+          <br /><br /><br />
+          <table width="600">
+            <tr>
+              <td width="25"></td>
+              <td width="550">
+                <p className="text-justify"> Dear <strong>: <TextView attribute="value1" /></strong>,<br /><br /> This is to remind you that the next premium for your Life Insurance Policy No. <strong>: <TextView attribute="value2" /></strong> is due on <strong>: <TextView attribute="value3" /></strong>. The payable premium amount is Rs <strong><TextView attribute="value4" /></strong> /-. <br /><br /> Kindly ensure payment on or before the due date to keep your policy active and continue enjoying uninterrupted life cover benefits.
+                  <br /><br /> You may pay the premium through our website, mobile app, or by visiting your nearest branch.
+                </p>
+              </td>
+              <td width="25"></td>
+            </tr>
+          </table>
+          <br /><br />
+          <table width="600">
+            <tr>
+              <td width="25"></td>
+              <td width="550" align="right">
+                <strong>Authorized Signatory</strong><br /> p. Sr/Branch Manager
+              </td>
+              <td width="25"></td>
+            </tr>
+          </table>
+          <br /><br />
+        </th></tr></table>
+    </PalmyraForm>
+  );
+};
+
+export { TemplateV8 };

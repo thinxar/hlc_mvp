@@ -1,12 +1,15 @@
 import {
-    Template111, Template149, Template150, Template179, Template3543, Template3544,
+    Template1,
+    Template10,
+    Template111, Template149, Template150, Template179, Template2, Template3, Template3543, Template3544,
     Template3546, Template3551, Template3552, Template3553, Template3554, Template3555, Template3559, Template3560, Template3561, Template3562,
     Template3567, Template3568, Template3579, Template3711, Template3728, Template3729, Template3730, Template3731, Template3732, Template3733,
-    Template3734, Template3735, Template3736, Template3773, Template3774, Template3775, Template3896, Template3897, Template5042, Template5042103,
+    Template3734, Template3735, Template3736, Template3773, Template3774, Template3775, Template3896, Template3897, Template4, Template5, Template5042, Template5042103,
     Template5042168, Template5042192090, Template504290, Template5042901, Template5043, Template50431, Template5058, Template5058111979, Template5059,
     Template5093, Template5094, Template5095, Template5146, Template5184, Template5185, Template5197,
     Template5200, Template5208, Template5213, Template5216, Template5241, Template52411, Template52455244, Template52475246, Template52495248,
-    Template5250, Template52535252, Template5254, Template52585256, Template5259, Template60000, Template600001, Template801,
+    Template5250, Template52535252, Template5254, Template52585256, Template5259, Template6, Template60000, Template600001, Template7, Template8, Template801,
+    Template9,
     TemplateForeclosureofPolicy, TemplateForeignPolicy, TemplateMaturityJeevanDhara, TemplateMaturityJeevanSuraksha, TemplateOtherEndorsement,
     TemplateRegistrationofAssignment, TemplateRegistrationofNomination, TemplateReinstatementofforeclosedpolicy, TemplateSurrenderofULIPpolicywithinlockingperiod
 } from "src/endorsementsTemplate/editor";
@@ -17,6 +20,16 @@ import {
     TemplateV3735, TemplateV3736, TemplateV3773, TemplateV3774, TemplateV3775, TemplateV3896, TemplateV3897, TemplateV5042, TemplateV5042103,
     TemplateV5042168, TemplateV5042192090, TemplateV504290, TemplateV5042901, TemplateV5043, TemplateV50431, TemplateV5058, TemplateV5058111979, TemplateV5059, TemplateV5093, TemplateV5094, TemplateV5095, TemplateV5146, TemplateV5184, TemplateV5185, TemplateV5197, TemplateV5200, TemplateV5208, TemplateV5213, TemplateV5216, TemplateV5241, TemplateV52411, TemplateV52455244, TemplateV52475246, TemplateV52495248, TemplateV5250, TemplateV52535252, TemplateV5254, TemplateV52585256, TemplateV5259, TemplateV60000, TemplateV600001, TemplateV801, TemplateVForeclosureofPolicy, TemplateVForeignPolicy, TemplateVMaturityJeevanDhara, TemplateVMaturityJeevanSuraksha, TemplateVOtherEndorsement, TemplateVRegistrationofAssignment, TemplateVRegistrationofNomination, TemplateVReinstatementofforeclosedpolicy, TemplateVSurrenderofULIPpolicywithinlockingperiod
 } from "src/endorsementsTemplate/viewer";
+import { TemplateV1 } from "src/endorsementsTemplate/viewer/Endorsement1/TemplateV1";
+import { TemplateV2 } from "src/endorsementsTemplate/viewer/Endorsement1/TemplateV2";
+import { TemplateV3 } from "src/endorsementsTemplate/viewer/Endorsement2/TemplateV3";
+import { TemplateV4 } from "src/endorsementsTemplate/viewer/Endorsement2/TemplateV4";
+import { TemplateV5 } from "src/endorsementsTemplate/viewer/Endorsement3/TemplateV5";
+import { TemplateV6 } from "src/endorsementsTemplate/viewer/Endorsement3/TemplateV6";
+import { TemplateV7 } from "src/endorsementsTemplate/viewer/Endorsement4/TemplateV7";
+import { TemplateV8 } from "src/endorsementsTemplate/viewer/Endorsement4/TemplateV8";
+import { TemplateV10 } from "src/endorsementsTemplate/viewer/Endorsement5/TemplateV10";
+import { TemplateV9 } from "src/endorsementsTemplate/viewer/Endorsement5/TemplateV9";
 
 export interface TemplateEntry {
     editor: React.FC<any>;
@@ -102,4 +115,15 @@ export const templateMap: Record<string, TemplateEntry> = {
     "5042-Full": { editor: Template5042192090, viewer: TemplateV5042192090 },
     "jeevanDhara": { editor: TemplateMaturityJeevanDhara, viewer: TemplateVMaturityJeevanDhara },
     "jeevanSuraksha": { editor: TemplateMaturityJeevanSuraksha, viewer: TemplateVMaturityJeevanSuraksha },
+    "1": { editor: Template1, viewer: TemplateV1 },
+    "2": { editor: Template2, viewer: TemplateV2 },
+    "3": { editor: Template3, viewer: TemplateV3 },
+    "4": { editor: Template4, viewer: TemplateV4 },
+    "5": { editor: Template5, viewer: TemplateV5 },
+    "6": { editor: Template6, viewer: TemplateV6 },
+    "7": { editor: Template7, viewer: TemplateV7 },
+    "8": { editor: Template8, viewer: TemplateV8 },
+    "9": { editor: Template9, viewer: TemplateV9 },
+    "10": { editor: Template10, viewer: TemplateV10 }
+
 };
