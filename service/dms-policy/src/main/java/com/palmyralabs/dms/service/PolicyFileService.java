@@ -94,7 +94,7 @@ public class PolicyFileService {
 		Optional<PolicyFileEntity> optPolicyFile = policyFileRepository.findByObjectUrl(objectUrl);
 		String fileName = file.getOriginalFilename();
 		DocumentTypeEntity docEntity = getDocketType(docketTypeId);
-		boolean isEndorsement = docEntity.getCode().equals("115");
+		boolean isEndorsement = docEntity.getCode().equals("105");
 
 		if (optPolicyFile.isPresent()) {
 			if (!isEndorsement) {

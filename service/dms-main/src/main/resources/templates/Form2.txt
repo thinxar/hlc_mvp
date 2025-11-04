@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"> 
+<style type="text/css">
+    table { 
+        color: blue; 
+    }
+</style>
+</head>
+ 
+<body>
+
+ 
+<table width="600">
+<tbody align="left">
+<tr>
+<th>
+<h3 align=center>Sample Policy Surrender Form</h3>
+<br><br>
+ 
+<table width="600">
+<tr>
+<td width="25"></td>
+<td align="left">Place: %%place%%</td>
+<td align="right">Date: %%date%%</td>
+<td width="25"></td>
+</tr>
+</table>
+ 
+<br><br><br>
+ 
+<table width="600">
+<tr>
+<td width="25"></td>
+<td width="550">
+<p style="text-align: justify;">
+            The within Policy is Surrendered on <strong>%%value1%%</strong> at the request of within Life Assured and/or Assignee <strong>%%value2%%</strong>.
+<br><br>
+            The present Surrender Value of the above Policy amounts to Rs <strong>%%value3%%</strong> /-.
+<br><br>
+            Since the Policy has been issued subject to a 3-year Lock-in Period from the date of Commencement of the Policy, the above-mentioned Surrender Value is payable on <strong>%%value4%%</strong> after deducting the dues, if any, from the said amounts.
+</p>
+</td>
+<td width="25"></td>
+</tr>
+</table>
+ 
+<br><br>
+ 
+<table width="600">
+<tr>
+<td width="25"></td>
+<td width="550" align="right">
+<br><br>
+<strong>Authorized Signatory</strong><br>
+        p. Sr/Branch Manager
+</td>
+<td width="25"></td>
+</tr>
+</table>
+ 
+<br><br>
+ 
+</th>
+</tr>
+</tbody>
+</table>
+ 
+</body>
+</html>

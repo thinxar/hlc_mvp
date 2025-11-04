@@ -1,3 +1,3 @@
 export const DocketTypeConfig = {
-    endorsement: 115
+    endorsement: 105
 }
