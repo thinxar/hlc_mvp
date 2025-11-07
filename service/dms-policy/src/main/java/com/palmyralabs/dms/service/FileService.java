@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -95,7 +94,7 @@ public class FileService {
 			PolicyEntity policy = policyOptional.get();
 			String folder = String.valueOf(policy.getPolicyNumber());
 			String fileName = file.getOriginalFilename();
-			String objectUrl = Paths.get(folder, fileName).toString();
+			String objectUrl= String.join("/",folder,file.getOriginalFilename());
 
 			PolicyFileEntity policyFileEntity = getPolicyFileEntity(objectUrl);
 			if (!policyFileEntity.getId().equals(model.getPolicyFileId())) {

@@ -1,6 +1,5 @@
 package com.palmyralabs.dms.service;
 
-import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -57,10 +56,10 @@ public class PolicyFileService {
 		if (policyOptional.isPresent()) {
 			PolicyEntity policy = policyOptional.get();
 			String folder = String.valueOf(policy.getPolicyNumber());
-			String objectUrl = Paths.get(folder, file.getOriginalFilename()).toString();
-
+			String objectUrl= String.join("/",folder,file.getOriginalFilename());
+			
 			String fileName = checkObjectUrlAlreadyExists(objectUrl, file, folder, docketTypeId);
-			objectUrl = Paths.get(folder, fileName).toString();
+			objectUrl = String.join("/",folder,fileName);
 			PolicyFileUploadListener listener = new PolicyFileUploadListener();
 			try {
 				syncFileService.upload(folder, fileName, file, listener);
@@ -113,7 +112,7 @@ public class PolicyFileService {
 			do {
 				newFileName = fileName + "_" + count + extension;
 				count++;
-				objectUrl = Paths.get(folder, newFileName).toString();
+				objectUrl = String.join("/",folder,newFileName);
 				optPolicyFile = policyFileRepository.findByObjectUrl(objectUrl);
 			} while (optPolicyFile.isPresent());
 			return newFileName;

@@ -1,6 +1,5 @@
 package com.palmyralabs.palmyra.s3.service.impl;
 
-import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -91,7 +90,7 @@ public class AsyncFileServiceImpl implements AsyncFileService {
 	public void upload(String folder, String originalFilename, MultipartFile file, FileUploadListener listener) {
 		AsyncRequestBodyFromInputStreamConfiguration conf = AsyncRequestBodyFromInputStreamConfiguration.builder()
 				.inputStream(file.getInputStream()).build();
-		String key = Paths.get(folder, originalFilename).toString();
+		String key = String.join("/",folder,originalFilename);
 		PutObjectRequest request = PutObjectRequest.builder().bucket(props.getBucketName()).key(key).build();
 		AsyncRequestBody requestBody = AsyncRequestBody.fromInputStream(conf);
 		CompletableFuture<PutObjectResponse> cl = asyncClient.putObject(request, requestBody);

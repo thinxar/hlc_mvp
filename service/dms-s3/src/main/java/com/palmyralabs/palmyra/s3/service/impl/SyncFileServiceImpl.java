@@ -2,7 +2,6 @@ package com.palmyralabs.palmyra.s3.service.impl;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +84,7 @@ public class SyncFileServiceImpl {
 
 	@SneakyThrows
 	public void upload(String folder, String originalFilename, MultipartFile file, FileUploadListener listener) {
-		String key = Paths.get(folder, originalFilename).toString();
+		String key = String.join("/",folder,originalFilename);
 		PutObjectRequest request = PutObjectRequest.builder().bucket(props.getBucketName())
 				.contentType(file.getContentType()).key(key).build();
 
