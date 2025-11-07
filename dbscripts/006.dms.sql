@@ -96,6 +96,20 @@ CREATE TABLE mst_fixed_stamp (
 	last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL
 );
 
+CREATE TABLE dms_policy_file_fixed_stamp (
+	id bigserial NOT NULL,
+	policy_file int8 NOT NULL,
+	stamp int8 NOT NULL,
+	created_by varchar(128) NOT NULL,
+	last_upd_by varchar(128) NULL,
+	created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
+	CONSTRAINT dms_policy_file_fixed_stamp_p_key PRIMARY KEY (id),
+	CONSTRAINT uq_dms_policy_file_stamp UNIQUE (policy_file, stamp),
+	CONSTRAINT fk_dms_policy_file_fixed_stamp_file_id FOREIGN KEY (policy_file) REFERENCES dms.dms_policy_file(id),
+	CONSTRAINT fk_dms_policy_file_fixed_stamp_stamp FOREIGN KEY (stamp) REFERENCES dms.mst_fixed_stamp(id)
+);
+
 INSERT INTO mst_document_type(id, document, description, created_by, last_upd_by, created_on, last_upd_on, code)
 VALUES
 (1, 'Policy', NULL, 'admin', NULL, '2025-08-20 11:53:09.612', '2025-08-20 11:53:09.612', '101'),

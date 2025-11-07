@@ -1,6 +1,8 @@
 package com.palmyralabs.dms.model;
 
 
+import java.time.LocalDateTime;
+
 import com.palmyralabs.dms.masterdata.model.DocumentTypeModel;
 import com.palmyralabs.palmyra.base.annotations.PalmyraField;
 import com.palmyralabs.palmyra.base.annotations.PalmyraType;
@@ -8,7 +10,6 @@ import com.palmyralabs.palmyra.base.format.Mandatory;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.sf.jsqlparser.expression.DateTimeLiteralExpression.DateTime;
 
 @Getter
 @Setter
@@ -36,6 +37,6 @@ public class PolicyFileModel {
 	private String objectUrl;
 	
 	@PalmyraField
-	private DateTime createdOn;
+	private LocalDateTime createdOn;
 
 }

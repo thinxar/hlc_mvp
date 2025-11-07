@@ -12,4 +12,6 @@ public interface PolicyFileRepository extends JpaRepository<PolicyFileEntity, In
 
 	Optional<PolicyFileEntity> findByObjectUrl(String objectUrl);
 
+	Optional<PolicyFileEntity> findById(Long id);
+
 }
