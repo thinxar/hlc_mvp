@@ -11,7 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@PalmyraType(type = "dmsPolicyFileFixedStamp")
+@PalmyraType(type = "DmsPolicyFileFixedStamp")
 public class PolicyFileFixedStampModel {
 
 	@PalmyraField(keyField = true)
@@ -25,6 +25,5 @@ public class PolicyFileFixedStampModel {
 	
 	@PalmyraField
 	private LocalDateTime createdOn;
-
 
 }

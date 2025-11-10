@@ -36,6 +36,9 @@ public class PolicyFileModel {
 	@PalmyraField
 	private String objectUrl;
 	
+	@PalmyraField(virtual = true)
+	private String fixedStamp;
+	
 	@PalmyraField
 	private LocalDateTime createdOn;
 
