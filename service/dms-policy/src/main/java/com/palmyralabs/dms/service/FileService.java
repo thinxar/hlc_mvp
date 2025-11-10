@@ -59,7 +59,7 @@ public class FileService {
 
 		try (InputStream is = classLoader.getResourceAsStream(finalPath)) {
 			if (is == null) {
-				throw new IOException("Stamp not found");
+				throw new IOException("stamp not found");
 			}
 
 			Path tempFile = Files.createTempFile(stampName, inputExtension);
@@ -91,7 +91,7 @@ public class FileService {
 
 			PolicyFileEntity policyFileEntity = getPolicyFileEntity(objectUrl);
 			if (!policyFileEntity.getId().equals(model.getPolicyFileId())) {
-				throw new InvaidInputException("INV001", "File record not found");
+				throw new InvaidInputException("INV001", "file record mismatch");
 			}
 			if (stampList.size() == 0) {
 				throw new InvaidInputException("INV001", "stamp is empty");
@@ -108,7 +108,7 @@ public class FileService {
 			updatePolicyFile(fileName, file, policyId, objectUrl, docketTypeId, policyFileEntity);
 			return "success";
 		} else {
-			throw new DataNotFoundException("INV012", "Policy Record not found");
+			throw new DataNotFoundException("INV012", "policy record not found");
 		}
 	}
 
@@ -165,7 +165,7 @@ public class FileService {
 
 	private PolicyFileEntity getPolicyFileEntity(String objectUrl) {
 		return policyFileRepository.findByObjectUrl(objectUrl)
-				.orElseThrow(() -> new InvaidInputException("INV001", "PolicyFile not found"));
+				.orElseThrow(() -> new InvaidInputException("INV001", "file record not found"));
 	}
 
 	private Optional<PolicyFileFixedStampEntity> getPolicyAndStampEntity(Long policyFile, Long stamp) {
