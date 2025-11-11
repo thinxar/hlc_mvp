@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,17 +49,18 @@ public class FileService {
 	private final String inputExtension = ".tif";
 
 	public void download(HttpServletRequest request, HttpServletResponse response, String code) throws IOException {
-
-		FixedStampEntity stampEntity = getFixedStampEntity(code);
-		String stampName = stampEntity.getCode();
-
+		String stampName = code;
+		Optional<FixedStampEntity> stampEntity = fixedStampRepo.findByCode(stampName);
+		if(stampEntity.isEmpty()) {
+			throw new InvaidInputException("INV001", "stamp not found");
+		}
 		String fileName = stampName + inputExtension;
 		String startDir = System.getProperty("user.dir");
 		String folderName = findParentFolderName(new File(startDir), fileName);
-		String finalPath = folderName + "/" + fileName;
+		Path finalPath = Paths.get(folderName, fileName);
 		ClassLoader classLoader = getClass().getClassLoader();
 
-		try (InputStream is = classLoader.getResourceAsStream(finalPath)) {
+		try (InputStream is = classLoader.getResourceAsStream(finalPath.toString())) {
 			if (is == null) {
 				throw new IOException("stamp not found");
 			}
@@ -81,7 +84,6 @@ public class FileService {
 
 		log.info("Initiating upload process for policyId={}, docketTypeId={}", policyId, docketTypeId);
 		Optional<PolicyEntity> policyOptional = policyRepository.findById(policyId);
-		List<FixedStampModel> stampList = model.getStamp();
 
 		if (policyOptional.isPresent()) {
 			PolicyEntity policy = policyOptional.get();
@@ -90,13 +92,7 @@ public class FileService {
 			String objectUrl = String.join("/", folder, file.getOriginalFilename());
 
 			PolicyFileEntity policyFileEntity = getPolicyFileEntity(objectUrl);
-			if (!policyFileEntity.getId().equals(model.getPolicyFileId())) {
-				throw new InvaidInputException("INV001", "file record mismatch");
-			}
-			if (stampList.size() == 0) {
-				throw new InvaidInputException("INV001", "stamp is empty");
-			}
-			saveStampInfo(model);
+			List<PolicyFileFixedStampEntity> policyFileFixedStampEntities = validateStampInfo(policyFileEntity,model);
 			PolicyFileUploadListener listener = new PolicyFileUploadListener();
 			try {
 				syncFileService.upload(folder, fileName, file, listener);
@@ -105,41 +101,42 @@ public class FileService {
 				log.error("S3 upload failed for file '{}': {}", fileName, e.getMessage(), e);
 				throw new InvaidInputException("INV400", "File Upload To S3 failed for " + e.getMessage());
 			}
+			pFixedStampRepo.saveAll(policyFileFixedStampEntities);
 			updatePolicyFile(fileName, file, policyId, objectUrl, docketTypeId, policyFileEntity);
 			return "success";
 		} else {
 			throw new DataNotFoundException("INV012", "policy record not found");
 		}
 	}
+	
+	private List<PolicyFileFixedStampEntity> validateStampInfo(PolicyFileEntity policyFileEntity, PolicyStampRequest model) {
+		List<FixedStampModel> stampList = model.getStamp();
+		if (!policyFileEntity.getId().equals(model.getPolicyFileId())) {
+			throw new InvaidInputException("INV001", "file record mismatch");
+		}
+		if (stampList.size() == 0) {
+			throw new InvaidInputException("INV001", "stamp is empty");
+		}
+		List<PolicyFileFixedStampEntity> policyFileFixedStampEntities = new ArrayList<PolicyFileFixedStampEntity>();
+		for (FixedStampModel stamp : stampList) {
+			PolicyFileFixedStampEntity entity = new PolicyFileFixedStampEntity();
+			Optional<PolicyFileFixedStampEntity> optPolicyStamp = getPolicyAndStampEntity(model.getPolicyFileId(),
+					stamp.getId());
+			if (optPolicyStamp.isPresent()) {
+				throw new InvaidInputException("INV001", "stamp already exists");
+			}
+			entity.setPolicyFile(model.getPolicyFileId());
+			entity.setStamp(stamp.getId());
+			policyFileFixedStampEntities.add(entity);
+		}
+		return policyFileFixedStampEntities;
+	}
 
 	private void updatePolicyFile(String fileName, MultipartFile file, Integer policyId, String objectUrl,
 			Integer docketTypeId, PolicyFileEntity fileEntity) {
-		fileEntity.setFileName(fileName);
 		fileEntity.setFileSize(file.getSize());
 		fileEntity.setFileType(file.getContentType());
-		fileEntity.setPolicyId((long) policyId);
-		fileEntity.setObjectUrl(objectUrl);
-		fileEntity.setDocketType((long) docketTypeId);
 		policyFileRepository.save(fileEntity);
-	}
-
-	private void saveStampInfo(PolicyStampRequest model) {
-		List<FixedStampModel> stampList = model.getStamp();
-		for (FixedStampModel stamp : stampList) {
-			savePolicyStamp(stamp, model);
-		}
-	}
-
-	private void savePolicyStamp(FixedStampModel stamp, PolicyStampRequest model) {
-		PolicyFileFixedStampEntity entity = new PolicyFileFixedStampEntity();
-		Optional<PolicyFileFixedStampEntity> optPolicyStamp = getPolicyAndStampEntity(model.getPolicyFileId(),
-				stamp.getId());
-		if (optPolicyStamp.isPresent()) {
-			throw new InvaidInputException("INV001", "stamp already exists");
-		}
-		entity.setPolicyFile(model.getPolicyFileId());
-		entity.setStamp(stamp.getId());
-		pFixedStampRepo.save(entity);
 	}
 
 	public String findParentFolderName(File dir, String fileName) {
@@ -157,10 +154,6 @@ public class FileService {
 			}
 		}
 		return null;
-	}
-
-	private FixedStampEntity getFixedStampEntity(String code) {
-		return fixedStampRepo.findByCode(code).orElseThrow(() -> new InvaidInputException("INV001", "stamp not found"));
 	}
 
 	private PolicyFileEntity getPolicyFileEntity(String objectUrl) {

@@ -3,6 +3,8 @@ package com.palmyralabs.dms.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -39,10 +41,10 @@ public class EndorsementService {
 		String fileName = endorsementSubtype + inputExtension;
 		String startDir = System.getProperty("user.dir");
 		String folderName = findParentFolderName(new File(startDir), fileName);
-		String finalPath = folderName + "/" + fileName;
+		Path finalPath = Paths.get(folderName, fileName);
 
 		ClassLoader classLoader = getClass().getClassLoader();
-		try (InputStream is = classLoader.getResourceAsStream(finalPath)) {
+		try (InputStream is = classLoader.getResourceAsStream(finalPath.toString())) {
 			if (is == null) {
 				throw new IOException(fileName + " not found in classpath under" + folderName);
 			}
