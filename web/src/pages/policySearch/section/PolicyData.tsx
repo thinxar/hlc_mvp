@@ -1,8 +1,10 @@
 import { Accordion } from "@mantine/core";
+import { useState } from "react";
 import { IoMdPerson } from "react-icons/io";
 import { FormateDate } from "utils/FormateDate";
 
 const PolicyData = ({ data }: any) => {
+    const [expand, setExpand] = useState<any>()
     const fields = [
         { label: "DOB", value: FormateDate(data?.customerDob) },
         { label: "DOC", value: FormateDate(data?.doc) },
@@ -35,6 +37,10 @@ const PolicyData = ({ data }: any) => {
         </div>
     );
 
+    const handleChange = (e: any) => {
+        setExpand(e);
+    }
+
     return (
         <div className="">
             {/* <div className="sticky top-0 z-50 text-xl font-bold p-2 rounded-t-lg flex items-center gap-2 text-white">
@@ -51,18 +57,18 @@ const PolicyData = ({ data }: any) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-14 gap-y-4">
                     {fields.map(content)}
                 </div>
-                <Accordion variant="filled" radius="md" className="mt-4">
+                <Accordion variant="filled" radius="md" className="mt-4" onChange={handleChange}>
                     <Accordion.Item value="details">
-                        <Accordion.Control>
-                            <div className="text-sky-800 text-center text-sm">
-                                View More Details
-                            </div>
-                        </Accordion.Control>
                         <Accordion.Panel>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-14 gap-y-4 pt-3">
                                 {viewFields.map(content)}
                             </div>
                         </Accordion.Panel>
+                        <Accordion.Control>
+                            <div className="text-sky-800 text-center text-sm">
+                                {expand === "details" ? "View Less Details" : "View More Details"}
+                            </div>
+                        </Accordion.Control>
                     </Accordion.Item>
                 </Accordion>
             </div>
