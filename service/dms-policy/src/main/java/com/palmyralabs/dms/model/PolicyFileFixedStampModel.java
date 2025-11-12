@@ -25,5 +25,8 @@ public class PolicyFileFixedStampModel {
 	
 	@PalmyraField
 	private LocalDateTime createdOn;
+	
+	@PalmyraField
+	private String position;
 
 }

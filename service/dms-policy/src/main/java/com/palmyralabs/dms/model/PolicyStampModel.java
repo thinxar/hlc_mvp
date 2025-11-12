@@ -11,4 +11,5 @@ public class PolicyStampModel {
 
 	private FixedStampModel stamp;
 	private String createdOn;
+	private PolicyStampPositionModel position;
 }

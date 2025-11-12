@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.palmyralabs.dms.base.exception.InvaidInputException;
 import com.palmyralabs.dms.handler.PolicyFileUploadListener;
 import com.palmyralabs.dms.jpa.entity.FixedStampEntity;
@@ -25,7 +27,7 @@ import com.palmyralabs.dms.jpa.repository.FixedStampRepo;
 import com.palmyralabs.dms.jpa.repository.PolicyFileFixedStampRepo;
 import com.palmyralabs.dms.jpa.repository.PolicyFileRepository;
 import com.palmyralabs.dms.jpa.repository.PolicyRepository;
-import com.palmyralabs.dms.masterdata.model.FixedStampModel;
+import com.palmyralabs.dms.model.PolicyStampPositionModel;
 import com.palmyralabs.dms.model.PolicyStampRequest;
 import com.palmyralabs.palmyra.base.exception.DataNotFoundException;
 import com.palmyralabs.palmyra.filemgmt.common.MultipartFileSender;
@@ -47,6 +49,7 @@ public class FileService {
 	private final PolicyFileRepository policyFileRepository;
 	private final PolicyFileFixedStampRepo pFixedStampRepo;
 	private final String inputExtension = ".tif";
+	private final ObjectMapper mapper;
 
 	public void download(HttpServletRequest request, HttpServletResponse response, String code) throws IOException {
 		String stampName = code;
@@ -110,7 +113,7 @@ public class FileService {
 	}
 	
 	private List<PolicyFileFixedStampEntity> validateStampInfo(PolicyFileEntity policyFileEntity, PolicyStampRequest model) {
-		List<FixedStampModel> stampList = model.getStamp();
+		List<PolicyStampPositionModel> stampList = model.getStamp();
 		if (!policyFileEntity.getId().equals(model.getPolicyFileId())) {
 			throw new InvaidInputException("INV001", "file record mismatch");
 		}
@@ -118,7 +121,7 @@ public class FileService {
 			throw new InvaidInputException("INV001", "stamp is empty");
 		}
 		List<PolicyFileFixedStampEntity> policyFileFixedStampEntities = new ArrayList<PolicyFileFixedStampEntity>();
-		for (FixedStampModel stamp : stampList) {
+		for (PolicyStampPositionModel stamp : stampList) {
 			PolicyFileFixedStampEntity entity = new PolicyFileFixedStampEntity();
 			Optional<PolicyFileFixedStampEntity> optPolicyStamp = getPolicyAndStampEntity(model.getPolicyFileId(),
 					stamp.getId());
@@ -127,9 +130,21 @@ public class FileService {
 			}
 			entity.setPolicyFile(model.getPolicyFileId());
 			entity.setStamp(stamp.getId());
+			entity.setPosition(getPosition(stamp));
 			policyFileFixedStampEntities.add(entity);
 		}
 		return policyFileFixedStampEntities;
+	}
+	
+	private String getPosition(PolicyStampPositionModel model){
+		ObjectWriter writer = mapper.writerFor(PolicyStampPositionModel.class);
+		String position = "";
+		try {
+		    position = writer.writeValueAsString(model); 
+		}catch(Exception e) {
+			log.error("error while convert class {} to String", model, e.getMessage());
+		}
+		return position;
 	}
 
 	private void updatePolicyFile(String fileName, MultipartFile file, Integer policyId, String objectUrl,

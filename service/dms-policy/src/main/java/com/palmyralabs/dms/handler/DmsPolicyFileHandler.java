@@ -5,10 +5,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.palmyralabs.dms.masterdata.handler.AbstractHandler;
 import com.palmyralabs.dms.model.PolicyFileFixedStampModel;
 import com.palmyralabs.dms.model.PolicyFileModel;
 import com.palmyralabs.dms.model.PolicyStampModel;
+import com.palmyralabs.dms.model.PolicyStampPositionModel;
 import com.palmyralabs.palmyra.base.Action;
 import com.palmyralabs.palmyra.base.annotations.CrudMapping;
 import com.palmyralabs.palmyra.core.api2db.service.PalmyraQueryService;
@@ -26,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 public class DmsPolicyFileHandler extends AbstractHandler implements QueryHandler {
 
 	private final PalmyraQueryService queryService;
+	private final ObjectMapper mapper;
+
 
 	@Override
 	public QueryFilter applyQueryFilter(QueryFilter filter, HandlerContext ctx) {
@@ -49,6 +53,12 @@ public class DmsPolicyFileHandler extends AbstractHandler implements QueryHandle
 			PolicyStampModel policyStampModel = new PolicyStampModel();
 			policyStampModel.setStamp( model.getStamp());
 			policyStampModel.setCreatedOn(model.getCreatedOn().toString());
+		    try {
+		    	PolicyStampPositionModel pos = mapper.readValue(model.getPosition(), PolicyStampPositionModel.class);
+		    	policyStampModel.setPosition(pos);
+	        } catch (Exception e) {
+	            policyStampModel.setPosition(null); 
+	        }
 			policyStampModels.add(policyStampModel);
 		}
 		tuple.setAttribute("fixedStamp", policyStampModels);

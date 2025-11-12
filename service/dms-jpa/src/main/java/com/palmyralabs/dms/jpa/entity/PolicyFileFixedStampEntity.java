@@ -29,6 +29,9 @@ public class PolicyFileFixedStampEntity implements Auditable{
 	
 	@Column(name = "stamp")
 	private Long stamp;
+	
+	@Column(name = "position")
+	private String position;
 
 	private Timestamps timestamps;
 	
