@@ -41,7 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FileService {
+public class PolicyFileStampService {
 
 	private final FixedStampRepo fixedStampRepo;
 	private final PolicyRepository policyRepository;

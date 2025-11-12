@@ -12,11 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.palmyralabs.dms.model.EndorsementRequest;
+import com.palmyralabs.dms.model.PolicyStampRequest;
 import com.palmyralabs.dms.service.EndorsementService;
 import com.palmyralabs.dms.service.PolicyFileService;
+import com.palmyralabs.dms.service.PolicyFileStampService;
 import com.palmyralabs.palmyra.filemgmt.spring.ResponseFileEmitter;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -26,6 +31,7 @@ public class PolicyFileController {
 
 	private final PolicyFileService policyService;
 	private final EndorsementService endorseService;
+	private final PolicyFileStampService stampService;
 
 	@GetMapping("/{policyId}/file/{fileId}")
 	public ResponseFileEmitter downloadFile(@PathVariable("policyId") Integer policyId,
@@ -46,5 +52,22 @@ public class PolicyFileController {
 			throws IOException {
 		return ResponseEntity.ok(endorseService.createEndorsement(request,policyId,code));
 	}
+	
+	@GetMapping("/fixedStamp/{stamp}")
+	public void getStampForPolicy(HttpServletRequest request, HttpServletResponse response,
+			@PathVariable("stamp") String code) throws IOException {
+		stampService.download(request, response, code);
+	}
+
+	@PostMapping("/{policyId}/docketType/{docketTypeId}/file/fixedStamp")
+	public ResponseEntity<String> addStampToPolicyFile(@RequestParam("file") MultipartFile file,
+			@PathVariable("policyId") Integer policyId, @PathVariable("docketTypeId") Integer docketTypeId,
+			@RequestParam(value = "model") String model) throws IOException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		PolicyStampRequest policyStampRequest = objectMapper.readValue(model, PolicyStampRequest.class);
+		String result = stampService.upload(file, policyId,docketTypeId,policyStampRequest);
+		return ResponseEntity.ok(result);
+	}
+
 
 }
