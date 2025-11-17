@@ -8,8 +8,6 @@ import com.palmyralabs.dms.jpa.entity.FixedStampEntity;
 
 public interface FixedStampRepo extends JpaRepository<FixedStampEntity, Integer>{
 
-	Optional<FixedStampEntity> findByCode(String code);
-
 	Optional<FixedStampEntity> findById(Long id);
 
 }

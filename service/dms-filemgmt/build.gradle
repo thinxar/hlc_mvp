@@ -1,5 +1,4 @@
 group = 'com.palmyralabs.dms'
 
 dependencies {
-	implementation deps.apache.tika.core
 }
