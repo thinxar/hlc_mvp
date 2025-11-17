@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class PolicyStampPositionModel {
 
-	private Long stampId;
+	private String code;
 	private Long pageNumber;
 	private String left;
 	private String scaleX;

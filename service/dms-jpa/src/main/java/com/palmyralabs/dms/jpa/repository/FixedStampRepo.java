@@ -10,4 +10,6 @@ public interface FixedStampRepo extends JpaRepository<FixedStampEntity, Integer>
 
 	Optional<FixedStampEntity> findById(Long id);
 
+	Optional<FixedStampEntity> findByCode(String code);
+
 }
