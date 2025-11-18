@@ -105,7 +105,7 @@ CREATE TABLE dms_policy_file_fixed_stamp (
 	last_upd_by varchar(128) NULL,
 	created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	last_upd_on timestamp DEFAULT CURRENT_TIMESTAMP NULL,
-	"position" varchar(128) NULL,
+	"position" text NULL,
 	CONSTRAINT dms_policy_file_fixed_stamp_p_key PRIMARY KEY (id),
 	CONSTRAINT uq_dms_policy_file_stamp UNIQUE (policy_file, stamp),
 	CONSTRAINT fk_dms_policy_file FOREIGN KEY (policy_file) REFERENCES dms.dms_policy_file(id),
