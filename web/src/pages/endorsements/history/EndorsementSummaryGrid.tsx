@@ -71,14 +71,13 @@ const EndorsementSummaryGrid = (props: IOptions) => {
     }
 
     const onRowClick = (d: any) => {
-        console.log(d);
         setrData(d);
         open();
     }
 
     return (
         <div>
-            <PalmyraGrid onDataChange={(d) => console.log(d)}
+            <PalmyraGrid
                 columns={fields} pageSize={[15, 30, 45]}
                 getPluginOptions={getPluginOptions}
                 ref={gridRef} onRowClick={onRowClick}
@@ -86,7 +85,7 @@ const EndorsementSummaryGrid = (props: IOptions) => {
                 endPoint={endPoint} />
 
             <Modal opened={opened} onClose={close} centered size={"xl"} title="Endorsement">
-                <FileViewer file={rData} fileUrl={pdfUrl} key={rData?.id} />
+                <FileViewer file={rData} fileUrl={pdfUrl} key={rData?.id} setSelectedFile={''} stampData={''} />
             </Modal>
         </div>
     )

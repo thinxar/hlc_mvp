@@ -11,6 +11,7 @@ interface IServerApiConfig extends IPageApiRef {
 
 const ServiceEndpoint = {
     baseUrl: '',
+    BASE_URL: 'http://localhost:5000/api/palmyra',
     auth: {
         login: '/api/auth/login',
         logout: '/auth/logout',
@@ -59,6 +60,11 @@ const ServiceEndpoint = {
         endorsement: {
             endorseCreateApi: '/policy/{policyId}/endorsement/{docketType}',
             summary: '/policy/{policyId}/endorsement/summary'
+        },
+        stamp: {
+            lookup: '/masterdata/fixedStamp',
+            stampgetApi: '/policy/fixedStamp/{stamp}',
+            stampUploadApi: '/policy/policyFile/fixedStamp'
         }
     },
     lookup: {

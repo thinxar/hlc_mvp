@@ -1,26 +1,75 @@
-import { Modal } from "@mantine/core";
+import { Button, Menu, Modal, ScrollArea, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { IoAddCircle, IoClose } from "react-icons/io5"
 import { MdHistory } from "react-icons/md";
 import { EndorseTemplatePicker } from "src/pages/endorsements/EndorseTemplatePicker";
 import { EndorsementSummaryGrid } from "src/pages/endorsements/history/EndorsementSummaryGrid";
 import { handleKeyAction } from "utils/FormateDate";
+import { LiaStampSolid } from "react-icons/lia";
+import { useFormstore } from "wire/StoreFactory";
+import { useEffect, useState } from "react";
 
 interface IOptions {
-    data: any
+    data: any,
+    selectedStamp: any,
+    id: number,
+    // selectedStamps: any,
+    // setSelectedFile: any
 }
 const PolicyHeaderSection = (props: IOptions) => {
-    const { data } = props;
+    const { data, selectedStamp } = props;
     // const [historyOpened, { open: openHistory, close: closeHistory }] = useDisclosure(false);
     // const [opened, { open, close }] = useDisclosure(false);
     const [firstOpened, firstHandlers] = useDisclosure(false);
     const [secondOpened, secondHandlers] = useDisclosure(false);
+    const [stampCategory, setStampCategory] = useState<any>()
+    const stampEndPoint = ServiceEndpoint.policy.stamp.lookup
+    const handleStampChange = (d?: any) => {
+        selectedStamp(d)
+    }
+
+    useEffect(() => {
+        useFormstore(stampEndPoint + '?_limit=-1', {}).get({}).then((res: any) => {
+            setStampCategory(res)
+        }).catch((err) => console.log(err)
+        )
+    }, [])
 
     return (
         <div>
             <div className="relative p-1 flex justify-between items-center border-b-1 border-indigo-100">
-                <div></div>
-                <div className='flex items-center gap-4'>
+                <div>
+                    {/* <PalmyraForm>
+                        <ServerLookup
+                            attribute="code"
+                            required
+                            placeholder="Select Stamp Category"
+                            label="Stamp Category"
+                            // invalidMessage={errorMsg.mandatory}
+                            // onChange={handleStampChange}
+                            queryOptions={{ endPoint: ServiceEndpoint.policy.stamp.lookup + '?_limit=-1' }}
+                            lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
+                        />
+                    </PalmyraForm> */}
+                </div>
+                <div className='flex items-center gap-4 p-1'>
+                    <Tooltip label='Stamp Category'>
+                        <span><Menu shadow="md" width={200}>
+                            <Menu.Target>
+                                <Button className="pr-bgcolor p-1 rounded-md text-white cursor-pointer !hover:!pr-bgcolor">   <LiaStampSolid fontSize={26} /></Button>
+                            </Menu.Target>
+                            <Menu.Dropdown>
+                                <ScrollArea style={{ height: 300 }} >
+                                    {
+                                        stampCategory?.map((e: any, i: any) => {
+                                            return <Menu.Item key={i} onClick={() => handleStampChange(e)}> {e?.name} </Menu.Item>
+                                        })
+                                    }
+                                </ScrollArea>
+                            </Menu.Dropdown>
+                        </Menu></span>
+                    </Tooltip>
                     <button
                         className='cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-gradient-to-r pr-bgcolor text-white font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-101 transition-all duration-200 ease-out'
                         onClick={secondHandlers.open}>
@@ -39,7 +88,7 @@ const PolicyHeaderSection = (props: IOptions) => {
                         <IoClose fontSize={22} className='text-gray-600' />
                     </button>
                 </div>
-            </div>
+            </div >
 
             <Modal opened={firstOpened} onClose={firstHandlers.close} onKeyDown={handleKeyAction("Escape", firstHandlers.close)}
                 centered size={"lg"} title={`Endorsement`} >
@@ -50,7 +99,7 @@ const PolicyHeaderSection = (props: IOptions) => {
                 centered size={"xl"} title={`Endorsement Summary`} >
                 <EndorsementSummaryGrid data={data} />
             </Modal>
-        </div>
+        </div >
     )
 }
 

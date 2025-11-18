@@ -13,3 +13,7 @@ declare module 'react-tiff' {
 
   export const TIFFViewer: React.FC<TIFFViewerProps>;
 }
+declare module "tiff.js" {
+  const Tiff: any;
+  export default Tiff;
+}

@@ -1129,3 +1129,24 @@ pre {
 .pr-bgcolor {
   background-color: rgba(var(--primary-color-rgb), 1);
 }
+
+.overlay-image:hover {
+  border: 2px solid gray;
+  scale: calc(0.7);
+  cursor: pointer;
+}
+
+.upper-canvas img:hover {
+  cursor: pointer;
+  width: 700px;
+}
+
+.texthtml-iframe .overlay-image {
+  cursor: pointer !important;
+  scale: calc(0.7) !important;
+}
+
+.texthtml-iframe {
+  pointer-events: none;
+  cursor: pointer !important;
+}
