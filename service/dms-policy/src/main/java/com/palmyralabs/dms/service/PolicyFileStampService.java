@@ -15,6 +15,8 @@ import com.palmyralabs.dms.jpa.entity.PolicyFileFixedStampEntity;
 import com.palmyralabs.dms.jpa.repository.FixedStampRepo;
 import com.palmyralabs.dms.jpa.repository.PolicyFileFixedStampRepo;
 import com.palmyralabs.dms.jpa.repository.PolicyFileRepository;
+import com.palmyralabs.dms.masterdata.model.FixedStampModel;
+import com.palmyralabs.dms.model.PolicyStampModel;
 import com.palmyralabs.dms.model.PolicyStampPositionModel;
 import com.palmyralabs.dms.model.PolicyStampRequest;
 import com.palmyralabs.palmyra.base.exception.DataNotFoundException;
@@ -32,16 +34,17 @@ public class PolicyFileStampService {
 	private final FixedStampRepo fixedStampRepo;
 	private final ObjectMapper mapper;
 
-	public String addStamp(PolicyStampRequest request) {
+	public List<PolicyStampModel> addStamp(PolicyStampRequest request) {
 
 		long policyFileId = request.getPolicyFileId();
 		Optional<PolicyFileEntity> policyFileOptional = policyFileRepository.findById(policyFileId);
 
 		if (policyFileOptional.isPresent()) {
 			PolicyFileEntity policyFileEntity = policyFileOptional.get();
-			List<PolicyFileFixedStampEntity> policyFileFixedStampEntities = validateStampInfo(policyFileEntity,request);
-			pFixedStampRepo.saveAll(policyFileFixedStampEntities);
-			return "success";
+			List<PolicyFileFixedStampEntity> policyFileFixedStampEntities = validateStampInfo(policyFileEntity,
+					request);
+			List<PolicyFileFixedStampEntity> savedStampEntities = pFixedStampRepo.saveAll(policyFileFixedStampEntities);
+			return getPolicyStampModels(savedStampEntities);
 		} else {
 			throw new DataNotFoundException("INV012", "policy record not found");
 		}
@@ -60,7 +63,7 @@ public class PolicyFileStampService {
 		for (PolicyStampPositionModel stamp : stampList) {
 			PolicyFileFixedStampEntity entity = new PolicyFileFixedStampEntity();
 			Optional<FixedStampEntity> fixedStampOp = getStampEntity(stamp.getCode());
-			if(fixedStampOp.isEmpty()) {
+			if (fixedStampOp.isEmpty()) {
 				throw new InvaidInputException("INV001", "stamp not found");
 			}
 			FixedStampEntity stampEntity = fixedStampOp.get();
@@ -88,6 +91,35 @@ public class PolicyFileStampService {
 		return position;
 	}
 
+	private List<PolicyStampModel> getPolicyStampModels(List<PolicyFileFixedStampEntity> policyFileFixedStampEntities) {
+		List<PolicyStampModel> stampModels = new ArrayList<>();
+		for (PolicyFileFixedStampEntity entity : policyFileFixedStampEntities) {
+			PolicyStampModel model = new PolicyStampModel();
+			model.setCreatedOn(entity.getTimestamps().getCreatedOn().toString());
+
+			PolicyStampPositionModel pos;
+			try {
+				pos = mapper.readValue(entity.getPosition(), PolicyStampPositionModel.class);
+				model.setPosition(pos);
+			} catch (Exception e) {
+				model.setPosition(null);
+			}
+			FixedStampEntity stampEntity = getStampEntity(entity.getStamp());
+			model.setStamp(toStampModel(stampEntity));
+			stampModels.add(model);
+		}
+		return stampModels;
+	}
+
+	private FixedStampModel toStampModel(FixedStampEntity entity) {
+		FixedStampModel model = new FixedStampModel();
+		model.setCode(entity.getCode());
+		model.setDescription(entity.getDescription());
+		model.setId(entity.getId());
+		model.setName(entity.getName());
+		return model;
+	}
+
 	private Optional<PolicyFileFixedStampEntity> getPolicyAndStampEntity(Long policyFile, Long stamp) {
 		return pFixedStampRepo.findByPolicyFileAndStamp(policyFile, stamp);
 	}
@@ -95,5 +127,9 @@ public class PolicyFileStampService {
 	private Optional<FixedStampEntity> getStampEntity(String code) {
 		return fixedStampRepo.findByCode(code);
 	}
-	
+
+	private FixedStampEntity getStampEntity(Long id) {
+		return fixedStampRepo.findById(id).orElseThrow(() -> new InvaidInputException("INV001", "stamp not found"));
+	}
+
 }

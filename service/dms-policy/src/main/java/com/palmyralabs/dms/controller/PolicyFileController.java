@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.palmyralabs.dms.model.EndorsementRequest;
-import com.palmyralabs.dms.model.PolicyStampRequest;
 import com.palmyralabs.dms.service.EndorsementService;
 import com.palmyralabs.dms.service.PolicyFileService;
-import com.palmyralabs.dms.service.PolicyFileStampService;
 import com.palmyralabs.palmyra.filemgmt.spring.ResponseFileEmitter;
 
 import lombok.RequiredArgsConstructor;
@@ -28,7 +26,6 @@ public class PolicyFileController {
 
 	private final PolicyFileService policyService;
 	private final EndorsementService endorseService;
-	private final PolicyFileStampService stampService;
 
 	@GetMapping("/{policyId}/file/{fileId}")
 	public ResponseFileEmitter downloadFile(@PathVariable("policyId") Integer policyId,
@@ -47,12 +44,6 @@ public class PolicyFileController {
 	public ResponseEntity<String> createEndorsement(@RequestBody EndorsementRequest request,
 			@PathVariable("policyId") Integer policyId, @PathVariable("docketType") String code) throws IOException {
 		return ResponseEntity.ok(endorseService.createEndorsement(request, policyId, code));
-	}
-
-	@PostMapping("/policyFile/fixedStamp")
-	public ResponseEntity<String> addStampToPolicyFile(@RequestBody PolicyStampRequest policyStampRequest) {
-		String result = stampService.addStamp(policyStampRequest);
-		return ResponseEntity.ok(result);
 	}
 
 }
