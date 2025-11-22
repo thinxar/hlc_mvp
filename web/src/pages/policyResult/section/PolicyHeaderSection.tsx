@@ -14,14 +14,14 @@ interface IOptions {
     data: any,
     selectedStamp: any,
     id: number,
-    // selectedStamps: any,
-    // setSelectedFile: any
+    stampData: any,
+    setSelectedFile: any,
+    file: any,
+    fildata?:any
 }
 const PolicyHeaderSection = (props: IOptions) => {
-    const { data, selectedStamp } = props;
-    // const [historyOpened, { open: openHistory, close: closeHistory }] = useDisclosure(false);
-    // const [opened, { open, close }] = useDisclosure(false);
-    const [firstOpened, firstHandlers] = useDisclosure(false);
+    const { data, selectedStamp, stampData, setSelectedFile, file, id ,fildata} = props;
+      const [firstOpened, firstHandlers] = useDisclosure(false);
     const [secondOpened, secondHandlers] = useDisclosure(false);
     const [stampCategory, setStampCategory] = useState<any>()
     const stampEndPoint = ServiceEndpoint.policy.stamp.lookup
@@ -40,18 +40,6 @@ const PolicyHeaderSection = (props: IOptions) => {
         <div>
             <div className="relative p-1 flex justify-between items-center border-b-1 border-indigo-100">
                 <div>
-                    {/* <PalmyraForm>
-                        <ServerLookup
-                            attribute="code"
-                            required
-                            placeholder="Select Stamp Category"
-                            label="Stamp Category"
-                            // invalidMessage={errorMsg.mandatory}
-                            // onChange={handleStampChange}
-                            queryOptions={{ endPoint: ServiceEndpoint.policy.stamp.lookup + '?_limit=-1' }}
-                            lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
-                        />
-                    </PalmyraForm> */}
                 </div>
                 <div className='flex items-center gap-4 p-1'>
                     <Tooltip label='Stamp Category'>
@@ -97,7 +85,7 @@ const PolicyHeaderSection = (props: IOptions) => {
 
             <Modal opened={secondOpened} onClose={secondHandlers.close} onKeyDown={handleKeyAction("Escape", secondHandlers.close)}
                 centered size={"xl"} title={`Endorsement Summary`} >
-                <EndorsementSummaryGrid data={data} />
+                <EndorsementSummaryGrid data={data} stampData={stampData} setSelectedFile={setSelectedFile} file={file} id={id} fildata={fildata}/>
             </Modal>
         </div >
     )

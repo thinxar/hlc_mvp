@@ -19,14 +19,18 @@ const dateRenderer = (data: any) => {
 
 interface IOptions {
     data: any
+    setSelectedFile: any,
+    stampData: any,
+    file: any,
+    id: any,
+    fildata?: any
 }
-
 const EndorsementSummaryGrid = (props: IOptions) => {
-    const { data } = props;
+    const { data, setSelectedFile, id, fildata } = props;
     const gridRef = useRef<IPageQueryable>(null);
     const [rData, setrData] = useState<any>()
     const [opened, { open, close }] = useDisclosure(false);
-
+    const [stampdata, setStampdata] = useState<any>()
     const endPoint = StringFormat(ServiceEndpoint.policy.endorsement.summary, {
         policyId: data?.id
     })
@@ -71,6 +75,10 @@ const EndorsementSummaryGrid = (props: IOptions) => {
     }
 
     const onRowClick = (d: any) => {
+        const a = fildata?.find((e: any) => {
+            return e.pdfFiles?.id === d.id
+        })
+        setStampdata(a.stamps);
         setrData(d);
         open();
     }
@@ -85,11 +93,10 @@ const EndorsementSummaryGrid = (props: IOptions) => {
                 endPoint={endPoint} />
 
             <Modal opened={opened} onClose={close} centered size={"xl"} title="Endorsement">
-                <FileViewer file={rData} fileUrl={pdfUrl} key={rData?.id} setSelectedFile={''} stampData={''} />
+                <FileViewer file={rData} fileUrl={pdfUrl} key={id} setSelectedFile={setSelectedFile} stampData={stampdata} />
             </Modal>
         </div>
     )
 }
 
 export { EndorsementSummaryGrid }
-

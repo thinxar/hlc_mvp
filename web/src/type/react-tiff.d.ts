@@ -17,3 +17,14 @@ declare module "tiff.js" {
   const Tiff: any;
   export default Tiff;
 }
+
+import "fabric";
+
+declare module "fabric" {
+  namespace fabric {
+    interface Object {
+      deleteIcon?: fabric.Object;
+      metadata?: any;
+    }
+  }
+}

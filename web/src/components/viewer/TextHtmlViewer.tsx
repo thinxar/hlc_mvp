@@ -10,16 +10,15 @@ import { stampImages } from "./StampImages";
 import { useFormstore } from "wire/StoreFactory";
 import { formatDateTime } from "utils/FormateDate";
 import { handleError } from "wire/ErrorHandler";
+import { selectStampFunc } from "./widgets/widget";
 
-export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays }: any) => {
+export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSelectedStamp, setSelectedFile, handleFetch }: any) => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
-
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
-
   const params = useParams();
 
   const uploadStampEndPoint = StringFormat(
@@ -70,7 +69,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays }: any)
       tooltipRef.current = tooltip;
       container.appendChild(tooltip);
 
-      overlays?.forEach((ov: any) => {
+      overlays?.stamps?.forEach((ov: any) => {
         const url = stampImages[ov.stamp.code];
         fabric.Image.fromURL(
           url,
@@ -120,61 +119,52 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays }: any)
   }, [content]);
 
   useEffect(() => {
-    if (!selectedStamp || !fabricCanvasRef.current) return;
-
-    const url = stampImages[selectedStamp.code];
-    if (!url) return;
-
-    fabric.Image.fromURL(url, (img) => {
-      img.set({
-        left: 100,
-        top: 100,
-        scaleX: 0.5,
-        scaleY: 0.5,
-        selectable: true,
-        hoverCursor: "pointer",
-      });
-
-      (img as any).metadata = {
-        isNew: true,
-        code: selectedStamp.code,
-        name: selectedStamp.name,
-      };
-
-      fabricCanvasRef.current!.add(img);
-      fabricCanvasRef.current!.setActiveObject(img);
-    });
-  }, [selectedStamp]);
+    selectStampFunc(selectedStamp, 'page', setSelectedStamp, fabricCanvasRef)
+  }, [selectedStamp])
 
   const saveOverlays = async () => {
-    if (!fabricCanvasRef.current) return;
+    try {
+      const canvas = fabricCanvasRef.current;
+      if (!canvas) return;
 
-    const objects = fabricCanvasRef.current.getObjects("image");
+      const newStampObjects = canvas
+        .getObjects()
+        .filter((o: any) => o.metadata?.isNew);
 
-    const newStamps = objects
-      .filter((o: any) => o.metadata?.isNew)
-      .map((o: any) => ({
+      const newStamps = newStampObjects.map((o: any) => ({
         code: o.metadata.code,
-        pageNumber: 1,
+        pageNumber: 0 + 1,
         left: o.left,
         top: o.top,
         scaleX: o.scaleX,
-        scaleY: o.scaleY
+        scaleY: o.scaleY,
       }));
 
-    if (newStamps.length === 0) {
-      toast.info("No new stamps to save");
-      return;
-    }
+      await useFormstore(uploadStampEndPoint, { isFormData: true })
+        .post({ policyFileId: file.id, stamp: [...newStamps] })
+        .then(res => {
+          if (!res) return;
 
-    await useFormstore(uploadStampEndPoint, { isFormData: true }).post({
-      policyFileId: file.id,
-      stamp: [...newStamps],
-    }).then((_res) => {
-      toast.success('Stamp added successfully')
-    }).catch((err) => handleError(err)
-    )
-    objects.forEach((o: any) => (o.metadata.isNew = false));
+          const newStampList = Array.isArray(res) ? res : [res];
+
+          setSelectedFile(() => ({
+            ...file,
+            pdfFiles: file.pdfFiles,
+            stamps: newStampList ?? [],
+          }));
+
+          handleFetch()
+          toast.success("Stamp added successfully");
+        })
+        .catch((err) => handleError(err));
+
+      canvas?.renderAll();
+      setSelectedStamp(null);
+      setLoading(false)
+
+    } catch (e) {
+      console.error("Save failed:", e);
+    }
   };
 
   if (loading)
@@ -186,7 +176,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays }: any)
 
   return (
     <div className="p-5 w-full h-full">
-      <div className="flex justify-between">
+      <div className="flex justify-between mb-3 items-center">
         <strong>{file.fileName}</strong>
         {
           selectedStamp && <div>

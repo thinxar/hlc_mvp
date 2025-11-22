@@ -63,7 +63,6 @@ const ServiceEndpoint = {
         },
         stamp: {
             lookup: '/masterdata/fixedStamp',
-            stampgetApi: '/policy/fixedStamp/{stamp}',
             stampUploadApi: '/policy/policyFile/fixedStamp'
         }
     },

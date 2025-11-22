@@ -4,43 +4,39 @@ import UTIF from "utif2";
 import { Loader } from "@mantine/core";
 import { GoDash, GoPlus } from "react-icons/go";
 import { fabric } from "fabric";
-import { StringFormat } from "@palmyralabs/ts-utils";
-import { ServiceEndpoint } from "config/ServiceEndpoint";
-import { useParams } from "react-router-dom";
 import { stampImages } from "./StampImages";
 import { useFormstore } from "wire/StoreFactory";
 import { formatDateTime } from "utils/FormateDate";
 import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
-import { toast } from "react-toastify";
-import { handleError } from "wire/ErrorHandler";
+import { selectStampFunc } from "./widgets/widget";
+import { saveOverlay } from "./overlay/saveOverlay";
 
 export const TIFFViewer = forwardRef(function TiffFileViewer({
   tiff,
   file,
   overlays,
   selectedStamp,
+  setSelectedStamp,
+  uploadStampEndPoint,
+  handleFetch,
+  setSelectedFile
 }: any) {
   const [pages, setPages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [zoom, setZoom] = useState(0.85);
-  const params = useParams();
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
-  const uploadStampEndPoint = StringFormat(ServiceEndpoint.policy.stamp.stampUploadApi, {
-    policyId: params?.policyId,
-    docketTypeId: file?.docketType?.id,
-  });
 
   const overlayMap = useMemo(() => {
     const map: Record<number, any[]> = {};
-    overlays?.forEach((o: any) => {
-      const index = o?.position?.pageNumber;
+    overlays?.stamps?.forEach((o: any) => {
+      const index = o?.position?.pageNumber - 1;
       if (!map[index]) map[index] = [];
       map[index].push(o);
     });
     return map;
-  }, [overlays]);
+  }, [overlays?.stamps]);
 
   useEffect(() => {
     const loadTiff = async () => {
@@ -153,65 +149,23 @@ export const TIFFViewer = forwardRef(function TiffFileViewer({
     });
   }, [pages, page, zoom, overlayMap]);
 
+
   useEffect(() => {
-    if (!selectedStamp || !fabricCanvasRef.current) return;
+    selectStampFunc(selectedStamp, page, setSelectedStamp, fabricCanvasRef)
+  }, [selectedStamp])
 
-    const pngUrl = stampImages[selectedStamp?.code];
-    if (!pngUrl) return;
-
-    fabric.Image.fromURL(pngUrl, (img) => {
-      img.set({
-        left: 100,
-        top: 100,
-        scaleX: 0.5,
-        scaleY: 0.5,
-        selectable: true,
-        hoverCursor: "pointer",
-      });
-
-      (img as any).metadata = {
-        code: selectedStamp.code,
-        pageNumber: page,
-        isNew: true,
-      };
-
-      fabricCanvasRef.current?.add(img);
-      fabricCanvasRef.current?.setActiveObject(img);
-      fabricCanvasRef.current?.renderAll();
-    });
-  }, [selectedStamp, page]);
 
   const saveStampData = async () => {
-    try {
-      if (!fabricCanvasRef.current) return;
-
-      const stamps = fabricCanvasRef.current
-        .getObjects()
-        .filter((obj: any) => obj.metadata?.isNew === true)
-        .map((obj: any) => ({
-          code: obj.metadata.code,
-          pageNumber: obj.metadata.pageNumber,
-          left: Number(obj.left ?? 0),
-          top: Number(obj.top ?? 0),
-          scaleX: Number(obj.scaleX ?? 1),
-          scaleY: Number(obj.scaleY ?? 1),
-        }));
-
-      if (stamps.length === 0) {
-        console.log("No new stamps to save.");
-        return;
-      }
-
-      await useFormstore(uploadStampEndPoint, { isFormData: true }).post({
-        policyFileId: file?.id,
-        stamp: [...stamps],
-      }).then((_res) => {
-        toast.success('Stamp added successfully')
-      }).catch((err) => handleError(err)
-      )
-    } catch (err: any) {
-      console.error("Saving stamp details failed:", err.message);
-    }
+    saveOverlay({
+      canvasRef: fabricCanvasRef,
+      overlayType: "stamp",
+      page,
+      file,
+      uploadEndPoint: useFormstore(uploadStampEndPoint, { isFormData: true }),
+      setSelectedFile,
+      setSelectedOverlay: setSelectedStamp,
+      handleFetch
+    });
   };
 
   if (loading)

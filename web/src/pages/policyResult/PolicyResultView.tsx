@@ -24,34 +24,50 @@ const PolicyResultView = () => {
     const [opened, { open, close }] = useDisclosure(false);
     const policyData = location?.state?.policyData;
     const BASE_URL = `${window.location.origin}/api/palmyra`;
-
+    const [_selectedStamps, setSelectedStamps] = useState<any>(null);
     const endpoint = StringFormat(ServiceEndpoint.policy.searchPolicyByIdApi + "?_limit=-1", { policyId: params?.policyId });
     const filePoint = StringFormat(ServiceEndpoint.policy.getFileApi, { policyId: params?.policyId, fileId: selectedFile?.pdfFiles?.id });
     const pdfUrl = BASE_URL + filePoint;
 
     const handleFetch = () => {
-        useFormstore(endpoint).query({ filter: {} }).then((d: any) => {
-            const mappedPolicies: any = d?.result?.map((item: any) => ({
-                id: item.policyId?.policyNumber,
-                pdfFiles: {
-                    id: item.id,
-                    name: item.name,
-                    fileName: item.fileName,
-                    size: item.fileSize,
-                    date: item.createdOn,
-                    fileType: item.fileType,
-                    docketType: item.docketType,
-                    path: item.path || ''
-                },
-                stamps: item?.fixedStamp,
-            }));
-            const file = mappedPolicies.find((f: any) =>
-                f?.pdfFiles?.fileName?.toLowerCase()?.includes('bond')
-            );
-            setSelectedFile(file)
-            setData(mappedPolicies);
-        }).catch(handleError);
-    }
+        useFormstore(endpoint)
+            .query({ filter: {} })
+            .then((d: any) => {
+                const mappedPolicies: any[] = d?.result?.map((item: any) => ({
+                    id: item.policyId?.policyNumber,
+                    pdfFiles: {
+                        id: item.id,
+                        name: item.name,
+                        fileName: item.fileName,
+                        size: item.fileSize,
+                        date: item.createdOn,
+                        fileType: item.fileType,
+                        docketType: item.docketType,
+                        path: item.path || ''
+                    },
+                    stamps: item?.fixedStamp ?? [],
+                })) ?? [];
+
+                if (!mappedPolicies.length) return;
+
+                setData(mappedPolicies);
+
+                const updatedFile = mappedPolicies.find(
+                    (f: any) => f?.pdfFiles?.id === selectedFile?.pdfFiles?.id
+                );
+                if (updatedFile) {
+                    setSelectedFile((prev: any) => ({
+                        ...prev,
+                        ...updatedFile,
+                        stamps: updatedFile?.stamps ?? prev?.stamps
+                    }));
+                }
+                else {
+                    setSelectedFile(mappedPolicies[0]);
+                }
+            })
+            .catch(handleError);
+    };
 
     useEffect(() => {
         handleFetch()
@@ -67,7 +83,6 @@ const PolicyResultView = () => {
             topic.unsubscribe(handle);
         };
     }, []);
-
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[40%_60%] lg:grid-cols-[31%_69%] xl:grid-cols-[23%_77%] 2xl:grid-cols-[22%_78%]
@@ -99,9 +114,11 @@ const PolicyResultView = () => {
                 </Modal>
             </div>
             <div className="bg-gray-100 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-auto">
-                <PolicyHeaderSection data={policyData} selectedStamp={setSelectedStamp} id={selectedFile?.pdfFiles?.id} />
+                <PolicyHeaderSection data={policyData} selectedStamp={setSelectedStamp} id={selectedFile?.pdfFiles?.id}
+                    stampData={selectedFile?.stamps} setSelectedFile={setSelectedFile} file={selectedFile?.pdfFiles} fildata={data} />
                 <FileViewer file={selectedFile?.pdfFiles} fileUrl={pdfUrl} key={selectedFile?.pdfFiles?.id} selectedStamp={selectedStamp}
-                    stampData={selectedFile?.stamps} setSelectedFile={setSelectedFile} setSelectedStamp={setSelectedStamp}/>
+                    stampData={selectedFile} setSelectedFile={setSelectedFile} setSelectedStamps={setSelectedStamps}
+                    setSelectedStamp={setSelectedStamp} selectedfile={selectedFile} handleFetch={handleFetch} />
             </div>
         </div>
     );

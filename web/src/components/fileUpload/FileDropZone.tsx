@@ -156,7 +156,7 @@ const FileDropZone = (props: IOptions) => {
             <PalmyraNewForm endPoint={''}>
                 <ServerLookup attribute="docketType" required placeholder="Select Docket Type"
                     label={"Docket Type"} invalidMessage={"This field is mandatory"} onChange={handleChange}
-                    queryOptions={{ endPoint: ServiceEndpoint.lookup.docketType + '?_limit=-1' }} ref={lookupRef}
+                    queryOptions={{ endPoint: ServiceEndpoint.lookup.docketType }} initParams={{ limit: -1 }} ref={lookupRef}
                     lookupOptions={{ idAttribute: 'id', labelAttribute: 'document' }} />
             </PalmyraNewForm>
             {fileList.length == 0 ? <section className="dropzone-container">

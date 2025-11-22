@@ -4,6 +4,9 @@ import { FaFile } from 'react-icons/fa6';
 import { PDFViewerWithOverlay } from 'components/viewer/PdfViewWithOverlay';
 import { TIFFViewer } from 'components/viewer/TiffViewWithOverlay';
 import { TextHtmlViewer } from 'components/viewer/TextHtmlViewer';
+import { useParams } from 'react-router-dom';
+import { StringFormat } from '@palmyralabs/ts-utils';
+import { ServiceEndpoint } from 'config/ServiceEndpoint';
 
 interface FileProps {
     file: any
@@ -13,44 +16,47 @@ interface FileProps {
     stampData: any,
     setSelectedFile: any
     setSelectedStamp?: any
+    selectedfile?: any,
+    setSelectedStamps?: any
+    handleFetch?: () => void
 }
 
-const FileViewer = ({ fileUrl, key, file, selectedStamp, stampData, setSelectedFile, setSelectedStamp }: FileProps) => {
+const FileViewer = ({ fileUrl, key, file, selectedStamp, stampData, setSelectedFile, setSelectedStamp, setSelectedStamps, handleFetch }: FileProps) => {
     const [fileData, _setFileData] = useState(file);
+    const params = useParams();
 
-    // const overlays = [
-    //     { page: 1, imageUrl: img, x: 40, y: 700, width: 100, height: 100, id: file?.id }
-    // ]
+    const uploadStampEndPoint = StringFormat(
+        ServiceEndpoint.policy.stamp.stampUploadApi,
+        {
+            policyId: params?.policyId,
+            docketTypeId: file?.docketType?.id,
+        }
+    );
 
     return (<>
         {fileData ? <div className="h-auto overflow-hidden" key={key}>
             <div className="p-">
                 <div className="h-[calc(100vh-115px)] bg-white rounded-2xl flex items-center justify-center overflow-hidden">
                     {fileData?.fileType === 'application/pdf' ? (
-                        // <PdfViewWithOverlay
-                        //     pdfUrlFromApi={fileUrl}
-                        //     imageUrlFromApi={selectedStamp ? overlays : []}
-                        //     pageIndex={selectedStamp ? overlays : []}
-                        //     position={{ x: 100, y: 400    }}
-                        //     scale={0.1}
-                        //     file={fileData}
-                        // // selectedStamp={selectedStamp} // You already pass this prop!
-                        // />
                         <PDFViewerWithOverlay selectedStamp={selectedStamp} pdfUrlFromApi={fileUrl} file={fileData} overlays={stampData}
-                            setSelectedFile={setSelectedFile} setSelectedStamp={setSelectedStamp} />
+                            setSelectedFile={setSelectedFile} setSelectedStamp={setSelectedStamp} setSelectedStamps={setSelectedStamps} handleFetch={handleFetch}
+                            uploadStampEndPoint={uploadStampEndPoint} />
                     ) : fileData?.fileType === 'image/tiff' ? (
                         <TIFFViewer
                             overlays={stampData}
                             tiff={fileUrl}
-                            // lang="tr"
-                            // paginate="ltr"
-                            // buttonColor="#141414"
                             file={fileData}
                             selectedStamp={selectedStamp}
                             stampData={stampData}
+                            setSelectedStamp={setSelectedStamp}
+                            setSelectedFile={setSelectedFile}
+                            uploadStampEndPoint={uploadStampEndPoint}
+                            handleFetch={handleFetch}
                         />
                     ) : fileData?.fileType === 'text/plain' || fileData?.fileType === 'text/html' ? (
-                        <TextHtmlViewer endPoint={fileUrl} file={fileData} selectedStamp={selectedStamp} overlays={stampData} />
+                        <TextHtmlViewer endPoint={fileUrl} file={fileData} selectedStamp={selectedStamp} overlays={stampData}
+                            uploadStampEndPoint={uploadStampEndPoint} setSelectedStamp={setSelectedStamp} setSelectedFile={setSelectedFile}
+                            handleFetch={handleFetch} />
                     ) : <> <ImageViewer endPoint={fileUrl} file={fileData} /></>}
                 </div>
             </div>
@@ -69,4 +75,3 @@ const FileViewer = ({ fileUrl, key, file, selectedStamp, stampData, setSelectedF
 };
 
 export { FileViewer };
-

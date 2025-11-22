@@ -9,7 +9,7 @@ interface FileProps {
 }
 
 const FileListViewer = ({ data, policyId, selectedFile, setSelectedFile }: FileProps) => {
-
+    
     const handleFileClick = (file: any) => {
         if (selectedFile?.pdfFiles?.id === file?.pdfFiles?.id) {
             setSelectedFile(null);
