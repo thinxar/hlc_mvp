@@ -27,7 +27,7 @@ public class PolicyFileController {
 	private final PolicyFileService policyService;
 	private final EndorsementService endorseService;
 
-	@GetMapping("/{policyId}/file/{fileId}")
+	@GetMapping("/{policyId}/file/{fileId}/download")
 	public ResponseFileEmitter downloadFile(@PathVariable("policyId") Integer policyId,
 			@PathVariable("fileId") Integer fileId) {
 		return policyService.download(policyId, fileId);

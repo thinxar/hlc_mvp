@@ -12,10 +12,12 @@ import com.palmyralabs.dms.model.PolicyFileModel;
 import com.palmyralabs.dms.model.PolicyStampModel;
 import com.palmyralabs.dms.model.PolicyStampPositionModel;
 import com.palmyralabs.palmyra.base.Action;
+import com.palmyralabs.palmyra.base.FilterCriteria;
 import com.palmyralabs.palmyra.base.annotations.CrudMapping;
 import com.palmyralabs.palmyra.core.api2db.service.PalmyraQueryService;
 import com.palmyralabs.palmyra.handlers.HandlerContext;
 import com.palmyralabs.palmyra.handlers.QueryHandler;
+import com.palmyralabs.palmyra.handlers.ReadHandler;
 import com.zitlab.palmyra.sqlbuilder.condition.Criteria;
 import com.zitlab.palmyra.store.QueryFilter;
 import com.zitlab.palmyra.store.Tuple;
@@ -24,12 +26,11 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-@CrudMapping(mapping = "/policy/{policyId}/file", type = PolicyFileModel.class)
-public class DmsPolicyFileHandler extends AbstractHandler implements QueryHandler {
+@CrudMapping(mapping = "/policy/{policyId}/file", type = PolicyFileModel.class, secondaryMapping = "/policy/{policyId}/file/{id}")
+public class DmsPolicyFileHandler extends AbstractHandler implements QueryHandler,ReadHandler {
 
 	private final PalmyraQueryService queryService;
 	private final ObjectMapper mapper;
-
 
 	@Override
 	public QueryFilter applyQueryFilter(QueryFilter filter, HandlerContext ctx) {
