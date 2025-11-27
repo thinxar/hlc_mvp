@@ -17,21 +17,28 @@ interface IOptions {
     stampData: any,
     setSelectedFile: any,
     file: any,
-    fildata?:any
+    fildata?: any,
+    setStampDataArr?: any,
+    stampDataArr: any
 }
 const PolicyHeaderSection = (props: IOptions) => {
-    const { data, selectedStamp, stampData, setSelectedFile, file, id ,fildata} = props;
-      const [firstOpened, firstHandlers] = useDisclosure(false);
+    const { data, selectedStamp, stampData, setSelectedFile, file, id, fildata, setStampDataArr, stampDataArr } = props;
+    const [firstOpened, firstHandlers] = useDisclosure(false);
     const [secondOpened, secondHandlers] = useDisclosure(false);
     const [stampCategory, setStampCategory] = useState<any>()
     const stampEndPoint = ServiceEndpoint.policy.stamp.lookup
     const handleStampChange = (d?: any) => {
         selectedStamp(d)
+        if (d) {
+            setStampDataArr((prev: any) => {
+                return [...(prev || []), { ...d }];
+            });
+        }
     }
 
     useEffect(() => {
-        useFormstore(stampEndPoint + '?_limit=-1', {}).get({}).then((res: any) => {
-            setStampCategory(res)
+        useFormstore(stampEndPoint, {}).query({ limit: -1 }).then((res: any) => {
+            setStampCategory(res?.result)
         }).catch((err) => console.log(err)
         )
     }, [])
@@ -51,7 +58,12 @@ const PolicyHeaderSection = (props: IOptions) => {
                                 <ScrollArea style={{ height: 300 }} >
                                     {
                                         stampCategory?.map((e: any, i: any) => {
-                                            return <Menu.Item key={i} onClick={() => handleStampChange(e)}> {e?.name} </Menu.Item>
+                                            return <Menu.Item
+                                                key={i}
+                                                onClick={() => handleStampChange(e)}
+                                                disabled={stampDataArr?.some((x: any) => x.code === e.code)}>
+                                                {e?.name}
+                                            </Menu.Item>
                                         })
                                     }
                                 </ScrollArea>
@@ -85,7 +97,7 @@ const PolicyHeaderSection = (props: IOptions) => {
 
             <Modal opened={secondOpened} onClose={secondHandlers.close} onKeyDown={handleKeyAction("Escape", secondHandlers.close)}
                 centered size={"xl"} title={`Endorsement Summary`} >
-                <EndorsementSummaryGrid data={data} stampData={stampData} setSelectedFile={setSelectedFile} file={file} id={id} fildata={fildata}/>
+                <EndorsementSummaryGrid data={data} stampData={stampData} setSelectedFile={setSelectedFile} file={file} id={id} fildata={fildata} />
             </Modal>
         </div >
     )

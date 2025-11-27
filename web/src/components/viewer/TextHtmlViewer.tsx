@@ -12,7 +12,7 @@ import { formatDateTime } from "utils/FormateDate";
 import { handleError } from "wire/ErrorHandler";
 import { selectStampFunc } from "./widgets/widget";
 
-export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSelectedStamp, setSelectedFile, handleFetch }: any) => {
+export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSelectedStamp, setSelectedFile, handleFetch, stampDataArr, setStampDataArr }: any) => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -105,8 +105,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
           tooltip.style.top = p.y + 10 + "px";
           tooltip.innerHTML = `
           <strong>${target?.metadata?.name ?? "Stamp"}</strong><br/>
-          Code: ${target?.metadata?.code ?? "-"}<br/>
-          Date: ${FormateDate}
+           ${FormateDate}
         `;
           tooltip.style.display = "block";
         }
@@ -119,7 +118,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
   }, [content]);
 
   useEffect(() => {
-    selectStampFunc(selectedStamp, 'page', setSelectedStamp, fabricCanvasRef)
+    selectStampFunc(selectedStamp, 'page', setSelectedStamp, fabricCanvasRef, setStampDataArr)
   }, [selectedStamp])
 
   const saveOverlays = async () => {
@@ -160,6 +159,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
 
       canvas?.renderAll();
       setSelectedStamp(null);
+      setStampDataArr(null)
       setLoading(false)
 
     } catch (e) {
@@ -170,7 +170,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
   if (loading)
     return (
       <div className="flex justify-center items-center p-10">
-        <Loader size="lg" />
+        <Loader type="bars" color="blue" />
       </div>
     );
 
@@ -179,7 +179,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
       <div className="flex justify-between mb-3 items-center">
         <strong>{file.fileName}</strong>
         {
-          selectedStamp && <div>
+          stampDataArr?.length > 0 && <div>
             <button onClick={saveOverlays} className='cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-gradient-to-r pr-bgcolor text-white
              font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-101 transition-all duration-200 ease-out'>
               Save Stamp

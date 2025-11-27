@@ -55,7 +55,8 @@ const ServiceEndpoint = {
     policy: {
         searchPolicyApi: '/policy',
         searchPolicyByIdApi: '/policy/{policyId}/file',
-        getFileApi: '/policy/{policyId}/file/{fileId}',
+        getFileApi: '/policy/{policyId}/file/{fileId}/download',
+        getFileDetailApi: '/policy/{policyId}/file/{fileId}',
         fileUploadApi: '/policy/{policyId}/docketType/{docketTypeId}/file',
         endorsement: {
             endorseCreateApi: '/policy/{policyId}/endorsement/{docketType}',

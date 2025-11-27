@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useRef, forwardRef } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { fabric } from "fabric";
 import * as pdfjsLib from "pdfjs-dist";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
@@ -12,9 +12,10 @@ import { saveOverlay } from "./overlay/saveOverlay";
 
 (pdfjsLib as any).GlobalWorkerOptions.workerSrc = workerSrc;
 
-export const PDFViewerWithOverlay = forwardRef(function PdfViewer(
-  { pdfUrlFromApi, selectedStamp, overlays, file, setSelectedStamp, setSelectedFile, uploadStampEndPoint, handleFetch }: any
-) {
+export const PDFViewerWithOverlay = (
+  { pdfUrlFromApi, selectedStamp, overlays, file, setSelectedStamp, setSelectedFile, uploadStampEndPoint, handleFetch,
+    stampDataArr, setStampDataArr, fileDetailPoint }: any
+) => {
   const [pages, setPages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -22,6 +23,7 @@ export const PDFViewerWithOverlay = forwardRef(function PdfViewer(
   const pdfRef = useRef<any>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const overlayMap = useMemo(() => {
     const map: Record<number, any[]> = {};
@@ -83,19 +85,19 @@ export const PDFViewerWithOverlay = forwardRef(function PdfViewer(
       uploadEndPoint: useFormstore(uploadStampEndPoint, { isFormData: true }),
       setSelectedFile,
       setSelectedOverlay: setSelectedStamp,
-      handleFetch
+      setStampDataArr,
+      handleFetch,
+      fileDetailPoint
     });
   }
 
   useEffect(() => {
-    pdfRender(pages, page, zoom, overlayMap, fabricCanvasRef, tooltipRef)
+    pdfRender(pages, page, zoom, overlayMap, fabricCanvasRef, tooltipRef, containerRef)
   }, [pages, page, zoom, overlayMap])
 
-
   useEffect(() => {
-    selectStampFunc(selectedStamp, page, setSelectedStamp, fabricCanvasRef)
+    selectStampFunc(selectedStamp, page, setSelectedStamp, fabricCanvasRef, setStampDataArr)
   }, [selectedStamp])
-
 
   if (loading)
     return (
@@ -136,12 +138,12 @@ export const PDFViewerWithOverlay = forwardRef(function PdfViewer(
             <GoPlus fontSize={20} />
           </button>
           <button
-            onClick={() => setZoom(1.2)}
+            onClick={() => setZoom(0.9)}
             className="bg-gray-200 px-2 py-1 rounded"
           >
             Reset
           </button>
-          {selectedStamp && (
+          {stampDataArr?.length > 0 && (
             <button
               onClick={saveStampData}
               className="cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-gradient-to-r pr-bgcolor text-white 
@@ -151,14 +153,28 @@ export const PDFViewerWithOverlay = forwardRef(function PdfViewer(
           )}
         </div>
       </div>
-      <div className="flex-1 overflow-auto border rounded relative p-2 flex justify-center bg-black">
-        <canvas id="fabric-pdf-canvas" />
+      <div className="overflow-auto border rounded relative p-2 flex justify-center items-center bg-black ">
         <div
-          ref={tooltipRef}
-          className="absolute hidden bg-black text-white text-xs px-2 py-1 rounded pointer-events-none"
-          style={{ zIndex: 9999 }}
-        />
+          ref={containerRef}
+          style={{ position: "relative", width: "100%", height: "100%" }}
+        >
+          <canvas id="fabric-pdf-canvas" />
+          <div
+            ref={tooltipRef}
+            style={{
+              position: "fixed",
+              display: "none",
+              background: "rgba(0,0,0,0.85)",
+              color: "white",
+              padding: "4px 8px",
+              borderRadius: "6px",
+              fontSize: "12px",
+              pointerEvents: "none",
+              zIndex: 9999,
+            }}
+          ></div>
+        </div>
       </div>
     </div>
   );
-});
+}

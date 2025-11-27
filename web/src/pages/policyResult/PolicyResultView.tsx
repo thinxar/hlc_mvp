@@ -24,14 +24,16 @@ const PolicyResultView = () => {
     const [opened, { open, close }] = useDisclosure(false);
     const policyData = location?.state?.policyData;
     const BASE_URL = `${window.location.origin}/api/palmyra`;
-    const [_selectedStamps, setSelectedStamps] = useState<any>(null);
-    const endpoint = StringFormat(ServiceEndpoint.policy.searchPolicyByIdApi + "?_limit=-1", { policyId: params?.policyId });
+    const [_selectedStamps, setSelectedStamps] = useState<any>({});
+    const endpoint = StringFormat(ServiceEndpoint.policy.searchPolicyByIdApi, { policyId: params?.policyId });
     const filePoint = StringFormat(ServiceEndpoint.policy.getFileApi, { policyId: params?.policyId, fileId: selectedFile?.pdfFiles?.id });
+    const fileDetailPoint = StringFormat(ServiceEndpoint.policy.getFileDetailApi, { policyId: params?.policyId, fileId: selectedFile?.pdfFiles?.id });
     const pdfUrl = BASE_URL + filePoint;
+    const [stampDataArr, setStampDataArr] = useState<any>()
 
     const handleFetch = () => {
         useFormstore(endpoint)
-            .query({ filter: {} })
+            .query({ limit: -1 })
             .then((d: any) => {
                 const mappedPolicies: any[] = d?.result?.map((item: any) => ({
                     id: item.policyId?.policyNumber,
@@ -68,6 +70,24 @@ const PolicyResultView = () => {
             })
             .catch(handleError);
     };
+
+    // const a = useFormstore(fileDetailPoint, {}).get({}).then((item) => {
+    //     const b = {
+    //         id: item.policyId?.policyNumber,
+    //         pdfFiles: {
+    //             id: item.id,
+    //             name: item.name,
+    //             fileName: item.fileName,
+    //             size: item.fileSize,
+    //             date: item.createdOn,
+    //             fileType: item.fileType,
+    //             docketType: item.docketType,
+    //             path: item.path || ''
+    //         },
+    //         stamps: item?.fixedStamp ?? [],
+    //     }
+    //     console.log(b);
+    // }).catch((err) => console.log(err))
 
     useEffect(() => {
         handleFetch()
@@ -115,10 +135,11 @@ const PolicyResultView = () => {
             </div>
             <div className="bg-gray-100 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-auto">
                 <PolicyHeaderSection data={policyData} selectedStamp={setSelectedStamp} id={selectedFile?.pdfFiles?.id}
-                    stampData={selectedFile?.stamps} setSelectedFile={setSelectedFile} file={selectedFile?.pdfFiles} fildata={data} />
+                    stampData={selectedFile?.stamps} setSelectedFile={setSelectedFile} file={selectedFile?.pdfFiles} fildata={data} setStampDataArr={setStampDataArr} stampDataArr={stampDataArr} />
                 <FileViewer file={selectedFile?.pdfFiles} fileUrl={pdfUrl} key={selectedFile?.pdfFiles?.id} selectedStamp={selectedStamp}
                     stampData={selectedFile} setSelectedFile={setSelectedFile} setSelectedStamps={setSelectedStamps}
-                    setSelectedStamp={setSelectedStamp} selectedfile={selectedFile} handleFetch={handleFetch} />
+                    setSelectedStamp={setSelectedStamp} selectedfile={selectedFile} handleFetch={handleFetch} stampDataArr={stampDataArr}
+                    setStampDataArr={setStampDataArr} fileDetailPoint={fileDetailPoint} />
             </div>
         </div>
     );

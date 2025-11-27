@@ -9,11 +9,11 @@ import { ToastContainer } from 'react-toastify'
 
 createRoot(document.getElementById('root')!).render(
   // <StrictMode>
-    <MantineProvider>
-      <StoreFactoryContext.Provider value={AppStoreFactory}>
-        <App />
-        <ToastContainer limit={1} pauseOnFocusLoss={false} autoClose={2000} />
-      </StoreFactoryContext.Provider>
-    </MantineProvider>
+  <MantineProvider>
+    <StoreFactoryContext.Provider value={AppStoreFactory}>
+      <App />
+      <ToastContainer limit={1} pauseOnFocusLoss={false} autoClose={2000} />
+    </StoreFactoryContext.Provider>
+  </MantineProvider>
   // </StrictMode>,
 )

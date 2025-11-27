@@ -78,7 +78,7 @@ const EndorsementSummaryGrid = (props: IOptions) => {
         const a = fildata?.find((e: any) => {
             return e.pdfFiles?.id === d.id
         })
-        setStampdata(a.stamps);
+        setStampdata(a);
         setrData(d);
         open();
     }

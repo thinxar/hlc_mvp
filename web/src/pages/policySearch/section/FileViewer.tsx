@@ -18,10 +18,14 @@ interface FileProps {
     setSelectedStamp?: any
     selectedfile?: any,
     setSelectedStamps?: any
-    handleFetch?: () => void
+    handleFetch?: () => void,
+    stampDataArr?: any,
+    setStampDataArr?: any,
+    fileDetailPoint?: any
 }
 
-const FileViewer = ({ fileUrl, key, file, selectedStamp, stampData, setSelectedFile, setSelectedStamp, setSelectedStamps, handleFetch }: FileProps) => {
+const FileViewer = ({ fileUrl, key, file, selectedStamp, stampData, setSelectedFile,
+    setSelectedStamp, setSelectedStamps, handleFetch, stampDataArr, setStampDataArr, fileDetailPoint }: FileProps) => {
     const [fileData, _setFileData] = useState(file);
     const params = useParams();
 
@@ -40,7 +44,7 @@ const FileViewer = ({ fileUrl, key, file, selectedStamp, stampData, setSelectedF
                     {fileData?.fileType === 'application/pdf' ? (
                         <PDFViewerWithOverlay selectedStamp={selectedStamp} pdfUrlFromApi={fileUrl} file={fileData} overlays={stampData}
                             setSelectedFile={setSelectedFile} setSelectedStamp={setSelectedStamp} setSelectedStamps={setSelectedStamps} handleFetch={handleFetch}
-                            uploadStampEndPoint={uploadStampEndPoint} />
+                            uploadStampEndPoint={uploadStampEndPoint} stampDataArr={stampDataArr} setStampDataArr={setStampDataArr} fileDetailPoint={fileDetailPoint} />
                     ) : fileData?.fileType === 'image/tiff' ? (
                         <TIFFViewer
                             overlays={stampData}
@@ -51,13 +55,15 @@ const FileViewer = ({ fileUrl, key, file, selectedStamp, stampData, setSelectedF
                             setSelectedStamp={setSelectedStamp}
                             setSelectedFile={setSelectedFile}
                             uploadStampEndPoint={uploadStampEndPoint}
-                            handleFetch={handleFetch}
+                            handleFetch={handleFetch} stampDataArr={stampDataArr} setStampDataArr={setStampDataArr}
                         />
                     ) : fileData?.fileType === 'text/plain' || fileData?.fileType === 'text/html' ? (
                         <TextHtmlViewer endPoint={fileUrl} file={fileData} selectedStamp={selectedStamp} overlays={stampData}
                             uploadStampEndPoint={uploadStampEndPoint} setSelectedStamp={setSelectedStamp} setSelectedFile={setSelectedFile}
-                            handleFetch={handleFetch} />
-                    ) : <> <ImageViewer endPoint={fileUrl} file={fileData} /></>}
+                            handleFetch={handleFetch} stampDataArr={stampDataArr} setStampDataArr={setStampDataArr} />
+                    ) : <> <ImageViewer endPoint={fileUrl} file={fileData} selectedStamp={selectedStamp} overlays={stampData}
+                        uploadStampEndPoint={uploadStampEndPoint} setSelectedStamp={setSelectedStamp} setSelectedFile={setSelectedFile}
+                        handleFetch={handleFetch} stampDataArr={stampDataArr} setStampDataArr={setStampDataArr} /></>}
                 </div>
             </div>
         </div>

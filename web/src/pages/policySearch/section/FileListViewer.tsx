@@ -9,7 +9,7 @@ interface FileProps {
 }
 
 const FileListViewer = ({ data, policyId, selectedFile, setSelectedFile }: FileProps) => {
-    
+
     const handleFileClick = (file: any) => {
         if (selectedFile?.pdfFiles?.id === file?.pdfFiles?.id) {
             setSelectedFile(null);
@@ -40,7 +40,6 @@ const FileListViewer = ({ data, policyId, selectedFile, setSelectedFile }: FileP
             (a: any, b: any) =>
                 new Date(b.pdfFiles.date).getTime() - new Date(a.pdfFiles.date).getTime()
         );
-
         return acc;
     }, {});
 

@@ -2,8 +2,13 @@ import { fabric } from "fabric";
 import { stampImages } from "../StampImages";
 import { formatDateTime } from "utils/FormateDate";
 
-
-const addStampWithDeleteIcon = (img: fabric.Image, stampMeta: any, setSelectedStamp: any, selectedStamp: any, fabricCanvasRef: any) => {
+const addStampWithDeleteIcon = (
+    img: fabric.Image,
+    stampMeta: any,
+    fabricCanvasRef: any,
+    setStampDataArr: any,
+    _setSelectedStamp: any
+) => {
     img.set({
         selectable: true,
         hoverCursor: "pointer",
@@ -26,22 +31,25 @@ const addStampWithDeleteIcon = (img: fabric.Image, stampMeta: any, setSelectedSt
     canvas.on("object:moving", (e: any) => {
         updateDeleteIconPosition(e.target);
     });
-
     canvas.on("object:scaling", (e: any) => {
         updateDeleteIconPosition(e.target);
     });
-
     canvas.on("object:rotating", (e: any) => {
         updateDeleteIconPosition(e.target);
     });
 
-    addDeleteOnSelection(img, setSelectedStamp, selectedStamp, fabricCanvasRef);
+    addDeleteOnSelection(img, fabricCanvasRef, setStampDataArr);
+
     canvas.add(img);
     canvas.setActiveObject(img);
-    canvas?.renderAll();
+    canvas.renderAll();
 };
 
-const addDeleteOnSelection = (obj: fabric.Object, setSelectedStamp: any, selectedStamp: any, fabricCanvasRef: any) => {
+const addDeleteOnSelection = (
+    obj: fabric.Object,
+    fabricCanvasRef: any,
+    setStampDataArr: any
+) => {
     const canvas = fabricCanvasRef.current;
     if (!canvas) return;
 
@@ -60,14 +68,16 @@ const addDeleteOnSelection = (obj: fabric.Object, setSelectedStamp: any, selecte
 
     obj.on("selected", () => {
         const img = obj as fabric.Image;
+
         if (!(img as any).deleteIcon) {
             const deleteIcon = new fabric.Text("✖", {
-                fontSize: 20,
+                fontSize: 30,
                 fill: "red",
-                selectable: false,
+                selectable: true,
                 hoverCursor: "pointer",
                 originX: "center",
                 originY: "center",
+                evented: true,
             });
 
             const bounds = img.getBoundingRect();
@@ -75,174 +85,283 @@ const addDeleteOnSelection = (obj: fabric.Object, setSelectedStamp: any, selecte
                 left: bounds.left + bounds.width + 5,
                 top: bounds.top - 5,
             });
+
             deleteIcon.on("mousedown", () => {
                 canvas.remove(img);
                 canvas.remove(deleteIcon);
-                canvas?.renderAll();
-                if (selectedStamp?.code === (img as any).metadata?.code) {
-                    setSelectedStamp(null);
-                }
+                canvas.renderAll();
+
+                setStampDataArr((prev: any[]) => {
+                    if (!prev) return [];
+                    return prev.filter(
+                        (x) => x?.code !== (img as any).metadata?.code
+                    );
+                });
             });
 
             (img as any).deleteIcon = deleteIcon;
+
             canvas.add(deleteIcon);
             canvas.bringToFront(deleteIcon);
-            canvas?.renderAll();
+            canvas.renderAll();
         }
     });
 };
 
+const pdfRender = (
+    pages: any,
+    page: number,
+    zoom: number,
+    overlayMap: any,
+    fabricCanvasRef: React.MutableRefObject<fabric.Canvas | null>,
+    tooltipRef: any,
+    containerRef: any
+) => {
+    if (!pages?.length) return;
 
-const pdfRender = (pages: any, page: any, zoom: any, overlayMap: any, fabricCanvasRef: any, tooltipRef: any) => {
-    if (!pages.length) return;
     const pageData = pages[page];
+    if (!pageData) return;
 
-    if (fabricCanvasRef.current) fabricCanvasRef.current.dispose();
+    if (fabricCanvasRef.current) {
+        fabricCanvasRef.current.dispose();
+        fabricCanvasRef.current = null;
+    }
 
     const canvas = new fabric.Canvas("fabric-pdf-canvas", {
         selection: true,
         preserveObjectStacking: true,
     });
 
+    canvas.skipTargetFind = false;
+    canvas.perPixelTargetFind = true;
+    canvas.targetFindTolerance = 20;
+    canvas.backgroundVpt = true;
+
     fabricCanvasRef.current = canvas;
 
-    fabric.Image.fromURL(pageData.png, (img) => {
-        canvas.setWidth(pageData.width * zoom);
-        canvas.setHeight(pageData.height * zoom);
+    fabric.Image.fromURL(pageData.png, (bgImg) => {
+        const width = pageData.width * zoom;
+        const height = pageData.height * zoom;
+
+        canvas.setWidth(width);
+        canvas.setHeight(height);
+
         canvas.setBackgroundImage(
-            img,
+            bgImg,
             () => {
                 canvas.renderAll();
+
                 const existing = overlayMap[page + 1] || [];
+
                 existing.forEach((stamp: any) => {
                     const url = stampImages[stamp?.stamp?.code];
-                    fabric.Image.fromURL(url, (img) => {
-                        img.set({
-                            left: Number(stamp?.position?.left) * zoom,
-                            top: Number(stamp?.position?.top) * zoom,
-                            scaleX: Number(stamp?.position?.scaleX),
-                            scaleY: Number(stamp?.position?.scaleY),
-                            selectable: false,
-                            hoverCursor: "pointer",
-                        });
+                    if (!url) return;
 
-                        (img as any).metadata = {
-                            code: stamp?.stamp?.code,
-                            name: stamp?.stamp?.name,
-                            addedOn: stamp?.createdOn,
-                        };
-                        canvas.add(img);
-                        canvas?.renderAll();
-                    });
+                    fabric.Image.fromURL(
+                        url,
+                        (img) => {
+                            img.set({
+                                left: Number(stamp?.position?.left) || 0,
+                                top: Number(stamp?.position?.top) || 0,
+                                scaleX: Number(stamp?.position?.scaleX) || 1,
+                                scaleY: Number(stamp?.position?.scaleY) || 1,
+                                selectable: false,
+                                hoverCursor: "pointer",
+                            });
+
+                            (img as any).metadata = {
+                                code: stamp?.stamp?.code,
+                                name: stamp?.stamp?.name,
+                                addedOn: stamp?.createdOn,
+                            };
+
+                            canvas.add(img);
+                            canvas.renderAll();
+                        },
+                        { crossOrigin: "anonymous" }
+                    );
                 });
             },
             { scaleX: zoom, scaleY: zoom }
         );
     });
 
-    const tooltip = tooltipRef.current;
+    const tooltipEl = tooltipRef?.current ?? null;
+    const containerEl = containerRef?.current ?? null;
+    const canvasEl = (canvas as any).lowerCanvasEl as HTMLCanvasElement;
+
+    if (!canvasEl) return;
+
+    if (tooltipEl && containerEl && tooltipEl.parentElement !== containerEl) {
+        containerEl.appendChild(tooltipEl);
+        tooltipEl.style.position = "absolute";
+        tooltipEl.style.pointerEvents = "none";
+    }
+
+    const positionTooltip = (e: any) => {
+        if (!tooltipEl || !containerEl || !canvasEl || !canvas) return;
+
+        const pointer = canvas.getPointer(e.e);
+        if (!pointer) return;
+
+        const z = canvas.getZoom() || 1;
+
+        const scrollLeft = containerEl.scrollLeft || 0;
+        const scrollTop = containerEl.scrollTop || 0;
+
+        const x =
+            pointer.x * z -
+            scrollLeft +
+            (canvasEl.offsetLeft || 0);
+
+        const y =
+            pointer.y * z -
+            scrollTop +
+            (canvasEl.offsetTop || 0);
+
+        const gap = 4;
+
+        tooltipEl.style.left = `${Math.round(x + gap)}px`;
+        tooltipEl.style.top = `${Math.round(
+            y - tooltipEl.offsetHeight / 2
+        )}px`;
+
+        const maxLeft =
+            containerEl.clientWidth - tooltipEl.offsetWidth - 4;
+        const maxTop =
+            containerEl.clientHeight - tooltipEl.offsetHeight - 4;
+
+        if (tooltipEl.offsetLeft > maxLeft)
+            tooltipEl.style.left = `${maxLeft}px`;
+        if (tooltipEl.offsetTop < 0) tooltipEl.style.top = `4px`;
+        if (tooltipEl.offsetTop > maxTop)
+            tooltipEl.style.top = `${maxTop}px`;
+    };
 
     canvas.on("mouse:over", (e) => {
-        const target = e.target as any;
-        const timestamp = target?.metadata?.addedOn;
-        const FormateDate = formatDateTime(timestamp, 'DD-MM-YYYY HH:MM:SS A');
-        if (tooltip && target?.metadata) {
-            tooltip.style.display = "block";
-            tooltip.innerHTML = `
-          <strong>${target?.metadata?.name ?? "Stamp"}</strong><br/>
-            Code: ${target?.metadata?.code ?? "-"}<br/>
-          Date: ${FormateDate}
-                 `;
-        }
+        const t = e.target as any;
+        if (!t?.metadata || !tooltipEl) return;
+
+        const date = formatDateTime(
+            t.metadata.addedOn,
+            "DD-MM-YYYY HH:MM:SS A"
+        );
+
+        tooltipEl.innerHTML = `<strong>${t.metadata.name}</strong><br/>${date}`;
+        tooltipEl.style.display = "block";
+        positionTooltip(e);
     });
+
     canvas.on("mouse:move", (e) => {
-        if (tooltip && tooltip.style.display === "block") {
-            tooltip.style.left = e.e.pageX - 500 + "px";
-            tooltip.style.top = e.e.pageY - 270 + "px";
-        }
+        if (!tooltipEl || tooltipEl.style.display !== "block") return;
+        positionTooltip(e);
     });
+
     canvas.on("mouse:out", () => {
-        if (tooltip) tooltip.style.display = "none";
+        if (tooltipEl) tooltipEl.style.display = "none";
     });
 
     canvas.on("selection:created", (e) => {
-        const activeObject = e.target;
-        if (!activeObject) return;
+        const obj = e.target as any;
+        if (!obj) return;
 
-        const deleteIcon = new fabric.Text("✖", {
-            left: (activeObject.left ?? 0) + (activeObject.width ?? 0) * (activeObject.scaleX ?? 1) - 10,
-            top: (activeObject.top ?? 0) - 10,
-            fontSize: 20,
-            fill: "red",
-            selectable: false,
-            hoverCursor: "pointer",
-            originX: "center",
-            originY: "center",
+        canvas.getObjects().forEach((o: any) => {
+            if (o?.isDeleteIcon) canvas.remove(o);
         });
 
-        (activeObject as any).deleteIcon = deleteIcon;
-        canvas.add(deleteIcon);
-        canvas.bringToFront(deleteIcon);
+        const bounds = obj.getBoundingRect(true);
 
-        deleteIcon.on("mousedown", () => {
-            canvas.remove(activeObject);
+        const deleteIcon = new fabric.Text("✖", {
+            left: bounds.left + bounds.width - 15,
+            top: bounds.top + 15,
+            fontSize: 20,
+            fill: "red",
+            originX: "center",
+            originY: "center",
+            selectable: false,
+            evented: true,
+        }) as any;
+
+        deleteIcon.isDeleteIcon = true;
+
+        deleteIcon.on("mousedown", (ev: any) => {
+            ev.e.stopPropagation();
+            canvas.remove(obj);
             canvas.remove(deleteIcon);
             canvas.renderAll();
         });
 
-        canvas?.renderAll();
+        canvas.add(deleteIcon);
+        canvas.bringToFront(deleteIcon);
+        canvas.renderAll();
     });
 
     canvas.on("selection:cleared", () => {
-        canvas.getObjects().forEach((obj: any) => {
-            if (obj?.deleteIcon) {
-                canvas.remove(obj.deleteIcon);
-                delete obj.deleteIcon;
+        canvas.getObjects().forEach((o: any) => {
+            if (o?.isDeleteIcon) {
+                canvas.remove(o);
             }
         });
-        canvas?.renderAll();
+        canvas.renderAll();
     });
+};
 
-}
-
-const selectStampFunc = (selectedStamp: any, page: any, setSelectedStamp: any, fabricCanvasRef: any) => {
+const selectStampFunc = (
+    selectedStamp: any,
+    page: any,
+    setSelectedStamp: any,
+    fabricCanvasRef: any,
+    setStampDataArr: any,
+) => {
     if (!selectedStamp || !fabricCanvasRef.current) return;
 
-    const pngUrl = stampImages[selectedStamp?.code];
-    if (!pngUrl) return;
+    const url = stampImages[selectedStamp?.code];
+    if (!url) return;
 
-    fabric.Image.fromURL(pngUrl, (img) => {
+    fabric.Image.fromURL(url, (img) => {
         img.set({
             left: 100,
             top: 100,
             scaleX: 0.5,
             scaleY: 0.5,
             selectable: true,
-            hoverCursor: "pointer",
+            hasControls: true,
+            hasBorders: false,
+            hoverCursor: "move",
         });
 
         (img as any).metadata = {
             code: selectedStamp.code,
             pageNumber: page,
+            addedOn: Date.now(),
             isNew: true,
         };
-        addStampWithDeleteIcon(img, {
-            code: selectedStamp?.code,
-            name: selectedStamp?.name,
-            pageNumber: page + 1,
-            isNew: true,
-        }, setSelectedStamp, selectedStamp, fabricCanvasRef);
+
+        addStampWithDeleteIcon(
+            img,
+            {
+                code: selectedStamp?.code,
+                name: selectedStamp?.name,
+                pageNumber: page + 1,
+                isNew: true,
+            },
+            fabricCanvasRef,
+            setStampDataArr,
+            setSelectedStamp
+        );
     });
-}
+};
 
 const overlayFun = (overlays: any) => {
     const map: Record<number, any[]> = {};
+
     overlays?.stamps?.forEach((o: any) => {
         const pg = Number(o?.position?.pageNumber ?? 1);
         if (!map[pg]) map[pg] = [];
         map[pg].push(o);
     });
-    return map;
-}
 
-export { addStampWithDeleteIcon, pdfRender, selectStampFunc, overlayFun }
+    return map;
+};
+
+export { addStampWithDeleteIcon, pdfRender, selectStampFunc, overlayFun };

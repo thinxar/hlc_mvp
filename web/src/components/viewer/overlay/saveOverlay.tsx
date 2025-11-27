@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import { handleError } from "wire/ErrorHandler";
+// import { useFormstore } from "wire/StoreFactory";
 
 export const saveOverlay = async ({
   canvasRef,
@@ -9,7 +10,8 @@ export const saveOverlay = async ({
   uploadEndPoint,
   setSelectedFile,
   setSelectedOverlay,
-  handleFetch
+  setStampDataArr,
+  handleFetch,
 }: any) => {
   try {
     const canvas = canvasRef.current;
@@ -20,7 +22,7 @@ export const saveOverlay = async ({
       .filter((o: any) => o.metadata?.isNew);
 
     if (!newObjects.length) {
-      toast.info("No new overlay to save");
+      toast.info("No new stamp to save");
       return;
     }
 
@@ -49,8 +51,19 @@ export const saveOverlay = async ({
     }));
 
     handleFetch();
-    toast.success("Overlay saved successfully");
+    // useFormstore(fileDetailPoint, {}).query({}).then((res) => {
+    //   res.result?.map((e) => {
+    //     return setSelectedFile((prev: any) => ({
+    //       ...prev,
+    //       stamps: e?.stamps ?? prev?.stamps,
+    //       texts: e?.result ?? prev?.texts,
+    //       images: e?.result ?? prev?.images,
+    //     }));
+    //   })
+    // })
+    toast.success("Stamp added successfully");
     setSelectedOverlay(null);
+    setStampDataArr(null)
   } catch (err) {
     handleError(err);
   }

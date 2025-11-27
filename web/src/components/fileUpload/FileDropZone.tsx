@@ -37,7 +37,7 @@ const FileDropZone = (props: IOptions) => {
 
     const { getRootProps, getInputProps } = useDropzone({
         onDropRejected: (_fileRejections: any) => {
-            toast.error(`Error.`);
+            toast.error(`Unsupported File Format`);
         },
         onDrop: (acceptedFiles: any) => {
             const existingPaths = fileList.map((img: any) => img.key);
