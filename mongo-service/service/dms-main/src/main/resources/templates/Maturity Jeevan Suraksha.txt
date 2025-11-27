@@ -1,0 +1,49 @@
+<style type="text/css">
+table {color: blue}
+</style>
+<table width="600"  border="1" >
+<tbody align="left">
+<th><br>
+<h2 align=center>Life Insurance Corporation of India</h2>
+<h5 align=center><U>ENDORSEMENT TO BE USED UNDER  &#147;JEEVAN SURAKSHA &#148; PLAN</U></h5>
+<br>
+<br>
+<TABLE width=600>
+<TR>
+	<TD width=25></TD>
+	<TD width=550>
+		<font size="3"><p align=justify>
+			N.C.O. Rs.
+			%%value1%%
+			. 25% of NCO opted %%value2%% (Yes/No)YES/NO option for annuity 25% of NCO Rs.
+			%%value3%%
+			 on Annuity Amt
+			%%value4%%
+			 W.E.F
+			%%value5%% .
+</p>
+</font>
+			
+	</TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<br>
+<TABLE width=600>
+<TR>
+	<TD width=25></TD>
+	<TD width=550 align=right>
+	<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<br>
+</th>
+</tbody>
+</table>

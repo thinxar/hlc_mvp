@@ -1,0 +1,6 @@
+group = 'com.palmyralabs.dms'
+dependencies {	
+	api project(':dms-jpa')
+	api project(':dms-base')
+}
+

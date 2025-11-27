@@ -1,0 +1,106 @@
+<style type="text/css">
+table {color: blue}</style>
+<table width=600 border="1">
+  <tbody align=left>
+  <th>
+<H5 align=right>Form No. 5058</H5>
+<H3 align=center>LIFE INSURANCE CORPORATION OF INDIA</H3>
+<h5 align=center><u>FORM OF ENDORSEMENT TO BE USED IN RESPECT OF POLICIES WHERE THERE IS NO CHANGE IN RATE OF INTEREST</u></h5>
+
+<BR>
+<BR>
+
+<TABLE width=600>
+<TR>
+	<TD width=25></TD>
+	<TD width=275 align=left>
+		Place: %%BranchName%%
+	</TD>
+	<TD width=275 align=right>
+		Date: %%CurrDate%%
+	</TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<br>
+<TABLE width=600>
+<TR>
+	<TD width=25></TD>
+	<TD width=550><p style="text-align: justify;">
+		It is  hereby declared that the within written Policy which lapsed by non-
+		payment of the premium due
+		%%value3%%
+		is revived under the Special Revival Scheme at the request of the within named Life Assured made to the Corporation on
+		%%value4%%
+		that the risk under the within mentioned Policy so revived has been commenced on
+		%%value5%%
+		and that the premium has been charged for age
+		%%value6%%
+		years and will be payable at the enhanced rate of Rs.
+		%%value7%%
+		from
+		%%value8%%
+		to
+		%%value9%%
+		inclusive for a period of
+		%%value10%%
+		years instead of
+		%%value11%%
+		as within mentioned. *Consequently this Policy shall mature on
+		%%value12%%
+		instead   of
+		%%value13%%
+		as within mentioned. It is further declared that together with the Proposal and Declaration for Assurance and the statements contained and referred to therein in statements made by the Assured in the Personal Statement regarding Health completed by the Assured for Revival will form the basis of this assurance.
+	</p></TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<br>
+<br>
+<TABLE width = 600>
+<TR>
+	<TD width =25></TD>
+	<TD width = 550 align=right>
+	for LIFE INSURANCE CORPORATION OF INDIA
+	</TD>
+		<TD width =25></TD>
+</TR>
+</TABLE><Br>
+<TABLE width =600>
+<TR>
+	<TD width = 25></TD>
+	<TD width = 550 align=right>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+	<TD width = 25></TD>
+</TR>
+</TABLE>
+<BR>
+<BR>
+<TABLE width=600>
+<TR>
+	<TD width=40></TD>
+	<TD width=535>
+		*This  sentence is to be added when endorsement is applied to an Endowment
+	</TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+<TABLE>
+<TR>
+	<TD width=25></TD>
+	<TD width=550>
+		type of Policy.
+	</TD>
+	<td width=25></td>
+</TR>
+</TABLE>
+<br>
+<br>
+</th>
+</tbody>
+</table>

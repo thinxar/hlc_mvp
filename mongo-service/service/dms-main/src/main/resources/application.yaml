@@ -1,19 +1,12 @@
 spring:
-  jpa:
-    show-sql: true
-    open-in-view: false
-    hibernate:
-      ddl-auto: validate
-  datasource:
-    url: jdbc:postgresql://192.168.1.11:5432/postgres
-    username: dbuser
-    password: secret
-    default-auto-commit: false
-    driverClassName: org.postgresql.Driver
-    hikari:
-      schema: dms
-      connection-timeout: 90000000
-      default-auto-commit: false
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: dms
+      username: demouser
+      password: secret
+      authentication-database: dms
   servlet:
     multipart:
       max-file-size: 25MB
@@ -31,12 +24,12 @@ server:
       timeout: 220m
 
 app:
- fileStore:
-   baseFolder: "/home/palmyra/Desktop/"
+  fileStore:
+    baseFolder: "/home/palmyra/Desktop/"
+  fileResource:
+    templateFolder: "templates"
+    stampFolder: "fixedStamps"
 
-palmyra:
-  database: 
-    schemas: dms
 aws:
   s3:
     bucketName: hpcbucket

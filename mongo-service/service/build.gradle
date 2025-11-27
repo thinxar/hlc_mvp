@@ -1,0 +1,119 @@
+plugins {
+  id 'java'
+  id 'org.springframework.boot' version '3.3.4' apply false
+  id 'io.spring.dependency-management' version '1.1.4' apply false
+  id 'jacoco'
+}
+
+apply from: './deps.gradle'
+
+def dir = [
+    dist : "./dist",
+    dist_lib : "./dist/libs"
+]
+
+repositories {
+    mavenCentral()
+}
+
+jacoco {
+    toolVersion = "0.8.13"
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'jacoco'
+    
+    group = 'com.palmyralabs.dms'
+    version = '0.1.0'
+
+    java {
+        sourceCompatibility = '17'
+        targetCompatibility = '17'
+    }
+
+    tasks.withType(JavaCompile) {
+        options.debug = true          
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url "https://repo.palmyralabs.com/releases"
+        }
+    }
+
+    dependencies {       
+		            
+        implementation ('org.springframework.boot:spring-boot-starter-web:3.3.4') {
+        	exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    	}
+    	implementation 'org.springframework.boot:spring-boot-starter-jetty:3.3.4'
+    	implementation 'org.springframework.boot:spring-boot-starter-logging:3.3.4'
+      
+        implementation 'org.springframework.boot:spring-boot-starter-data-mongodb:3.3.5'		
+      
+
+        implementation deps.palmyra.spring
+       // implementation deps.palmyra.store.pgsql
+        implementation deps.jakarta.persistence
+        implementation deps.spring.security_config
+        implementation deps.spring.security_web
+        implementation deps.palmyra.extn.pwdmgmt
+        implementation deps.palmyra.extn.aclmgmt
+        implementation deps.apache.log4j2.slf4j_adapter
+        implementation deps.springboot.test
+        
+        implementation deps.org.slf4j.api
+
+        compileOnly deps.org.lombok
+        annotationProcessor deps.org.lombok
+    
+        
+        testImplementation 'org.mockito:mockito-core:5.18.0'
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.2'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2' 
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.4'
+		testImplementation("org.junit.platform:junit-platform-engine:1.13.4")   
+		
+    }
+
+    configurations.all {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+      }
+
+    publishing {
+      publications {
+        maven(MavenPublication) {
+          from components.java
+        }
+      }
+    }
+  
+      task sourceJar(type: Jar) {
+        archiveClassifier = "sources"
+        from sourceSets.main.allJava
+    }
+    
+    jar {
+        exclude('**/*.yaml')
+        exclude('**/*.xml')
+    }
+
+    //jacocoTestReport {
+        //dependsOn test
+        //reports {
+            //html.required.set(true)
+            //xml.required.set(false)
+            //html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+        //}
+    //}
+
+  test {
+    useJUnitPlatform()
+      //finalizedBy jacocoTestReport
+  }
+}

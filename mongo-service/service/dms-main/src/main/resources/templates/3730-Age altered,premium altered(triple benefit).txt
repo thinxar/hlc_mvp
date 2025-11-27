@@ -1,0 +1,108 @@
+<style type="text/css">
+table {color: blue}
+</style>
+<table width="600" border="1">
+  <tbody align="left">
+    <tr>
+      <td>
+        <h5 align="right">Form No. 3730</h5>
+        <h3 align="center">LIFE INSURANCE CORPORATION OF INDIA</h3>
+        <h5 align="center"><u>AGE PROVED HIGHER, PREMIUM ALTERED (TRIPLE BENEFIT)</u></h5>
+
+        <br><br>
+
+        <table width="600">
+          <tr>
+            <td width="25"></td>
+            <td align="left">Place: %%BranchName%%</td>
+            <td align="right">Date: %%CurrDate%%</td>
+            <td width="25"></td>
+          </tr>
+        </table>
+
+        <br>
+
+        <center>
+          Re : Policy Number : %%polNumber%%
+        </center>
+
+        <br><br>
+
+        <table width="600">
+          <tr>
+            <td width="25"></td>
+            <td width="550">
+              Satisfactory evidence having been produced regarding the Life Assured's age,
+              the following alterations are hereby made in the Policy.
+            </td>
+            <td width="25"></td>
+          </tr>
+        </table>
+
+        <br>
+
+        <div style="border-top-style: solid; border-top-width: 2; padding-top: 1"></div>
+
+        <br>
+
+        <table width="600">
+          <tr>
+            <td width="25"></td>
+            <td width="550">
+              <p style="text-align: justify;">
+                Age at entry Admitted %%value4%% years.<br>
+                %%value5%% premium payable from %%value6%% altered to %%value7%%.<br>
+                Inclusive Paid-up Assurance to Rs. %%value8%%.<br>
+                Increased Cash Payment Rs. %%value9%%.
+              </p>
+            </td>
+            <td width="25"></td>
+          </tr>
+        </table>
+
+        <br>
+
+       <div style="border-top-style: solid; border-top-width: 2; padding-top: 1"></div>
+
+        <br>
+
+        <table width="600">
+          <tr>
+            <td width="25"></td>
+            <td width="550">
+              Received/Refunded Rs. %%value10%% in respect of difference/excess of the premiums paid with interest thereon.
+            </td>
+            <td width="25"></td>
+          </tr>
+        </table>
+
+        <br><br>
+
+        <table width="600">
+          <tr>
+            <td width="25"></td>
+            <td width="550" align="right">
+              for LIFE INSURANCE CORPORATION OF INDIA
+            </td>
+            <td width="25"></td>
+          </tr>
+        </table>
+
+        <br>
+
+        <table width="600">
+          <tr>
+            <td width="25"></td>
+            <td width="550" align="right">
+              <SignatureOfApprover><br>
+              p. Sr/Branch Manager.
+            </td>
+            <td width="25"></td>
+          </tr>
+        </table>
+
+        <br><br>
+      </td>
+    </tr>
+  </tbody>
+</table>

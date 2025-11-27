@@ -1,0 +1,96 @@
+def versions = [ spring_boot: '3.5.5',spring:'6.2.10',
+	HikariCP:'7.0.2',log4j2:'2.25.1',spring_security:'6.5.3',
+	persistence_api:'3.1.0',servlet_api:'6.1.0', s3:'2.33.5',
+	jackson:'2.20.0', slf4j:"2.0.17", jetty:'12.1.0',
+	lombok:'1.18.40', jdbc_mariadb:'3.5.2',palmyra:'1.4.3']
+
+def aws = [
+	s3: "software.amazon.awssdk:s3:${versions.s3}",
+	netty: [ 
+		nio: "software.amazon.awssdk:netty-nio-client:${versions.s3}" 
+	]
+]
+
+def pdf = [
+        dhorions: "com.github.dhorions:boxable:1.7.0",
+        pdfbox: "org.apache.pdfbox:pdfbox:2.0.27"
+    ]
+    
+def palmyra = [
+	spring:"com.palmyralabs.palmyra:palmyra-spring:${versions.palmyra}",
+	standard:"com.palmyralabs.palmyra.core:palmyra-standard:${versions.palmyra}",
+	store : [
+		schema:"com.palmyralabs.sqlstore:sqlstore-schema:${versions.palmyra}",
+		base:"com.palmyralabs.sqlstore:sqlstore-base:${versions.palmyra}",
+		core:"com.palmyralabs.sqlstore:sqlstore-core:${versions.palmyra}",
+		dao:"com.palmyralabs.sqlstore:sqlstore-dao:${versions.palmyra}",
+		pgsql:"com.palmyralabs.sqlstore:dbstore-pgsql:${versions.palmyra}"
+	],
+	 extn : [
+        pwdmgmt:"com.palmyralabs.palmyra.extn:palmyra-dbpwd-mgmt:${versions.palmyra}",
+        aclmgmt:"com.palmyralabs.palmyra.extn:palmyra-dbacl-mgmt:${versions.palmyra}"
+    ]
+]
+
+def spring = [
+	jdbc : "org.springframework:spring-jdbc:${versions.spring}",
+	context : "org.springframework:spring-context:${versions.spring}",
+	core : "org.springframework:spring-core:${versions.spring}",
+	web : "org.springframework:spring-web:${versions.spring}",
+	spring_tx : "org.springframework:spring-tx:${versions.spring}",
+	security_web: "org.springframework.security:spring-security-web:${versions.spring_security}",
+	security_config: "org.springframework.security:spring-security-config:${versions.spring_security}",
+	context_support : "org.springframework:spring-context-support:${versions.spring_security}"
+]
+
+def springboot = [	
+	web:"org.springframework.boot:spring-boot-starter-web:${versions.spring_boot}",
+	jetty:"org.springframework.boot:spring-boot-starter-jetty:${versions.spring_boot}",
+	tomcat:"org.springframework.boot:spring-boot-starter-tomcat:${versions.spring_boot}",
+	jpa:"org.springframework.boot:spring-boot-starter-data-jpa:${versions.spring_boot}",
+	security:"org.springframework.boot:spring-boot-starter-security:${versions.spring_boot}",
+	test:"org.springframework.boot:spring-boot-starter-test:${versions.spring_boot}",
+	log4j2: "org.springframework.boot:spring-boot-starter-log4j2:${versions.spring_boot}"
+]
+
+def jackson = [
+	annotations: "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}",
+	core: "com.fasterxml.jackson.core:jackson-core:${versions.jackson}",
+	databind: "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}",
+	jsr310: "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
+]
+
+def apache = [	
+	log4j2:[ 
+		slf4j_adapter :"org.apache.logging.log4j:log4j-to-slf4j:${versions.log4j2}"
+		]
+	]
+
+def jetty = [
+	servlet: "org.eclipse.jetty:jetty-servlet:${versions.jetty}",
+	webapp : "org.eclipse.jetty:jetty-webapp:${versions.jetty}",
+	proxy: "org.eclipse.jetty:jetty-proxy:${versions.jetty}",
+	http2: "org.eclipse.jetty.http2:http2-server:${versions.jetty}"
+]
+
+def org = [
+	lombok : "org.projectlombok:lombok:${versions.lombok}",
+	slf4j: [ api:"org.slf4j:slf4j-api:${versions.slf4j}"],
+	icu4j: "com.ibm.icu:icu4j:74.2"
+]
+
+def jakarta = [
+	servlet_api : "jakarta.servlet:jakarta.servlet-api:${versions.servlet_api}", 
+	persistence:"jakarta.persistence:jakarta.persistence-api:${versions.persistence_api}", 
+]
+
+def jdbc = [
+	mariadb:"org.mariadb.jdbc:mariadb-java-client:${versions.jdbc_mariadb}",
+	hikaricp : "com.zaxxer:HikariCP:${versions.HikariCP}",
+	postgresql: "org.postgresql:postgresql:42.7.7"
+]
+
+ext.deps = [ 'spring': spring, 'springboot':springboot, 'jackson': jackson, 'apache': apache,
+	'jakarta' : jakarta, 'versions':versions, 'pdf':pdf, 'aws':aws,
+	'jetty': jetty, 'org':org, 'jdbc':jdbc, "palmyra" : palmyra ]
+

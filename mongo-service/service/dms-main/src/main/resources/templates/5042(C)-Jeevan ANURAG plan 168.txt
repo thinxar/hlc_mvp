@@ -1,0 +1,75 @@
+<style type="text/css">
+table {color: blue}
+</style>
+ 
+<table width="600"  border="1" >
+<tbody align="left">
+<th>
+<h5 align=right>Form No.5042 C<br>(JEEVAN ANURAG)</h5>
+<h3 align=center>LIFE INSURANCE CORPORATION OF INDIA</h3>
+<h5 align=center><U>FORM OF ENDORSEMENT UNDER  &#147;JEEVAN ANURAG &#148; POLICY(PLAN NO 168) WHERE THE LIFE ASSURED DIES BEFORE THE END OF THE SELECTED TERM WHILE THE POLICY IS IN FORCE FOR THE FULL SUM ASSURED</U></h5>
+<br>
+
+<Br>
+
+<table width=600>
+<tr>
+	<td width=25></td>
+	<td align=left>
+	Place:%%BranchName%%   
+	</td>
+	<td width=25></td>
+	<td align=right>
+	Date:%%CurrDate%%
+	</td>
+</tr>
+</table>
+	<br>
+
+<center>
+	Ref:  Policy No.&nbsp;%%polNumber%%&nbsp;on the Life of &nbsp;%%value4%%
+</center>
+
+<br>
+<br>
+<TABLE WIDTH=600>
+<TR>
+	<TD width=25></TD>
+	<TD width=550><p style="text-align: justify;">
+	The within-named Life Assured having died on%%value5%%
+	and proof of his death having been duly furnished and the additional amount equal to the sum assured of Rs.%%value6%%
+	payable as per the Special Provision under the policy having been duly paid on%%value7%%
+	it is hereby agreed and declared that the within-written policy is now free from payment of future premiums.
+	</p></TD>
+	<TD width=25></TD>
+</TR>
+</TABLE>
+    
+<br>
+<Br>
+ 
+<TABLE width = 600>
+<TR>
+	<TD width =100></TD>
+	<TD width = 475 align= right>
+	for LIFE INSURANCE CORPORATION OF INDIA
+	</TD>
+</TR>
+</TABLE>
+<Br>
+<TABLE width =600>
+<TR>
+	<TD width = 300></TD>
+	<TD width = 250 align=right>
+		<SignatureOfApprover>
+		<BR/>
+	p.Sr/Branch Manager.
+
+	</TD>
+</TR>
+</TABLE>
+<Br>
+<Br>
+</th>
+</tbody>
+</table>
