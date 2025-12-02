@@ -18,7 +18,7 @@ public class EndorsementSummaryService {
 
 	public List<EndorsementSummaryModel> getEndorsementSummary(Integer policyId){
 		List<EndorsementSummaryModel> summaryModels = new ArrayList<EndorsementSummaryModel>();
-		List<PolicyFileEntity> policyFileEntities =policyFileRepository.findByPolicyId_IdAndDocketType_Id(policyId,15);
+		List<PolicyFileEntity> policyFileEntities =policyFileRepository.findByPolicyId_IdAndDocketType_IdOrderByCreatedOnDesc(policyId,15);
 		for(PolicyFileEntity fileEntity :policyFileEntities) {
 			summaryModels.add(toEndorsementSummaryModel(fileEntity));
 		}

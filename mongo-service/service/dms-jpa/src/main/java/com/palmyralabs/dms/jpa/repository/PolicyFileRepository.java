@@ -15,8 +15,10 @@ public interface PolicyFileRepository extends MongoRepository<PolicyFileEntity, 
 
 	Optional<PolicyFileEntity> findById(Integer id);
 	
-    List<PolicyFileEntity> findByPolicyId_Id(Integer policyId);
+    List<PolicyFileEntity> findByPolicyId_IdAndDocketType_IdOrderByCreatedOnDesc(
+            Integer policyId, Integer docketTypeId
+    );
 
-	 List<PolicyFileEntity> findByPolicyId_IdAndDocketType_Id(Integer policyId, Integer docketTypeId);  
+	List<PolicyFileEntity> findByPolicyId_IdOrderByDocketTypeAsc(Integer policyId);
 
 }

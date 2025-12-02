@@ -32,7 +32,7 @@ public class PolicyFileService {
 	private final ObjectMapper mapper;
 
 	public List<PolicyFileModel> getAllPolicyFiles(Integer policyId) {
-		List<PolicyFileEntity> policyFileEntities = policyFileRepository.findByPolicyId_Id(policyId);
+		List<PolicyFileEntity> policyFileEntities = policyFileRepository.findByPolicyId_IdOrderByDocketTypeAsc(policyId);
 		List<PolicyFileModel> policyModels = new ArrayList<PolicyFileModel>();
 		for (PolicyFileEntity entity : policyFileEntities) {
 			policyModels.add(toModel(entity));

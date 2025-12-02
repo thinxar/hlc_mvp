@@ -11,6 +11,6 @@ public interface EndorsementSubTypeRepo extends MongoRepository<EndorsementSubTy
 
 	Optional<EndorsementSubTypeEntity> findById(Integer id);
 
-	List<EndorsementSubTypeEntity> findByEndorsementType_Id(Integer endorsementTypeId);
+	List<EndorsementSubTypeEntity> findByEndorsementType_IdOrderByIdAsc(Integer endorsementType);
 
 }

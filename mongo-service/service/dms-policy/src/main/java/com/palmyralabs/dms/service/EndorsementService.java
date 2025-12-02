@@ -3,6 +3,7 @@ package com.palmyralabs.dms.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -48,18 +49,19 @@ public class EndorsementService {
 			if (is == null) {
 				throw new IOException(fileName + " not found in classpath under" + folderName);
 			}
-			
-			String content = new String(is.readAllBytes());
+
+			String content = new String(is.readAllBytes(), StandardCharsets.ISO_8859_1);
+
 			Map<String, Object> formDataMap = processFormData(request.getFormData());
 			StringBuffer sb = setFormDataValues(content, formDataMap);
 			String htmlFileName = endorsementSubtype + outputExtension;
 			byte[] fileContent = sb.toString().getBytes();
-			
+
 			MultipartFile multipartFile = new MockMultipartFile(htmlFileName, htmlFileName, "text/html", fileContent);
 			DocumentTypeEntity docketTypeEntity = getDocumentTypeEntity(code);
 			Integer docketTypeId = docketTypeEntity.getId().intValue();
 			policyFileService.upload(multipartFile, policyId, docketTypeId);
-			
+
 			return "file uploaded successfully";
 		} catch (Exception e) {
 			throw new IOException(e);
@@ -97,6 +99,7 @@ public class EndorsementService {
 		matcher.appendTail(sb);
 		return sb;
 	}
+
 
 	public String findParentFolderName(File dir, String fileName) {
 		File[] files = dir.listFiles();

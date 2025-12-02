@@ -34,7 +34,7 @@ public class EndorsementSubTypeService {
 
 
 	public List<EndorsementSubTypeModel> getAll(Integer endorsementType) {
-		List<EndorsementSubTypeEntity> entities = repository.findByEndorsementType_Id(endorsementType);
+		List<EndorsementSubTypeEntity> entities = repository.findByEndorsementType_IdOrderByIdAsc(endorsementType);
 		List<EndorsementSubTypeModel> models = new ArrayList<>();
 
 		for (EndorsementSubTypeEntity entity : entities) {
