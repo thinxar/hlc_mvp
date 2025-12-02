@@ -11,6 +11,7 @@ import { useFormstore } from "wire/StoreFactory";
 import { formatDateTime } from "utils/FormateDate";
 import { handleError } from "wire/ErrorHandler";
 import { selectStampFunc } from "./widgets/widget";
+import DOMPurify from "dompurify";
 
 export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSelectedStamp, setSelectedFile, handleFetch, stampDataArr, setStampDataArr }: any) => {
   const [content, setContent] = useState("");
@@ -33,7 +34,9 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
     const load = async () => {
       try {
         const res = await axios.get(endPoint, { responseType: "text" });
-        setContent(res.data);
+        const safeHtml = DOMPurify.sanitize(res?.data);
+        setContent(safeHtml);
+
       } catch (e) {
         toast.error("HTML loading failed");
       } finally {
@@ -175,7 +178,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
     );
 
   return (
-    <div className="p-5 w-full h-full">
+    <div className="p-5 w-full h-full overflow-y-auto">
       <div className="flex justify-between mb-3 items-center">
         <strong>{file.fileName}</strong>
         {
@@ -190,7 +193,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
       <div
         ref={containerRef}
         // className="relative  rounded-xl bg-white text-black h-[80vh] overflow-auto"
-        className="relative rounded-xl text-black h-[calc(100vh-180px)] overflow-y-auto flex items-center 
+        className="relative rounded-xl text-blue-700 h-[calc(100vh-180px)] overflow-y-auto flex items-center 
         justify-center"
       >
         <div

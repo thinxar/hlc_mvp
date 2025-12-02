@@ -1,91 +1,73 @@
-import { TextView } from 'templates/mantineForm';import { PalmyraForm } from '@palmyralabs/rt-forms';
+import { TextView } from 'templates/mantineForm'; import { PalmyraForm } from '@palmyralabs/rt-forms';
 
 const TemplateV3544 = (props: any) => {
   return (
-           <PalmyraForm ref={props.formRef} formData={props.formData}>
-<table width="600" >
-<th>
-<h5 className="text-right">Form No. 3544</h5>
-<h3 className="text-center">LIFE INSURANCE CORPORATION OF INDIA</h3>
-<h5 className="text-center"><u>REDUCTION IN SUM ASSURED WITH REDUCTION IN CASH OPTION</u></h5>
-<br />
-<br />
-<table width="600">
-<tr>
-<td width="25"></td>
-<td width="550" align="left"> Place: <TextView attribute="branchName" /> </td>
-<td width="25"></td>
-<td width="550" align="right"> Date: <TextView attribute="currDate" /> </td>
-<td width="25"></td>
-</tr>
-</table>
-<table width="600">
-<tr>
-<td width="25"></td>
-<td width="550" align="center">
-<b>Re : Policy No. <TextView attribute="polNumber" /></b>
-</td>
-</tr>
-</table>
-<br /><br />
-<table>
-<tr>
-<td width="25"></td>
-<td width="550">
-<p className="justify"> At the request of the <TextView attribute="value4" /> (Proposer/Life Assured) the following alterations are here by made in the Policy :</p>
-</td>
-<td width="25"></td>
-</tr>
-<tr>
-<td width="50"></td>
-<td width="525">
-</td>
-<td width="25"></td>
-</tr>
-<tr>
-<td width="25"></td>
-<td width="550">
-<p className="justify"> Sum Assured reduced to Rs <TextView attribute="value5" /> From <TextView attribute="value6" /> (due date of the Premium) .</p>
-</td>
-<td width="25"></td>
-</tr>
-<tr>
-<td width="25"></td>
-<td width="550">
-<p className="justify"> Cash Option reduced to Rs. <TextView attribute="value7" /> premium from <TextView attribute="value8" /> at Rs. <TextView attribute="value9" /> .</p>
-</td>
-<td width="25"></td>
-</tr>
-<tr>
-<td width="25"></td>
-<td width="550">
-<p className="justify"> The sum of Rs <TextView attribute="value10" /> has been paid as surrender value of the portion of the Sum Assured dropped. </p></td>
-<td width="25"></td>
-</tr>
-</table>
-<br />
-<br />
-<table width="600">
-<tr>
-<td width="25"></td>
-<td width="550" align="right"> for LIFE INSURANCE CORPORATION OF INDIA </td>
-<td width="25"></td>
-</tr>
-</table>
-<br />
-<table width="600">
-<tr>
-<td width="25"></td>
-<td width="550" align="right"> {/* <SignatureOfApprover> */} <br /> p.Sr/Branch Manager. </td>
-<td width="25"></td>
-</tr>
-</table>
-<br />
-<br />
-</th>
-</table>
-           </PalmyraForm>
+    <PalmyraForm ref={props.formRef} formData={props.formData}>
+      <table width="600" >
+        <tr>
+          <td>
+            <h5 className="text-align:right;">Form No. 3544</h5>
+            <h3 className="text-align:center;">LIFE INSURANCE CORPORATION OF INDIA</h3>
+            <h5 className="text-align:center;"><u>REDUCTION IN SUM ASSURED WITH REDUCTION IN CASH OPTION</u></h5>
+          </td>
+        </tr>
+        <tr>
+          <td className="width:25px;"></td>
+          <td align="left">Place: <b><TextView attribute="branchName" /></b></td>
+          <td align="right">Date: <b><TextView attribute="currDate" /></b></td>
+          <td className="width:25px;"></td>
+        </tr>
+        <tr>
+          <td className="width:25px;"></td>
+          <td className="text-align:center;">
+            <b>Re : Policy No. <TextView attribute="polNumber" /></b>
+          </td>
+          <td className="width:25px;"></td>
+        </tr>
+        <tr><td><br /></td></tr>
+        <tr>
+          <td className="width:25px;"></td>
+          <td>
+            <p className="text-justify"> At the request of the <b><TextView attribute="value4" /></b> (Proposer/Life Assured), the following alterations are hereby made in the Policy: </p>
+          </td>
+          <td className="width:25px;"></td>
+        </tr>
+        <tr>
+          <td className="width:25px;"></td>
+          <td>
+            <p className="text-justify"> Sum Assured reduced to Rs. <b><TextView attribute="value5" /></b> from <b><TextView attribute="value6" /></b> (due date of the premium). </p>
+          </td>
+          <td className="width:25px;"></td>
+        </tr>
+        <tr>
+          <td className="width:25px;"></td>
+          <td>
+            <p className="text-justify"> Cash Option reduced to Rs. <b><TextView attribute="value7" /></b> premium from <b><TextView attribute="value8" /></b> at Rs. <b><TextView attribute="value9" /></b>. </p>
+          </td>
+          <td className="width:25px;"></td>
+        </tr>
+        <tr>
+          <td className="width:25px;"></td>
+          <td>
+            <p className="text-justify"> The sum of Rs. <b><TextView attribute="value10" /></b> has been paid as surrender value of the portion of the Sum Assured dropped. </p>
+          </td>
+          <td className="width:25px;"></td>
+        </tr>
+        <tr><td><br /><br /></td></tr>
+        <tr>
+          <td className="width:25px;"></td>
+          <td className="text-align:right;"> for LIFE INSURANCE CORPORATION OF INDIA </td>
+          <td className="width:25px;"></td>
+        </tr>
+        <tr>
+          <td className="width:25px;"></td>
+          <td className="text-align:right;">
+            <br /> SignatureOfApprover<br /> p.Sr/Branch Manager. </td>
+          <td className="width:25px;"></td>
+        </tr>
+      </table>
+    </PalmyraForm>
   );
 };
 
-export {TemplateV3544};
+export { TemplateV3544 };
