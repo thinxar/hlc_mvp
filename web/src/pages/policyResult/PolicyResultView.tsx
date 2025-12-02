@@ -106,7 +106,7 @@ const PolicyResultView = () => {
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[40%_60%] lg:grid-cols-[31%_69%] xl:grid-cols-[23%_77%] 2xl:grid-cols-[22%_78%]
-        transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-55px)]">
+        transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-85px)]">
             <div className="policy-sec overflow-y-auto bg-gray/5 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-hidden">
                 <div className="pr-bg-color sticky top-0 z-50 text-xl font-bold p-2 rounded-t-lg flex items-center gap-2 text-white">
                     <IoChevronBackOutline

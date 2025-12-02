@@ -190,14 +190,15 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
       <div
         ref={containerRef}
         // className="relative  rounded-xl bg-white text-black h-[80vh] overflow-auto"
-        className="relative rounded-xl text-black h-[80vh] overflow-y-auto flex items-center justify-center"
+        className="relative rounded-xl text-black h-[calc(100vh-180px)] overflow-y-auto flex items-center 
+        justify-center"
       >
         <div
           dangerouslySetInnerHTML={{ __html: content }}
           // className="absolute top-2 left-2 rounded-md pointer-events-none border border-gray-200"
           className=" absolute top-2 left-2 rounded-md pointer-events-none border-double border-4 border-blue-700 p-1"
         />
-        <canvas ref={canvasRef} className="absolute top-0 left-0" />
+        <canvas ref={canvasRef} className="absolute top-0 left-0 " />
       </div>
     </div>
   );
