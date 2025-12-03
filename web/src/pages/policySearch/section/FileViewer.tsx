@@ -67,7 +67,7 @@ const FileViewer = ({ fileUrl, key, file, selectedStamp, stampData, setSelectedF
                 </div>
             </div>
         </div>
-            : <div className="flex items-center justify-center h-full text-white/60">
+            : <div className="flex items-center justify-center h-full">
                 <div className="text-center">
                     <FaFile className="w-16 h-16 mx-auto mb-4 opacity-50" />
                     <p className="text-xl">Select a document to view</p>

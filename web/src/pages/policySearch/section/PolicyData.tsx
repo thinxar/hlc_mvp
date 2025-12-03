@@ -1,10 +1,11 @@
 import { Accordion } from "@mantine/core";
 import { useState } from "react";
-import { IoMdPerson } from "react-icons/io";
+import { IoIosArrowDown, IoMdPerson } from "react-icons/io";
 import { FormateDate } from "utils/FormateDate";
 
 const PolicyData = ({ data }: any) => {
-    const [expand, setExpand] = useState<any>()
+    const [expand, setExpand] = useState<any>();
+
     const fields = [
         { label: "DOB", value: FormateDate(data?.customerDob) },
         { label: "DOC", value: FormateDate(data?.doc) },
@@ -31,7 +32,7 @@ const PolicyData = ({ data }: any) => {
             <div className="">
                 <div className="text-sky-700 text-xs">{label}</div>
                 <p className="mt-1 text-base font-bold text-sky-800 select-text">
-                    {value ?? "--"}
+                    {![null, '', ' '].includes(value) ? value : "--"}
                 </p>
             </div>
         </div>
@@ -40,6 +41,11 @@ const PolicyData = ({ data }: any) => {
     const handleChange = (e: any) => {
         setExpand(e);
     }
+
+    const arrowStyles = {
+        transform: expand ? 'rotate(-180deg)' : 'rotate(0deg)',
+        transition: 'transform 0.3s ease',
+    };
 
     return (
         <div className="">
@@ -65,8 +71,10 @@ const PolicyData = ({ data }: any) => {
                             </div>
                         </Accordion.Panel>
                         <Accordion.Control>
-                            <div className="text-sky-800 text-center text-sm">
+                            <div className="text-sky-800 text-center text-sm 
+                            flex items-center gap-1.5 justify-center">
                                 {expand === "details" ? "View Less Details" : "View More Details"}
+                                <IoIosArrowDown style={arrowStyles} className='avathar-arrow-icon' />
                             </div>
                         </Accordion.Control>
                     </Accordion.Item>

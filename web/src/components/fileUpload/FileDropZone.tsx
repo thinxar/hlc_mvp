@@ -85,7 +85,7 @@ const FileDropZone = (props: IOptions) => {
         };
 
         return (
-            <div key={index} className={`w-[200px] shadow-md rounded-md border-1 border-gray-200 p-3 relative text-gray-100`}>
+            <div key={index} className={`w-[200px] shadow-md rounded-md border border-gray-200 p-3 relative text-gray-100`}>
                 <div className='flex justify-center items-center'>
                     <div className=''>
                         <img src={getImage()} alt={file.path.split("/").pop()} className='h-20' />
@@ -185,7 +185,7 @@ const FileDropZone = (props: IOptions) => {
                         </div>
                     </div>
                 </div>
-            </section> : <div className='border-1 border-gray-200 p-3 rounded-xl flex items-center'>
+            </section> : <div className='border border-gray-200 p-3 rounded-xl flex items-center'>
                 {isBtnEnable && files}
                 <div></div>
             </div>}
