@@ -31,6 +31,8 @@ const PolicyResultView = () => {
     const pdfUrl = BASE_URL + filePoint;
     const [stampDataArr, setStampDataArr] = useState<any>()
 
+    var dataFromUploadEvent: any = '';
+
     const handleFetch = () => {
         useFormstore(endpoint)
             .query({ limit: -1 })
@@ -54,6 +56,14 @@ const PolicyResultView = () => {
 
                 setData(mappedPolicies);
 
+                if (dataFromUploadEvent != '') {
+                    const latestFile = mappedPolicies.reduce((a, b) =>
+                        new Date(a.pdfFiles.createdOn) > new Date(b.pdfFiles.createdOn) ? a : b
+                    );
+                    setSelectedFile(latestFile);
+                    return;
+                }
+
                 const updatedFile = mappedPolicies.find(
                     (f: any) => f?.pdfFiles?.id === selectedFile?.pdfFiles?.id
                 );
@@ -65,7 +75,10 @@ const PolicyResultView = () => {
                     }));
                 }
                 else {
-                    setSelectedFile(mappedPolicies[0]);
+                    const bondFile = mappedPolicies.find((f: any) =>
+                        f?.pdfFiles?.fileName?.toLowerCase()?.includes('bond')
+                    );
+                    setSelectedFile(bondFile);
                 }
             })
             .catch(handleError);
@@ -96,6 +109,7 @@ const PolicyResultView = () => {
     useEffect(() => {
         const handle = topic.subscribe("fileUpload", (_t: string, data: any) => {
             if (data) {
+                dataFromUploadEvent = data;
                 handleFetch()
             }
         });
