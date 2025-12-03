@@ -1,67 +1,100 @@
-<style>
-    table { color: blue; border-collapse: collapse; }
-    td, th { padding: 4px; }
+<style type="text/css"> 
+    table {color: blue} 
 </style>
-<table width="600" border="1">
-    <tr>
-        <td>
-            <h5 style="text-align:right;">Form No. 3543</h5>
-            <h3 style="text-align:center;">LIFE INSURANCE CORPORATION OF INDIA</h3>
-            <h4 style="text-align:center;"><u>Reduction in Sum Assured</u></h4>
-        </td>
-    </tr>
-    <tr>
-        <td style="width:25px;"></td>
-        <td>Place: <b>%%BranchName%%</b></td>
-        <td style="text-align:right;">Date: <b>%%CurrDate%%</b></td>
-        <td style="width:25px;"></td>
-    </tr>
-    <tr>
-        <td style="text-align:center;">
-            <b>Re : Policy No. %%polNumber%%</b>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <p style="text-align:justify;">
-                At the request of the Life Assured the following alterations are hereby made in the Policy:
-            </p>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <p style="text-align:justify;">
-                Sum Assured reduced to Rs. <b>%%value4%%</b> from the premium due
-                <b>%%value5%%</b>. <b>%%value6%%</b> premiums from
-                <b>%%value7%%</b> @ Rs. <b>%%value8%%</b>.
-            </p>
-        </td>
-    </tr>
-    <tr>
-        <td >
-            <p style="text-align:justify;">
-                The sum of Rs. <b>%%value9%%</b>
-                has been paid as surrender value* inclusive of cash value of bonus in respect of the portion of the Sum Assured dropped.
-                <br/>
-                *Bonus already vested till date shall stand reduced proportionately.
-            </p>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            (*To be deleted where not applicable)
-        </td>
-    </tr>
-    <tr>
-        <td style="text-align:right;">
-            for LIFE INSURANCE CORPORATION OF INDIA
-        </td>
-    </tr>
-    <tr>
-        <td style="text-align:right;">
-            <br/>
-            p.Sr/Branch Manager.
-        </td>
-    </tr>
-</table>
 
+<table width="600" border="1">
+<tbody align="left">
+<tr>
+<th>
+    <h5 align="right">Form No. 3543</h5>
+    <h3 align="center">LIFE INSURANCE CORPORATION OF INDIA</h3>
+    <h4 align="center"><u>"Reduction in Sum Assured"</u></h4>
+
+    <table width="600">
+        <tr>
+            <td width="25"></td>
+            <td align="left">Place: %%BranchName%%</td>
+            <td align="right">Date: %%CurrDate%%</td>
+            <td width="25"></td>
+        </tr>
+    </table>
+    <br/>
+
+    <center><b>Re : Policy No. </b> %%polNumber%% </center>
+    <br/><br/>
+
+    <table>
+        <tr>
+            <td width="25"></td>
+            <td width="550">
+                <p style="text-align: justify;">
+                    At the request of the Life Assured the following alterations are hereby made in the Policy:
+                </p>
+            </td>
+            <td width="25"></td>
+        </tr>
+    </table>
+    <br/>
+
+    <table>
+        <tr>
+            <td width="25"></td>
+            <td width="550">
+                <p style="text-align: justify;">
+                    Sum Assured reduced to Rs. %%value4%% from the premium due %%value5%%.
+                    %%value6%% premiums from %%value7%% @ Rs. %%value8%% .
+                </p>
+            </td>
+            <td width="25"></td>
+        </tr>
+    </table>
+    <br/>
+
+    <table>
+        <tr>
+            <td width="25"></td>
+            <td width="550">
+                <p style="text-align: justify;">
+                    The sum of Rs. %%value9%% has been paid as surrender value* inclusive of cash value of bonus 
+                    in respect of the portion of the Sum Assured dropped. 
+                    *Bonus already vested till date shall stand reduced proportionately.
+                </p>
+            </td>
+            <td width="25"></td>
+        </tr>
+    </table>
+    <br/>
+
+    <table>
+        <tr>
+            <td width="25"></td>
+            <td width="550">(*To be deleted where not applicable)</td>
+            <td width="25"></td>
+        </tr>
+    </table>
+
+    <br/><br/><br/>
+
+    <table width="600">
+        <tr>
+            <td width="25"></td>
+            <td width="550" align="right">for LIFE INSURANCE CORPORATION OF INDIA</td>
+            <td width="25"></td>
+        </tr>
+    </table>
+    <br/>
+
+    <table width="600">
+        <tr>
+            <td width="25"></td>
+            <td width="550" align="right">
+                <SignatureOfApprover><br/> p.Sr/Branch Manager.
+            </td>
+            <td width="25"></td>
+        </tr>
+    </table>
+    <br/><br/>
+</th>
+</tr>
+</tbody>
+</table>
