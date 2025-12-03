@@ -1,18 +1,8 @@
-<!DOCTYPE html>
-<html>
- 
-<head>
-    <meta charset="UTF-8">
-    <title>Form No. 3551</title>
-    <style>
+ <style>
         table {
             color: blue
         }
     </style>
-</head>
- 
-<body>
- 
     <table width="600" border="1">
         <tr>
             <td>
@@ -49,7 +39,7 @@
  
                 <br><br>
  
-                <table class="inner-table">
+                <table>
                     <tr>
                         <td width=25></td>
                         <td width=550>
@@ -66,7 +56,7 @@
  
                 <br>
  
-                <table class="inner-table">
+                <table>
                     <tr>
                         <td width=25></td>
                         <td width=550>
@@ -110,7 +100,3 @@
             </td>
         </tr>
     </table>
- 
-</body>
- 
-</html>

@@ -1,47 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
 <style>
     table { color: blue; border-collapse: collapse; }
     td, th { padding: 4px; }
 </style>
-</head>
-
-<body>
-
 <table width="600" border="1">
     <tr>
-        <td colspan="4">
+        <td>
             <h5 style="text-align:right;">Form No. 3544</h5>
             <h3 style="text-align:center;">LIFE INSURANCE CORPORATION OF INDIA</h3>
             <h5 style="text-align:center;"><u>REDUCTION IN SUM ASSURED WITH REDUCTION IN CASH OPTION</u></h5>
         </td>
     </tr>
-
-    <!-- Place & Date -->
     <tr>
         <td style="width:25px;"></td>
         <td align="left">Place: <b>%%BranchName%%</b></td>
         <td align="right">Date: <b>%%CurrDate%%</b></td>
         <td style="width:25px;"></td>
     </tr>
-
-    <!-- Policy Number -->
     <tr>
         <td style="width:25px;"></td>
-        <td colspan="2" style="text-align:center;">
+        <td style="text-align:center;">
             <b>Re : Policy No. %%polNumber%%</b>
         </td>
         <td style="width:25px;"></td>
     </tr>
 
-    <tr><td colspan="4"><br></td></tr>
-
-    <!-- Main Paragraphs -->
+    <tr><td><br></td></tr>
     <tr>
         <td style="width:25px;"></td>
-        <td colspan="2">
+        <td>
             <p style="text-align:justify;">
                 At the request of the <b>%%value4%%</b> (Proposer/Life Assured),  
                 the following alterations are hereby made in the Policy:
@@ -52,7 +38,7 @@
 
     <tr>
         <td style="width:25px;"></td>
-        <td colspan="2">
+        <td>
             <p style="text-align:justify;">
                 Sum Assured reduced to Rs. <b>%%value5%%</b> from <b>%%value6%%</b> (due date of the premium).
             </p>
@@ -62,7 +48,7 @@
 
     <tr>
         <td style="width:25px;"></td>
-        <td colspan="2">
+        <td>
             <p style="text-align:justify;">
                 Cash Option reduced to Rs. <b>%%value7%%</b> premium from
                 <b>%%value8%%</b> at Rs. <b>%%value9%%</b>.
@@ -73,7 +59,7 @@
 
     <tr>
         <td style="width:25px;"></td>
-        <td colspan="2">
+        <td>
             <p style="text-align:justify;">
                 The sum of Rs. <b>%%value10%%</b> has been paid as surrender value  
                 of the portion of the Sum Assured dropped.
@@ -82,12 +68,10 @@
         <td style="width:25px;"></td>
     </tr>
 
-    <tr><td colspan="4"><br><br></td></tr>
-
-    <!-- Signature Block -->
+    <tr><td><br><br></td></tr>
     <tr>
         <td style="width:25px;"></td>
-        <td colspan="2" style="text-align:right;">
+        <td style="text-align:right;">
             for LIFE INSURANCE CORPORATION OF INDIA
         </td>
         <td style="width:25px;"></td>
@@ -95,9 +79,9 @@
 
     <tr>
         <td style="width:25px;"></td>
-        <td colspan="2" style="text-align:right;">
+        <td style="text-align:right;">
             <br>
-            <SignatureOfApprover /><br>
+            SignatureOfApprover<br>
             p.Sr/Branch Manager.
         </td>
         <td style="width:25px;"></td>
@@ -105,5 +89,3 @@
 
 </table>
 
-</body>
-</html>

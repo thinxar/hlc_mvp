@@ -1,16 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
 <style>
     table { color: blue; border-collapse: collapse; }
     td, th { padding: 4px; }
 </style>
-</head>
-<body>
 <table width="600" border="1">
     <tr>
-        <td colspan="4">
+        <td>
             <h5 style="text-align:right;">Form No. 3543</h5>
             <h3 style="text-align:center;">LIFE INSURANCE CORPORATION OF INDIA</h3>
             <h4 style="text-align:center;"><u>Reduction in Sum Assured</u></h4>
@@ -23,19 +17,19 @@
         <td style="width:25px;"></td>
     </tr>
     <tr>
-        <td colspan="4" style="text-align:center;">
+        <td style="text-align:center;">
             <b>Re : Policy No. %%polNumber%%</b>
         </td>
     </tr>
     <tr>
-        <td colspan="4">
+        <td>
             <p style="text-align:justify;">
                 At the request of the Life Assured the following alterations are hereby made in the Policy:
             </p>
         </td>
     </tr>
     <tr>
-        <td colspan="4">
+        <td>
             <p style="text-align:justify;">
                 Sum Assured reduced to Rs. <b>%%value4%%</b> from the premium due
                 <b>%%value5%%</b>. <b>%%value6%%</b> premiums from
@@ -44,7 +38,7 @@
         </td>
     </tr>
     <tr>
-        <td colspan="4">
+        <td >
             <p style="text-align:justify;">
                 The sum of Rs. <b>%%value9%%</b>
                 has been paid as surrender value* inclusive of cash value of bonus in respect of the portion of the Sum Assured dropped.
@@ -54,21 +48,20 @@
         </td>
     </tr>
     <tr>
-        <td colspan="4">
+        <td>
             (*To be deleted where not applicable)
         </td>
     </tr>
     <tr>
-        <td colspan="4" style="text-align:right;">
+        <td style="text-align:right;">
             for LIFE INSURANCE CORPORATION OF INDIA
         </td>
     </tr>
     <tr>
-        <td colspan="4" style="text-align:right;">
+        <td style="text-align:right;">
             <br/>
             p.Sr/Branch Manager.
         </td>
     </tr>
 </table>
-</body>
-</html>
+
