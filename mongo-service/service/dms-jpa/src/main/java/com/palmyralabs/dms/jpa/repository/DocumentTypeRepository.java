@@ -1,5 +1,6 @@
 package com.palmyralabs.dms.jpa.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -11,4 +12,6 @@ public interface DocumentTypeRepository extends MongoRepository<DocumentTypeEnti
 	Optional<DocumentTypeEntity> findById(Integer id);
 
 	Optional<DocumentTypeEntity> findByCode(String code);
+
+	List<DocumentTypeEntity> findByIdNot(Integer id);
 }

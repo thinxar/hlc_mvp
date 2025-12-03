@@ -31,7 +31,8 @@ public class DocumentTypeService {
 
 
 	public List<DocumentTypeModel> getAll() {
-		List<DocumentTypeEntity> entities = repository.findAll();
+//		List<DocumentTypeEntity> entities = repository.findAll();
+		List<DocumentTypeEntity> entities = repository.findByIdNot(15);
 		List<DocumentTypeModel> models = new ArrayList<>();
 
 		for (DocumentTypeEntity entity : entities) {
