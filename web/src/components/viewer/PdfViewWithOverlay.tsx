@@ -146,7 +146,7 @@ export const PDFViewerWithOverlay = (
           {stampDataArr?.length > 0 && (
             <button
               onClick={saveStampData}
-              className="cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-gradient-to-r pr-bgcolor text-white 
+              className="cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-linear-to-r pr-bgcolor text-white 
               font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-101 transition-all duration-200 ease-out">
               Save Stamp
             </button>

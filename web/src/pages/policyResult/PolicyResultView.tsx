@@ -78,7 +78,10 @@ const PolicyResultView = () => {
                     const bondFile = mappedPolicies.find((f: any) =>
                         f?.pdfFiles?.fileName?.toLowerCase()?.includes('bond')
                     );
-                    setSelectedFile(bondFile);
+                    const proposalFile = mappedPolicies.find((f: any) =>
+                        f?.pdfFiles?.fileName?.toLowerCase()?.includes('proposal')
+                    );
+                    setSelectedFile(bondFile || proposalFile);
                 }
             })
             .catch(handleError);

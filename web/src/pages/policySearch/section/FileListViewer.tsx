@@ -30,7 +30,7 @@ const FileListViewer = ({ data, policyId, selectedFile, setSelectedFile }: FileP
             acc[type] = [];
         }
 
-        if (fileName.toLowerCase().includes("bond")) {
+        if (fileName.toLowerCase().includes("bond") || fileName.toLowerCase().includes("proposal")) {
             acc[type].unshift(item);
         } else {
             acc[type].push(item);
@@ -45,9 +45,12 @@ const FileListViewer = ({ data, policyId, selectedFile, setSelectedFile }: FileP
 
     const docketTypes = Object.keys(groupedByDocketType);
 
+    const fileName = selectedFile?.pdfFiles?.fileName || "";
+    const type = fileName.toLowerCase().includes("bond") ? "Policy" : "Proposal";
+    const defaultValue: any = docketTypes.includes(type) ? type : docketTypes[0];
     return (<>
         {data.length !== 0 ? (
-            <Accordion variant="filled" radius="md" className="h-full flex flex-col" defaultValue={docketTypes[0]}>
+            <Accordion variant="filled" radius="md" className="h-full flex flex-col" defaultValue={defaultValue}>
                 <div className="space-y-2 flex-1 pr-1">
                     {docketTypes.map((docketType) => {
                         const count = groupedByDocketType[docketType]?.length || 0;
@@ -57,13 +60,13 @@ const FileListViewer = ({ data, policyId, selectedFile, setSelectedFile }: FileP
                                     <Accordion.Control>
                                         <div className="flex items-center justify-between text-white pr-2">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-gray-400 animate-pulse"></div>
+                                                <div className="w-2 h-2 rounded-full bg-linear-to-r from-blue-400 to-gray-400 animate-pulse"></div>
                                                 <span className="text-md font-semibold tracking-wide">
                                                     {docketType}
                                                 </span>
                                             </div>
                                             {/* <div>{count}</div> */}
-                                            <div className="bg-gradient-to-r from-blue-500/20 to-blue-500/20 px-2 py-0 rounded-full">
+                                            <div className="bg-linear-to-r from-blue-500/20 to-blue-500/20 px-2 py-0 rounded-full">
                                                 <span className="text-sm font-semibold">{count}</span>
                                             </div>
                                         </div>
