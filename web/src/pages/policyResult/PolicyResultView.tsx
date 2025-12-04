@@ -58,7 +58,7 @@ const PolicyResultView = () => {
 
                 if (dataFromUploadEvent != '') {
                     const latestFile = mappedPolicies.reduce((a, b) =>
-                        new Date(a.pdfFiles.createdOn) > new Date(b.pdfFiles.createdOn) ? a : b
+                        new Date(a.pdfFiles.date) > new Date(b.pdfFiles.date) ? a : b
                     );
                     setSelectedFile(latestFile);
                     return;
@@ -146,7 +146,7 @@ const PolicyResultView = () => {
                     </button>
                 </div>
                 <Modal opened={opened} onClose={close} onKeyDown={handleKeyAction("Escape", close)}
-                    centered size={"lg"} title="File Upload">
+                    centered size={"lg"} title="File Upload" closeOnClickOutside={false}>
                     <FileDropZone onClose={close} policyId={params?.policyId} />
                 </Modal>
             </div>

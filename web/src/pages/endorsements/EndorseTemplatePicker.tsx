@@ -51,7 +51,7 @@ const EndorseTemplatePicker = (props: IOptions) => {
     return (
         <div className="px-2">
             <div>
-                <div className="bg-white p-3 mb-1 text-center border-b-1 border-gray-200">
+                <div className="bg-white p-3 mb-1 text-center border-b border-gray-200">
                     <div className="flex items-center gap-3 mb-1 justify-center pr-bgcolor">
                         <div className="text-2xl text-center font-bold text-white">
                             Select Endorsement Title
@@ -68,7 +68,7 @@ const EndorseTemplatePicker = (props: IOptions) => {
                             const Icon = d?.icon;
                             return (
                                 <div className="flex items-center gap-4 p-4 rounded-lg">
-                                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center shrink-0">
                                         <Icon className="text-white text-sm" />
                                     </div>
                                     <div>

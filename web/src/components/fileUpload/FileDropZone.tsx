@@ -18,6 +18,7 @@ import Pdf from '../../../public/images/pdf.png';
 import TextFile from '../../../public/images/text.png';
 import Tiff from '../../../public/images/tiff.png';
 import './FileDropZone.css';
+import { FileUploadConfig } from 'config/FileUploadConfig';
 
 interface IOptions {
     onClose?: any
@@ -30,10 +31,13 @@ const FileDropZone = (props: IOptions) => {
     const [fileList, setFileList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [docketId, setDocketId] = useState(null);
+    const [totalFileSize, setTotalFileSize] = useState(0);
     const lookupRef = useRef<any>(null)
 
     const endPoint = StringFormat(ServiceEndpoint.policy.fileUploadApi,
         { policyId: policyId, docketTypeId: docketId })
+
+    const MAX_FILE_SIZE = FileUploadConfig.formData.getMaxFileSizeInBytes();
 
     const { getRootProps, getInputProps } = useDropzone({
         onDropRejected: (_fileRejections: any) => {
@@ -46,8 +50,16 @@ const FileDropZone = (props: IOptions) => {
                 return !existingPaths.includes(file?.path);
             });
 
-            if (newFiles.length > 0) {
-                setFileList([acceptedFiles[0]]);
+            const newTotalFileSize = newFiles.reduce((total: number, file: any) =>
+                total + file.size, totalFileSize);
+
+            if (newTotalFileSize <= MAX_FILE_SIZE) {
+                if (newFiles.length > 0) {
+                    setFileList([acceptedFiles[0]]);
+                }
+                setTotalFileSize(newTotalFileSize);
+            } else {
+                toast.error("Total file size exceeds 25 MB.");
             }
         },
         multiple: false,
@@ -179,6 +191,8 @@ const FileDropZone = (props: IOptions) => {
                                     </p>
                                     <div className={`text-sm space-y-1 text-gray-500`}>
                                         <p>Supported formats: {'PDF, TIFF , PNG , JPG, JPEG'}</p>
+                                        <p>Maximum file size : 25MB</p>
+                                        <p className="text-blue-600">(Upload one file at a time)</p>
                                     </div>
                                 </p>
                             </div>
