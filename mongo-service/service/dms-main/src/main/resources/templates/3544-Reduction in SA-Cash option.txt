@@ -1,105 +1,111 @@
-<style type="text/css"> 
- table {color: blue} 
+<style type="text/css">
+    table {
+        color: blue
+    }
 </style>
 
 <table width="600" border="1">
-<tbody align="left">
+    <tbody align="left">
 
-<tr>
-<th>
+        <tr>
+            <th>
 
-<h5 align="right">Form No. 3544</h5>
-<h3 align="center">LIFE INSURANCE CORPORATION OF INDIA</h3>
-<h5 align="center"><u>REDUCTION IN SUM ASSURED WITH REDUCTION IN CASH OPTION</u></h5>
+                <h5 align="right">Form No. 3544</h5>
+                <h3 align="center">LIFE INSURANCE CORPORATION OF INDIA</h3>
+                <h5 align="center"><u>REDUCTION IN SUM ASSURED WITH REDUCTION IN CASH OPTION</u></h5>
 
-<br><br>
+                <br><br>
 
-<table width="600">
-<tr>
-<td width="25"></td>
-<td width="550" align="left">Place: %%BranchName%%</td>
-<td width="25"></td>
-<td width="550" align="right">Date: %%CurrDate%%</td>
-<td width="25"></td>
-</tr>
-</table>
+                <table width="600">
+                    <tr>
+                        <td width="25"></td>
+                        <td width="550" align="left">Place: %%BranchName%%</td>
+                        <td width="25"></td>
+                        <td width="550" align="right">Date: %%CurrDate%%</td>
+                        <td width="25"></td>
+                    </tr>
+                </table>
 
-<table width="600">
-<tr>
-<td width="25"></td>
-<td width="550" align="center"><b>Re : Policy No. %%polNumber%%</b></td>
-</tr>
-</table>
+                <table width="600">
+                    <tr>
+                        <td width="25"></td>
+                        <td width="550" align="center"><b>Re : Policy No. %%polNumber%%</b></td>
+                    </tr>
+                </table>
 
-<br><br>
+                <br><br>
 
-<table>
-<tr>
-<td width="25"></td>
-<td width="550">
-<p align="justify">At the request of the %%value4%% (Proposer/Life Assured) the following alterations are here by made in the Policy :</p>
-</td>
-<td width="25"></td>
-</tr>
+                <table>
+                    <tr>
+                        <td width="25"></td>
+                        <td width="550">
+                            <p align="justify">At the request of the %%value4%% (Proposer/Life Assured) the following
+                                alterations are here by made in the Policy :</p>
+                        </td>
+                        <td width="25"></td>
+                    </tr>
 
-<tr>
-<td width="50"></td>
-<td width="525"></td>
-<td width="25"></td>
-</tr>
+                    <tr>
+                        <td width="50"></td>
+                        <td width="525"></td>
+                        <td width="25"></td>
+                    </tr>
 
-<tr>
-<td width="25"></td>
-<td width="550">
-<p align="justify">Sum Assured reduced to Rs %%value5%% From %%value6%% (due date of the Premium).</p>
-</td>
-<td width="25"></td>
-</tr>
+                    <tr>
+                        <td width="25"></td>
+                        <td width="550">
+                            <p align="justify">Sum Assured reduced to Rs %%value5%% From %%value6%% (due date of the
+                                Premium).</p>
+                        </td>
+                        <td width="25"></td>
+                    </tr>
 
-<tr>
-<td width="25"></td>
-<td width="550">
-<p align="justify">Cash Option reduced to Rs. %%value7%% premium from %%value8%% at Rs. %%value9%%.</p>
-</td>
-<td width="25"></td>
-</tr>
+                    <tr>
+                        <td width="25"></td>
+                        <td width="550">
+                            <p align="justify">Cash Option reduced to Rs. %%value7%% premium from %%value8%% at Rs.
+                                %%value9%%.</p>
+                        </td>
+                        <td width="25"></td>
+                    </tr>
 
-<tr>
-<td width="25"></td>
-<td width="550">
-<p align="justify">The sum of Rs %%value10%% has been paid as surrender value of the portion of the Sum Assured dropped.</p>
-</td>
-<td width="25"></td>
-</tr>
-</table>
+                    <tr>
+                        <td width="25"></td>
+                        <td width="550">
+                            <p align="justify">The sum of Rs %%value10%% has been paid as surrender value of the portion
+                                of the Sum Assured dropped.</p>
+                        </td>
+                        <td width="25"></td>
+                    </tr>
+                </table>
 
-<br><br>
+                <br><br>
 
-<table width="600">
-<tr>
-<td width="25"></td>
-<td width="550" align="right">for LIFE INSURANCE CORPORATION OF INDIA</td>
-<td width="25"></td>
-</tr>
-</table>
+                <table width="600">
+                    <tr>
+                        <td width="25"></td>
+                        <td width="550" align="right">for LIFE INSURANCE CORPORATION OF INDIA</td>
+                        <td width="25"></td>
+                    </tr>
+                </table>
 
-<br>
+                <br>
 
-<table width="600">
-<tr>
-<td width="25"></td>
-<td width="550" align="right">
-<SignatureOfApprover><br/>
-p.Sr/Branch Manager.
-</td>
-<td width="25"></td>
-</tr>
-</table>
+                <table width="600">
+                    <tr>
+                        <td width="25"></td>
+                        <td width="550" align="right">
+                            <SignatureOfApprover><br />
+                                p.Sr/Branch Manager.
+                        </td>
+                        <td width="25"></td>
+                    </tr>
+                </table>
 
-<br><br>
+                <br><br>
 
-</th>
-</tr>
+            </th>
+        </tr>
 
-</tbody>
+    </tbody>
 </table>
