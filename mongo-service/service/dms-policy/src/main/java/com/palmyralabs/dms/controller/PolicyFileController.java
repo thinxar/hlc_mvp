@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.palmyralabs.dms.model.EndorsementSummaryModel;
+import com.palmyralabs.dms.model.PaginatedResponse;
 import com.palmyralabs.dms.model.PolicyFileModel;
 import com.palmyralabs.dms.model.PolicyStampModel;
 import com.palmyralabs.dms.model.PolicyStampRequest;
@@ -24,8 +26,8 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/policy")
-public class PolicyFileController extends AbstractController{
-	
+public class PolicyFileController extends AbstractController {
+
 	private final PolicyFileService policyFileService;
 	private final PolicyFileStampService stampService;
 	private final EndorsementSummaryService eSummaryService;
@@ -34,23 +36,26 @@ public class PolicyFileController extends AbstractController{
 	public PalmyraResponse<List<PolicyFileModel>> getAll(@PathVariable("policyId") Integer policyId) {
 		return apiResponse(policyFileService.getAllPolicyFiles(policyId));
 	}
-	
+
 	@GetMapping("/{policyId}/file/{id}")
-	public PalmyraResponse <PolicyFileModel> getById(@PathVariable("policyId") Integer policyId,@PathVariable("id") Integer id) {
-		return apiResponse(policyFileService.getById(policyId,id));
+	public PalmyraResponse<PolicyFileModel> getById(@PathVariable("policyId") Integer policyId,
+			@PathVariable("id") Integer id) {
+		return apiResponse(policyFileService.getById(policyId, id));
 	}
-	
+
 	@PostMapping("/policyFile/fixedStamp")
 	public PalmyraResponse<List<PolicyStampModel>> addStampToPolicyFile(
 			@RequestBody PolicyStampRequest policyStampRequest) {
 		return apiResponse(stampService.addStamp(policyStampRequest));
 	}
-	
+
 	@GetMapping("/{policyId}/endorsement/summary")
-	public PalmyraResponse<List<EndorsementSummaryModel>> getEndorsementSummary(@PathVariable("policyId") Integer policyId) {
-		return apiResponse(eSummaryService.getEndorsementSummary(policyId));
+	public PaginatedResponse<EndorsementSummaryModel> getEndorsementSummary(@PathVariable("policyId") Integer policyId,
+			@RequestParam(name = "_limit", defaultValue = "0") int limit,
+			@RequestParam(name = "_offset", defaultValue = "-1") int offset,
+			@RequestParam(name = "_total", defaultValue = "false") boolean includeTotal,
+			@RequestParam(name = "_orderBy", required = false, defaultValue = "") String orderBy) {
+		return eSummaryService.getEndorsementSummary(policyId, limit, offset, includeTotal,orderBy);
 	}
-	
-	
 
 }

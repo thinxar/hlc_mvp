@@ -3,6 +3,8 @@ package com.palmyralabs.dms.jpa.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.palmyralabs.dms.jpa.entity.PolicyFileEntity;
@@ -15,10 +17,10 @@ public interface PolicyFileRepository extends MongoRepository<PolicyFileEntity, 
 
 	Optional<PolicyFileEntity> findById(Integer id);
 	
-    List<PolicyFileEntity> findByPolicyId_IdAndDocketType_IdOrderByCreatedOnDesc(
-            Integer policyId, Integer docketTypeId
-    );
+	Page<PolicyFileEntity> findByPolicyId_IdAndDocketType_Id(
+	        Integer policyId, Integer docketTypeId, Pageable pageable);
+
 
 	List<PolicyFileEntity> findByPolicyId_IdOrderByDocketTypeAsc(Integer policyId);
-
+	
 }
