@@ -18,7 +18,7 @@ import com.palmyralabs.palmyra.client.exception.ClientException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
+//@Service
 public class DummyDataLoader implements CommandLineRunner {
 
 	@Autowired

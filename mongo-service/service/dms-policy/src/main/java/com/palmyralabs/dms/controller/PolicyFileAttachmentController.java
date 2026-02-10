@@ -36,7 +36,7 @@ public class PolicyFileAttachmentController {
 	@PostMapping("/{policyId}/docketType/{docketTypeId}/file")
 	public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
 			@PathVariable("policyId") Integer policyId, @PathVariable("docketTypeId") Integer docketTypeId) {
-		String result = policyService.upload(file, policyId, docketTypeId);
+		String result = policyService.upload(file, policyId, docketTypeId, false);
 		return ResponseEntity.ok(result);
 	}
 

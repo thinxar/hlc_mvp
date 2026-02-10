@@ -49,18 +49,18 @@ public class PolicyFileAttachmentService {
 		}
 	}
 
-	public String upload(MultipartFile file, Integer policyId, Integer docketTypeId) {
+	public String upload(MultipartFile file, Integer policyId, Integer docketTypeId, boolean incrementalFileName) {
 
 		log.info("Initiating upload process for policyId={}, docketTypeId={}", policyId, docketTypeId);
 		Optional<PolicyEntity> policyOptional = policyRepository.findById(policyId);
 
 		if (policyOptional.isPresent()) {
 			PolicyEntity policy = policyOptional.get();
-			String folder = String.valueOf(policy.getPolicyNumber());
-			String objectUrl= String.join("/",folder,file.getOriginalFilename());
-			
-			String fileName = checkObjectUrlAlreadyExists(objectUrl, file, folder, docketTypeId);
-			objectUrl = String.join("/",folder,fileName);
+			String folder = String.valueOf(policy.getPolicyNumber()) + "/" + policy.getId();
+			String objectUrl = String.join("/", folder, file.getOriginalFilename());
+
+			String fileName = checkObjectUrlAlreadyExists(objectUrl, file, folder, docketTypeId, incrementalFileName);
+			objectUrl = String.join("/", folder, fileName);
 			PolicyFileUploadListener listener = new PolicyFileUploadListener();
 			try {
 				syncFileService.upload(folder, fileName, file, listener);
@@ -90,13 +90,17 @@ public class PolicyFileAttachmentService {
 		policyFileRepository.save(fileEntity);
 	}
 
+	private boolean isEndorsement(Integer docketTypeId) {
+		DocumentTypeEntity docEntity = getDocketType(docketTypeId);
+		return docEntity.getCode().equals("115");
+	}
+
 	private String checkObjectUrlAlreadyExists(String objectUrl, MultipartFile file, String folder,
-			Integer docketTypeId) {
+			Integer docketTypeId, boolean incrementalFileName) {
 
 		Optional<PolicyFileEntity> optPolicyFile = policyFileRepository.findByObjectUrl(objectUrl);
 		String fileName = file.getOriginalFilename();
-		DocumentTypeEntity docEntity = getDocketType(docketTypeId);
-		boolean isEndorsement = docEntity.getCode().equals("115");
+		boolean isEndorsement = isEndorsement(docketTypeId) && incrementalFileName;
 
 		if (optPolicyFile.isPresent()) {
 			if (!isEndorsement) {
@@ -115,7 +119,7 @@ public class PolicyFileAttachmentService {
 			do {
 				newFileName = fileName + "_" + count + extension;
 				count++;
-				objectUrl = String.join("/",folder,newFileName);
+				objectUrl = String.join("/", folder, newFileName);
 				optPolicyFile = policyFileRepository.findByObjectUrl(objectUrl);
 			} while (optPolicyFile.isPresent());
 			return newFileName;
@@ -128,11 +132,10 @@ public class PolicyFileAttachmentService {
 		return docTypeRepository.findById(id)
 				.orElseThrow(() -> new InvaidInputException("INV001", "docketType not found"));
 	}
-	
+
 	private PolicyEntity getPolicyEntity(Integer id) {
 		return policyRepository.findById(id)
 				.orElseThrow(() -> new InvaidInputException("INV001", "policy record not found"));
 	}
-	
 
 }

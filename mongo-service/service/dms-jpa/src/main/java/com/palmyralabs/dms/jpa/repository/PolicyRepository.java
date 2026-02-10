@@ -12,5 +12,7 @@ public interface PolicyRepository extends MongoRepository<PolicyEntity, Integer>
 	Optional<PolicyEntity> findById(Integer id);
 
 	List<PolicyEntity> findByPolicyNumber(Long policyNumber);
+	
+	Optional<PolicyEntity> findByPolicyNumberAndBranchCode(Long policyNumber, String branchCode);
 
 }

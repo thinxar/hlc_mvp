@@ -1,10 +1,10 @@
 
 app:
  upload:
-   url: "http://localhost:7070/api/"
+   url: "http://10.196.6.190:7070/api/"
    username: "admin@gmail.com"
    password: "ad"
-   policyFolder: "/home/ksvraja/test_data/dev/hpe"
-   parallel: 10
+   policyFolder: "E:\\data\\HPE\\9301"
+   parallel: 1
    start: 10
    end: 110

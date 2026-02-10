@@ -2,7 +2,6 @@ plugins {
   id 'java'
   id 'org.springframework.boot' version '3.3.4' apply false
   id 'io.spring.dependency-management' version '1.1.4' apply false
-  id 'jacoco'
 }
 
 apply from: './deps.gradle'
@@ -16,14 +15,9 @@ repositories {
     mavenCentral()
 }
 
-jacoco {
-    toolVersion = "0.8.13"
-}
-
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
-    apply plugin: 'jacoco'
     
     group = 'com.palmyralabs.dms'
     version = '0.1.0'
@@ -41,7 +35,7 @@ subprojects {
         mavenLocal()
         mavenCentral()
         maven {
-            url "https://repo.palmyralabs.com/releases"
+            url="https://repo.palmyralabs.com/releases"
         }
     }
 

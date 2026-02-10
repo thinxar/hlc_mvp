@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PolicyUploader {
 	private final Path baseFolder;
 	private final PalmyraDMSClient client;
+	private final DocketMatcher matcher = new DocketMatcher();
 	private final FileFilter filter = new PolicyFileFilter();
 	private final PolicyReader csvReader = new PolicyReader();
 	private final Logger failureLogger = LoggerFactory.getLogger("com.palmyralabs.policyupload.failure");
@@ -43,22 +44,24 @@ public class PolicyUploader {
 	public void uploadFiles(Integer policyId, Path parentDir, PolicyNumberStrategy strategy) {
 		File[] files = parentDir.toFile().listFiles(filter);
 		for (File file : files) {
+			System.out.println("uploading file " + file.getName());
 			Path filePath = parentDir.resolve(file.getName());
-			uploadFile(policyId, getDocketType(file), filePath, strategy);
+			uploadFile(policyId, matcher.getMatch(file), filePath, strategy);
+			System.out.println("completed file upload" + file.getName());
 		}
 	}
 
-	private int getDocketType(File file) {
-		String fileName = file.getName().toLowerCase();
-		String[] matchers = { "~policy", "~poa", "~poi", "~proposal", "~medical", "~others~" };
-		int i = 0;
-		for (String matcher : matchers) {
-			i++;
-			if (fileName.contains(matcher))
-				return i;
-		}
-		return matchers.length;
-	}
+//	private int getDocketType(File file) {
+//		String fileName = file.getName().toLowerCase();
+//		String[] matchers = { "~policy", "~poa", "~poi", "~proposal", "~medical", "~others~" };
+//		int i = 0;
+//		for (String matcher : matchers) {
+//			i++;
+//			if (fileName.contains(matcher))
+//				return i;
+//		}
+//		return matchers.length;
+//	}
 
 	@SneakyThrows
 	public void uploadFile(Integer policyId, Integer docketTypeId, Path filePath, PolicyNumberStrategy strategy) {

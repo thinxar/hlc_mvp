@@ -60,7 +60,7 @@ public class EndorsementService {
 			MultipartFile multipartFile = new MockMultipartFile(htmlFileName, htmlFileName, "text/html", fileContent);
 			DocumentTypeEntity docketTypeEntity = getDocumentTypeEntity(code);
 			Integer docketTypeId = docketTypeEntity.getId().intValue();
-			policyFileService.upload(multipartFile, policyId, docketTypeId);
+			policyFileService.upload(multipartFile, policyId, docketTypeId, true);
 
 			return "file uploaded successfully";
 		} catch (Exception e) {

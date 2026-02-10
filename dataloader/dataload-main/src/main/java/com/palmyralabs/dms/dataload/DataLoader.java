@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Service;
 
 import com.palmyralabs.dms.dataload.client.PalmyraDMSClient;
 import com.palmyralabs.dms.dataload.service.PolicyFileUploader;
@@ -18,6 +19,7 @@ import com.palmyralabs.palmyra.client.exception.ClientException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Service
 public class DataLoader implements CommandLineRunner {
 
 	@Autowired

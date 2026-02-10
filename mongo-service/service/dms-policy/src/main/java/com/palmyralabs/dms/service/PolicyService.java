@@ -21,6 +21,14 @@ public class PolicyService {
 
 	public PolicyModel createPolicy(PolicyModel model) {
 		PolicyEntity policyEntity = new PolicyEntity();
+
+		Optional<PolicyEntity> dbPolicyOpt = policyRepository.findByPolicyNumberAndBranchCode(model.getPolicyNumber(),
+				model.getBranchCode());
+		
+		if(dbPolicyOpt.isPresent()) {
+			policyEntity = dbPolicyOpt.get();
+		}
+
 		policyEntity.setPolicyNumber(model.getPolicyNumber());
 		policyEntity.setCustomerId(model.getCustomerId());
 		policyEntity.setCustomerName(model.getCustomerName());
@@ -44,28 +52,27 @@ public class PolicyService {
 
 	public List<PolicyModel> getAll(Long policyNumber) {
 
-	    List<PolicyEntity> policyEntities;
+		List<PolicyEntity> policyEntities;
 
-	    if (policyNumber != null) {
-	        policyEntities = policyRepository.findByPolicyNumber(policyNumber);
-	    } else {
-	        policyEntities = policyRepository.findAll();
-	    }
+		if (policyNumber != null) {
+			policyEntities = policyRepository.findByPolicyNumber(policyNumber);
+		} else {
+			policyEntities = policyRepository.findAll();
+		}
 
-	    List<PolicyModel> policyModels = new ArrayList<>();
+		List<PolicyModel> policyModels = new ArrayList<>();
 
-	    for (PolicyEntity entity : policyEntities) {
-	        policyModels.add(toModel(entity));
-	    }
+		for (PolicyEntity entity : policyEntities) {
+			policyModels.add(toModel(entity));
+		}
 
-	    return policyModels;
+		return policyModels;
 	}
-
 
 	public PolicyModel getById(Integer policyId) {
 		Optional<PolicyEntity> policyEntity = policyRepository.findById(policyId);
 		if (policyEntity.isEmpty()) {
-			throw new InvaidInputException("INV001","policy record not found");
+			throw new InvaidInputException("INV001", "policy record not found");
 		}
 		PolicyModel model = toModel(policyEntity.get());
 		return model;
