@@ -41,7 +41,7 @@ public class AutoIncrementListener extends AbstractMongoEventListener<Object> {
         }
     }
 
-    private int getNextSequence(String seqName, Class<?> entityClass) {
+    private synchronized int getNextSequence(String seqName, Class<?> entityClass) {
         Query query = new Query(Criteria.where("_id").is(seqName));
         Update update = new Update().inc("seq", 1);
         FindAndModifyOptions options = FindAndModifyOptions.options().returnNew(true).upsert(true);

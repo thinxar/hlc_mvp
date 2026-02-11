@@ -84,30 +84,49 @@ public class SyncFileServiceImpl {
 
 	@SneakyThrows
 	public void upload(String folder, String originalFilename, MultipartFile file, FileUploadListener listener) {
-		String key = String.join("/",folder,originalFilename);
+		String key = String.join("/", folder, originalFilename);
 		PutObjectRequest request = PutObjectRequest.builder().bucket(props.getBucketName())
 				.contentType(file.getContentType()).key(key).build();
 
 		RequestBody requestBody = RequestBody.fromInputStream(file.getInputStream(), file.getSize());
 		try {
 			PutObjectResponse response = client.putObject(request, requestBody);
-			
-			HeadObjectRequest headRequest = HeadObjectRequest.builder().bucket(props.getBucketName()).key(key).build();
-			HeadObjectResponse headResponse = client.headObject(headRequest);
-			long uploadedFileSize = headResponse.contentLength();
-			if (uploadedFileSize == 0) {
-		            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
-		                    .bucket(props.getBucketName())
-		                    .key(key)
-		                    .build();
-
-		            client.deleteObject(deleteRequest);
-		            throw new IllegalStateException("Uploaded file is 0 KB and has been deleted.");
-		        }
+			try {
+				HeadObjectRequest headRequest = HeadObjectRequest.builder().bucket(props.getBucketName()).key(key)
+						.build();
+				HeadObjectResponse headResponse = client.headObject(headRequest);
+				long uploadedFileSize = headResponse.contentLength();
+				if (uploadedFileSize == 0) {
+					DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder().bucket(props.getBucketName())
+							.key(key).build();
+					client.deleteObject(deleteRequest);
+					throw new IllegalStateException("Uploaded file is 0 KB and has been deleted.");
+				}
+			} catch (IllegalStateException ise) {
+				throw ise;
+			} catch (Throwable t) {
+				log.error("Error while checking zero length file", t);
+			}
 			processResponse(key, response, listener);
+		} catch (RuntimeException re) {
+//			cleanupFile(key);
+			listener.onFailure(re);
+			throw re;
+
 		} catch (Exception e) {
+//			cleanupFile(key);
 			listener.onFailure(e);
 			throw e;
+		}
+	}
+
+	private void cleanupFile(String key) {
+		try {
+			DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder().bucket(props.getBucketName()).key(key)
+					.build();
+			client.deleteObject(deleteRequest);
+		} catch (RuntimeException re) {
+			log.error("Cannot cleanup file " + key, re);
 		}
 	}
 }
