@@ -9,6 +9,7 @@ interface IGridControls extends IDataGridDefaultControlConfig {
     filterField?: any
     addText?: string
     onNewClick?: () => void
+    customBtn?: any
 
 }
 const HclSummaryGridControls = (props: any) => {
@@ -19,6 +20,7 @@ const HclSummaryGridControls = (props: any) => {
     const FilterLet: any = pluginOptions?.filterField
     const isFilterVisible = pluginOptions.filter ? pluginOptions.filter?.visible : true;
     const ACL_CODE = pluginOptions.aclCode ? pluginOptions.aclCode : '';
+    const CustomButton: any = pluginOptions?.customBtn
 
     return (<>
         {o.quickSearch && <QuickSearch width="200" queryRef={o.queryRef}
@@ -32,6 +34,10 @@ const HclSummaryGridControls = (props: any) => {
                 <ExportDataButton exportOption={{ excel: 'Excel' }}
                     visible={pluginOptions.export?.visible} disabled={pluginOptions.export?.disabled}
                     queryRef={o.queryRef} {...pluginOptions.export} />
+            </div>}
+        {pluginOptions.customBtn &&
+            <div>
+                {CustomButton}
             </div>}
         {((pluginOptions.add?.visible !== false) && (ACL_CODE ? true : true)) &&
             <div>

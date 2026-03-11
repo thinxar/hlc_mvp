@@ -1,0 +1,167 @@
+{
+    "result": [
+        {
+            "policyNo": "45465767",
+            "docType": "Revival",
+            "srNo": "357664",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-24 13:34:44"
+        },
+        {
+            "policyNo": "45465768",
+            "docType": "Revival",
+            "srNo": "357665",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-23 10:12:21"
+        },
+        {
+            "policyNo": "45465769",
+            "docType": "Revival",
+            "srNo": "357666",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-22 09:45:10"
+        },
+        {
+            "policyNo": "45465770",
+            "docType": "Revival",
+            "srNo": "357667",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-21 14:11:55"
+        },
+        {
+            "policyNo": "45465771",
+            "docType": "Revival",
+            "srNo": "357668",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-20 16:20:32"
+        },
+        {
+            "policyNo": "45465772",
+            "docType": "Revival",
+            "srNo": "357669",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-19 11:05:44"
+        },
+        {
+            "policyNo": "45465773",
+            "docType": "Revival",
+            "srNo": "357670",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-18 12:33:28"
+        },
+        {
+            "policyNo": "45465774",
+            "docType": "Revival",
+            "srNo": "357671",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-17 08:54:16"
+        },
+        {
+            "policyNo": "45465775",
+            "docType": "Revival",
+            "srNo": "357672",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-16 15:27:39"
+        },
+        {
+            "policyNo": "45465776",
+            "docType": "Revival",
+            "srNo": "357673",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-15 13:18:50"
+        },
+        {
+            "policyNo": "45465777",
+            "docType": "Revival",
+            "srNo": "357674",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-14 09:41:11"
+        },
+        {
+            "policyNo": "45465778",
+            "docType": "Revival",
+            "srNo": "357675",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-13 17:02:24"
+        },
+        {
+            "policyNo": "45465779",
+            "docType": "Revival",
+            "srNo": "357676",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-12 10:25:36"
+        },
+        {
+            "policyNo": "45465780",
+            "docType": "Revival",
+            "srNo": "357677",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-11 12:44:07"
+        },
+        {
+            "policyNo": "45465781",
+            "docType": "Revival",
+            "srNo": "357678",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-10 14:36:19"
+        },
+        {
+            "policyNo": "45465782",
+            "docType": "Revival",
+            "srNo": "357679",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-09 16:59:55"
+        },
+        {
+            "policyNo": "45465783",
+            "docType": "Revival",
+            "srNo": "357680",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-08 11:17:23"
+        },
+        {
+            "policyNo": "45465784",
+            "docType": "Revival",
+            "srNo": "357681",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-07 09:30:48"
+        },
+        {
+            "policyNo": "45465785",
+            "docType": "Revival",
+            "srNo": "357682",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-06 13:12:14"
+        },
+        {
+            "policyNo": "45465786",
+            "docType": "Revival",
+            "srNo": "357683",
+            "soCode": "203",
+            "doCode": "404",
+            "submissionDate": "2025-09-05 15:48:37"
+        }
+    ],
+    "total": 20,
+    "offset": 0,
+    "limit": 15
+}

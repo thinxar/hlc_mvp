@@ -73,6 +73,9 @@ const ServiceEndpoint = {
         endorsementSubType: '/masterdata/{endorsementType}/endorsementSubType',
         userType: '',
         designation: ''
+    },
+    customView:{
+        policyListApi:'/policyList'
     }
 }
 

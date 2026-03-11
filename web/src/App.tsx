@@ -11,15 +11,19 @@ import './themes/blue/Colors.css';
 import './themes/colorDef.css';
 import './style/FieldGroupContainer.css';
 import './style/ResponsiveLayout.css';
+import { CustomViewerPage } from './pages/customViewer/CustomViewerPage';
+import { CustomViewerViewPage } from './pages/customViewer/view/CustomViewerViewPage';
 
 function App() {
 
   return (
-    <div className='min-h-screen bg-gradient-to-br bColor relative overflow-hidden' >
+    <div className='min-h-screen bg-linear-to-br bColor relative overflow-hidden' >
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace={true} />} />
           <Route path='/login' element={<LoginPage />} />
+          <Route path='/customViewer/NG' element={<CustomViewerPage pageName="customViewer" />} />
+          <Route path='/customViewer/NG/view' element={<CustomViewerViewPage pageName="customViewer" />} />
           <Route path='/app/' element={<MainLayout />} >
             <Route path='home' element={<HomePage />} />
             <Route path='policy/:policyId' element={<PolicyResultPage />} />
