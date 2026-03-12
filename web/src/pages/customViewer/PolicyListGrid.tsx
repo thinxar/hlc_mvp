@@ -1,11 +1,11 @@
 import { Button } from "@mantine/core";
-import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
-import { PalmyraForm, StoreFactoryContext, type ColumnDefinition, type IPageQueryable } from "@palmyralabs/rt-forms";
+import { PalmyraForm, type ColumnDefinition, type IPageQueryable } from "@palmyralabs/rt-forms";
 import { PalmyraGrid } from "@palmyralabs/rt-forms-mantine";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
+// import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { useEffect, useRef, useState } from "react";
 import { FiRefreshCw } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { HclSummaryGridControls } from "src/common/component/gridControl/HlcSummaryGridControls";
 import { SearchFilterField } from "src/common/component/SearchFilterField";
 import { useFilterHandler } from "src/hook/useFilterHandler";
@@ -14,16 +14,18 @@ import { IPageInput } from "templates/Types";
 
 const PolicyListGrid = (_props: IPageInput) => {
     const navigate = useNavigate();
+    const params = useParams();
     const gridRef = useRef<IPageQueryable>(null);
     const [filter, setFilter] = useState({ policyNo: '' })
     const { handleFilterChange } = useFilterHandler(setFilter);
 
-    const endPoint = ServiceEndpoint.customView.policyListApi;
+    const endPoint = ServiceEndpoint.customView.policyListApi +
+        "?officeCode=" + params.officeCode + "&srNo=" + params.srNo;
 
     const fields: ColumnDefinition[] = [
         {
-            attribute: "policyNo",
-            name: "policyNo",
+            attribute: "policyNumber",
+            name: "policyNumber",
             label: "Policy Number",
             searchable: true,
             sortable: true,
@@ -62,8 +64,8 @@ const PolicyListGrid = (_props: IPageInput) => {
             type: "string"
         },
         {
-            attribute: "submissionDate",
-            name: "submissionDate",
+            attribute: "dateOfSubmission",
+            name: "dateOfSubmission",
             label: "Date of Submission",
             searchable: true,
             sortable: true,
@@ -87,7 +89,7 @@ const PolicyListGrid = (_props: IPageInput) => {
     const FilterField: any = <>
         <PalmyraForm>
             <SearchFilterField
-                attribute="policyNo" placeholder="Policy Number"
+                attribute="policyNumber" placeholder="Policy Number"
                 filter={filter} setFilter={setFilter} handleFilterChange={handleFilterChange}
             />
         </PalmyraForm>
@@ -114,22 +116,18 @@ const PolicyListGrid = (_props: IPageInput) => {
         gridRef?.current?.setFilter(filter);
     }, [filter]);
 
-    const onRowClick = () => {
-        navigate('view')
-    }
+    const onRowClick = (d: any) => {
+        navigate(`view/${d?.id}`, { state: { policyData: d } });
+    };
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/gridData' });
-    const endPointX = '/policyList.json'
     return (
         <div className="grid-container">
-            <StoreFactoryContext value={AppStoreFactory}>
-                <PalmyraGrid title={"Policy List"} onRowClick={onRowClick}
-                    columns={fields} pageSize={[15, 30, 45]}
-                    getPluginOptions={getPluginOptions}
-                    ref={gridRef} pagination={{ ignoreSinglePage: true }}
-                    DataGridControls={HclSummaryGridControls}
-                    endPoint={endPointX} />
-            </StoreFactoryContext>
+            <PalmyraGrid title={"Policy List"} onRowClick={onRowClick}
+                columns={fields} pageSize={[15, 30, 45]}
+                getPluginOptions={getPluginOptions}
+                ref={gridRef} pagination={{ ignoreSinglePage: true }}
+                DataGridControls={HclSummaryGridControls}
+                endPoint={endPoint} />
         </div>
     )
 }

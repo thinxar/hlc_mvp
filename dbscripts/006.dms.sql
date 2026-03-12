@@ -30,6 +30,7 @@ CREATE TABLE mst_document_type (
 	id int8 NOT NULL,
 	"document" varchar(128) NOT NULL,
 	description varchar(250) NULL,
+    code varchar(64) NOT NULL,
 	created_by varchar(128) NOT NULL,
 	last_upd_by varchar(128) NULL,
 	created_on timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,

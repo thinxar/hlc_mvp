@@ -75,7 +75,8 @@ const ServiceEndpoint = {
         designation: ''
     },
     customView:{
-        policyListApi:'/policyList'
+        policyListApi:'/rev/policy',
+        submitApi:'/policy/rev/file/submit'
     }
 }
 

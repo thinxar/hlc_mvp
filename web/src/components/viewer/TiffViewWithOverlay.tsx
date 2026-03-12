@@ -1,15 +1,15 @@
-import { useEffect, useState, useRef, useMemo } from "react";
-import axios from "axios";
-import UTIF from "utif2";
 import { Loader } from "@mantine/core";
-import { GoDash, GoPlus } from "react-icons/go";
+import axios from "axios";
 import { fabric } from "fabric";
-import { stampImages } from "./StampImages";
-import { useFormstore } from "wire/StoreFactory";
-import { formatDateTime } from "utils/FormateDate";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { GoDash, GoPlus } from "react-icons/go";
 import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
-import { selectStampFunc } from "./widgets/widget";
+import UTIF from "utif2";
+import { formatDateTime } from "utils/FormateDate";
+import { useFormstore } from "wire/StoreFactory";
 import { saveOverlay } from "./overlay/saveOverlay";
+import { stampImages } from "./StampImages";
+import { selectStampFunc } from "./widgets/widget";
 
 export const TIFFViewer = ({
   tiff,
@@ -42,47 +42,100 @@ export const TIFFViewer = ({
     return map;
   }, [overlays?.stamps]);
 
+  // useEffect(() => {
+  //   const loadTiff = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const res = await axios.get(tiff, { responseType: "arraybuffer" });
+  //       const buffer = res.data;
+  //       const ifds = UTIF.decode(buffer);
+
+  //       const canvases: any[] = [];
+
+  //       for (let i = 0; i < ifds.length; i++) {
+  //         const ifd = ifds[i];
+  //         UTIF.decodeImage(buffer, ifd);
+
+  //         const rgba = UTIF.toRGBA8(ifd);
+  //         const width = ifd.width || 1;
+  //         const height = ifd.height || 1;
+
+  //         const canvas = document.createElement("canvas");
+  //         canvas.width = width;
+  //         canvas.height = height;
+
+  //         const ctx = canvas.getContext("2d");
+  //         if (!ctx) continue;
+
+  //         const imgData = new ImageData(new Uint8ClampedArray(rgba), width, height);
+  //         ctx.putImageData(imgData, 0, 0);
+
+  //         canvases.push({ index: i, canvas });
+  //       }
+
+  //       setPages(canvases);
+  //     } catch (err: any) {
+  //       console.error("TIFF rendering failed:", err.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   loadTiff();
+  // }, [tiff]);
+
   useEffect(() => {
-    const loadTiff = async () => {
-      try {
-        setLoading(true);
-        const res = await axios.get(tiff, { responseType: "arraybuffer" });
-        const buffer = res.data;
-        const ifds = UTIF.decode(buffer);
-
-        const canvases: any[] = [];
-
-        for (let i = 0; i < ifds.length; i++) {
+  const loadTiff = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(tiff, { responseType: "arraybuffer" });
+      const buffer = res.data;
+      const ifds = UTIF.decode(buffer);
+      const canvases: any[] = [];
+      
+      for (let i = 0; i < ifds.length; i++) {
+        try {
           const ifd = ifds[i];
           UTIF.decodeImage(buffer, ifd);
-
           const rgba = UTIF.toRGBA8(ifd);
           const width = ifd.width || 1;
           const height = ifd.height || 1;
-
           const canvas = document.createElement("canvas");
           canvas.width = width;
           canvas.height = height;
-
           const ctx = canvas.getContext("2d");
           if (!ctx) continue;
-
           const imgData = new ImageData(new Uint8ClampedArray(rgba), width, height);
           ctx.putImageData(imgData, 0, 0);
-
+          canvases.push({ index: i, canvas });
+        } catch (pageErr: any) {
+          console.warn(`Failed to decode page ${i}:`, pageErr.message);
+          // Create a placeholder canvas for failed pages
+          const canvas = document.createElement("canvas");
+          canvas.width = 800;
+          canvas.height = 600;
+          const ctx = canvas.getContext("2d");
+          if (ctx) {
+            ctx.fillStyle = "#f0f0f0";
+            ctx.fillRect(0, 0, 800, 600);
+            ctx.fillStyle = "#333";
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(`Page ${i + 1} - Failed to load`, 400, 300);
+          }
           canvases.push({ index: i, canvas });
         }
-
-        setPages(canvases);
-      } catch (err: any) {
-        console.error("TIFF rendering failed:", err.message);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    loadTiff();
-  }, [tiff]);
+      
+      setPages(canvases);
+    } catch (err: any) {
+      console.error("TIFF rendering failed:", err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  loadTiff();
+}, [tiff]);
 
   useEffect(() => {
     if (!pages.length) return;
@@ -265,7 +318,7 @@ export const TIFFViewer = ({
           {stampDataArr?.length > 0 && (
             <button
               onClick={saveStampData}
-              className="cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-gradient-to-r pr-bgcolor text-white font-semibold rounded-lg shadow-md hover:shadow-lg"
+              className="cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-linear-to-r pr-bgcolor text-white font-semibold rounded-lg shadow-md hover:shadow-lg"
             >
               Save Stamp
             </button>

@@ -28,7 +28,7 @@ const FileItemList = ({ file, isSelected, onClick }: FileProps) => {
     };
 
     return (
-        <div onClick={onClick} className={`cursor-pointer p-2 rounded-xl transition-all duration-400 ease-in border-l-[10px] 
+        <div onClick={onClick} className={`cursor-pointer p-2 rounded-xl transition-all duration-400 ease-in border-l-10 
                 min-h-[65px] mt-2 ${isSelected
                 ? 'bg-slate-100 shadow-lg border-yellow-400'
                 : 'bg-white/92 hover:border-white/20 hover:bg-white/80 border-transparent'

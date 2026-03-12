@@ -1,11 +1,11 @@
+import { ServiceEndpoint } from 'config/ServiceEndpoint';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ServiceEndpoint } from 'config/ServiceEndpoint';
 import { handleError } from 'wire/ErrorHandler';
 import { useFormstore } from 'wire/StoreFactory';
+import { EmptyList } from './section/EmptyList';
 import { PolicyList } from './section/PolicyList';
 import { SearchBar } from './section/SearchBar';
-import { EmptyList } from './section/EmptyList';
 
 interface PolicyFile {
     id: string;
@@ -40,7 +40,7 @@ const PolicySearchPage = () => {
     }
 
     return (
-        <div className="bg-gradient-to-br bColor relative overflow-hidden">
+        <div className="bg-linear-to-br bColor relative overflow-hidden">
             <div className="absolute inset-0">
                 <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
                 <div className="absolute bottom-20 right-20 w-96 h-96 bg-yellow-100/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
