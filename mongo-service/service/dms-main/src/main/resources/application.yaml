@@ -1,12 +1,12 @@
 spring:
   data:
-    mongodb:
-      host: 10.196.6.190
-      port: 27017
-      database: dms
-      username: dmsuser
-      password: Mongodb@123#
-      authentication-database: dms
+   mongodb:
+     host: localhost
+     port: 27017
+     database: dms_revival
+     username: demouser
+     password: secret
+     authentication-database: dms_revival
   servlet:
     multipart:
       max-file-size: 25MB
@@ -36,7 +36,7 @@ aws:
     region: ap-south-1
     accessKey: AKIAIOSFODNN7EXAMPLE
     secretKey: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-    endpoint: http://10.196.6.190:9444
+    endpoint: http://192.168.1.11:9000
     corePoolSize: 25
     maximumPoolSize: 25
     keepAliveTime: 600

@@ -32,5 +32,13 @@ public class PolicyFileEntity{
 	private LocalDateTime createdOn;
 	
 	private String createdBy;
+	
+	private String status;
+	
+	private String srNo;
+	
+	private LocalDateTime actionOn;
+	
+	private String actionBy;
 
 }

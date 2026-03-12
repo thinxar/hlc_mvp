@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.palmyralabs.dms.base.exception.InvaidInputException;
+import com.palmyralabs.dms.base.exception.InvalidInputException;
 import com.palmyralabs.dms.jpa.entity.EndorsementSubTypeEntity;
 import com.palmyralabs.dms.jpa.entity.EndorsementTypeEntity;
 import com.palmyralabs.dms.jpa.repository.EndorsementSubTypeRepo;
@@ -46,7 +46,7 @@ public class EndorsementSubTypeService {
 	public EndorsementSubTypeModel getById(Integer id) {
 		Optional<EndorsementSubTypeEntity> entity = repository.findById(id);
 		if (entity.isEmpty()) {
-			throw new InvaidInputException("INV404", "Endorsement Sub Type not found");
+			throw new InvalidInputException("INV404", "Endorsement Sub Type not found");
 		}
 		return toModel(entity.get());
 	}

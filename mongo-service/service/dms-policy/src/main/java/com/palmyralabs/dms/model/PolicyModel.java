@@ -41,5 +41,15 @@ public class PolicyModel {
 	private String mobileNumber;
 
 	private Integer policyStatus;
+	
+	private String docType;
+	
+	private String srNo;
+	
+	private String soCode;
+	
+	private String doCode;
+	
+	private LocalDate dateOfSubmission;
 
 }

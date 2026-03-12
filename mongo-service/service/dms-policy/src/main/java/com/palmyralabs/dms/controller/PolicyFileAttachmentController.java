@@ -41,7 +41,7 @@ public class PolicyFileAttachmentController {
 	}
 
 	@PostMapping("/{policyId}/endorsement/{docketType}")
-	public ResponseEntity<String> rfdgfhg(@RequestBody EndorsementRequest request,
+	public ResponseEntity<String> createEndorsement(@RequestBody EndorsementRequest request,
 			@PathVariable("policyId") Integer policyId, @PathVariable("docketType") String code) throws IOException {
 		return ResponseEntity.ok(endorseService.createEndorsement(request, policyId, code));
 	}

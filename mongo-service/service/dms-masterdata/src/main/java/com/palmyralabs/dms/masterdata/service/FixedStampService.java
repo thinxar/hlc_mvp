@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.palmyralabs.dms.base.exception.InvaidInputException;
+import com.palmyralabs.dms.base.exception.InvalidInputException;
 import com.palmyralabs.dms.jpa.entity.FixedStampEntity;
 import com.palmyralabs.dms.jpa.repository.FixedStampRepo;
 import com.palmyralabs.dms.masterdata.model.FixedStampModel;
@@ -43,7 +43,7 @@ public class FixedStampService {
 	public FixedStampModel getById(Integer id) {
 		Optional<FixedStampEntity> entity = repository.findById(id);
 		if (entity.isEmpty()) {
-			throw new InvaidInputException("INV404", "Fixed stamp not found");
+			throw new InvalidInputException("INV404", "Fixed stamp not found");
 		}
 		return toModel(entity.get());
 	}

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.palmyralabs.dms.base.exception.InvaidInputException;
+import com.palmyralabs.dms.base.exception.InvalidInputException;
 import com.palmyralabs.dms.jpa.entity.FixedStampEntity;
 import com.palmyralabs.dms.jpa.entity.PolicyFileEntity;
 import com.palmyralabs.dms.jpa.entity.PolicyFileFixedStampEntity;
@@ -54,23 +54,23 @@ public class PolicyFileStampService {
 			PolicyStampRequest model) {
 		List<PolicyStampPositionModel> stampList = model.getStamp();
 		if (!policyFileEntity.getId().equals(model.getPolicyFileId())) {
-			throw new InvaidInputException("INV001", "file record mismatch");
+			throw new InvalidInputException("INV001", "file record mismatch");
 		}
 		if (stampList.size() == 0) {
-			throw new InvaidInputException("INV001", "stamp is empty");
+			throw new InvalidInputException("INV001", "stamp is empty");
 		}
 		List<PolicyFileFixedStampEntity> policyFileFixedStampEntities = new ArrayList<PolicyFileFixedStampEntity>();
 		for (PolicyStampPositionModel stamp : stampList) {
 			PolicyFileFixedStampEntity entity = new PolicyFileFixedStampEntity();
 			Optional<FixedStampEntity> fixedStampOp = getStampEntity(stamp.getCode());
 			if(fixedStampOp.isEmpty()) {
-				throw new InvaidInputException("INV001", "stamp not found");
+				throw new InvalidInputException("INV001", "stamp not found");
 			}
 			FixedStampEntity stampEntity = fixedStampOp.get();
 			Optional<PolicyFileFixedStampEntity> optPolicyStamp = getPolicyAndStampEntity(model.getPolicyFileId(),
 					stampEntity.getId());
 			if (optPolicyStamp.isPresent()) {
-				throw new InvaidInputException("INV001", "stamp already exists");
+				throw new InvalidInputException("INV001", "stamp already exists");
 			}
 			entity.setPolicyFile(policyFileEntity);
 			entity.setStamp(stampEntity);

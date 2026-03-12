@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.palmyralabs.dms.base.exception.InvaidInputException;
+import com.palmyralabs.dms.base.exception.InvalidInputException;
 import com.palmyralabs.dms.jpa.entity.DocumentTypeEntity;
 import com.palmyralabs.dms.jpa.repository.DocumentTypeRepository;
 import com.palmyralabs.dms.masterdata.model.DocumentTypeModel;
@@ -44,7 +44,7 @@ public class DocumentTypeService {
 	public DocumentTypeModel getById(Integer id) {
 		Optional<DocumentTypeEntity> entity = repository.findById(id);
 		if (entity.isEmpty()) {
-			throw new InvaidInputException("INV404", "Document type not found");
+			throw new InvalidInputException("INV404", "Document type not found");
 		}
 		return toModel(entity.get());
 	}

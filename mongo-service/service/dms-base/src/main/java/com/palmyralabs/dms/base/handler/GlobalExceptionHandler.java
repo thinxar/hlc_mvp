@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.palmyralabs.dms.base.controller.BaseController;
-import com.palmyralabs.dms.base.exception.InvaidInputException;
+import com.palmyralabs.dms.base.exception.InvalidInputException;
 import com.palmyralabs.dms.base.model.ErrorResponse;
 import com.palmyralabs.palmyra.base.exception.DataNotFoundException;
 import com.palmyralabs.palmyra.base.exception.EndPointForbiddenException;
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler extends BaseController {
 		return forbidden(getErrorResponse(e));
 	}
 
-	@ExceptionHandler({ InvaidInputException.class, FieldValidationException.class })
+	@ExceptionHandler({ InvalidInputException.class, FieldValidationException.class })
 	public ResponseEntity<ErrorResponse> handleInvalidInputException(PalmyraException e) {
 		return badRequest(getErrorResponse(e));
 	}

@@ -1,6 +1,5 @@
 package com.palmyralabs.dms.model;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,10 +24,17 @@ public class PolicyFileModel {
 	private DocumentTypeModel docketType;
 
 	private String objectUrl;
-	
+
 	private List<PolicyStampModel> fixedStamp;
-	
+
 	private LocalDateTime createdOn;
 
-	
+	private String status;
+
+	private String srNo;
+
+	private LocalDateTime actionOn;
+
+	private String actionBy;
+
 }
