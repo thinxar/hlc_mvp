@@ -7,6 +7,7 @@ import { TextHtmlViewer } from 'components/viewer/TextHtmlViewer';
 import { useParams } from 'react-router-dom';
 import { StringFormat } from '@palmyralabs/ts-utils';
 import { ServiceEndpoint } from 'config/ServiceEndpoint';
+import { VideoViewer } from 'components/viewer/VideoViewer';
 
 interface FileProps {
     file: any
@@ -40,7 +41,7 @@ const FileViewer = ({ fileUrl, key, file, selectedStamp, stampData, setSelectedF
     return (<>
         {fileData ? <div className="h-auto overflow-hidden" key={key}>
             <div className="p-">
-                <div className="h-[calc(100vh-115px)] bg-white rounded-2xl flex items-center justify-center overflow-hidden">
+                <div className="h-[calc(100vh-90px)] bg-white flex items-center justify-center overflow-hidden">
                     {fileData?.fileType === 'application/pdf' ? (
                         <PDFViewerWithOverlay selectedStamp={selectedStamp} pdfUrlFromApi={fileUrl} file={fileData} overlays={stampData}
                             setSelectedFile={setSelectedFile} setSelectedStamp={setSelectedStamp} setSelectedStamps={setSelectedStamps} handleFetch={handleFetch}
@@ -61,6 +62,8 @@ const FileViewer = ({ fileUrl, key, file, selectedStamp, stampData, setSelectedF
                         <TextHtmlViewer endPoint={fileUrl} file={fileData} selectedStamp={selectedStamp} overlays={stampData}
                             uploadStampEndPoint={uploadStampEndPoint} setSelectedStamp={setSelectedStamp} setSelectedFile={setSelectedFile}
                             handleFetch={handleFetch} stampDataArr={stampDataArr} setStampDataArr={setStampDataArr} />
+                    ) : fileData?.fileType === 'video/mp4' ? (
+                        <VideoViewer endPoint={fileUrl} file={fileData} />
                     ) : <> <ImageViewer endPoint={fileUrl} file={fileData} selectedStamp={selectedStamp} overlays={stampData}
                         uploadStampEndPoint={uploadStampEndPoint} setSelectedStamp={setSelectedStamp} setSelectedFile={setSelectedFile}
                         handleFetch={handleFetch} stampDataArr={stampDataArr} setStampDataArr={setStampDataArr} /></>}

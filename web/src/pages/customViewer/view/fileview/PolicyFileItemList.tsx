@@ -8,9 +8,10 @@ interface FileProps {
     policyId: any
     handleFileSelect: () => void
     selectedFile: any
+    type: "REV" | "AND" | "PBV"
 }
 
-const PolicyFileItemList = ({ file, isSelected, onClick, handleFileSelect, selectedFile }: FileProps) => {
+const PolicyFileItemList = ({ file, type, isSelected, onClick, handleFileSelect, selectedFile }: FileProps) => {
 
     return (
         <div className="space-y-2">
@@ -22,13 +23,14 @@ const PolicyFileItemList = ({ file, isSelected, onClick, handleFileSelect, selec
                       ${selectedFile?.pdfFiles?.id == file?.pdfFiles?.id ? 'border-blue-500 bg-blue-50/30' : 'border-gray-100 hover:border-gray-300 bg-white'}
                     `}
             >
-                <Checkbox
-                    checked={isSelected}
-                    onChange={(e: any) => {
-                        e.stopPropagation();
-                        handleFileSelect();
-                    }}
-                />
+                {type === 'REV' &&
+                    <Checkbox
+                        checked={isSelected}
+                        onChange={(e: any) => {
+                            e.stopPropagation();
+                            handleFileSelect();
+                        }}
+                    />}
                 <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-gray-900 truncate">{file?.pdfFiles?.fileName}</p>
                     <div className='flex items-center gap-3'>

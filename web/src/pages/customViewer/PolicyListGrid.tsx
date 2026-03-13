@@ -5,7 +5,7 @@ import { ServiceEndpoint } from "config/ServiceEndpoint";
 // import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { useEffect, useRef, useState } from "react";
 import { FiRefreshCw } from "react-icons/fi";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { HclSummaryGridControls } from "src/common/component/gridControl/HlcSummaryGridControls";
 import { SearchFilterField } from "src/common/component/SearchFilterField";
 import { useFilterHandler } from "src/hook/useFilterHandler";
@@ -14,13 +14,18 @@ import { IPageInput } from "templates/Types";
 
 const PolicyListGrid = (_props: IPageInput) => {
     const navigate = useNavigate();
-    const params = useParams();
     const gridRef = useRef<IPageQueryable>(null);
+    const [searchParams] = useSearchParams();
+
     const [filter, setFilter] = useState({ policyNo: '' })
     const { handleFilterChange } = useFilterHandler(setFilter);
 
-    const endPoint = ServiceEndpoint.customView.policyListApi +
-        "?officeCode=" + params.officeCode + "&srNo=" + params.srNo;
+    const params = new URLSearchParams({
+        officecode: searchParams.get("officecode") || "",
+        srno: searchParams.get("srno") || ""
+    });
+
+    const endPoint = `${ServiceEndpoint.customView.policyListApi}?${params.toString()}`;
 
     const fields: ColumnDefinition[] = [
         {
@@ -117,7 +122,15 @@ const PolicyListGrid = (_props: IPageInput) => {
     }, [filter]);
 
     const onRowClick = (d: any) => {
-        navigate(`view/${d?.id}`, { state: { policyData: d } });
+        const params = new URLSearchParams({
+            policyno: d?.policyNumber || d?.id,
+            officecode: searchParams.get("officecode") || "",
+            srno: searchParams.get("srno") || "",
+            appname: searchParams.get("appname") || "",
+            asrno: searchParams.get("asrno") ?? "null"
+        });
+
+        navigate(`/CustomViewer/operation?${params.toString()}`, { state: { policyData: d } });
     };
 
     return (

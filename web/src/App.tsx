@@ -23,8 +23,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace={true} />} />
           <Route path='/login' element={<LoginPage />} />
-          <Route path='/customViewer/NG/:officeCode/:srNo' element={<CustomViewerPage pageName="customViewer" />} />
-          <Route path='/customViewer/NG/:officeCode/:srNo/view/:policyId' element={<CustomViewerViewPage pageName="customViewer" />} />
+
+          <Route path='/CustomViewer/NG' element={<CustomViewerPage pageName="customViewer" />} />
+          <Route path='/CustomViewer/operation' element={<CustomViewerViewPage pageName="customViewer" />} />
+
           <Route path='/app/' element={<MainLayout />} >
             <Route path='home' element={<HomePage />} />
             <Route path='policy/:policyId' element={<PolicyResultPage />} />

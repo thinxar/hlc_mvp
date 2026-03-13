@@ -74,9 +74,18 @@ const ServiceEndpoint = {
         userType: '',
         designation: ''
     },
-    customView:{
-        policyListApi:'/rev/policy',
-        submitApi:'/policy/rev/file/submit'
+    customView: {
+        policyListApi: '/rev/policy',
+        submitApi: '/policy/rev/file/submit',
+        rev: {
+            policyFileApi: '/policy/rev/file',
+        },
+        and: {
+            policyFileApi: '/policy/and/file',
+        },
+        pbv: {
+            policyFileApi: '/policy/and/file',
+        }
     }
 }
 

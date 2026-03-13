@@ -2,25 +2,38 @@ import { LicLogo, TitleConfig } from 'templates/FlexImport';
 import './Login.css';
 import LoginForm from './LoginForm';
 
-// const officeCode = 301;
-// const srNo = 9823880;
-// const URL = '/customViewer/NG/'
 
 const LoginPage = () => {
+
+    // const openViewer = (app: string, view: string) => {
+    //     const config = viewerConfig[app][view];
+    //     const params = new URLSearchParams(config.params);
+
+    //     window.open(
+    //         `${config.url}?${params.toString()}`,
+    //         "_blank",
+    //         "noopener,noreferrer"
+    //     );
+    // };
+
     return (
         <div>
 
             {/* <div className='absolute flex justify-center pt-5 items-center right-0 mr-90'>
-                <Button
-                    onClick={() =>
-                        window.open(
-                            `${URL}${officeCode}/${srNo}`,
-                            "_blank",
-                            "noopener,noreferrer"
-                        )
-                    }
-                >
-                    Custom Viewer
+                <Button onClick={() => openViewer("REV", "NG")}>
+                    REV NG
+                </Button>
+
+                <Button onClick={() => openViewer("REV", "OPERATION")}>
+                    REV Operation
+                </Button>
+
+                <Button onClick={() => openViewer("AND", "OPERATION")}>
+                    AND Operation
+                </Button>
+
+                <Button onClick={() => openViewer("PBV", "OPERATION")}>
+                    PBV Operation
                 </Button>
             </div> */}
 

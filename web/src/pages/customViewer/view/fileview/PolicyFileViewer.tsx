@@ -8,9 +8,10 @@ interface FileProps {
     setSelectedFile: (file: any) => void;
     setSelectedFileIds: (file: any) => void;
     selectedFileIds: any
+    type: "REV" | "AND" | "PBV"
 }
 
-const PolicyFileViewer = ({ data, policyId, selectedFile, setSelectedFile, setSelectedFileIds, selectedFileIds }: FileProps) => {
+const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile, setSelectedFileIds, selectedFileIds }: FileProps) => {
 
     const handleFileClick = (file: any) => {
         if (selectedFile?.pdfFiles?.id === file?.pdfFiles?.id) {
@@ -78,7 +79,7 @@ const PolicyFileViewer = ({ data, policyId, selectedFile, setSelectedFile, setSe
                     {data.length}
                 </span>
             </div>
-            {data.length > 0 &&
+            {(data.length > 0 && type === 'REV') &&
                 <button onClick={handleSelectAll} className="text-xs cursor-pointer font-bold text-indigo-600 hover:underline">
                     {selectedFileIds.length === data.length ? 'Deselect All' : 'Select All'}
                 </button>}
@@ -95,6 +96,7 @@ const PolicyFileViewer = ({ data, policyId, selectedFile, setSelectedFile, setSe
                                         key={file.pdfFiles.id}
                                         policyId={policyId}
                                         file={file}
+                                        type={type}
                                         isSelected={selectedFileIds?.includes(file?.pdfFiles?.id)}
                                         onClick={() => handleFileClick(file)}
                                         handleFileSelect={() => handleFileSelect(file)}

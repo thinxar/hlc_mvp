@@ -183,7 +183,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
         <strong>{file.fileName}</strong>
         {
           stampDataArr?.length > 0 && <div>
-            <button onClick={saveOverlays} className='cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-gradient-to-r pr-bgcolor text-white
+            <button onClick={saveOverlays} className='cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-linear-to-r pr-bgcolor text-white
              font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-101 transition-all duration-200 ease-out'>
               Save Stamp
             </button>

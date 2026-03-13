@@ -1,13 +1,14 @@
 import { Badge, Modal, Select } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { topic } from '@palmyralabs/ts-utils';
+import { ServiceEndpoint } from 'config/ServiceEndpoint';
+import { fieldConfig } from 'config/TitleConfig';
 import React, { useState } from 'react';
 import { FiArrowLeft, FiCheckCircle, FiClock, FiInfo, FiXCircle } from 'react-icons/fi';
 import { SubmissionModal } from 'src/common/component/SubmissionModal';
-import { PolicyFileViewer } from './fileview/PolicyFileViewer';
-import { useFormstore } from 'wire/StoreFactory';
-import { ServiceEndpoint } from 'config/ServiceEndpoint';
 import { handleError } from 'wire/ErrorHandler';
-import { topic } from '@palmyralabs/ts-utils';
+import { useFormstore } from 'wire/StoreFactory';
+import { PolicyFileViewer } from './fileview/PolicyFileViewer';
 
 interface policyData {
     policyData: any
@@ -15,10 +16,11 @@ interface policyData {
     policyId: any,
     selectedFile: any,
     setSelectedFile: (file: any) => void;
+    type: "REV" | "AND" | "PBV"
 }
 
 const PolicySubmitSection = (props: policyData) => {
-    const { policyData, data, policyId, selectedFile, setSelectedFile } = props;
+    const { policyData, data, policyId, selectedFile, setSelectedFile, type } = props;
     const [selectedFileIds, setSelectedFileIds] = useState<number[]>([]);
 
     const [status, setStatus] = useState<any>('pending');
@@ -40,7 +42,7 @@ const PolicySubmitSection = (props: policyData) => {
 
         useFormstore(submitApi).post(payload).then((_d) => {
             setSelectedFileIds([]);
-            topic.publish("fileUpload","fileUpload")
+            topic.publish("fileUpload", "fileUpload")
         }).catch(handleError)
 
         setTimeout(() => setIsSubmitted(false), 3000);
@@ -73,35 +75,36 @@ const PolicySubmitSection = (props: policyData) => {
                         <div className="flex items-center justify-between">
                             <div className='flex items-center gap-2'>
                                 <h2 className="text-sm font-bold text-gray-500">Policy Overview</h2>
-                                <Badge
-                                    variant="dot" color={policyData?.policyStatus === 1 ? 'green' : 'red'}
+                                <Badge styles={{ root: { textTransform: 'none' } }}
+                                    variant="dot" color={policyData?.policyStatus === 1 ? "green" : policyData?.policyStatus === 0 ? "red" : "gray"}
                                     className={
                                         policyData?.policyStatus === 1
                                             ? "bg-green-50! border border-green-500! text-green-700!"
-                                            : "bg-red-50! border border-red-500! text-red-700!"
+                                            : policyData?.policyStatus === 0
+                                                ? "bg-red-50! border border-red-500! text-red-700!"
+                                                : "bg-gray-50! border border-gray-400! text-gray-600!"
                                     }
                                 >
-                                    {policyData?.policyStatus === 1 ? 'Active' : 'De-Active'}
+                                    {policyData?.policyStatus === 1 ? "Active" : policyData?.policyStatus === 0 ? "De-active" : "Unknown"}
                                 </Badge>
                             </div>
-
-                            <button
-                                onClick={() => window.history.back()}
-                                className="text-sm cursor-pointer flex items-center gap-2 px-2 py-1 rounded-lg border border-gray-200 hover:bg-gray-100"
-                            >
-                                <FiArrowLeft />
-                                Back
-                            </button>
+                            {(type === "REV") &&
+                                <button
+                                    onClick={() => window.history.back()}
+                                    className="text-sm cursor-pointer flex items-center gap-2 px-2 py-1 rounded-lg border border-gray-200 hover:bg-gray-100"
+                                >
+                                    <FiArrowLeft />
+                                    Back
+                                </button>}
                         </div>
                         <div className="grid grid-cols-2 gap-2 p-3 bg-gray-50 rounded-xl border border-gray-100">
-                            <DetailItem label="Policy No" value={policyData?.policyNumber} />
-                            <DetailItem label="Policy Holder Name" value={policyData?.customerName} />
-                            <DetailItem label="Uploaded By" value="--" />
-                            <DetailItem label="Doc Type" value={policyData?.docType} />
-                            <DetailItem label="Doc Sub Type" value="--" />
-                            <DetailItem label="BO Code" value="--" />
-                            <DetailItem label="DO Code" value={policyData?.doCode} />
-                            <DetailItem label="SO Code" value={policyData?.soCode} />
+                            {fieldConfig[type]?.map((field: any) => (
+                                <DetailItem
+                                    key={field.key}
+                                    label={field.label}
+                                    value={policyData?.[field.key] || "--"}
+                                />
+                            ))}
                         </div>
                     </div>
 
@@ -110,68 +113,70 @@ const PolicySubmitSection = (props: policyData) => {
                     <div>
                         <PolicyFileViewer data={data} policyId={policyId}
                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
-                            selectedFileIds={selectedFileIds}
+                            selectedFileIds={selectedFileIds} type={type}
                             setSelectedFileIds={setSelectedFileIds} />
                     </div>
+                    {type === "REV" && <>
+                        <div className="border-b border-dashed border-gray-200 pb-1 mb-3" />
 
-                    <div className="border-b border-dashed border-gray-200 pb-1 mb-3" />
-
-                    <form onSubmit={handleSubmit} className="space-y-4 pb-3">
-                        <div className="space-y-2">
-                            <div className='flex justify-between items-center'>
-                                <h2 className="text-sm font-bold text-gray-500">Submission</h2>
-                                <div className="flex items-center justify-between">
-                                    <span className="px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-full">
-                                        {selectedFileIds.length} {selectedFileIds.length === 1 ? 'Doc' : 'Docs'}
-                                    </span>
-                                </div>
-                            </div>
-
+                        <form onSubmit={handleSubmit} className="space-y-4 pb-3">
                             <div className="space-y-2">
-                                <div className="relative">
-                                    <Select allowDeselect={false}
-                                        label="Status"
-                                        value={status} checkIconPosition="right"
-                                        onChange={setStatus}
-                                        data={statusOptions}
-                                    />
+                                <div className='flex justify-between items-center'>
+                                    <h2 className="text-sm font-bold text-gray-500">Submission</h2>
+                                    <div className="flex items-center justify-between">
+                                        <span className="px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-full">
+                                            {selectedFileIds.length} {selectedFileIds.length === 1 ? 'Doc' : 'Docs'}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <div className="relative">
+                                        <Select allowDeselect={false}
+                                            label="Status"
+                                            value={status} checkIconPosition="right"
+                                            onChange={setStatus}
+                                            data={statusOptions}
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <button
-                            type="submit"
-                            disabled={selectedFileIds.length === 0}
-                            className={`cursor-pointer
+                            <button
+                                type="submit"
+                                disabled={selectedFileIds.length === 0}
+                                className={`cursor-pointer
                   w-full py-2.5 rounded-xl font-bold text-white shadow-lg transition-all flex items-center justify-center gap-2
                   ${selectedFileIds.length === 0
-                                    ? 'bg-gray-300 cursor-not-allowed'
-                                    : 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98]'}
+                                        ? 'bg-gray-300 cursor-not-allowed'
+                                        : 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98]'}
                 `}
-                        >
-                            {isSubmitted ? <FiCheckCircle className="w-6 h-6" /> : 'Submit'}
-                        </button>
-                    </form>
+                            >
+                                {isSubmitted ? <FiCheckCircle className="w-6 h-6" /> : 'Submit'}
+                            </button>
+                        </form>
+                    </>}
                 </div>
             </section>
 
+            {type === "REV" &&
+                <div className="p-2 m-2 bg-blue-50 border border-blue-100 rounded-xl space-y-2">
+                    <div className="flex items-center gap-2 text-blue-700">
+                        <FiInfo className="w-4 h-4" />
+                        <h3 className="text-xs font-bold">Note:</h3>
+                    </div>
+                    <ul className="text-xs text-blue-800 space-y-1 list-decimal list-inside font-medium">
+                        <li>SR number will be recorded in system while approving / rejecting documents.</li>
+                        <li>Please click on SUBMIT button to proceed selected documents.</li>
+                    </ul>
+                </div>}
 
-            <div className="p-2 m-2 bg-blue-50 border border-blue-100 rounded-xl space-y-2">
-                <div className="flex items-center gap-2 text-blue-700">
-                    <FiInfo className="w-4 h-4" />
-                    <h3 className="text-xs font-bold">Note:</h3>
-                </div>
-                <ul className="text-xs text-blue-800 space-y-1 list-decimal list-inside font-medium">
-                    <li>SR number will be recorded in system while approving / rejecting documents.</li>
-                    <li>Please click on SUBMIT button to proceed selected documents.</li>
-                </ul>
-            </div>
 
             <Modal opened={opened} onClose={close} centered size={"md"} radius={"lg"}
                 styles={{ body: { padding: '0px' } }} withCloseButton={false}>
                 <SubmissionModal onClose={close} />
             </Modal>
-        </div>
+        </div >
     )
 }
 
