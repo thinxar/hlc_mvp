@@ -1,4 +1,4 @@
-package com.palmyralabs.dms.model;
+package com.palmyralabs.dms.revival.model;
 
 public enum PolicyFileStatus {
 	PENDING("pending"), Approved("approved"), REJECTED("rejected");

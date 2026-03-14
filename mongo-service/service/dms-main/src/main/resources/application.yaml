@@ -3,10 +3,10 @@ spring:
    mongodb:
      host: localhost
      port: 27017
-     database: dms_revival
+     database: dms
      username: demouser
      password: secret
-     authentication-database: dms_revival
+     authentication-database: dms
   servlet:
     multipart:
       max-file-size: 25MB

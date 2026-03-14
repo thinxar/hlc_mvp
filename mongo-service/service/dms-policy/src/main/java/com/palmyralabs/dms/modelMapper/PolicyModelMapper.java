@@ -39,9 +39,6 @@ public class PolicyModelMapper {
 		model.setObjectUrl(entity.getObjectUrl());
 		model.setCreatedOn(entity.getCreatedOn());
         model.setFixedStamp(getStamps(entity.getId()));
-        model.setStatus(entity.getStatus());
-        model.setActionBy(entity.getActionBy());
-        model.setActionOn(entity.getActionOn());
 		return model;
 	}
 	
@@ -64,11 +61,7 @@ public class PolicyModelMapper {
 		model.setField3(entity.getField3());
 		model.setMobileNumber(entity.getMobileNumber());
 		model.setPolicyStatus(entity.getPolicyStatus());
-		model.setSoCode(entity.getSoCode());
-		model.setSrNo(entity.getSrNo());
-		model.setDateOfSubmission(entity.getDateOfSubmission());
-		model.setDoCode(entity.getDoCode());
-		model.setDocType(entity.getDocType());
+		
 		return model;
 	}
 	

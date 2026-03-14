@@ -29,12 +29,4 @@ public class PolicyFileModel {
 
 	private LocalDateTime createdOn;
 
-	private String status;
-
-	private String srNo;
-
-	private LocalDateTime actionOn;
-
-	private String actionBy;
-
 }

@@ -47,11 +47,6 @@ public class PolicyService {
 		policyEntity.setField3(model.getField3());
 		policyEntity.setMobileNumber(model.getMobileNumber());
 		policyEntity.setPolicyStatus(model.getPolicyStatus());
-		policyEntity.setSoCode(model.getSoCode());
-		policyEntity.setSrNo(model.getSrNo());
-		policyEntity.setDateOfSubmission(model.getDateOfSubmission());
-		policyEntity.setDoCode(model.getDoCode());
-		policyEntity.setDocType(model.getDocType());
 
 		PolicyEntity savedPolicyEntity = policyRepository.save(policyEntity);
 		return modelMapper.toPolicyModel(savedPolicyEntity);

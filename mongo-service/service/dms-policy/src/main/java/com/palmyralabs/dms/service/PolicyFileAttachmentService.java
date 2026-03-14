@@ -14,7 +14,6 @@ import com.palmyralabs.dms.jpa.entity.PolicyFileEntity;
 import com.palmyralabs.dms.jpa.repository.DocumentTypeRepository;
 import com.palmyralabs.dms.jpa.repository.PolicyFileRepository;
 import com.palmyralabs.dms.jpa.repository.PolicyRepository;
-import com.palmyralabs.dms.model.PolicyFileStatus;
 import com.palmyralabs.palmyra.base.exception.DataNotFoundException;
 import com.palmyralabs.palmyra.filemgmt.spring.ResponseFileEmitter;
 import com.palmyralabs.palmyra.s3.service.AsyncFileService;
@@ -88,7 +87,6 @@ public class PolicyFileAttachmentService {
 		fileEntity.setDocketType(getDocketType(docketTypeId));
 		fileEntity.setCreatedOn(LocalDateTime.now());
 		fileEntity.setCreatedBy("Admin");
-		fileEntity.setStatus(PolicyFileStatus.PENDING.getValue());
 		policyFileRepository.save(fileEntity);
 	}
 
