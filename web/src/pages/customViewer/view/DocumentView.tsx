@@ -38,7 +38,7 @@ const DocumentView = () => {
     const endpoint =
         ServiceEndpoint.customView[appType].policyFileApi + "?" + params.toString();
 
-    const filePoint = StringFormat(ServiceEndpoint.policy.getFileApi, { policyId: policyData?.id, fileId: selectedFile?.pdfFiles?.id });
+    const filePoint = StringFormat(ServiceEndpoint.customView[appType].getFileApi, { policyId: policyData?.id, fileId: selectedFile?.pdfFiles?.id });
     const fileDetailPoint = StringFormat(ServiceEndpoint.policy.getFileDetailApi, { policyId: policyData?.id, fileId: selectedFile?.pdfFiles?.id });
     const pdfUrl = BASE_URL + filePoint;
 
@@ -129,13 +129,12 @@ const DocumentView = () => {
         );
     }
 
-    if (!data.length) {
+    if (!policyData && Object.keys(policyData).length > 0) {
         return <PolicyNotFound />;
     }
 
-
     return (<>
-        {data.length > 0 ?
+        {policyData && Object.keys(policyData).length > 0 ?
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[40%_60%] lg:grid-cols-[31%_69%] xl:grid-cols-[23%_77%] 2xl:grid-cols-[22%_78%]
         transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-25px)] m-3">
                 <div className="overflow-y-auto bg-gray/5 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-hidden">
@@ -161,23 +160,23 @@ export { DocumentView };
 
 
 const Loader = () => (
-  <div className="flex flex-col items-center justify-center gap-6">
-    <div className="relative">
-      <div className="w-20 h-20 rounded-full border-4 border-slate-100 border-t-indigo-600 animate-spin" />
-      
-      <div className="absolute inset-0 flex items-center justify-center text-indigo-600 animate-pulse">
-        <GoShieldCheck size={32} />
-      </div>
+    <div className="flex flex-col items-center justify-center gap-6">
+        <div className="relative">
+            <div className="w-20 h-20 rounded-full border-4 border-slate-100 border-t-indigo-600 animate-spin" />
+
+            <div className="absolute inset-0 flex items-center justify-center text-indigo-600 animate-pulse">
+                <GoShieldCheck size={32} />
+            </div>
+        </div>
+
+        <div className="text-center space-y-2">
+            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Securing Your Data</h3>
+            <div className="flex items-center justify-center gap-1.5">
+                <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce" />
+            </div>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest pt-2">Processing Policy Request</p>
+        </div>
     </div>
-    
-    <div className="text-center space-y-2">
-      <h3 className="text-lg font-bold text-slate-900 tracking-tight">Securing Your Data</h3>
-      <div className="flex items-center justify-center gap-1.5">
-        <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce [animation-delay:-0.3s]" />
-        <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce [animation-delay:-0.15s]" />
-        <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce" />
-      </div>
-      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest pt-2">Processing Policy Request</p>
-    </div>
-  </div>
 );

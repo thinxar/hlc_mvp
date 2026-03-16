@@ -1,4 +1,4 @@
-import { Badge, Modal, Select } from '@mantine/core';
+import { Modal, Select } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { topic } from '@palmyralabs/ts-utils';
 import { ServiceEndpoint } from 'config/ServiceEndpoint';
@@ -75,7 +75,7 @@ const PolicySubmitSection = (props: policyData) => {
                         <div className="flex items-center justify-between">
                             <div className='flex items-center gap-2'>
                                 <h2 className="text-sm font-bold text-gray-500">Policy Overview</h2>
-                                <Badge styles={{ root: { textTransform: 'none' } }}
+                                {/* <Badge styles={{ root: { textTransform: 'none' } }}
                                     variant="dot" color={policyData?.policyStatus === 1 ? "green" : policyData?.policyStatus === 0 ? "red" : "gray"}
                                     className={
                                         policyData?.policyStatus === 1
@@ -86,7 +86,7 @@ const PolicySubmitSection = (props: policyData) => {
                                     }
                                 >
                                     {policyData?.policyStatus === 1 ? "Active" : policyData?.policyStatus === 0 ? "De-active" : "Unknown"}
-                                </Badge>
+                                </Badge> */}
                             </div>
                             {(type === "REV") &&
                                 <button

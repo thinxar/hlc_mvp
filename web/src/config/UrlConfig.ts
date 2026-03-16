@@ -11,7 +11,7 @@ export const viewerConfig: any = {
     OPERATION: {
       url: "/CustomViewer/operation",
       params: {
-        policyno: "128923289",
+        policyno: "123456789",
         officecode: "301",
         appname: "REV",
         srno: "9823880",
@@ -24,7 +24,7 @@ export const viewerConfig: any = {
     OPERATION: {
       url: "/CustomViewer/operation",
       params: {
-        propno: "923733982",
+        propno: "999824824",
         officecode: "301",
         appname: "AND",
         year: "2025"
@@ -36,7 +36,7 @@ export const viewerConfig: any = {
     OPERATION: {
       url: "/CustomViewer/operation",
       params: {
-        propno: "923733982",
+        propno: "999824824",
         officecode: "301",
         appname: "PBV",
         srno: "9823880",

@@ -38,7 +38,7 @@ const PolicyFileItemList = ({ file, type, isSelected, onClick, handleFileSelect,
                             {file.pdfFiles?.size < 1024 * 1024
                                 ? `${(file.pdfFiles?.size / 1024).toFixed(2)} KB`
                                 : `${(file.pdfFiles?.size / 1024 / 1024).toFixed(2)} MB`}</p>
-                        <Badge
+                        {type === 'REV' && <Badge
                             className={
                                 file?.pdfFiles?.status === 'approved'
                                     ? "bg-green-50! border border-green-500! text-green-700!"
@@ -49,7 +49,7 @@ const PolicyFileItemList = ({ file, type, isSelected, onClick, handleFileSelect,
                             } size='xs'
                         >
                             {file?.pdfFiles?.status}
-                        </Badge></div>
+                        </Badge>}</div>
                 </div>
                 <FiChevronRight className={`w-4 h-4 text-gray-300 transition-transform ${isSelected ? 'translate-x-1 text-blue-500' : ''}`} />
             </div>

@@ -76,15 +76,18 @@ const ServiceEndpoint = {
     },
     customView: {
         policyListApi: '/rev/policy',
-        submitApi: '/policy/rev/file/submit',
+        submitApi: '/rev/policy/file/submit',
         rev: {
-            policyFileApi: '/policy/rev/file',
+            policyFileApi: '/rev/policy/file',
+            getFileApi: '/rev/policy/{policyId}/file/{fileId}/download',
         },
         and: {
-            policyFileApi: '/policy/and/file',
+            policyFileApi: '/and/policy/file',
+            getFileApi: '/and/policy/{policyId}/file/{fileId}/download',
         },
         pbv: {
-            policyFileApi: '/policy/and/file',
+            policyFileApi: '/pbv/policy/file',
+            getFileApi: '/pbv/policy/{policyId}/file/{fileId}/download',
         }
     }
 }
