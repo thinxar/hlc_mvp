@@ -1,0 +1,3 @@
+rootProject.name = 'hlc_revival_dataload'
+
+include 'dataload-main'

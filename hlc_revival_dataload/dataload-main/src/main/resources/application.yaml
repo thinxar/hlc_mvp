@@ -1,0 +1,10 @@
+
+app:
+ upload:
+   url: "http://localhost:7070/api/"
+   username: "admin@gmail.com"
+   password: "ad"
+   policyFolder: "D:\\palmyra\\revival"
+   parallel: 1
+   start: 10
+   end: 110
