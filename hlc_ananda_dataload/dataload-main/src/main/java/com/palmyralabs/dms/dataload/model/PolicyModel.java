@@ -13,28 +13,24 @@ public class PolicyModel {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Integer id;
 
+	private Integer policyNumber;
+
 	private String agentCode;
 
 	private String ackNo;
 
-	private String lanName;
+	private String laName;
 
 	private String proposalType;
 
 	private String proposalNo;
-	
-	private Integer policyNumber;
 
 	private String year;
 
-	private String planCode;
-
-	private String requestTime;
-
-	private String processTime;
-
 	private String boCode;
-	
-	private String soCode;
+
+	private String dob;
+
+	private String mobileNo;
 
 }

@@ -20,23 +20,21 @@ public class AndPolicyService {
 
 	public AndPolicyModel createPolicy(AndPolicyModel model) {
 		AndPolicyEntity policyEntity = new AndPolicyEntity();
-		Optional<AndPolicyEntity> dbPolicyOpt = andPolicyRepository.findByProposalNoAndSoCode(model.getProposalNo(),
-				model.getSoCode());
+		Optional<AndPolicyEntity> dbPolicyOpt = andPolicyRepository.findByProposalNoAndBoCode(model.getProposalNo(),
+				model.getBoCode());
 		if(dbPolicyOpt.isPresent()) {
 			policyEntity = dbPolicyOpt.get();
 		}
 		policyEntity.setPolicyNumber(model.getPolicyNumber());
 		policyEntity.setBoCode(model.getBoCode());
 		policyEntity.setAgentCode(model.getAgentCode());
-		policyEntity.setSoCode(model.getSoCode());
 		policyEntity.setAckNo(model.getAckNo());
-		policyEntity.setLanName(model.getLanName());
+		policyEntity.setLaName(model.getLaName());
 		policyEntity.setProposalType(model.getProposalType());
 		policyEntity.setProposalNo(model.getProposalNo());
 		policyEntity.setYear(model.getYear());
-		policyEntity.setPlanCode(model.getPlanCode());
-		policyEntity.setRequestTime(model.getRequestTime());
-		policyEntity.setProcessTime(model.getProcessTime());
+		policyEntity.setDob(model.getDob());
+		policyEntity.setMobileNo(model.getMobileNo());
 
 		AndPolicyEntity savedPolicyEntity = andPolicyRepository.save(policyEntity);
 		return modelMapper.toPolicyModel(savedPolicyEntity);

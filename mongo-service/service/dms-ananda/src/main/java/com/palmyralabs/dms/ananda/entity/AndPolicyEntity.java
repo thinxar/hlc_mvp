@@ -22,7 +22,7 @@ public class AndPolicyEntity {
 
 	private String ackNo;
 
-	private String lanName;
+	private String laName;
 
 	private String proposalType;
 
@@ -31,14 +31,10 @@ public class AndPolicyEntity {
 
 	private String year;
 
-	private String planCode;
-
-	private String requestTime;
-
-	private String processTime;
-
 	private String boCode;
-	
-	private String soCode;
+
+	private String dob;
+
+	private String mobileNo;
 
 }

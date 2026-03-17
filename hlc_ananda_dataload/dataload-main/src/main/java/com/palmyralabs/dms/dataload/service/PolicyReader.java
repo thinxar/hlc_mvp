@@ -68,33 +68,29 @@ public class PolicyReader {
 
 		String agentCode = record.get("Agent Code");
 		String ackNo = record.get("Ack No");
-		String lanName = record.get("Lan Name");
+		String laName = record.get("LA Name");
 		String proposalType = record.get("Proposal Type");
 		String proposalNo = record.get("Proposal No");
 		String policyNumber = record.get("Policy Number");
 		String year = record.get("Year");
-		String planCode = record.get("Plan Code");
-		String requestTime = record.get("Request Time");
-		String processTime = record.get("Process Time");
+		String dob = record.get("Dob");
+		String mobileNo = record.get("Mobile No");
 		String boCode = record.get("BO Code");
-		String soCode = record.get("SO Code");
 
 		PolicyModel model = new PolicyModel();
 
 		model.setAgentCode(agentCode);
 		model.setAckNo(ackNo);
-		model.setLanName(lanName);
+		model.setLaName(laName);
 		model.setProposalType(proposalType);
 		model.setProposalNo(proposalNo);
 		if (policyNumber != null && !policyNumber.isEmpty()) {
 			model.setPolicyNumber(Integer.parseInt(policyNumber));
 		}
 		model.setYear(year);
-		model.setPlanCode(planCode);
-		model.setRequestTime(requestTime);
-		model.setProcessTime(processTime);
+		model.setDob(dob);
+		model.setMobileNo(mobileNo);
 		model.setBoCode(boCode);
-		model.setSoCode(soCode);
 		return model;
 	}
 

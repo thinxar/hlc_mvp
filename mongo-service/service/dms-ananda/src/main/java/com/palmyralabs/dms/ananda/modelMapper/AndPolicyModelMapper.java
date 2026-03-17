@@ -39,14 +39,12 @@ public class AndPolicyModelMapper {
 		model.setBoCode(entity.getBoCode());
 		model.setAgentCode(entity.getAgentCode());
 		model.setAckNo(entity.getAckNo());
-		model.setLanName(entity.getLanName());
+		model.setLaName(entity.getLaName());
 		model.setProposalType(entity.getProposalType());
 		model.setProposalNo(entity.getProposalNo());
 		model.setYear(entity.getYear());
-		model.setPlanCode(entity.getPlanCode());
-		model.setRequestTime(entity.getRequestTime());
-		model.setProcessTime(entity.getProcessTime());
-		model.setSoCode(entity.getSoCode());
+		model.setDob(entity.getDob());
+		model.setMobileNo(entity.getMobileNo());
 		return model;
 	}
 	
