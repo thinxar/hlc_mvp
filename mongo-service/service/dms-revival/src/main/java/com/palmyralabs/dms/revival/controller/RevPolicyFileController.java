@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/policy/rev")
+@RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/rev/policy")
 public class RevPolicyFileController extends AbstractController {
 
 	private final RevPolicyFileService fileService;
@@ -47,7 +47,6 @@ public class RevPolicyFileController extends AbstractController {
 	public PalmyraResponse<List<RevPolicyFileModel>> submitDocuments(@RequestBody PolicyFileActionRequest request) {
 		return apiResponse(fileService.updateDocumentStatus(request));
 	}
-	
 	
 
 }

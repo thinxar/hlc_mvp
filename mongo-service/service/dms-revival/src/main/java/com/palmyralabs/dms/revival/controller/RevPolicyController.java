@@ -31,7 +31,7 @@ public class RevPolicyController extends AbstractController {
 	@GetMapping("/policy")
 	public PaginatedResponse<RevPolicyModel> getAll(@RequestParam(value = "officecode", required = false) String soCode,
 			@RequestParam(value = "srno", required = false) String srNo,
-			@RequestParam(value = "policyno", required = false) String policyNumber,
+			@RequestParam(value = "policyNumber", required = false) String policyNumber,
 			@RequestParam(name = "_limit", defaultValue = "15") int limit,
 			@RequestParam(name = "_offset", defaultValue = "-1") int offset,
 			@RequestParam(name = "_total", defaultValue = "false") boolean includeTotal) {

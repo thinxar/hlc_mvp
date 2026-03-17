@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/policy/and")
+@RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/and/policy")
 public class AndPolicyFileController extends AbstractController{
     private final AndPolicyFileService fileService;
     

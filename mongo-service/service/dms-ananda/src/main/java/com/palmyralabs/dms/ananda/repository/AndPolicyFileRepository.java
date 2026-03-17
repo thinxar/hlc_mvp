@@ -12,5 +12,7 @@ public interface AndPolicyFileRepository extends MongoRepository<AndPolicyFileEn
 	Optional<AndPolicyFileEntity> findByObjectUrl(String objectUrl);
 
 	Optional<AndPolicyFileEntity> findById(Integer id);
+
+	AndPolicyFileEntity findByPolicyId_IdAndId(Integer policyId, Integer fileId);
 	
 }

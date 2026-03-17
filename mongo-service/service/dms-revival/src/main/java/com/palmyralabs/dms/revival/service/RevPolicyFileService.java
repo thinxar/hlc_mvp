@@ -24,6 +24,8 @@ import com.palmyralabs.dms.revival.repository.RevDocumentTypeRepository;
 import com.palmyralabs.dms.revival.repository.RevPolicyFileRepository;
 import com.palmyralabs.dms.revival.repository.RevPolicyRepository;
 import com.palmyralabs.palmyra.base.exception.DataNotFoundException;
+import com.palmyralabs.palmyra.filemgmt.spring.ResponseFileEmitter;
+import com.palmyralabs.palmyra.s3.service.AsyncFileService;
 import com.palmyralabs.palmyra.s3.service.impl.SyncFileServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,7 @@ public class RevPolicyFileService {
 	private final MongoTemplate mongoTemplate;
 	private final RevDocumentTypeRepository docTypeRepo;
 	private final RevPolicyModelMapper modelMapper;
+	private final AsyncFileService asyncFileService;
 
 	
 	public String upload(MultipartFile file, Integer policyId, Integer docketTypeId, boolean incrementalFileName) {
@@ -64,6 +67,23 @@ public class RevPolicyFileService {
 			return "completed";
 		} else {
 			throw new DataNotFoundException("INV012", "Policy Record not found");
+		}
+	}
+	
+	public ResponseFileEmitter download(Integer policyId, Integer fileId) {
+		RevPolicyFileEntity policyFileEntity = policyFileRepository.findByPolicyId_IdAndId(policyId, fileId);
+
+		if (policyFileEntity != null) {
+			if (policyFileEntity.getObjectUrl() != null) {
+				ResponseFileEmitter emitter = new ResponseFileEmitter(60 * 1000L);
+				String key = policyFileEntity.getObjectUrl();
+				asyncFileService.download(key, emitter);
+				return emitter;
+			} else {
+				throw new DataNotFoundException("INV012", "Object url not found");
+			}
+		} else {
+			throw new DataNotFoundException("INV012", "File record not found");
 		}
 	}
 

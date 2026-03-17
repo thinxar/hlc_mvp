@@ -12,4 +12,6 @@ public interface RevPolicyFileRepository extends MongoRepository<RevPolicyFileEn
 
 	Optional<RevPolicyFileEntity> findById(Integer id);
 
+	RevPolicyFileEntity findByPolicyId_IdAndId(Integer policyId, Integer fileId);
+
 }

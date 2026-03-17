@@ -22,6 +22,8 @@ import com.palmyralabs.dms.ananda.repository.AndPolicyRepository;
 import com.palmyralabs.dms.base.exception.InvalidInputException;
 import com.palmyralabs.dms.handler.PolicyFileUploadListener;
 import com.palmyralabs.palmyra.base.exception.DataNotFoundException;
+import com.palmyralabs.palmyra.filemgmt.spring.ResponseFileEmitter;
+import com.palmyralabs.palmyra.s3.service.AsyncFileService;
 import com.palmyralabs.palmyra.s3.service.impl.SyncFileServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,7 @@ public class AndPolicyFileService {
 	private final AndDocumentTypeRepository docTypeRepo;
 	private final AndPolicyRepository policyRepository;
 	private final AndPolicyFileRepository policyFileRepository;
+	private final AsyncFileService asyncFileService;
 
 	
 	public String upload(MultipartFile file, Integer policyId, Integer docketTypeId, boolean incrementalFileName) {
@@ -62,6 +65,23 @@ public class AndPolicyFileService {
 			return "completed";
 		} else {
 			throw new DataNotFoundException("INV012", "Policy Record not found");
+		}
+	}
+	
+	public ResponseFileEmitter download(Integer policyId, Integer fileId) {
+		AndPolicyFileEntity policyFileEntity = policyFileRepository.findByPolicyId_IdAndId(policyId, fileId);
+
+		if (policyFileEntity != null) {
+			if (policyFileEntity.getObjectUrl() != null) {
+				ResponseFileEmitter emitter = new ResponseFileEmitter(60 * 1000L);
+				String key = policyFileEntity.getObjectUrl();
+				asyncFileService.download(key, emitter);
+				return emitter;
+			} else {
+				throw new DataNotFoundException("INV012", "Object url not found");
+			}
+		} else {
+			throw new DataNotFoundException("INV012", "File record not found");
 		}
 	}
 

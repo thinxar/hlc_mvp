@@ -20,7 +20,7 @@ public class AndPolicyService {
 
 	public AndPolicyModel createPolicy(AndPolicyModel model) {
 		AndPolicyEntity policyEntity = new AndPolicyEntity();
-		Optional<AndPolicyEntity> dbPolicyOpt = andPolicyRepository.findByPolicyNumberAndSoCode(model.getPolicyNumber(),
+		Optional<AndPolicyEntity> dbPolicyOpt = andPolicyRepository.findByProposalNoAndSoCode(model.getProposalNo(),
 				model.getSoCode());
 		if(dbPolicyOpt.isPresent()) {
 			policyEntity = dbPolicyOpt.get();

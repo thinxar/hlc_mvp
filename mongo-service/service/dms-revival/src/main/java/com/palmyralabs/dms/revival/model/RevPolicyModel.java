@@ -32,4 +32,5 @@ public class RevPolicyModel {
 	private String uploadedBy;
 
 	private String boCode;
+	
 }

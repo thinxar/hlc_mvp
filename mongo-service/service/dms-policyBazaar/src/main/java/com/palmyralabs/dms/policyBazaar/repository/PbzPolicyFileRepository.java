@@ -12,4 +12,6 @@ public interface PbzPolicyFileRepository extends MongoRepository<PbzPolicyFileEn
 
 	Optional<PbzPolicyFileEntity> findById(Integer id);
 
+	PbzPolicyFileEntity findByPolicyId_IdAndId(Integer policyId, Integer fileId);
+
 }

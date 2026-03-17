@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/pbz")
+@RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/pbv")
 public class PbzDocumentTypeController extends AbstractController {
 
 	private final PbzDocumentTypeService documentTypeService;

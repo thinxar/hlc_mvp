@@ -20,7 +20,7 @@ public class PbzPolicyService {
 
 	public PbzPolicyModel createPolicy(PbzPolicyModel model) {
 		PbzPolicyEntity policyEntity = new PbzPolicyEntity();
-		Optional<PbzPolicyEntity> dbPolicyOpt = PbzPolicyRepository.findByPolicyNumberAndSoCode(model.getPolicyNumber(),
+		Optional<PbzPolicyEntity> dbPolicyOpt = PbzPolicyRepository.findByProposalNoAndSoCode(model.getProposalNo(),
 				model.getSoCode());
 		if(dbPolicyOpt.isPresent()) {
 			policyEntity = dbPolicyOpt.get();

@@ -9,5 +9,5 @@ import com.palmyralabs.dms.ananda.entity.AndPolicyEntity;
 public interface AndPolicyRepository extends MongoRepository<AndPolicyEntity, Integer>{
 	Optional<AndPolicyEntity> findById(Integer id);
 	
-	Optional<AndPolicyEntity> findByPolicyNumberAndSoCode(Long policyNumber, String soCode);
+	Optional<AndPolicyEntity> findByProposalNoAndSoCode(String proposalNo, String soCode);
 }

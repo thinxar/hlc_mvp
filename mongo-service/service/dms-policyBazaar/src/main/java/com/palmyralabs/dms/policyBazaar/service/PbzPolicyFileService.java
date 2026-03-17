@@ -22,6 +22,8 @@ import com.palmyralabs.dms.policyBazaar.repository.PbzDocumentTypeRepository;
 import com.palmyralabs.dms.policyBazaar.repository.PbzPolicyFileRepository;
 import com.palmyralabs.dms.policyBazaar.repository.PbzPolicyRepository;
 import com.palmyralabs.palmyra.base.exception.DataNotFoundException;
+import com.palmyralabs.palmyra.filemgmt.spring.ResponseFileEmitter;
+import com.palmyralabs.palmyra.s3.service.AsyncFileService;
 import com.palmyralabs.palmyra.s3.service.impl.SyncFileServiceImpl;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +39,7 @@ public class PbzPolicyFileService {
 	private final PbzDocumentTypeRepository docTypeRepo;
 	private final PbzPolicyRepository policyRepository;
 	private final PbzPolicyFileRepository policyFileRepository;
+	private final AsyncFileService asyncFileService;
 
 	
 	public String upload(MultipartFile file, Integer policyId, Integer docketTypeId, boolean incrementalFileName) {
@@ -62,6 +65,23 @@ public class PbzPolicyFileService {
 			return "completed";
 		} else {
 			throw new DataNotFoundException("INV012", "Policy Record not found");
+		}
+	}
+	
+	public ResponseFileEmitter download(Integer policyId, Integer fileId) {
+		PbzPolicyFileEntity policyFileEntity = policyFileRepository.findByPolicyId_IdAndId(policyId, fileId);
+
+		if (policyFileEntity != null) {
+			if (policyFileEntity.getObjectUrl() != null) {
+				ResponseFileEmitter emitter = new ResponseFileEmitter(60 * 1000L);
+				String key = policyFileEntity.getObjectUrl();
+				asyncFileService.download(key, emitter);
+				return emitter;
+			} else {
+				throw new DataNotFoundException("INV012", "Object url not found");
+			}
+		} else {
+			throw new DataNotFoundException("INV012", "File record not found");
 		}
 	}
 
