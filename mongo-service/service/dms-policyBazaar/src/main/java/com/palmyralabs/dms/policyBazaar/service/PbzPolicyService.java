@@ -20,23 +20,21 @@ public class PbzPolicyService {
 
 	public PbzPolicyModel createPolicy(PbzPolicyModel model) {
 		PbzPolicyEntity policyEntity = new PbzPolicyEntity();
-		Optional<PbzPolicyEntity> dbPolicyOpt = PbzPolicyRepository.findByProposalNoAndSoCode(model.getProposalNo(),
-				model.getSoCode());
+		Optional<PbzPolicyEntity> dbPolicyOpt = PbzPolicyRepository.findByProposalNoAndBoCode(model.getProposalNo(),
+				model.getBoCode());
 		if(dbPolicyOpt.isPresent()) {
 			policyEntity = dbPolicyOpt.get();
 		}
 		policyEntity.setPolicyNumber(model.getPolicyNumber());
 		policyEntity.setBoCode(model.getBoCode());
 		policyEntity.setAgentCode(model.getAgentCode());
-		policyEntity.setSoCode(model.getSoCode());
 		policyEntity.setAckNo(model.getAckNo());
-		policyEntity.setLanName(model.getLanName());
+		policyEntity.setLaName(model.getLaName());
 		policyEntity.setProposalType(model.getProposalType());
 		policyEntity.setProposalNo(model.getProposalNo());
 		policyEntity.setYear(model.getYear());
-		policyEntity.setPlanCode(model.getPlanCode());
-		policyEntity.setRequestTime(model.getRequestTime());
-		policyEntity.setProcessTime(model.getProcessTime());
+		policyEntity.setDob(model.getDob());
+		policyEntity.setMobileNo(model.getMobileNo());
 
 		PbzPolicyEntity savedPolicyEntity = PbzPolicyRepository.save(policyEntity);
 		return modelMapper.toPolicyModel(savedPolicyEntity);

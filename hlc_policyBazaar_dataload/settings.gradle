@@ -1,0 +1,3 @@
+rootProject.name = 'hlc_policyBazaar_dataload'
+
+include 'dataload-main'

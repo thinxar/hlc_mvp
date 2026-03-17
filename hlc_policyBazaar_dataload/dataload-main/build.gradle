@@ -1,0 +1,74 @@
+plugins {
+  id 'application'
+}
+
+compileJava.options.encoding = 'UTF-8'
+group = 'com.palmyralabs.dms'
+
+
+application {
+    mainClass = 'com.palmyralabs.dms.dataload.DataLoadMain'
+
+    startScripts {
+        classpath += files('conf')
+
+        doLast {
+            def windowsScriptFile = file getWindowsScript()
+            def unixScriptFile    = file getUnixScript()
+            windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME%\\lib\\conf', '%APP_HOME%\\resources')
+            unixScriptFile.text  = unixScriptFile.text.replace('$APP_HOME/lib/conf', '$APP_HOME/resources')
+        }
+    }
+}
+
+dependencies {
+    implementation deps.spring.core  
+    implementation deps.apache.http.client  
+    implementation ("ch.qos.logback:logback-classic:1.5.11")
+    
+
+
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.20.0")
+	implementation("org.apache.tika:tika-core:3.2.2")
+	implementation("org.apache.tika:tika-parsers-standard-package:3.2.2")
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+
+     all*.exclude module : 'spring-boot-starter-logging'
+}
+
+distZip {
+   exclude('**/*.yaml')
+   exclude('**/*.xml')
+}
+
+jar {
+   exclude('**/*.yaml')
+   exclude('**/*.xml')
+}
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+distributions {
+    main {        
+        contents {            
+            from ('src/main/resources'){
+                exclude('application.yaml')
+                into 'resources'
+            }
+
+            from 'src/main/resources/application.yaml'
+        }
+    }
+}
+
+installDist {
+	into ('../dist')
+}

@@ -9,5 +9,5 @@ import com.palmyralabs.dms.policyBazaar.entity.PbzPolicyEntity;
 public interface PbzPolicyRepository extends MongoRepository<PbzPolicyEntity, Integer>{
 	Optional<PbzPolicyEntity> findById(Integer id);
 
-	Optional<PbzPolicyEntity> findByProposalNoAndSoCode(String proposalNo, String soCode);
+	Optional<PbzPolicyEntity> findByProposalNoAndBoCode(String proposalNo, String boCode);
 }

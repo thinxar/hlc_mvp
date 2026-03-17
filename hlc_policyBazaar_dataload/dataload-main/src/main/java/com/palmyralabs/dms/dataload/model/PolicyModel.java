@@ -1,14 +1,20 @@
-package com.palmyralabs.dms.policyBazaar.model;
+package com.palmyralabs.dms.dataload.model;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.palmyralabs.palmyra.client.PalmyraType;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PbzPolicyModel {
-	
+@PalmyraType("policy")
+public class PolicyModel {
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Integer id;
-	
+
+	private Integer policyNumber;
+
 	private String agentCode;
 
 	private String ackNo;
@@ -18,15 +24,13 @@ public class PbzPolicyModel {
 	private String proposalType;
 
 	private String proposalNo;
-	
-	private Long policyNumber;
 
 	private String year;
 
 	private String boCode;
-	
+
 	private String dob;
-	
+
 	private String mobileNo;
-	
+
 }
