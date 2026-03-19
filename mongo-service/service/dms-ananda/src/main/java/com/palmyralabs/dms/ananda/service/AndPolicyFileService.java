@@ -140,13 +140,13 @@ public class AndPolicyFileService {
 	}
 
 
-	public List<AndPolicyFileModel> getAllPolicyFiles(String proposalNo, String soCode, String year) {
+	public List<AndPolicyFileModel> getAllPolicyFiles(String proposalNo, String boCode, String year) {
 		Query query = new Query();
 		if (proposalNo != null && !proposalNo.isBlank()) {
 			query.addCriteria(Criteria.where("policyId.proposalNo").is(proposalNo));
 		}
-		if (soCode != null && !soCode.isBlank()) {
-			query.addCriteria(Criteria.where("policyId.soCode").is(soCode));
+		if (boCode != null && !boCode.isBlank()) {
+			query.addCriteria(Criteria.where("policyId.boCode").is(boCode));
 		}
 		if (year != null && !year.isBlank()) {
 			query.addCriteria(Criteria.where("policyId.year").is(year));

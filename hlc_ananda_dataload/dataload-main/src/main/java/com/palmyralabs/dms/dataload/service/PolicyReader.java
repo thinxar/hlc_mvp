@@ -73,10 +73,12 @@ public class PolicyReader {
 		String proposalNo = record.get("Proposal No");
 		String policyNumber = record.get("Policy Number");
 		String year = record.get("Year");
-		String dob = record.get("Dob");
-		String mobileNo = record.get("Mobile No");
 		String boCode = record.get("BO Code");
-
+		String objectSubmittedOn = record.get("Object Submitted On");
+		String processTime = record.get("Process Time");
+		String requestTime = record.get("Request Time");
+		String planCode = record.get("Plan Code");
+		
 		PolicyModel model = new PolicyModel();
 
 		model.setAgentCode(agentCode);
@@ -88,9 +90,11 @@ public class PolicyReader {
 			model.setPolicyNumber(Integer.parseInt(policyNumber));
 		}
 		model.setYear(year);
-		model.setDob(dob);
-		model.setMobileNo(mobileNo);
+		model.setObjectSubmittedOn(objectSubmittedOn);
+		model.setProcessTime(processTime);
+		model.setRequestTime(requestTime);
 		model.setBoCode(boCode);
+		model.setPlanCode(planCode);
 		return model;
 	}
 

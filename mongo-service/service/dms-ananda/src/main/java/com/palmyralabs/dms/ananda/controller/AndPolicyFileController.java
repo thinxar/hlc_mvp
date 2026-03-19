@@ -34,8 +34,8 @@ public class AndPolicyFileController extends AbstractController{
 	@GetMapping("/file")
 	public PalmyraResponse<List<AndPolicyFileModel>> getAll(
 			@RequestParam(value = "propno", required = false) String proposalNo,
-			@RequestParam(value = "officecode", required = false) String soCode,
+			@RequestParam(value = "officecode", required = false) String boCode,
 			@RequestParam(value = "year", required = false) String year) {
-		return apiResponse(fileService.getAllPolicyFiles(proposalNo, soCode, year));
+		return apiResponse(fileService.getAllPolicyFiles(proposalNo, boCode, year));
 	}
 }

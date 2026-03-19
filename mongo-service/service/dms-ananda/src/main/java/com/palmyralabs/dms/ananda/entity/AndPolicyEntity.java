@@ -33,8 +33,13 @@ public class AndPolicyEntity {
 
 	private String boCode;
 
-	private String dob;
-
-	private String mobileNo;
+	private String planCode;
+	
+	private String objectSubmittedOn;
+	
+	private String requestTime;
+	
+	private String processTime;
+	
 
 }

@@ -29,8 +29,12 @@ public class PolicyModel {
 
 	private String boCode;
 
-	private String dob;
+	private String objectSubmittedOn;
 
-	private String mobileNo;
+	private String processTime;
+	
+	private String requestTime;
+	
+	private String planCode;
 
 }

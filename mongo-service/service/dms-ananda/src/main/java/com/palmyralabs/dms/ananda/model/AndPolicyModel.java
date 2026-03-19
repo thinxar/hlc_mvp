@@ -6,9 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AndPolicyModel {
-	
+
 	private Integer id;
-	
+
 	private Long policyNumber;
 
 	private String agentCode;
@@ -25,8 +25,12 @@ public class AndPolicyModel {
 
 	private String boCode;
 
-	private String dob;
+	private String planCode;
 
-	private String mobileNo;
+	private String objectSubmittedOn;
+
+	private String requestTime;
+
+	private String processTime;
 
 }

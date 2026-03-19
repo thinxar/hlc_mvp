@@ -33,8 +33,10 @@ public class AndPolicyService {
 		policyEntity.setProposalType(model.getProposalType());
 		policyEntity.setProposalNo(model.getProposalNo());
 		policyEntity.setYear(model.getYear());
-		policyEntity.setDob(model.getDob());
-		policyEntity.setMobileNo(model.getMobileNo());
+		policyEntity.setObjectSubmittedOn(model.getObjectSubmittedOn());
+		policyEntity.setProcessTime(model.getProcessTime());
+		policyEntity.setRequestTime(model.getRequestTime());
+		policyEntity.setPlanCode(model.getPlanCode());
 
 		AndPolicyEntity savedPolicyEntity = andPolicyRepository.save(policyEntity);
 		return modelMapper.toPolicyModel(savedPolicyEntity);

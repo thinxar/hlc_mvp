@@ -43,8 +43,10 @@ public class AndPolicyModelMapper {
 		model.setProposalType(entity.getProposalType());
 		model.setProposalNo(entity.getProposalNo());
 		model.setYear(entity.getYear());
-		model.setDob(entity.getDob());
-		model.setMobileNo(entity.getMobileNo());
+		model.setObjectSubmittedOn(entity.getObjectSubmittedOn());
+		model.setProcessTime(entity.getProcessTime());
+		model.setRequestTime(entity.getRequestTime());
+		model.setPlanCode(entity.getPlanCode());
 		return model;
 	}
 	
