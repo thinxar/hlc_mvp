@@ -24,7 +24,7 @@ export const viewerConfig: any = {
     OPERATION: {
       url: "/CustomViewer/operation",
       params: {
-        propno: "999824824",
+        propno: "927373",
         officecode: "301",
         appname: "AND",
         year: "2025"
@@ -36,11 +36,10 @@ export const viewerConfig: any = {
     OPERATION: {
       url: "/CustomViewer/operation",
       params: {
-        propno: "999824824",
+        propno: "345678",
         officecode: "301",
         appname: "PBV",
-        srno: "9823880",
-        asrno: "null"
+        year: "2025"
       }
     }
   }
