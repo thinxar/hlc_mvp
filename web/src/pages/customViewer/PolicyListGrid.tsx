@@ -10,14 +10,62 @@ import { HclSummaryGridControls } from "src/common/component/gridControl/HlcSumm
 import { SearchFilterField } from "src/common/component/SearchFilterField";
 import { useFilterHandler } from "src/hook/useFilterHandler";
 import { IPageInput } from "templates/Types";
+import { getCounts, getDaysBetweenDates } from "utils/FormateDate";
+import { useFormstore } from "wire/StoreFactory";
+import PolicyPendencySummary from "./PolicyPendencySummary";
 
+const colorMap: Record<string, string> = {
+    '<3 Days': 'text-green-600 bg-green-100',
+    '3-10 Days': 'text-orange-600 bg-orange-100',
+    '>10 Days': 'text-red-600 bg-red-100',
+};
 
-const PolicyListGrid = (_props: IPageInput) => {
+const dotColorMap: Record<string, string> = {
+    '<3 Days': 'bg-green-500',
+    '3-10 Days': 'bg-orange-500',
+    '>10 Days': 'bg-red-500',
+};
+
+const calculatePendingDays = (data: any) => {
+    const d = data?.row?.original;
+    if (!d?.dateOfSubmission) return "-";
+    const submittedDate = new Date(d.dateOfSubmission);
+    const currentDate = new Date();
+
+    if (isNaN(submittedDate.getTime())) return "-";
+
+    const days = getDaysBetweenDates(submittedDate, currentDate, true)
+
+    const getLabel = (days: number): string => {
+        if (days <= 3) return '<3 Days';
+        if (days <= 10) return '3-10 Days';
+        return '>10 Days';
+    };
+
+    const label = getLabel(Number(days));
+    const textColor = colorMap[label];
+    const dotColor = dotColorMap[label];
+    return (
+        <span className={`flex items-center gap-1.5 w-fit rounded-3xl px-2 ${textColor}`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
+            {`${days}`}
+        </span>
+    )
+
+};
+
+interface IOptions extends IPageInput {
+    type: 'rev' | 'and' | 'pbv'
+}
+
+const PolicyListGrid = (props: IOptions) => {
+    const { type } = props
     const navigate = useNavigate();
     const gridRef = useRef<IPageQueryable>(null);
     const [searchParams] = useSearchParams();
 
-    const [filter, setFilter] = useState({ policyNo: '' })
+    const [data, setData] = useState([])
+    const [filter, setFilter] = useState({ policyNumber: '', pendency: '' })
     const { handleFilterChange } = useFilterHandler(setFilter);
 
     const params = new URLSearchParams({
@@ -25,7 +73,15 @@ const PolicyListGrid = (_props: IPageInput) => {
         srno: searchParams.get("srno") || ""
     });
 
-    const endPoint = `${ServiceEndpoint.customView.policyListApi}?${params.toString()}`;
+    const endPoint = `${ServiceEndpoint.customView[type].policyListApi}?${params.toString()}`;
+    const pendencyEndpoint = ServiceEndpoint.customView[type].policyPendency;
+
+    useEffect(() => {
+        useFormstore(pendencyEndpoint, {}, '').get({}).then((d: any) => {
+            setData(d);
+        });
+    }, []);
+
 
     const fields: ColumnDefinition[] = [
         {
@@ -55,7 +111,7 @@ const PolicyListGrid = (_props: IPageInput) => {
         {
             attribute: "soCode",
             name: "soCode",
-            label: "SO Code",
+            label: "Office Code",
             searchable: true,
             sortable: true,
             type: "string"
@@ -76,6 +132,13 @@ const PolicyListGrid = (_props: IPageInput) => {
             sortable: true,
             type: "string"
         },
+        {
+            attribute: "pendingSince",
+            name: "pendingSince",
+            label: "Pending Since (Days)",
+            type: "string",
+            cellRenderer: calculatePendingDays
+        },
     ];
 
     const useRefresh = (ms = 1800) => {
@@ -90,6 +153,21 @@ const PolicyListGrid = (_props: IPageInput) => {
             };
         return [loading, trigger];
     };
+
+    const counts = getCounts(data);
+
+    const toggleFilter = (key: any) => {
+        setFilter((prev) => ({
+            ...prev,
+            pendency:
+                key === "total" ? ''
+                    : prev.pendency === key ? '' : key
+        }));
+    };
+
+    const HeaderContent: any = <>
+        <PolicyPendencySummary counts={counts} filter={filter} toggleFilter={toggleFilter} />
+    </>
 
     const FilterField: any = <>
         <PalmyraForm>
@@ -113,7 +191,8 @@ const PolicyListGrid = (_props: IPageInput) => {
     const getPluginOptions = (): any => {
         return {
             add: { visible: false }, export: { visible: false }, customBtn: LightPulse(),
-            backOption: false, filterField: FilterField, filter: { visible: false }
+            backOption: false, filterField: FilterField, filter: { visible: false },
+            headerContent: HeaderContent
         }
     }
 

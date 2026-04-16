@@ -7,6 +7,7 @@ interface IGridControls extends IDataGridDefaultControlConfig {
     filter?: IPluginBtnControl
     add?: IPluginBtnControl
     filterField?: any
+    headerContent?: any
     addText?: string
     onNewClick?: () => void
     customBtn?: any
@@ -18,6 +19,7 @@ const HclSummaryGridControls = (props: any) => {
     const handleNewClick = pluginOptions.onNewClick ? pluginOptions.onNewClick : () => props.newRecord();
     const addText = pluginOptions.addText ? pluginOptions.addText : 'Add'
     const FilterLet: any = pluginOptions?.filterField
+    const HeaderContent: any = pluginOptions?.headerContent
     const isFilterVisible = pluginOptions.filter ? pluginOptions.filter?.visible : true;
     const ACL_CODE = pluginOptions.aclCode ? pluginOptions.aclCode : '';
     const CustomButton: any = pluginOptions?.customBtn
@@ -25,6 +27,8 @@ const HclSummaryGridControls = (props: any) => {
     return (<>
         {o.quickSearch && <QuickSearch width="200" queryRef={o.queryRef}
             columns={o.columns} {...pluginOptions.quickSearch} />}
+        {HeaderContent && <div className="flex">
+            {HeaderContent}</div>}
         {FilterLet && <div className="flex">
             {FilterLet}</div>}
         {isFilterVisible &&

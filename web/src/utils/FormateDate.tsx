@@ -51,6 +51,30 @@ function formatDateTime(dateTime: any, pattern: any) {
         .replace('A', ampm);
 }
 
+function getDaysBetweenDates(date1: string | Date, date2: string | Date, labelRemove?: boolean): string {
+    const parseDate = (input: string | Date): Date => {
+        if (input instanceof Date) return input;
+
+        const parts = input.split('-');
+        if (parts.length !== 3) return new Date(NaN);
+
+        const [day, month, year] = parts.map(Number);
+        return new Date(year, month - 1, day);
+    };
+
+    const d1 = parseDate(date1);
+    const d2 = parseDate(date2);
+
+    if (isNaN(d1.getTime()) || isNaN(d2.getTime())) {
+        return 'Invalid Date';
+    }
+
+    const diffTime = Math.abs(d2.getTime() - d1.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return `${diffDays}  ${labelRemove ? '' : diffDays > 1 ? ' Days' : ' Day'}`;
+}
+
 const handleKeyAction = (key: string, action: () => void) =>
     (event: React.KeyboardEvent) => {
         if (event.key === key) {
@@ -59,7 +83,33 @@ const handleKeyAction = (key: string, action: () => void) =>
     };
 
 
-export { formatDateTime }
+const getCounts = (data: any[]) => {
+    const today: any = new Date();
+
+    return data.reduce(
+        (acc, item) => {
+            if (!item.dateOfSubmission) return acc;
+
+            const submittedDate: any = new Date(item.dateOfSubmission);
+            const diffDays = Math.max(
+                0,
+                Math.floor((today - submittedDate) / (1000 * 60 * 60 * 24))
+            );
+
+            acc.total++;
+
+            if (diffDays < 3) acc["< 3"]++;
+            else if (diffDays <= 10) acc["3-10"]++;
+            else acc["> 10"]++;
+
+            return acc;
+        },
+        { total: 0, "< 3": 0, "3-10": 0, "> 10": 0 }
+    );
+};
+
+
+export { formatDateTime, getDaysBetweenDates, getCounts }
 
 
 export { FormateDate, formatRFCDate, handleKeyAction }

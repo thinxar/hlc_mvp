@@ -80,14 +80,20 @@ const ServiceEndpoint = {
         rev: {
             policyFileApi: '/rev/policy/file',
             getFileApi: '/rev/policy/{policyId}/file/{fileId}/download',
+            policyListApi: '/rev/policy',
+            policyPendency: '/rev/policy/pendency'
         },
         and: {
             policyFileApi: '/and/policy/file',
             getFileApi: '/and/policy/{policyId}/file/{fileId}/download',
+            policyListApi: '/and/policy',
+            policyPendency: '/and/policy/pendency'
         },
         pbv: {
             policyFileApi: '/pbv/policy/file',
             getFileApi: '/pbv/policy/{policyId}/file/{fileId}/download',
+            policyListApi: '/pbv/policy',
+            policyPendency: '/pbv/policy/pendency'
         }
     }
 }
