@@ -58,7 +58,7 @@ public class RevPolicyService {
 	        query.addCriteria(Criteria.where("soCode").is(soCode));
 	    }
 	    if (srNo != null && !srNo.isBlank()) {
-	        query.addCriteria(Criteria.where("srNo").is(srNo));
+	        query.addCriteria(Criteria.where("srNo").ne(srNo));
 	    }
 	    if (policyNumber != null  && !policyNumber.isBlank()) {
 	    	 String regex = policyNumber.replace("*", ".*");
