@@ -74,7 +74,7 @@ const PolicyListGrid = (props: IOptions) => {
     });
 
     const endPoint = `${ServiceEndpoint.customView[type].policyListApi}?${params.toString()}`;
-    const pendencyEndpoint = ServiceEndpoint.customView[type].policyPendency;
+    const pendencyEndpoint = `${ServiceEndpoint.customView[type].policyPendency}?${params.toString()}`;
 
     useEffect(() => {
         useFormstore(pendencyEndpoint, {}, '').get({}).then((d: any) => {

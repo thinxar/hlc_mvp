@@ -1,22 +1,148 @@
 import { Button } from "@mantine/core";
-import { PalmyraNewForm } from "@palmyralabs/rt-forms";
+import { ISaveForm, PalmyraNewForm } from "@palmyralabs/rt-forms";
 import { ErrorMsgConfig } from "config/ErrorMsgConfig";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
-import { useState } from "react";
+import { JSX, useRef, useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
 import { FaPaperPlane } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { ServerLookup } from "templates/mantineForm";
 import { getPolicyInfo } from "utils/LocalStorageInfo";
 
-const PolicySubmissionFrom = () => {
-    const [isValid, setValid] = useState<boolean>(false);
+type myType = 'rev' | 'and' | 'pbv'
+interface submissionProps {
+    type: myType
+}
+const errorMsg = ErrorMsgConfig.form;
+const revLookupEndpoint = ServiceEndpoint.customView.rev.Lookup;
+const anaLookupEndpoint = ServiceEndpoint.customView.and.Lookup;
+const pbvLookupEndpoint = ServiceEndpoint.customView.pbv.Lookup;
 
+const RevivalRender = () => {
+    const [isValid, setValid] = useState<boolean>(false);
+    const formRef = useRef<ISaveForm>(null);
     const toNavigate = useNavigate();
 
-    const errorMsg = ErrorMsgConfig.form;
+    const handleSubmit = () => {
+        const requestData = formRef?.current?.getData();
+        const sNo = requestData?.serialNumber?.name;
+        const officeCode = requestData?.OfficeCode?.name;
+        
+        toNavigate(`../NG?officecode=${officeCode}&srno=${sNo}&appname=REV`);
+    };
+
+    return (
+        <PalmyraNewForm ref={formRef} endPoint={''} onValidChange={setValid}>
+            <div className="grid grid-cols-1 md:grid-cols-1">
+                <div className="md:col-span-1">
+                    <ServerLookup required attribute="OfficeCode" label="Office Code"
+                        placeholder="Select OfficeCode"
+                        queryOptions={{ endPoint: revLookupEndpoint.officeCode }}
+                        invalidMessage={errorMsg.mandatory}
+                        lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }} />
+                </div>
+
+                <div className="md:col-span-1">
+                    <ServerLookup
+                        attribute="serialNumber"
+                        required
+                        placeholder="Select S.No"
+                        label="Serial Number"
+                        invalidMessage={errorMsg.mandatory}
+                        queryOptions={{ endPoint: revLookupEndpoint.serialNo }}
+                        lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
+                    />
+                </div>
+            </div>
+
+            <div className="flex justify-center mt-8">
+                <Button onClick={handleSubmit}
+                    className={isValid ? 'py-filled-button' : 'py-disabled-button'}
+                    disabled={!isValid}
+                    leftSection={<FaPaperPlane className="text-sm" />}
+                >
+                    View Details
+                </Button>
+            </div>
+        </PalmyraNewForm>
+    )
+}
+
+const AnandaRender = () => {
+    const [isValid, setValid] = useState<boolean>(false);
+
+    return (
+        <PalmyraNewForm endPoint={''} onValidChange={setValid}>
+            <div className="grid grid-cols-1 md:grid-cols-1">
+                <div className="md:col-span-1">
+                    <ServerLookup
+                        attribute="OfficeCode"
+                        required
+                        placeholder="Select OfficeCode"
+                        label="Office Code"
+                        invalidMessage={errorMsg.mandatory}
+                        queryOptions={{ endPoint: anaLookupEndpoint.officeCode }}
+                        lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
+                    />
+                </div>
+            </div>
+
+            <div className="flex justify-center mt-8">
+                <Button
+                    className={isValid ? 'py-filled-button' : 'py-disabled-button'}
+                    disabled={!isValid}
+                    leftSection={<FaPaperPlane className="text-sm" />}
+                >
+                    View Details
+                </Button>
+            </div>
+        </PalmyraNewForm>
+    )
+}
+
+const PolicyBazaarRender = () => {
+    const [isValid, setValid] = useState<boolean>(false);
+
+    return (
+        <PalmyraNewForm endPoint={''} onValidChange={setValid}>
+            <div className="grid grid-cols-1 md:grid-cols-1">
+                <div className="md:col-span-1">
+                    <ServerLookup
+                        attribute="OfficeCode"
+                        required
+                        placeholder="Select OfficeCode"
+                        label="Office Code"
+                        invalidMessage={errorMsg.mandatory}
+                        queryOptions={{ endPoint: pbvLookupEndpoint.officeCode }}
+                        lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
+                    />
+                </div>
+            </div>
+
+            <div className="flex justify-center mt-8">
+                <Button
+                    className={isValid ? 'py-filled-button' : 'py-disabled-button'}
+                    disabled={!isValid}
+                    leftSection={<FaPaperPlane className="text-sm" />}
+                >
+                    View Details
+                </Button>
+            </div>
+        </PalmyraNewForm>
+    )
+}
+
+const PolicySubmissionFrom = (props: submissionProps) => {
+
+    const { type } = props;
+    const toNavigate = useNavigate();
     const policyUser = getPolicyInfo();
-    const lookupEndpoint = ServiceEndpoint.lookup;
+
+    const formMap: Record<myType, JSX.Element> = {
+        rev: <RevivalRender />,
+        and: <AnandaRender />,
+        pbv: <PolicyBazaarRender />,
+    };
 
     return (
         <div className="h-full flex flex-col gap-4 items-center justify-center relative">
@@ -42,43 +168,7 @@ const PolicySubmissionFrom = () => {
 
                 </div>
                 <div className="pb-4">
-                    <PalmyraNewForm endPoint={''} onValidChange={setValid}>
-                        <div className="grid grid-cols-1 md:grid-cols-1">
-                            <div className="md:col-span-1">
-                                <ServerLookup
-                                    attribute="OfficeCode"
-                                    required
-                                    placeholder="Select OfficeCode"
-                                    label="Office Code"
-                                    invalidMessage={errorMsg.mandatory}
-                                    queryOptions={{ endPoint: lookupEndpoint.officeCode }}
-                                    lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
-                                />
-                            </div>
-
-                            <div className="md:col-span-1">
-                                <ServerLookup
-                                    attribute="endorsementSubType"
-                                    required
-                                    placeholder="Select S.No"
-                                    label="Serial Number"
-                                    invalidMessage={errorMsg.mandatory}
-                                    queryOptions={{ endPoint: lookupEndpoint.serialNo }}
-                                    lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex justify-center mt-8">
-                            <Button
-                                className={isValid ? 'py-filled-button' : 'py-disabled-button'}
-                                disabled={!isValid}
-                                leftSection={<FaPaperPlane className="text-sm" />}
-                            >
-                                View Details
-                            </Button>
-                        </div>
-                    </PalmyraNewForm>
+                    {formMap[type]}
                 </div>
             </div>
 

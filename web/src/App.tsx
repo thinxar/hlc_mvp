@@ -25,8 +25,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path='/login' element={<LoginPage />} />
 
-          <Route path='/CustomViewer/NG' element={<CustomViewerPage pageName="customViewer" />} />
-          <Route path='/CustomViewer/operation' element={<CustomViewerViewPage pageName="customViewer" />} />
+          <Route path='app/CustomViewer/NG' element={<CustomViewerPage pageName="customViewer" />} />
+          <Route path='app/CustomViewer/operation' element={<CustomViewerViewPage pageName="customViewer" />} />
 
           {/* <Route path='/app/' element={<MainLayout />} >
             <Route path='home' element={<HomePage />} />

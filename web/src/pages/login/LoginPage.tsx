@@ -1,11 +1,14 @@
+import { Button } from '@mantine/core';
+import { viewerConfig } from 'config/UrlConfig';
+import { BiArrowBack } from 'react-icons/bi';
+import { useNavigate } from 'react-router-dom';
 import { LicLogo, TitleConfig } from 'templates/FlexImport';
 import './Login.css';
 import LoginForm from './LoginForm';
-import { viewerConfig } from 'config/UrlConfig';
-import { Button } from '@mantine/core';
 
 
 const LoginPage = () => {
+    const toNavigate = useNavigate();
 
     const openViewer = (app: string, view: string) => {
         const config = viewerConfig[app][view];
@@ -19,8 +22,13 @@ const LoginPage = () => {
     };
 
     return (
-        <div>
-
+        <div className='relative'>
+            <div className="absolute top-8 left-9">
+                <div onClick={() => toNavigate('/')}
+                    className="rounded-full shadow-2xl bg-gray-200 p-2 cursor-pointer">
+                    <BiArrowBack className="" />
+                </div>
+            </div>
             <div className='absolute flex justify-center pt-5 items-center right-0 mr-90'>
                 <Button onClick={() => openViewer("REV", "NG")}>
                     REV NG

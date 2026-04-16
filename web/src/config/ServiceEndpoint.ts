@@ -73,9 +73,6 @@ const ServiceEndpoint = {
         endorsementSubType: '/masterdata/{endorsementType}/endorsementSubType',
         userType: '',
         designation: '',
-        officeCode: '/masterdata/officeCode',
-        serialNo: '/masterdata/srNo'
-
     },
     customView: {
         policyListApi: '/rev/policy',
@@ -84,19 +81,29 @@ const ServiceEndpoint = {
             policyFileApi: '/rev/policy/file',
             getFileApi: '/rev/policy/{policyId}/file/{fileId}/download',
             policyListApi: '/rev/policy',
-            policyPendency: '/rev/policy/pendency'
+            policyPendency: '/rev/policy/pendency',
+            Lookup: {
+                officeCode: '/masterdata/rev/officeCode',
+                serialNo: '/masterdata/rev/srNo'
+            }
         },
         and: {
             policyFileApi: '/and/policy/file',
             getFileApi: '/and/policy/{policyId}/file/{fileId}/download',
             policyListApi: '/and/policy',
-            policyPendency: '/and/policy/pendency'
+            policyPendency: '/and/policy/pendency',
+            Lookup: {
+                officeCode: '/masterdata/rev/officeCode',
+            }
         },
         pbv: {
             policyFileApi: '/pbv/policy/file',
             getFileApi: '/pbv/policy/{policyId}/file/{fileId}/download',
             policyListApi: '/pbv/policy',
-            policyPendency: '/pbv/policy/pendency'
+            policyPendency: '/pbv/policy/pendency',
+            Lookup: {
+                officeCode: '/masterdata/rev/officeCode',
+            }
         }
     }
 }
