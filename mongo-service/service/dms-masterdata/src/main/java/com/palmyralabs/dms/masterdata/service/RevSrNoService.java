@@ -7,49 +7,49 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.palmyralabs.dms.base.exception.InvalidInputException;
-import com.palmyralabs.dms.jpa.entity.SrNoEntity;
-import com.palmyralabs.dms.jpa.repository.SrNoRepository;
-import com.palmyralabs.dms.masterdata.model.SrNoModel;
+import com.palmyralabs.dms.jpa.entity.RevSrNoEntity;
+import com.palmyralabs.dms.jpa.repository.RevSrNoRepository;
+import com.palmyralabs.dms.masterdata.model.RevSrNoModel;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class SrNoService {
+public class RevSrNoService {
 
-	private final SrNoRepository repository;
+	private final RevSrNoRepository repository;
 
-	public SrNoModel createSrNo(SrNoModel model) {
-		SrNoEntity SrNoEntity = new SrNoEntity();
+	public RevSrNoModel createSrNo(RevSrNoModel model) {
+		RevSrNoEntity SrNoEntity = new RevSrNoEntity();
 		SrNoEntity.setCode(model.getCode());
 		SrNoEntity.setName(model.getName());
 		SrNoEntity.setDescription(model.getDescription());
 
-		SrNoEntity savedSrNoEntity = repository.save(SrNoEntity);
+		RevSrNoEntity savedSrNoEntity = repository.save(SrNoEntity);
 		return toModel(savedSrNoEntity);
 	}
 
 
-	public List<SrNoModel> getAll() {
-		List<SrNoEntity> entities = repository.findAll();
-		List<SrNoModel> models = new ArrayList<>();
+	public List<RevSrNoModel> getAll() {
+		List<RevSrNoEntity> entities = repository.findAll();
+		List<RevSrNoModel> models = new ArrayList<>();
 
-		for (SrNoEntity entity : entities) {
+		for (RevSrNoEntity entity : entities) {
 			models.add(toModel(entity));
 		}
 		return models;
 	}
 
-	public SrNoModel getById(Integer id) {
-		Optional<SrNoEntity> entity = repository.findById(id);
+	public RevSrNoModel getById(Integer id) {
+		Optional<RevSrNoEntity> entity = repository.findById(id);
 		if (entity.isEmpty()) {
 			throw new InvalidInputException("INV404", "SrNo not found");
 		}
 		return toModel(entity.get());
 	}
 
-	private SrNoModel toModel(SrNoEntity entity) {
-		SrNoModel model = new SrNoModel();
+	private RevSrNoModel toModel(RevSrNoEntity entity) {
+		RevSrNoModel model = new RevSrNoModel();
 		model.setId(entity.getId());
 		model.setDescription(entity.getDescription());
 		model.setCode(entity.getCode());

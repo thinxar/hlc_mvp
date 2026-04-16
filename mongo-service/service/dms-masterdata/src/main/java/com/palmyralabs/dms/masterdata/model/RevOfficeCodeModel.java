@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SrNoModel {
+public class RevOfficeCodeModel {
 
 	private Integer id;
 		

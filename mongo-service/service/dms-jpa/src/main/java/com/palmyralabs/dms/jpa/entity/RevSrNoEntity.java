@@ -10,8 +10,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Document(collection = "mst_sr_no")
-public class SrNoEntity {
+@Document(collection = "mst_rev_srNo")
+public class RevSrNoEntity {
 
 	@AutoIncrementId
 	private Integer id;
