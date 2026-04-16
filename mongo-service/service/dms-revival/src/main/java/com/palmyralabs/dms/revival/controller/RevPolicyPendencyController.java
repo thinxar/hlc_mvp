@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.palmyralabs.dms.revival.model.RevPolicyChartModel;
-import com.palmyralabs.dms.revival.service.RevPolicyChartService;
+import com.palmyralabs.dms.revival.service.RevPolicyPendencyService;
 import com.palmyralabs.palmyra.core.rest.controller.AbstractController;
 
 import lombok.RequiredArgsConstructor;
@@ -16,13 +16,13 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/rev")
-public class RevPolicyChartController extends AbstractController{
+public class RevPolicyPendencyController extends AbstractController{
 
-	private final RevPolicyChartService policyChartService;
+	private final RevPolicyPendencyService policyPendencyService;
 	
-	@GetMapping("/policy/chart")
+	@GetMapping("/policy/pendency")
 	public List<RevPolicyChartModel> getAll(@RequestParam(value = "officecode", required = false) String soCode,
 			@RequestParam(value = "srno", required = false) String srNo) {
-		return policyChartService.searchPolicies(soCode,srNo);
+		return policyPendencyService.searchPolicies(soCode,srNo);
 	}
 }

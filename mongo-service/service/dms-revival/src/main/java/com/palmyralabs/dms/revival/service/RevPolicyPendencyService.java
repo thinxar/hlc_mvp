@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class RevPolicyChartService {
+public class RevPolicyPendencyService {
 	
 	private final MongoTemplate mongoTemplate;
 
