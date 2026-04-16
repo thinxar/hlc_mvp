@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.palmyralabs.dms.revival.model.RevPolicyChartModel;
 import com.palmyralabs.dms.revival.service.RevPolicyPendencyService;
+import com.palmyralabs.palmyra.base.PalmyraResponse;
 import com.palmyralabs.palmyra.core.rest.controller.AbstractController;
 
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ public class RevPolicyPendencyController extends AbstractController{
 	private final RevPolicyPendencyService policyPendencyService;
 	
 	@GetMapping("/policy/pendency")
-	public List<RevPolicyChartModel> getAll(@RequestParam(value = "officecode", required = false) String soCode,
+	public PalmyraResponse<List<RevPolicyChartModel>> getAll(@RequestParam(value = "officecode", required = false) String soCode,
 			@RequestParam(value = "srno", required = false) String srNo) {
-		return policyPendencyService.searchPolicies(soCode,srNo);
+		return apiResponse(policyPendencyService.searchPolicies(soCode,srNo));
 	}
 }
