@@ -72,7 +72,10 @@ const ServiceEndpoint = {
         endorsementType: '/masterdata/endorsementType',
         endorsementSubType: '/masterdata/{endorsementType}/endorsementSubType',
         userType: '',
-        designation: ''
+        designation: '',
+        officeCode: '/masterdata/officeCode',
+        serialNo: '/masterdata/srNo'
+
     },
     customView: {
         policyListApi: '/rev/policy',

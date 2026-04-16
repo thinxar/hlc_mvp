@@ -1,25 +1,27 @@
 import { LicLogo, TitleConfig } from 'templates/FlexImport';
 import './Login.css';
 import LoginForm from './LoginForm';
+import { viewerConfig } from 'config/UrlConfig';
+import { Button } from '@mantine/core';
 
 
 const LoginPage = () => {
 
-    // const openViewer = (app: string, view: string) => {
-    //     const config = viewerConfig[app][view];
-    //     const params = new URLSearchParams(config.params);
+    const openViewer = (app: string, view: string) => {
+        const config = viewerConfig[app][view];
+        const params = new URLSearchParams(config.params);
 
-    //     window.open(
-    //         `${config.url}?${params.toString()}`,
-    //         "_blank",
-    //         "noopener,noreferrer"
-    //     );
-    // };
+        window.open(
+            `${config.url}?${params.toString()}`,
+            "_blank",
+            "noopener,noreferrer"
+        );
+    };
 
     return (
         <div>
 
-            {/* <div className='absolute flex justify-center pt-5 items-center right-0 mr-90'>
+            <div className='absolute flex justify-center pt-5 items-center right-0 mr-90'>
                 <Button onClick={() => openViewer("REV", "NG")}>
                     REV NG
                 </Button>
@@ -35,7 +37,7 @@ const LoginPage = () => {
                 <Button onClick={() => openViewer("PBV", "OPERATION")}>
                     PBV Operation
                 </Button>
-            </div> */}
+            </div>
 
             <div className={`min-h-screen bg-linear-to-br from-blue-50 via-white to-blue-50 
             flex items-center justify-center p-4`}>
