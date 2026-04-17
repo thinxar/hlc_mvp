@@ -166,7 +166,7 @@ public class RevPolicyFileService {
 			query.addCriteria(Criteria.where("policyId.soCode").is(soCode));
 		}
 		if (srNo != null && !srNo.isBlank()) {
-			query.addCriteria(Criteria.where("policyId.srNo").is(srNo));
+			query.addCriteria(Criteria.where("policyId.srNo").ne(srNo));
 		}
 		if (asrNo != null && !asrNo.isBlank()) {
 			query.addCriteria(Criteria.where("policyId.asrNo").is(asrNo));
