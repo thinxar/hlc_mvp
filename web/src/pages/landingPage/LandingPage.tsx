@@ -61,7 +61,7 @@ export default function LandingPage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center px-6 py-16 bg-gray-50 relative overflow-hidden">
+        <div className="min-h-screen flex flex-col items-center justify-start px-6 py-16 bg-gray-50 relative overflow-hidden">
 
             <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-violet-200 rounded-full blur-[120px] opacity-40" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-sky-200 rounded-full blur-[120px] opacity-40" />
@@ -76,7 +76,7 @@ export default function LandingPage() {
                 }}
             />
 
-            <div className="text-center mb-25 z-10">
+            <div className="text-center mb-12 z-10">
                 <div className="flex items-center justify-center">
                     <img src={LicLogo} className="h-20 w-35" />
                 </div>
