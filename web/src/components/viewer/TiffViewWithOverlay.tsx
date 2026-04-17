@@ -2,7 +2,7 @@ import { Loader } from "@mantine/core";
 import axios from "axios";
 import { fabric } from "fabric";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { GoDash, GoPlus } from "react-icons/go";
+import { AiOutlineZoomIn, AiOutlineZoomOut } from "react-icons/ai";
 import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
 import UTIF from "utif2";
 import { formatDateTime } from "utils/FormateDate";
@@ -296,7 +296,7 @@ export const TIFFViewer = ({
             onClick={() => setZoom((z) => Math.max(0.2, z - 0.1))}
             className="py-1 rounded hover:bg-gray-300 cursor-pointer"
           >
-            <GoDash fontSize={20} />
+            <AiOutlineZoomOut fontSize={20} />
           </div>
 
           <span className="text-xl">|</span>
@@ -305,7 +305,7 @@ export const TIFFViewer = ({
             onClick={() => setZoom((z) => Math.min(5, z + 0.1))}
             className="py-1 rounded hover:bg-gray-300 cursor-pointer"
           >
-            <GoPlus fontSize={20} />
+            <AiOutlineZoomIn fontSize={20} />
           </div>
 
           <div
@@ -328,7 +328,7 @@ export const TIFFViewer = ({
 
       <div
         id="tiff-container"
-        className="flex-1 overflow-auto border border-gray-400 rounded-lg bg-white p-2 relative"
+        className="flex-1 flex justify-center overflow-auto border border-gray-400 rounded-lg bg-white p-2 relative"
       >
         <canvas id="fabric-tiff-canvas" />
 

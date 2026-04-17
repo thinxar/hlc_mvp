@@ -1,14 +1,14 @@
-import { useEffect, useState, useMemo, useRef } from "react";
+import { Loader } from "@mantine/core";
+import axios from "axios";
 import { fabric } from "fabric";
 import * as pdfjsLib from "pdfjs-dist";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
-import { Loader } from "@mantine/core";
-import axios from "axios";
-import { GoDash, GoPlus } from "react-icons/go";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AiOutlineZoomIn, AiOutlineZoomOut } from "react-icons/ai";
 import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
 import { useFormstore } from "wire/StoreFactory";
-import { pdfRender, selectStampFunc } from "./widgets/widget";
 import { saveOverlay } from "./overlay/saveOverlay";
+import { pdfRender, selectStampFunc } from "./widgets/widget";
 
 (pdfjsLib as any).GlobalWorkerOptions.workerSrc = workerSrc;
 
@@ -18,7 +18,7 @@ export const PDFViewerWithOverlay = (
 ) => {
   const [pages, setPages] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState<any>(0);
   const [zoom, setZoom] = useState(0.9);
   const pdfRef = useRef<any>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
@@ -75,7 +75,6 @@ export const PDFViewerWithOverlay = (
     loadPdf();
   }, [pdfUrlFromApi]);
 
-
   const saveStampData = () => {
     saveOverlay({
       canvasRef: fabricCanvasRef,
@@ -114,7 +113,7 @@ export const PDFViewerWithOverlay = (
       <div className="flex justify-between items-center">
         <div className="flex gap-2 items-center">
           <button
-            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            onClick={() => setPage((p: any) => Math.max(0, p - 1))}
             disabled={page === 0}
             className="hover:bg-gray-200 px-2 py-1 rounded"
           >
@@ -122,7 +121,7 @@ export const PDFViewerWithOverlay = (
           </button>
           <span>|</span>
           <button
-            onClick={() => setPage((p) => Math.min(pages.length - 1, p + 1))}
+            onClick={() => setPage((p: any) => Math.min(pages.length - 1, p + 1))}
             disabled={page === pages.length - 1}
             className="hover:bg-gray-200 px-2 py-1 rounded"
           >
@@ -131,15 +130,15 @@ export const PDFViewerWithOverlay = (
           <span>Page {page + 1} / {pages.length}</span>
         </div>
         <div className="flex gap-2 items-center">
-          <button onClick={() => setZoom((z) => Math.max(0.2, z - 0.1))}>
-            <GoDash fontSize={20} />
+          <button onClick={() => setZoom((z) => Math.max(0.2, z - 0.1))} className="cursor-pointer">
+            <AiOutlineZoomOut fontSize={20} />
           </button>
-          <button onClick={() => setZoom((z) => z + 0.1)}>
-            <GoPlus fontSize={20} />
+          <button onClick={() => setZoom((z) => z + 0.1)} className="cursor-pointer">
+            <AiOutlineZoomIn fontSize={20} />
           </button>
           <button
             onClick={() => setZoom(0.9)}
-            className="bg-gray-200 px-2 py-1 rounded"
+            className="bg-gray-200 px-2 py-1 rounded cursor-pointer"
           >
             Reset
           </button>
@@ -153,9 +152,11 @@ export const PDFViewerWithOverlay = (
           )}
         </div>
       </div>
-      <div className="overflow-auto border rounded relative p-2 flex justify-center items-center bg-black ">
+      <div   
+      className="overflow-auto border rounded relative p-2 flex justify-center
+       items-center bg-black ">
         <div
-          ref={containerRef}
+          ref={containerRef} className="flex justify-center"
           style={{ position: "relative", width: "100%", height: "100%" }}
         >
           <canvas id="fabric-pdf-canvas" />
