@@ -1,5 +1,6 @@
 import { type ColumnDefinition, type IPageQueryable } from "@palmyralabs/rt-forms";
 import { PalmyraGrid } from "@palmyralabs/rt-forms-mantine";
+import { topic } from "@palmyralabs/ts-utils";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { useRef } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -40,12 +41,15 @@ const APPolicyListGrid = (props: IOptions) => {
         }
     }
 
-    const onRowClick = (_d: any) => {
+    const onRowClick = (d: any) => {
+        console.log(d?.proposalNo);
+        
+        topic.publish('proposalNo', d?.proposalNo)
     };
 
     return (
-        <div className="grid-container">
-            <PalmyraGrid title={"Policy List"} onRowClick={onRowClick}
+        <div className="grid-container policy-grid bg-white">
+            <PalmyraGrid  onRowClick={onRowClick}
                 columns={fields} pageSize={[15, 30, 45]}
                 getPluginOptions={getPluginOptions}
                 ref={gridRef} pagination={{ ignoreSinglePage: true }}

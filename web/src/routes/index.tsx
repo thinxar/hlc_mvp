@@ -1,7 +1,7 @@
 
 import { MenuDef } from "@palmyralabs/rt-forms";
 import { Outlet, Route } from "react-router-dom";
-import { appRoutes } from "./AppRoutes";
+import { appRoutes, iframeRoutes } from "./AppRoutes";
 import PageWrapper from "./PageWrapper";
 
 
@@ -80,3 +80,4 @@ const generateMenu = (routes: any, parentPath?: string): MenuDef[] => {
     });
 };
 export const routes = generateRoute(appRoutes);
+export const ifRoutes = generateRoute(iframeRoutes);

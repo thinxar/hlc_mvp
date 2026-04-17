@@ -10,7 +10,8 @@ const appData = [
         path: 'app/customViewer/submission',
         description: "New Document Verification Queue",
         icon: "✦",
-        accent: "bg-blue-700 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
         tag: "QUEUE",
     },
@@ -20,7 +21,8 @@ const appData = [
         path: 'app/customViewer/submission',
         description: "Read Only Document CDV i.e. without Accept/Reject Functionality",
         icon: "◈",
-        accent: "bg-blue-700 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
         tag: "READ ONLY",
     },
@@ -30,17 +32,19 @@ const appData = [
         path: 'app/customViewer/submission',
         description: "Read Only Document and Video CDV",
         icon: "⬡",
-        accent: "bg-blue-700 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
         tag: "MEDIA",
     },
     {
         id: 4,
-        title: "LIC Log in",
+        title: "Policy Documents",
         path: '/login',
         description: "Enter your credentials to access your account",
         icon: "⊕",
-        accent: "bg-blue-700 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
         tag: "AUTH",
     },
@@ -72,9 +76,9 @@ export default function LandingPage() {
                 }}
             />
 
-            <div className="text-center mb-5 z-10">
+            <div className="text-center mb-25 z-10">
                 <div className="flex items-center justify-center">
-                    <img src={LicLogo} className="h-13 w-24" />
+                    <img src={LicLogo} className="h-20 w-35" />
                 </div>
                 <h1 className="text-5xl font-black text-gray-900 tracking-tight mb-3">
                     EDMS 3.0
@@ -119,8 +123,8 @@ export default function LandingPage() {
 
                         <button onClick={() => handleClick(mod)}
                             className={`
-                        flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white
-                        bg-linear-to-r ${mod.accent} w-fit cursor-pointer
+                        flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold
+                        bg-linear-to-r ${mod.btnAccent} w-fit cursor-pointer
                         transition-all duration-200 mt-auto z-99
                         hover:scale-105 hover:shadow-md active:scale-95
                     `}

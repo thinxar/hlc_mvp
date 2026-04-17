@@ -2,11 +2,10 @@ import { StringFormat, topic } from '@palmyralabs/ts-utils';
 import { ServiceEndpoint } from 'config/ServiceEndpoint';
 import { useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
+import { PolicyNotFound } from 'src/common/pages/PolicyNotFound';
 import { FileViewer } from 'src/pages/policySearch/section/FileViewer';
 import { handleError } from 'wire/ErrorHandler';
 import { useFormstore } from 'wire/StoreFactory';
-import { PolicyNotFound } from 'src/common/pages/PolicyNotFound';
-import { GoShieldCheck } from 'react-icons/go';
 import { PolicySubmitSection } from '../../view/PolicySubmitSection';
 import { PolicyViewHeader } from '../../view/PolicyViewHeader';
 
@@ -23,6 +22,7 @@ const APDocumentView = () => {
     const [selectedStamp, setSelectedStamp] = useState<any>()
     const [_selectedStamps, setSelectedStamps] = useState<any>({});
     const [stampDataArr, setStampDataArr] = useState<any>()
+    const [proposalNo, setProposalNo] = useState<any>()
 
     const policyData = location?.state?.policyData || policyDataX;
     const BASE_URL = `${window.location.origin}/api/palmyra`;
@@ -35,6 +35,10 @@ const APDocumentView = () => {
         }
     });
 
+    if (proposalNo) {
+        params.set("propno", proposalNo);
+    }
+
     const endpoint =
         ServiceEndpoint.customView[appType].policyFileApi + "?" + params.toString();
 
@@ -46,68 +50,73 @@ const APDocumentView = () => {
 
     const handleFetch = () => {
         setLoading(true);
-        useFormstore(endpoint)
-            .query({ limit: -1 })
-            .then((d: any) => {
-                const mappedPolicies: any[] = d?.result?.map((item: any) => ({
-                    id: item.policyId?.policyNumber,
-                    pdfFiles: {
-                        id: item.id,
-                        name: item.name,
-                        fileName: item.fileName,
-                        size: item.fileSize,
-                        date: item.createdOn,
-                        fileType: item.fileType,
-                        docketType: item.docketType,
-                        status: item.status,
-                        path: item.path || ''
-                    },
-                    stamps: item?.fixedStamp ?? [],
-                })) ?? [];
+        if (endpoint.includes('propno=')) {
+            useFormstore(endpoint)
+                .query({ limit: -1 })
+                .then((d: any) => {
+                    const mappedPolicies: any[] = d?.result?.map((item: any) => ({
+                        id: item.policyId?.policyNumber,
+                        pdfFiles: {
+                            id: item.id,
+                            name: item.name,
+                            fileName: item.fileName,
+                            size: item.fileSize,
+                            date: item.createdOn,
+                            fileType: item.fileType,
+                            docketType: item.docketType,
+                            status: item.status,
+                            path: item.path || ''
+                        },
+                        stamps: item?.fixedStamp ?? [],
+                    })) ?? [];
 
-                if (!mappedPolicies.length) return;
-                setPolicyData(d?.result[0]?.policyId)
-                setData(mappedPolicies);
+                    if (!mappedPolicies.length) return;
+                    setPolicyData(d?.result[0]?.policyId)
+                    setData(mappedPolicies);
 
-                const latestFile = mappedPolicies.reduce((a, b) =>
-                    new Date(a.pdfFiles.date) > new Date(b.pdfFiles.date) ? a : b
-                );
-
-                if (dataFromUploadEvent != '') {
-
-                    setSelectedFile(latestFile);
-                    return;
-                }
-
-                const updatedFile = mappedPolicies.find(
-                    (f: any) => f?.pdfFiles?.id === selectedFile?.pdfFiles?.id
-                );
-                if (updatedFile) {
-                    setSelectedFile((prev: any) => ({
-                        ...prev,
-                        ...updatedFile,
-                        stamps: updatedFile?.stamps ?? prev?.stamps
-                    }));
-                }
-                else {
-                    const bondFile = mappedPolicies.find((f: any) =>
-                        f?.pdfFiles?.fileName?.toLowerCase()?.includes('bond')
+                    const latestFile = mappedPolicies.reduce((a, b) =>
+                        new Date(a.pdfFiles.date) > new Date(b.pdfFiles.date) ? a : b
                     );
-                    const proposalFile = mappedPolicies.find((f: any) =>
-                        f?.pdfFiles?.fileName?.toLowerCase()?.includes('proposal')
+
+                    if (dataFromUploadEvent != '') {
+
+                        setSelectedFile(latestFile);
+                        return;
+                    }
+
+                    const updatedFile = mappedPolicies.find(
+                        (f: any) => f?.pdfFiles?.id === selectedFile?.pdfFiles?.id
                     );
-                    setSelectedFile(latestFile || bondFile || proposalFile);
-                }
-            })
-            .catch(handleError)
-            .finally(() => {
-                setLoading(false);
-            });
+                    if (updatedFile) {
+                        setSelectedFile((prev: any) => ({
+                            ...prev,
+                            ...updatedFile,
+                            stamps: updatedFile?.stamps ?? prev?.stamps
+                        }));
+                    }
+                    else {
+                        const bondFile = mappedPolicies.find((f: any) =>
+                            f?.pdfFiles?.fileName?.toLowerCase()?.includes('bond')
+                        );
+                        const proposalFile = mappedPolicies.find((f: any) =>
+                            f?.pdfFiles?.fileName?.toLowerCase()?.includes('proposal')
+                        );
+                        setSelectedFile(latestFile || bondFile || proposalFile);
+                    }
+                })
+                .catch(handleError)
+                .finally(() => {
+                    setLoading(false);
+                });
+
+        } else {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
         handleFetch()
-    }, [])
+    }, [endpoint])
 
     useEffect(() => {
         const handle = topic.subscribe("fileUpload", (_t: string, data: any) => {
@@ -116,15 +125,24 @@ const APDocumentView = () => {
                 handleFetch()
             }
         });
+
+        const sub = topic.subscribe('proposalNo', (_t: string, data: string) => {
+
+            if (data) {
+                setProposalNo(data)
+            }
+        });
+
         return () => {
             topic.unsubscribe(handle);
+            topic.unsubscribe(sub)
         };
     }, []);
 
     if (loading) {
         return (
             <div className="flex items-center justify-center h-[80vh]">
-                <Loader />
+                {/* <Loader /> */}
             </div>
         );
     }
@@ -159,24 +177,24 @@ export { APDocumentView };
 
 
 
-const Loader = () => (
-    <div className="flex flex-col items-center justify-center gap-6">
-        <div className="relative">
-            <div className="w-20 h-20 rounded-full border-4 border-slate-100 border-t-indigo-600 animate-spin" />
+// const Loader = () => (
+//     <div className="flex flex-col items-center justify-center gap-6">
+//         <div className="relative">
+//             <div className="w-20 h-20 rounded-full border-4 border-slate-100 border-t-indigo-600 animate-spin" />
 
-            <div className="absolute inset-0 flex items-center justify-center text-indigo-600 animate-pulse">
-                <GoShieldCheck size={32} />
-            </div>
-        </div>
+//             <div className="absolute inset-0 flex items-center justify-center text-indigo-600 animate-pulse">
+//                 <GoShieldCheck size={32} />
+//             </div>
+//         </div>
 
-        <div className="text-center space-y-2">
-            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Securing Your Data</h3>
-            <div className="flex items-center justify-center gap-1.5">
-                <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce" />
-            </div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest pt-2">Processing Policy Request</p>
-        </div>
-    </div>
-);
+//         <div className="text-center space-y-2">
+//             <h3 className="text-lg font-bold text-slate-900 tracking-tight">Securing Your Data</h3>
+//             <div className="flex items-center justify-center gap-1.5">
+//                 <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce [animation-delay:-0.3s]" />
+//                 <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce [animation-delay:-0.15s]" />
+//                 <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce" />
+//             </div>
+//             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest pt-2">Processing Policy Request</p>
+//         </div>
+//     </div>
+// );

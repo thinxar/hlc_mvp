@@ -7,11 +7,12 @@ import PageNotFoundX from './common/pages/PageNotFoundX';
 import './Layout.css';
 import LandingPage from './pages/landingPage/LandingPage';
 import LoginPage from './pages/login/LoginPage';
-import { routes } from './routes';
+import { ifRoutes, routes } from './routes';
 import './style/FieldGroupContainer.css';
 import './style/ResponsiveLayout.css';
 import './themes/blue/Colors.css';
 import './themes/colorDef.css';
+import { IFrameLayout } from './common/layout/IFrameLayout';
 
 function App() {
 
@@ -34,6 +35,11 @@ function App() {
 
           <Route path="/app" element={<MainLayout />}>
             {routes}
+            <Route path="*" element={<PageNotFoundX />} />
+          </Route>
+
+          <Route path="/app/iframe" element={<IFrameLayout />}>
+            {ifRoutes}
             <Route path="*" element={<PageNotFoundX />} />
           </Route>
 

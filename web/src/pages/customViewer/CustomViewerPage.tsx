@@ -8,14 +8,17 @@ const CustomViewerPage = (props: IPageInput) => {
     const [searchParams] = useSearchParams();
     const appName = searchParams.get("appname");
 
-    return (<Gutter>
-        {appName == 'REV' ?
-            <div>
-                <PolicyListGrid pageName={props.pageName} type="rev" />
-            </div> :
+
+    return (
+        appName == 'REV' ? (
+            <Gutter>
+                <div>
+                    <PolicyListGrid pageName={props.pageName} type="rev" />
+                </div> </Gutter >) : (
+          
             <APPolicyViewPage />
-        }
-    </Gutter >)
+        )
+    )
 }
 
 export { CustomViewerPage }

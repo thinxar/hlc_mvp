@@ -56,7 +56,6 @@ const PolicyListGrid = (props: IOptions) => {
             name: "docType",
             label: "Doc Type",
             searchable: true,
-            sortable: true,
             type: "string"
         },
         {
@@ -64,7 +63,6 @@ const PolicyListGrid = (props: IOptions) => {
             name: "srNo",
             label: "SR No",
             searchable: true,
-            sortable: true,
             type: "string"
         },
         {
@@ -72,7 +70,6 @@ const PolicyListGrid = (props: IOptions) => {
             name: "soCode",
             label: "Office Code",
             searchable: true,
-            sortable: true,
             type: "string"
         },
         {
@@ -80,7 +77,6 @@ const PolicyListGrid = (props: IOptions) => {
             name: "doCode",
             label: "DO Code",
             searchable: true,
-            sortable: true,
             type: "string"
         },
         {

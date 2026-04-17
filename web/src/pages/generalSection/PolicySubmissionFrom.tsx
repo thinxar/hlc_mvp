@@ -22,7 +22,6 @@ const pbvLookupEndpoint = ServiceEndpoint.customView.pbv.Lookup;
 const RevivalRender = () => {
     const [isValid, setValid] = useState<boolean>(false);
     const formRef = useRef<ISaveForm>(null);
-    // const toNavigate = useNavigate();
 
     const handleSubmit = () => {
         const requestData = formRef?.current?.getData();
@@ -31,7 +30,6 @@ const RevivalRender = () => {
 
         window.open(`/app/customViewer/NG?officecode=${officeCode}&srno=${sNo}&appname=REV`,
             '_blank');
-        // toNavigate(`../NG?officecode=${officeCode}&srno=${sNo}&appname=REV`);
     };
 
     return (
@@ -50,7 +48,7 @@ const RevivalRender = () => {
                         attribute="serialNumber"
                         required
                         placeholder="Select S.No"
-                        label="Serial Number"
+                        label="Approver SR"
                         invalidMessage={errorMsg.mandatory}
                         queryOptions={{ endPoint: revLookupEndpoint.serialNo }}
                         lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
@@ -132,10 +130,9 @@ const AnandaRender = () => {
 }
 
 const PolicyBazaarRender = () => {
+    const formRef = useRef<ISaveForm>(null);
     const [isValid, setValid] = useState<boolean>(false);
-    const [currentYear, setCurrentYear] = useState(null);
-    // const formRef = useRef<ISaveForm>(null);
-    // const toNavigate = useNavigate();
+    const [currentYear, setCurrentYear] = useState<any>(null);
 
     useEffect(() => {
 
@@ -147,14 +144,17 @@ const PolicyBazaarRender = () => {
     }, [isValid, currentYear]);
 
     const handleAndPbClick = () => {
-        // const requestData = formRef?.current?.getData();
-        // const officeCode = requestData?.OfficeCode?.name;
-        // toNavigate(`../NG?officecode=${officeCode}&srno=${sNo}&appname=REV`);
+        const requestData = formRef?.current?.getData();
+        const officeCode = requestData?.OfficeCode?.name;
+        const curYear = new Date(currentYear).getFullYear()
+
+        window.open(`/app/customViewer/NG?officecode=${officeCode}&year=${curYear}&appname=PBV`,
+            '_blank');
 
     };
 
     return (
-        <PalmyraNewForm endPoint={''} onValidChange={setValid}>
+        <PalmyraNewForm endPoint={''} ref={formRef} onValidChange={setValid}>
             <div className="grid grid-cols-1 md:grid-cols-1">
                 <div className="md:col-span-1">
                     <ServerLookup
@@ -180,7 +180,7 @@ const PolicyBazaarRender = () => {
             </div>
 
             <div className="flex justify-center mt-8">
-                <Button onSubmit={handleAndPbClick}
+                <Button onClick={handleAndPbClick}
                     className={isValid ? 'py-filled-button' : 'py-disabled-button'}
                     disabled={!isValid}
                     leftSection={<FaPaperPlane className="text-sm" />}
@@ -204,6 +204,7 @@ const PolicySubmissionFrom = (props: submissionProps) => {
         pbv: <PolicyBazaarRender />,
     };
 
+    const subText = type === 'rev' ? 'office code and approver SR' : 'office code and year'
     return (
         <div className="h-full flex flex-col gap-4 items-center justify-center relative">
             <div className="absolute top-8 left-9">
@@ -214,16 +215,14 @@ const PolicySubmissionFrom = (props: submissionProps) => {
             </div>
             <div className="text-center mb-1">
                 <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">
-                    Policy {policyUser || ''}
+                    {policyUser || ''}
                 </h1>
-                <p className="text-gray-400 mt-2 text-sm max-w-xs mx-auto leading-relaxed">
-                    Locate an asset by branch and serial number to access its full policy history
-                </p>
             </div>
             <div className="w-full max-w-md bg-white border border-gray-100 rounded-2xl shadow-sm shadow-gray-100 overflow-hidden">
                 <div className="bg-linear-to-r from-blue-800 to-blue-700 px-6 py-5">
                     <h2 className="text-white font-semibold text-base">Policy Search</h2>
-                    <p className="text-slate-300 text-xs mt-0.5">Select office and unit serial to view history</p>
+                    <p className="text-slate-300 text-xs mt-0.5">
+                        Select {subText} to view history</p>
                 </div>
 
                 <div className="p-4 space-y-5">

@@ -95,7 +95,7 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
         </div>
 
         {data.length !== 0 ? (
-            <div className="space-y-2 mt-2 max-h-80 overflow-y-auto">
+            <div className={`space-y-2 mt-2 ${type === "REV" ? 'max-h-80' : 'max-h-100'} overflow-y-auto`}>
                 {docketTypes.map((docketType) => {
                     return (
                         <div >

@@ -16,6 +16,10 @@
   z-index: 999999 !important;
 }
 
+.policy-grid .py-selectable-pagination-container,
+.policy-grid .py-selectable-pagination-left-content-container {
+  display: block;
+}
 
 /* -- dark mode icon */
 .dark-mode-toggle-icon {
