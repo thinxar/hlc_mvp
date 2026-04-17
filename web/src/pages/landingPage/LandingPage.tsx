@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { LicLogo } from 'templates/FlexImport';
 import { storePolicyInfo } from "utils/LocalStorageInfo";
 
 const appData = [
@@ -9,8 +10,8 @@ const appData = [
         path: 'app/customViewer/submission',
         description: "New Document Verification Queue",
         icon: "✦",
-        accent: "from-violet-500 to-indigo-600",
-        glow: "shadow-violet-500/30",
+        accent: "bg-blue-700 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        glow: "shadow-blue-900/30",
         tag: "QUEUE",
     },
     {
@@ -19,8 +20,8 @@ const appData = [
         path: 'app/customViewer/submission',
         description: "Read Only Document CDV i.e. without Accept/Reject Functionality",
         icon: "◈",
-        accent: "from-sky-400 to-blue-600",
-        glow: "shadow-sky-500/30",
+        accent: "bg-blue-700 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        glow: "shadow-blue-900/30",
         tag: "READ ONLY",
     },
     {
@@ -29,8 +30,8 @@ const appData = [
         path: 'app/customViewer/submission',
         description: "Read Only Document and Video CDV",
         icon: "⬡",
-        accent: "from-emerald-400 to-teal-600",
-        glow: "shadow-emerald-500/30",
+        accent: "bg-blue-700 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        glow: "shadow-blue-900/30",
         tag: "MEDIA",
     },
     {
@@ -39,11 +40,12 @@ const appData = [
         path: '/login',
         description: "Enter your credentials to access your account",
         icon: "⊕",
-        accent: "from-rose-400 to-pink-600",
-        glow: "shadow-rose-500/30",
+        accent: "bg-blue-700 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        glow: "shadow-blue-900/30",
         tag: "AUTH",
     },
 ];
+
 
 export default function LandingPage() {
     const navigate = useNavigate();
@@ -70,18 +72,13 @@ export default function LandingPage() {
                 }}
             />
 
-            <div className="text-center mb-14 z-10">
-
+            <div className="text-center mb-5 z-10">
+                <div className="flex items-center justify-center">
+                    <img src={LicLogo} className="h-13 w-24" />
+                </div>
                 <h1 className="text-5xl font-black text-gray-900 tracking-tight mb-3">
-                    <span className="mr-2 bg-linear-to-r from-violet-500 via-indigo-500 to-sky-500 bg-clip-text text-transparent">
-                        Policy
-                    </span>
-                     Document Processing{" "}
+                    EDMS 3.0
                 </h1>
-
-                <p className="text-gray-500 text-sm">
-                    Select a module to continue
-                </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-3xl z-10">
@@ -110,10 +107,6 @@ export default function LandingPage() {
                             >
                                 <span className="text-white">{mod.icon}</span>
                             </div>
-
-                            <span className="text-[10px] font-mono tracking-widest px-2.5 py-1 rounded-full border border-gray-200 text-gray-500">
-                                {mod.tag}
-                            </span>
                         </div>
 
                         <h2 className="text-gray-900 font-bold text-lg mb-1.5">

@@ -22,15 +22,16 @@ const pbvLookupEndpoint = ServiceEndpoint.customView.pbv.Lookup;
 const RevivalRender = () => {
     const [isValid, setValid] = useState<boolean>(false);
     const formRef = useRef<ISaveForm>(null);
-    const toNavigate = useNavigate();
+    // const toNavigate = useNavigate();
 
     const handleSubmit = () => {
         const requestData = formRef?.current?.getData();
         const sNo = requestData?.serialNumber?.name;
         const officeCode = requestData?.OfficeCode?.name;
 
-        // window.open('/your-path', '_blank', 'noopener,noreferrer');
-        toNavigate(`../NG?officecode=${officeCode}&srno=${sNo}&appname=REV`);
+        window.open(`/app/customViewer/NG?officecode=${officeCode}&srno=${sNo}&appname=REV`,
+            '_blank');
+        // toNavigate(`../NG?officecode=${officeCode}&srno=${sNo}&appname=REV`);
     };
 
     return (
@@ -72,12 +73,10 @@ const RevivalRender = () => {
 
 const AnandaRender = () => {
     const [isValid, setValid] = useState<boolean>(false);
-    const [currentYear, setCurrentYear] = useState(null);
+    const [currentYear, setCurrentYear] = useState<any>(null);
     const formRef = useRef<ISaveForm>(null);
-    // const toNavigate = useNavigate();
 
     useEffect(() => {
-
         if (currentYear) {
             setValid(true)
         } else {
@@ -87,9 +86,12 @@ const AnandaRender = () => {
     }, [isValid, currentYear]);
 
     const handleSubmit = () => {
-        console.log('ananda click');
-        // toNavigate(`../NG?officecode=${officeCode}&srno=${sNo}&appname=REV`);
+        const requestData = formRef?.current?.getData();
+        const officeCode = requestData?.OfficeCode?.name;
+        const curYear = new Date(currentYear).getFullYear()
 
+        window.open(`/app/customViewer/NG?officecode=${officeCode}&year=${curYear}&appname=AND`,
+            '_blank');
     };
 
     return (
@@ -117,7 +119,7 @@ const AnandaRender = () => {
             </div>
 
             <div className="flex justify-center mt-8">
-                <Button onSubmit={handleSubmit}
+                <Button onClick={handleSubmit}
                     className={isValid ? 'py-filled-button' : 'py-disabled-button'}
                     disabled={!isValid}
                     leftSection={<FaPaperPlane className="text-sm" />}
@@ -132,7 +134,7 @@ const AnandaRender = () => {
 const PolicyBazaarRender = () => {
     const [isValid, setValid] = useState<boolean>(false);
     const [currentYear, setCurrentYear] = useState(null);
-    const formRef = useRef<ISaveForm>(null);
+    // const formRef = useRef<ISaveForm>(null);
     // const toNavigate = useNavigate();
 
     useEffect(() => {
@@ -145,9 +147,8 @@ const PolicyBazaarRender = () => {
     }, [isValid, currentYear]);
 
     const handleAndPbClick = () => {
-        const requestData = formRef?.current?.getData();
-        const officeCode = requestData?.OfficeCode?.name;
-        console.log('clicked Pb', officeCode);
+        // const requestData = formRef?.current?.getData();
+        // const officeCode = requestData?.OfficeCode?.name;
         // toNavigate(`../NG?officecode=${officeCode}&srno=${sNo}&appname=REV`);
 
     };

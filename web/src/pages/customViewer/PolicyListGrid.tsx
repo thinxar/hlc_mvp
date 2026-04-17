@@ -10,50 +10,9 @@ import { HclSummaryGridControls } from "src/common/component/gridControl/HlcSumm
 import { SearchFilterField } from "src/common/component/SearchFilterField";
 import { useFilterHandler } from "src/hook/useFilterHandler";
 import { IPageInput } from "templates/Types";
-import { getCounts, getDaysBetweenDates } from "utils/FormateDate";
+import { getCounts } from "utils/FormateDate";
 import { useFormstore } from "wire/StoreFactory";
 import PolicyPendencySummary from "./PolicyPendencySummary";
-
-const colorMap: Record<string, string> = {
-    '<3 Days': 'text-green-600 bg-green-100',
-    '3-10 Days': 'text-orange-600 bg-orange-100',
-    '>10 Days': 'text-red-600 bg-red-100',
-};
-
-const dotColorMap: Record<string, string> = {
-    '<3 Days': 'bg-green-500',
-    '3-10 Days': 'bg-orange-500',
-    '>10 Days': 'bg-red-500',
-};
-
-const calculatePendingDays = (data: any) => {
-    const d = data?.row?.original;
-    if (!d?.dateOfSubmission) return "-";
-    const submittedDate = new Date(d.dateOfSubmission);
-    const currentDate = new Date();
-
-    if (isNaN(submittedDate.getTime())) return "-";
-
-    const days = getDaysBetweenDates(submittedDate, currentDate, true)
-
-    const getLabel = (days: number): string => {
-        if (days <= 3) return '<3 Days';
-        if (days <= 10) return '3-10 Days';
-        return '>10 Days';
-    };
-
-    const label = getLabel(Number(days));
-    const textColor = colorMap[label];
-    const dotColor = dotColorMap[label];
-    return (
-        <span className={`flex items-center gap-1.5 w-fit rounded-3xl px-2 ${textColor}`}>
-            <div className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
-            {`${days}`}
-        </span>
-    )
-
-};
-
 interface IOptions extends IPageInput {
     type: 'rev' | 'and' | 'pbv'
 }
@@ -65,7 +24,7 @@ const PolicyListGrid = (props: IOptions) => {
     const [searchParams] = useSearchParams();
 
     const [data, setData] = useState([])
-    const [filter, setFilter] = useState({ policyNumber: '', pendency: '' })
+    const [filter, setFilter] = useState({ policyNumber: '', dos: '' })
     const { handleFilterChange } = useFilterHandler(setFilter);
 
     const params = new URLSearchParams({
@@ -131,14 +90,7 @@ const PolicyListGrid = (props: IOptions) => {
             searchable: true,
             sortable: true,
             type: "string"
-        },
-        {
-            attribute: "pendingSince",
-            name: "pendingSince",
-            label: "Pending Since (Days)",
-            type: "string",
-            cellRenderer: calculatePendingDays
-        },
+        }
     ];
 
     const useRefresh = (ms = 1800) => {
@@ -159,9 +111,9 @@ const PolicyListGrid = (props: IOptions) => {
     const toggleFilter = (key: any) => {
         setFilter((prev) => ({
             ...prev,
-            pendency:
+            dos:
                 key === "total" ? ''
-                    : prev.pendency === key ? '' : key
+                    : prev.dos === key ? '' : key
         }));
     };
 
@@ -209,7 +161,7 @@ const PolicyListGrid = (props: IOptions) => {
             asrno: searchParams.get("asrno") ?? "null"
         });
 
-        navigate(`/CustomViewer/operation?${params.toString()}`, { state: { policyData: d } });
+        navigate(`/app/customViewer/operation?${params.toString()}`, { state: { policyData: d } });
     };
 
     return (

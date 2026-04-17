@@ -1,11 +1,10 @@
 
 const PENDENCY_CONFIG = [
     { label: "Total", key: "total", color: "bg-blue-500" },
-    { label: "< 3", key: "< 3", color: "bg-green-500" },
+    { label: "< 3", key: "<3", color: "bg-green-500" },
     { label: "3-10", key: "3-10", color: "bg-yellow-500" },
-    { label: "> 10", key: "> 10", color: "bg-red-500" }
+    { label: "> 10", key: ">10", color: "bg-red-500" }
 ];
-
 
 const getButtonClass = (isActive: any) => {
     let base =
@@ -33,8 +32,8 @@ const PolicyPendencySummary = (props: IOptions) => {
                 {PENDENCY_CONFIG?.map((item: any) => {
                     const isActive =
                         item.key === "total"
-                            ? !filter?.pendency
-                            : filter?.pendency === item.key;
+                            ? !filter?.dos
+                            : filter?.dos === item.key;
 
                     return (
                         <button

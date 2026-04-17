@@ -98,13 +98,13 @@ const getCounts = (data: any[]) => {
 
             acc.total++;
 
-            if (diffDays < 3) acc["< 3"]++;
+            if (diffDays < 3) acc["<3"]++;
             else if (diffDays <= 10) acc["3-10"]++;
-            else acc["> 10"]++;
+            else acc[">10"]++;
 
             return acc;
         },
-        { total: 0, "< 3": 0, "3-10": 0, "> 10": 0 }
+        { total: 0, "<3": 0, "3-10": 0, ">10": 0 }
     );
 };
 

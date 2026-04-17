@@ -1,7 +1,7 @@
 
 import { MenuDef } from "@palmyralabs/rt-forms";
 import { Outlet, Route } from "react-router-dom";
-import { appRoutes } from "./PageRoutes";
+import { appRoutes } from "./AppRoutes";
 import PageWrapper from "./PageWrapper";
 
 
