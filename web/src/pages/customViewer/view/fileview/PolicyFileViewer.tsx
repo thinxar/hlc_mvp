@@ -1,5 +1,6 @@
 import { FaFileCircleXmark } from "react-icons/fa6";
 import { PolicyFileItemList } from "./PolicyFileItemList";
+import { useState } from "react";
 
 interface FileProps {
     data: any,
@@ -12,8 +13,16 @@ interface FileProps {
 }
 
 const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile, setSelectedFileIds, selectedFileIds }: FileProps) => {
+    const [clickedFileId, setClickedFileId] = useState(new Set());
 
     const handleFileClick = (file: any) => {
+
+        setClickedFileId(prev => {
+            const next = new Set(prev);
+            !next.has(file.pdfFiles.id) && next.add(file.pdfFiles.id);
+            return next;
+        });
+
         if (selectedFile?.pdfFiles?.id === file?.pdfFiles?.id) {
             setSelectedFile(null);
             setTimeout(() => {
@@ -94,6 +103,7 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
                                 {groupedByDocketType[docketType].map((file: any) => (
                                     <PolicyFileItemList
                                         key={file.pdfFiles.id}
+                                        clickedFileId={clickedFileId}
                                         policyId={policyId}
                                         file={file}
                                         type={type}
