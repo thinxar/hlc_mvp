@@ -17,9 +17,9 @@ const DocumentView = () => {
     const appName: any = searchParams.get("appname");
     const appType = appName?.toLowerCase() as "rev" | "and" | "pbv";
 
-    const [toggle, setToggle] = useState<any>(false);
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [toggle, setToggle] = useState<any>(false);
     const [policyDataX, setPolicyData] = useState<any[]>([]);
     const [selectedFile, setSelectedFile] = useState<any>(null);
     const [selectedStamp, setSelectedStamp] = useState<any>()
@@ -145,8 +145,7 @@ const DocumentView = () => {
         {policyData && Object.keys(policyData).length > 0 ?
             <div className="flex transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-25px)] m-3">
                 <div className="">
-                    <div
-                        onClick={handleToggle}
+                    <div onClick={handleToggle}
                         className="cursor-pointer bg-white p-1 rounded border border-gray-300 hover:bg-gray-50 transition-colors"
                     >
                         <LuListCollapse
