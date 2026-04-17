@@ -167,7 +167,7 @@ const PolicySubmissionFrom = (props: submissionProps) => {
             <div className="w-full max-w-md bg-white border border-gray-100 rounded-2xl shadow-sm shadow-gray-100 overflow-hidden">
                 <div className="bg-linear-to-r from-blue-800 to-blue-700 px-6 py-5">
                     <h2 className="text-white font-semibold text-base">
-                        Policy Search
+                        {type === 'rev' ? 'Policy Search' : 'Proposal Search'}
                     </h2>
                     <p className="text-slate-300 text-xs mt-0.5">
                         Select {subText} to view history
