@@ -1,8 +1,9 @@
 import { Button } from "@mantine/core";
+import { YearPickerInput } from "@mantine/dates";
 import { ISaveForm, PalmyraNewForm } from "@palmyralabs/rt-forms";
 import { ErrorMsgConfig } from "config/ErrorMsgConfig";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
-import { JSX, useRef, useState } from "react";
+import { JSX, useEffect, useRef, useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
 import { FaPaperPlane } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -28,6 +29,7 @@ const RevivalRender = () => {
         const sNo = requestData?.serialNumber?.name;
         const officeCode = requestData?.OfficeCode?.name;
 
+        // window.open('/your-path', '_blank', 'noopener,noreferrer');
         toNavigate(`../NG?officecode=${officeCode}&srno=${sNo}&appname=REV`);
     };
 
@@ -70,25 +72,52 @@ const RevivalRender = () => {
 
 const AnandaRender = () => {
     const [isValid, setValid] = useState<boolean>(false);
+    const [currentYear, setCurrentYear] = useState(null);
+    const formRef = useRef<ISaveForm>(null);
+    // const toNavigate = useNavigate();
+
+    useEffect(() => {
+
+        if (currentYear) {
+            setValid(true)
+        } else {
+            setValid(false)
+        }
+
+    }, [isValid, currentYear]);
+
+    const handleSubmit = () => {
+        console.log('ananda click');
+        // toNavigate(`../NG?officecode=${officeCode}&srno=${sNo}&appname=REV`);
+
+    };
 
     return (
-        <PalmyraNewForm endPoint={''} onValidChange={setValid}>
+        <PalmyraNewForm ref={formRef} endPoint={''} onValidChange={setValid}>
             <div className="grid grid-cols-1 md:grid-cols-1">
-                <div className="md:col-span-1">
-                    <ServerLookup
-                        attribute="OfficeCode"
-                        required
-                        placeholder="Select OfficeCode"
-                        label="Office Code"
-                        invalidMessage={errorMsg.mandatory}
-                        queryOptions={{ endPoint: anaLookupEndpoint.officeCode }}
-                        lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
+                <ServerLookup
+                    attribute="OfficeCode"
+                    required
+                    placeholder="Select OfficeCode"
+                    label="Office Code"
+                    invalidMessage={errorMsg.mandatory}
+                    queryOptions={{ endPoint: anaLookupEndpoint.officeCode }}
+                    lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
+                />
+                <div className="mx-2.5">
+                    <YearPickerInput required
+                        label="Select Year"
+                        placeholder="Select Year"
+                        value={currentYear} valueFormat="YYYY"
+                        onChange={(date: any) => {
+                            setCurrentYear(date);
+                        }}
                     />
                 </div>
             </div>
 
             <div className="flex justify-center mt-8">
-                <Button
+                <Button onSubmit={handleSubmit}
                     className={isValid ? 'py-filled-button' : 'py-disabled-button'}
                     disabled={!isValid}
                     leftSection={<FaPaperPlane className="text-sm" />}
@@ -102,6 +131,26 @@ const AnandaRender = () => {
 
 const PolicyBazaarRender = () => {
     const [isValid, setValid] = useState<boolean>(false);
+    const [currentYear, setCurrentYear] = useState(null);
+    const formRef = useRef<ISaveForm>(null);
+    // const toNavigate = useNavigate();
+
+    useEffect(() => {
+
+        if (currentYear) {
+            setValid(true)
+        } else {
+            setValid(false)
+        }
+    }, [isValid, currentYear]);
+
+    const handleAndPbClick = () => {
+        const requestData = formRef?.current?.getData();
+        const officeCode = requestData?.OfficeCode?.name;
+        console.log('clicked Pb', officeCode);
+        // toNavigate(`../NG?officecode=${officeCode}&srno=${sNo}&appname=REV`);
+
+    };
 
     return (
         <PalmyraNewForm endPoint={''} onValidChange={setValid}>
@@ -117,10 +166,20 @@ const PolicyBazaarRender = () => {
                         lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }}
                     />
                 </div>
+                <div className="mx-2.5">
+                    <YearPickerInput
+                        label="Select Year"
+                        placeholder="Select Year"
+                        value={currentYear} valueFormat="YYYY" required
+                        onChange={(date: any) => {
+                            setCurrentYear(date);
+                        }}
+                    />
+                </div>
             </div>
 
             <div className="flex justify-center mt-8">
-                <Button
+                <Button onSubmit={handleAndPbClick}
                     className={isValid ? 'py-filled-button' : 'py-disabled-button'}
                     disabled={!isValid}
                     leftSection={<FaPaperPlane className="text-sm" />}

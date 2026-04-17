@@ -1,6 +1,8 @@
 import { Outlet } from "react-router-dom";
 import PageNotFoundX from "src/common/pages/PageNotFoundX";
+import { CustomViewerPage } from "src/pages/customViewer/CustomViewerPage";
 import PolicySubmissionPage from "src/pages/customViewer/pages/PolicySubmissionPage";
+import { CustomViewerViewPage } from "src/pages/customViewer/view/CustomViewerViewPage";
 import { HomePage } from "src/pages/home/HomePage";
 import { PolicyResultPage } from "src/pages/policyResult/PolicyResultPage";
 
@@ -12,7 +14,7 @@ export const appRoutes = [
         state: "home"
     },
     {
-        path: " ",
+        path: "",
         element: <Outlet />,
         name: "Project",
         state: "project",
@@ -38,6 +40,14 @@ export const appRoutes = [
             {
                 path: 'submission',
                 element: <PolicySubmissionPage />,
+            },
+            {
+                path: 'NG',
+                element: <CustomViewerPage pageName="customViewer" />,
+            },
+            {
+                path: 'operation',
+                element: <CustomViewerViewPage pageName="customViewer" />,
             },
 
         ],

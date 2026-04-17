@@ -5,8 +5,6 @@ import './App.css';
 import { MainLayout } from './common/layout/MainLayout';
 import PageNotFoundX from './common/pages/PageNotFoundX';
 import './Layout.css';
-import { CustomViewerPage } from './pages/customViewer/CustomViewerPage';
-import { CustomViewerViewPage } from './pages/customViewer/view/CustomViewerViewPage';
 import LandingPage from './pages/landingPage/LandingPage';
 import LoginPage from './pages/login/LoginPage';
 import { routes } from './routes';
@@ -25,8 +23,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path='/login' element={<LoginPage />} />
 
-          <Route path='app/CustomViewer/NG' element={<CustomViewerPage pageName="customViewer" />} />
-          <Route path='app/CustomViewer/operation' element={<CustomViewerViewPage pageName="customViewer" />} />
+          {/* <Route path='app/CustomViewer/NG' element={<CustomViewerPage pageName="customViewer" />} />
+          <Route path='app/CustomViewer/operation' element={<CustomViewerViewPage pageName="customViewer" />} /> */}
 
           {/* <Route path='/app/' element={<MainLayout />} >
             <Route path='home' element={<HomePage />} />
