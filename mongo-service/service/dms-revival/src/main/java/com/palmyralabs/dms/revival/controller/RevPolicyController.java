@@ -34,7 +34,9 @@ public class RevPolicyController extends AbstractController {
 			@RequestParam(value = "policyNumber", required = false) String policyNumber,
 			@RequestParam(name = "_limit", defaultValue = "15") int limit,
 			@RequestParam(name = "_offset", defaultValue = "-1") int offset,
-			@RequestParam(name = "_total", defaultValue = "false") boolean includeTotal) {
-		return policyService.searchPolicies(soCode,srNo,policyNumber, limit, offset, includeTotal);
+			@RequestParam(name = "_total", defaultValue = "false") boolean includeTotal,
+			@RequestParam(value = "dos", required = false) String dos,
+			@RequestParam(name = "_orderBy", required = false, defaultValue = "") String orderBy) {
+		return policyService.searchPolicies(soCode,srNo,policyNumber, limit, offset, includeTotal,dos,orderBy);
 	}
 }
