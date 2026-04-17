@@ -1,20 +1,21 @@
 import { PathConfig } from "config/PathConfig";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { BiLogOutCircle } from "react-icons/bi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { LicLogo, TitleConfig } from 'templates/FlexImport';
 import { getStoreFactory } from "wire/StoreFactory";
-import { LicLogo } from 'templates/FlexImport'
-import { TitleConfig } from 'templates/FlexImport';
 
 const Topbar = () => {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const storeFactory = getStoreFactory();
     const path = PathConfig
 
+    const paramsAppName: any = searchParams.get("appname");
     const logoutApi = ServiceEndpoint.auth.logout;
 
+
     const handleLogOut = (event: any) => {
-        navigate(path.login);
         event.stopPropagation();
         const d: any = {};
         storeFactory.getFormStore(d, logoutApi, '').get({}).then(() => {
@@ -30,9 +31,15 @@ const Topbar = () => {
             </div>
             <div className="pr-text font-semibold text-lg">{TitleConfig.appTitle.text}</div>
             <div className='flex text-red-600 items-center gap-2 cursor-pointer' onClick={handleLogOut}>
-                <BiLogOutCircle /> Logout
+                {
+                    !paramsAppName && <>
+                        <BiLogOutCircle /> Logout
+                    </>
+                }
             </div>
+
         </div>
+
     </>
     )
 }
