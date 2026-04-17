@@ -9,6 +9,7 @@ import { PolicySubmitSection } from './PolicySubmitSection';
 import { PolicyViewHeader } from './PolicyViewHeader';
 import { PolicyNotFound } from 'src/common/pages/PolicyNotFound';
 import { GoShieldCheck } from 'react-icons/go';
+import { LuListCollapse } from "react-icons/lu";
 
 const DocumentView = () => {
     const [searchParams] = useSearchParams();
@@ -16,6 +17,7 @@ const DocumentView = () => {
     const appName: any = searchParams.get("appname");
     const appType = appName?.toLowerCase() as "rev" | "and" | "pbv";
 
+    const [toggle, setToggle] = useState<any>(false);
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [policyDataX, setPolicyData] = useState<any[]>([]);
@@ -105,6 +107,10 @@ const DocumentView = () => {
             });
     };
 
+    const handleToggle = () => {
+        setToggle((prev: any) => !prev);
+    }
+
     useEffect(() => {
         handleFetch()
     }, [])
@@ -133,15 +139,26 @@ const DocumentView = () => {
         return <PolicyNotFound />;
     }
 
+
+
     return (<>
         {policyData && Object.keys(policyData).length > 0 ?
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[40%_60%] lg:grid-cols-[31%_69%] xl:grid-cols-[23%_77%] 2xl:grid-cols-[22%_78%]
-        transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-25px)] m-3">
-                <div className="overflow-y-auto bg-gray/5 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-hidden">
+            <div className="flex transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-25px)] m-3">
+                <div className="">
+                    <div
+                        onClick={handleToggle}
+                        className="cursor-pointer bg-white p-1 rounded border border-gray-300 hover:bg-gray-50 transition-colors"
+                    >
+                        <LuListCollapse
+                            className={`transition-transform duration-300 ease-in-out ${toggle ? '' : 'rotate-180'}`}
+                        />
+                    </div>
+                </div>
+                <div className={`overflow-y-auto ${!toggle ? 'w-100' : 'w-0 opacity-0'} transition-all duration-500 ease-in-out  bg-gray/5 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-hidden`}>
                     <PolicySubmitSection policyData={policyData} data={data} policyId={policyData?.id}
                         selectedFile={selectedFile} setSelectedFile={setSelectedFile} type={appName} />
                 </div>
-                <div className="bg-gray-100 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-auto">
+                <div className="bg-gray-100 flex-1 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-auto">
                     <PolicyViewHeader fileName={selectedFile?.pdfFiles?.fileName} />
                     <FileViewer file={selectedFile?.pdfFiles} fileUrl={pdfUrl} key={selectedFile?.pdfFiles?.id} selectedStamp={selectedStamp}
                         stampData={selectedFile} setSelectedFile={setSelectedFile} setSelectedStamps={setSelectedStamps}
