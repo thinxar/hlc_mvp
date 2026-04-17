@@ -3,7 +3,7 @@ import { YearPickerInput } from "@mantine/dates";
 import { ISaveForm, PalmyraNewForm } from "@palmyralabs/rt-forms";
 import { ErrorMsgConfig } from "config/ErrorMsgConfig";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
 import { FaPaperPlane } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +32,27 @@ const PolicySubmissionFrom = (props: submissionProps) => {
 
     const [isValid, setValid] = useState<boolean>(false);
     const [currentYear, setCurrentYear] = useState<any>(null);
+    const [officeCode, setOfficeCode] = useState<any>(null);
+
+
+    const handleCodeChange = (d: any) => {
+        setOfficeCode(d);
+    }
+
+    useEffect(() => {
+        const data = formRef?.current?.getData();
+
+        if (type === 'rev') {
+            const serial = data?.serialNumber?.name;
+            setValid(!!officeCode && !!serial);
+        } else {
+            console.log(!!officeCode && !!currentYear,'hu');
+            
+            setValid(!!officeCode && !!currentYear);
+        }
+    }, [officeCode, currentYear, type]);
+
+
 
     const handleSubmit = () => {
         const requestData = formRef?.current?.getData();
@@ -62,7 +83,7 @@ const PolicySubmissionFrom = (props: submissionProps) => {
                         <ServerLookup
                             required
                             attribute="OfficeCode"
-                            label="Office Code"
+                            label="Office Code" onChange={(d) => handleCodeChange(d)}
                             placeholder="Select OfficeCode"
                             queryOptions={{ endPoint: revLookupEndpoint.officeCode }}
                             invalidMessage={errorMsg.mandatory}
@@ -71,7 +92,7 @@ const PolicySubmissionFrom = (props: submissionProps) => {
 
                         <ServerLookup
                             attribute="serialNumber"
-                            required
+                            required onChange={(d) => handleCodeChange(d)}
                             label="Approver SR"
                             placeholder="Select S.No"
                             invalidMessage={errorMsg.mandatory}
@@ -86,7 +107,7 @@ const PolicySubmissionFrom = (props: submissionProps) => {
                     <>
                         <ServerLookup
                             attribute="OfficeCode"
-                            required
+                            required onChange={(d) => handleCodeChange(d)}
                             label="Office Code"
                             placeholder="Select OfficeCode"
                             invalidMessage={errorMsg.mandatory}
@@ -102,7 +123,6 @@ const PolicySubmissionFrom = (props: submissionProps) => {
                                 valueFormat="YYYY"
                                 onChange={(date: any) => {
                                     setCurrentYear(date);
-                                    setValid(!!date);
                                 }}
                             />
                         </div>
@@ -114,7 +134,7 @@ const PolicySubmissionFrom = (props: submissionProps) => {
                     <>
                         <ServerLookup
                             attribute="OfficeCode"
-                            required
+                            required onChange={(d) => handleCodeChange(d)}
                             label="Office Code"
                             placeholder="Select OfficeCode"
                             invalidMessage={errorMsg.mandatory}
@@ -130,7 +150,6 @@ const PolicySubmissionFrom = (props: submissionProps) => {
                                 valueFormat="YYYY"
                                 onChange={(date: any) => {
                                     setCurrentYear(date);
-                                    setValid(!!date);
                                 }}
                             />
                         </div>
@@ -178,7 +197,7 @@ const PolicySubmissionFrom = (props: submissionProps) => {
                     <PalmyraNewForm
                         ref={formRef}
                         endPoint={''}
-                        onValidChange={setValid}
+                        // onValidChange={setValid}
                     >
                         <div className="">
                             {renderFormFields()}
