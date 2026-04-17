@@ -1,19 +1,20 @@
 import { PathConfig } from "config/PathConfig";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { BiLogOutCircle } from "react-icons/bi";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { LicLogo, TitleConfig } from 'templates/FlexImport';
 import { getStoreFactory } from "wire/StoreFactory";
 
 const Topbar = () => {
+
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
+    const pathName = useLocation();
     const storeFactory = getStoreFactory();
     const path = PathConfig
 
-    const paramsAppName: any = searchParams.get("appname");
+    const currentPath = pathName.pathname;
+    const isShowLogout = currentPath.includes("customViewer");
     const logoutApi = ServiceEndpoint.auth.logout;
-
 
     const handleLogOut = (event: any) => {
         event.stopPropagation();
@@ -32,7 +33,7 @@ const Topbar = () => {
             <div className="pr-text font-semibold text-lg">{TitleConfig.appTitle.text}</div>
             <div className='flex text-red-600 items-center gap-2 cursor-pointer' onClick={handleLogOut}>
                 {
-                    !paramsAppName && <>
+                    !isShowLogout && <>
                         <BiLogOutCircle /> Logout
                     </>
                 }
