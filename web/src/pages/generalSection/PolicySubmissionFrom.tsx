@@ -27,7 +27,7 @@ const RevivalRender = () => {
         const requestData = formRef?.current?.getData();
         const sNo = requestData?.serialNumber?.name;
         const officeCode = requestData?.OfficeCode?.name;
-        
+
         toNavigate(`../NG?officecode=${officeCode}&srno=${sNo}&appname=REV`);
     };
 
@@ -152,28 +152,28 @@ const PolicySubmissionFrom = (props: submissionProps) => {
                     <BiArrowBack className="" />
                 </div>
             </div>
-            <div className="text-gray-800 text-3xl font-semibold ">
-                Submission for <span className="text-red-500"> {policyUser || ''} </span>
+            <div className="text-center mb-1">
+                <h1 className="text-3xl font-semibold text-gray-900 tracking-tight">
+                    Policy {policyUser || ''}
+                </h1>
+                <p className="text-gray-400 mt-2 text-sm max-w-xs mx-auto leading-relaxed">
+                    Locate an asset by branch and serial number to access its full policy history
+                </p>
             </div>
-            <div className="bg-blue-200/90 shadow-lg rounded-xl p-4 py-3 min-w-lg">
-                <div className="p-3 mb-1 text-center ">
-                    <div className="flex flex-col items-center mb-1 justify-center ">
-                        <div className="text-2xl text-center font-bold ">
-                            Asset Lookup
-                        </div>
-                        <div className="text-[13px] text-slate-600">
-                            Select a Office Code and Serial Number to view detailed unit history
+            <div className="w-full max-w-md bg-white border border-gray-100 rounded-2xl shadow-sm shadow-gray-100 overflow-hidden">
+                <div className="bg-linear-to-r from-blue-800 to-blue-700 px-6 py-5">
+                    <h2 className="text-white font-semibold text-base">Policy Search</h2>
+                    <p className="text-slate-300 text-xs mt-0.5">Select office and unit serial to view history</p>
+                </div>
+
+                <div className="p-4 space-y-5">
+                    <div>
+                        <div className="pb-4">
+                            {formMap[type]}
                         </div>
                     </div>
-
-                </div>
-                <div className="pb-4">
-                    {formMap[type]}
                 </div>
             </div>
-
-
-
         </div >
     )
 }
