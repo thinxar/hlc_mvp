@@ -2,8 +2,8 @@ import { useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaFileCircleXmark } from "react-icons/fa6";
 import { FiFileText } from "react-icons/fi";
-import { PolicyFileItemList } from "./PolicyFileItemList";
 import { MdOutlinePendingActions } from "react-icons/md";
+import { PolicyFileItemList } from "./PolicyFileItemList";
 
 interface FileProps {
     data: any,
@@ -84,36 +84,35 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
     };
 
     return (<>
-        <div className="flex items-center justify-between bg-[#004C97] p-2 rounded-t-lg">
-            <div className="flex items-center gap-3 text-white text-sm">
-
-                <div className="flex items-center gap-1">
-                    <FiFileText className="w-4 h-4 opacity-80" />
-                    <div className="text-xs">
-                        <span>Docs:</span>
-                        <span className="font-bold">{totalDocs}</span>
+        <div className="flex items-center justify-between p-2 rounded-t-lg ">
+            <div className="flex items-center gap-3 text-sm ">
+                <div className="flex items-center gap-1 bg-green-100 p-1 px-1.5 rounded-lg">
+                    <FiFileText className="w-4 h-4 opacity-80 text-green-700/90" />
+                    <div className="text-xs flex gap-1">
+                        <span className="text-xs text-gray-600">Docs</span>
+                        <span className="text-xs font-semibold text-green-700">{totalDocs}</span>
                     </div>
                 </div>
                 <span className="opacity-40">|</span>
-                <div className="flex items-center gap-1">
-                    <FaEye className="w-4 h-4 opacity-80" />
-                    <div className="text-xs">
-                        <span>Viewed:</span>
-                        <span className="font-bold">{viewedDocs}</span>
+                <div className="flex items-center gap-1 bg-blue-100 p-1 px-1.5 rounded-lg">
+                    <FaEye className="w-4 h-4 opacity-80 text-blue-700" />
+                    <div className="text-xs flex gap-1">
+                        <span className="text-xs text-gray-600">Read</span>
+                        <span className="text-xs font-semibold text-blue-700">{viewedDocs}</span>
                     </div>
                 </div>
                 <span className="opacity-40">|</span>
-                <div className="flex items-center gap-1">
-                    <MdOutlinePendingActions className="w-4 h-4 opacity-80" />
-                    <div className="text-xs">
-                        <span>Pending:</span>
-                        <span className="font-bold">{pendingDocs}</span>
+                <div className="flex items-center gap-1 bg-yellow-100/90 p-1 px-1.5 rounded-lg">
+                    <MdOutlinePendingActions className="w-4 h-4 opacity-80 text-yellow-600" />
+                    <div className="text-xs flex gap-1">
+                        <span className="text-xs text-gray-600">Unread</span>
+                        <span className="text-xs font-semibold text-yellow-700">{pendingDocs}</span>
                     </div>
                 </div>
             </div>
 
             {(data.length > 0 && type === 'REV') &&
-                <button onClick={handleSelectAll} className="text-xs cursor-pointer font-bold text-white hover:underline">
+                <button onClick={handleSelectAll} className="text-xs cursor-pointer font-bold text-blue-700 hover:underline">
                     {selectedFileIds.length === data.length ? 'Deselect All' : 'Select All'}
                 </button>}
         </div>

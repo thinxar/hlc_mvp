@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { FaEye } from "react-icons/fa";
-import { FiClock, FiLock } from "react-icons/fi";
+import { FaEye, FaUserCheck } from "react-icons/fa";
+import { FiLock } from "react-icons/fi";
 import { MdOutlineVideoLibrary } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { LicLogo } from 'templates/FlexImport';
@@ -12,7 +12,7 @@ const appData = [
         title: "Revival",
         path: '/app/customViewer/submission',
         description: "New Document Verification Queue",
-        icon: FiClock,
+        icon: FaUserCheck,
         accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
         btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
@@ -65,7 +65,7 @@ export default function LandingPage() {
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-start px-6 py-16 relative overflow-hidden 
-                        bg-linear-to-br from-[#eef2ff] via-[#f8fafc] to-[#e0f2fe] group">
+                        bg-linear-to-br from-[#eef2ff] via-[#f8fafc] to-[#e0f2fe]">
 
             <div className="absolute top-20 left-20 w-[400px] h-[400px] bg-blue-300/30 rounded-full blur-[120px] animate-pulse" />
             <div className="absolute bottom-[-100px] right-[-100px] w-[450px] h-[450px] bg-purple-300/30 rounded-full blur-[140px] animate-pulse" />

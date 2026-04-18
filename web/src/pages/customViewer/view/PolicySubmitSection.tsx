@@ -98,7 +98,7 @@ const PolicySubmitSection = (props: policyData) => {
                         </div>
                     </div>
 
-                    <div className="border-b border-dashed border-gray-200 pb-1 mb-3" />
+                    <div className="border-b border-dashed border-gray-400/60 pb-1 mb-3" />
 
                     <div className='rounded'>
                         <PolicyFileViewer data={data} policyId={policyId}
