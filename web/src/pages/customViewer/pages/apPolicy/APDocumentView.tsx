@@ -134,7 +134,6 @@ const APDocumentView = () => {
         });
 
         const sub = topic.subscribe('proposalNo', (_t: string, data: string) => {
-
             if (data) {
                 setProposalNo(data)
             }
@@ -154,12 +153,15 @@ const APDocumentView = () => {
         );
     }
 
+    const propNoFromUrl: any = searchParams.get("propno");
+
     if (!policyData && Object.keys(policyData).length > 0) {
-        return <PolicyNotFound />;
+        return <PolicyNotFound proposalNo={propNoFromUrl} />;
     }
+    const hasPolicyData = policyData && Object.keys(policyData).length > 0;
 
     return (<>
-        {policyData && Object.keys(policyData).length > 0 ?
+        {hasPolicyData ?
             <div className="flex gap-4 px-5 mx-auto w-full h-[calc(100vh-25px)] m-3">
                 <div className="">
                     <div onClick={handleToggle}
@@ -183,7 +185,7 @@ const APDocumentView = () => {
                 </div>
             </div> :
             <>
-                <PolicyNotFound />
+                <PolicyNotFound proposalNo={propNoFromUrl} />
             </>}
     </>);
 }

@@ -1,15 +1,14 @@
 import { StringFormat, topic } from '@palmyralabs/ts-utils';
 import { ServiceEndpoint } from 'config/ServiceEndpoint';
 import { useEffect, useState } from 'react';
+import { LuListCollapse } from "react-icons/lu";
 import { useLocation, useSearchParams } from 'react-router-dom';
+import { PolicyNotFound } from 'src/common/pages/PolicyNotFound';
 import { FileViewer } from 'src/pages/policySearch/section/FileViewer';
 import { handleError } from 'wire/ErrorHandler';
 import { useFormstore } from 'wire/StoreFactory';
 import { PolicySubmitSection } from './PolicySubmitSection';
 import { PolicyViewHeader } from './PolicyViewHeader';
-import { PolicyNotFound } from 'src/common/pages/PolicyNotFound';
-import { GoShieldCheck } from 'react-icons/go';
-import { LuListCollapse } from "react-icons/lu";
 
 const DocumentView = () => {
     const [searchParams] = useSearchParams();
@@ -130,7 +129,7 @@ const DocumentView = () => {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-[80vh]">
-                <Loader />
+                {/* <Loader /> */}
             </div>
         );
     }
@@ -175,24 +174,24 @@ export { DocumentView };
 
 
 
-const Loader = () => (
-    <div className="flex flex-col items-center justify-center gap-6">
-        <div className="relative">
-            <div className="w-20 h-20 rounded-full border-4 border-slate-100 border-t-indigo-600 animate-spin" />
+// const Loader = () => (
+//     <div className="flex flex-col items-center justify-center gap-6">
+//         <div className="relative">
+//             <div className="w-20 h-20 rounded-full border-4 border-slate-100 border-t-indigo-600 animate-spin" />
 
-            <div className="absolute inset-0 flex items-center justify-center text-indigo-600 animate-pulse">
-                <GoShieldCheck size={32} />
-            </div>
-        </div>
+//             <div className="absolute inset-0 flex items-center justify-center text-indigo-600 animate-pulse">
+//                 <GoShieldCheck size={32} />
+//             </div>
+//         </div>
 
-        <div className="text-center space-y-2">
-            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Securing Your Data</h3>
-            <div className="flex items-center justify-center gap-1.5">
-                <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce" />
-            </div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest pt-2">Processing Policy Request</p>
-        </div>
-    </div>
-);
+//         <div className="text-center space-y-2">
+//             <h3 className="text-lg font-bold text-slate-900 tracking-tight">Securing Your Data</h3>
+//             <div className="flex items-center justify-center gap-1.5">
+//                 <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce [animation-delay:-0.3s]" />
+//                 <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce [animation-delay:-0.15s]" />
+//                 <div className="w-1.5 h-1.5 bg-indigo-600 rounded-full animate-bounce" />
+//             </div>
+//             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest pt-2">Processing Policy Request</p>
+//         </div>
+//     </div>
+// );

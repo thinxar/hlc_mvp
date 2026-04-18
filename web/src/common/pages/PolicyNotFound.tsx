@@ -2,7 +2,11 @@ import { BiSearch } from "react-icons/bi"
 import { MdClose } from "react-icons/md"
 import { useSearchParams } from "react-router-dom";
 
-const PolicyNotFound = () => {
+interface IOptions {
+    proposalNo?: string
+}
+const PolicyNotFound = (props: IOptions) => {
+    const { proposalNo } = props;
     const [searchParams] = useSearchParams();
     const appName = searchParams.get("appname");
 
@@ -48,8 +52,10 @@ const PolicyNotFound = () => {
                             </div>
                             <div className="h-1 w-20 bg-indigo-600 mx-auto rounded-full mb-6"></div>
                             <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-sm mx-auto">
-                                Click a proposal number to view.
-                                Associated documents will display below.
+                                {proposalNo
+                                    ? `No documents found for proposal number ${proposalNo}.`
+                                    : "Click a proposal number to view. Associated documents will display below."
+                                }
                             </p>
                         </div>
                     </div>

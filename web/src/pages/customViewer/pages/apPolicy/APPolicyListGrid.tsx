@@ -42,8 +42,6 @@ const APPolicyListGrid = (props: IOptions) => {
     }
 
     const onRowClick = (d: any) => {
-        console.log(d?.proposalNo);
-        
         topic.publish('proposalNo', d?.proposalNo)
     };
 
