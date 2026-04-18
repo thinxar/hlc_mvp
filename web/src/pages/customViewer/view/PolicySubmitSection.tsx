@@ -74,7 +74,9 @@ const PolicySubmitSection = (props: policyData) => {
                     <div className="space-y-3">
                         <div className="flex items-center justify-between bg-[#004C97] p-2 mb-0">
                             <div className='flex items-center gap-2'>
-                                <h2 className="text-sm font-bold text-white ml-1">Policy Overview</h2>
+                                <h2 className="text-sm font-bold text-white ml-1">
+                                    {type == 'REV' ? 'Policy Overview' : `${'Proposal No'}/${policyData?.proposalNo}`}
+                                </h2>
                             </div>
                             {(type === "REV") &&
                                 <button

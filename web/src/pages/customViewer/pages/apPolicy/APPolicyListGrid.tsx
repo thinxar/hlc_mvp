@@ -45,9 +45,10 @@ const APPolicyListGrid = (props: IOptions) => {
         topic.publish('proposalNo', d?.proposalNo)
     };
 
+    const title = type == 'and' ? 'Ananda' : 'Policy Bazaar';
     return (
         <div className="grid-container policy-grid bg-white">
-            <PalmyraGrid  onRowClick={onRowClick}
+            <PalmyraGrid onRowClick={onRowClick} title={title}
                 columns={fields} pageSize={[15, 30, 45]}
                 getPluginOptions={getPluginOptions}
                 ref={gridRef} pagination={{ ignoreSinglePage: true }}
