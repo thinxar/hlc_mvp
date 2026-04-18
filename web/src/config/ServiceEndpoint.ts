@@ -85,6 +85,10 @@ const ServiceEndpoint = {
             Lookup: {
                 officeCode: '/masterdata/rev/officeCode',
                 serialNo: '/masterdata/rev/srNo'
+            },
+            chart:{
+                approvalSummary:'/rev/policy/file/summary',
+                docPendency:'/rev/policy/pendency/summary'
             }
         },
         and: {

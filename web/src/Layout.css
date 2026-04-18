@@ -310,7 +310,7 @@ pre {
 
 /* -- py -- */
 .py-grid-data-row-even {
-  background-color: rgba(var(--dark-color-rgb), 0.02);
+  background-color: rgba(var(--dark-color-rgb), 0.03) !important;
 }
 
 .py-grid-data-row:hover {

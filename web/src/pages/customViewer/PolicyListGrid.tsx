@@ -68,7 +68,7 @@ const PolicyListGrid = (props: IOptions) => {
         {
             attribute: "soCode",
             name: "soCode",
-            label: "Office Code",
+            label: "Office Code (SO/BO)",
             searchable: true,
             type: "string"
         },

@@ -46,8 +46,6 @@ const PolicySubmissionFrom = (props: submissionProps) => {
             const serial = data?.serialNumber?.name;
             setValid(!!officeCode && !!serial);
         } else {
-            console.log(!!officeCode && !!currentYear,'hu');
-            
             setValid(!!officeCode && !!currentYear);
         }
     }, [officeCode, currentYear, type]);

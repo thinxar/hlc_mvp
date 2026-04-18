@@ -16,13 +16,12 @@ const Gutter = ({ children }: GutterProps) => {
   return (
     <div className="w-full mx-auto transition-all duration-300
       max-w-[95vw] 
-      md:max-w-[80vw] 
-      xl:max-w-[75vw]">
+      md:max-w-[90vw] ">
       {children}
     </div>
   )
 }
-
+``
 export default Gutter
 
 

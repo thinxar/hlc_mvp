@@ -9,7 +9,7 @@ interface Props {
 const PolicyList = ({ data }: Props) => {
     const navigate = useNavigate();
 
-    return (<div className="max-w-7xl mx-auto p-8 bg-gradient-to-br from-white/30 to-white/10 backdrop-blur-xl rounded-3xl shadow-xl h-full overflow-y-auto">
+    return (<div className="max-w-7xl mx-auto p-8 bg-linear-to-br from-white/30 to-white/10 backdrop-blur-xl rounded-3xl shadow-xl h-full overflow-y-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {data.map((file: any, index: number) => (
                 <div key={file.id} className="group bg-white/60 hover:bg-white/80 transition-all

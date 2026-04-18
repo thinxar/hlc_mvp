@@ -6,13 +6,16 @@ import App from './App.tsx'
 import { MantineProvider } from '@mantine/core';
 import AppStoreFactory from './wire/StoreFactory.ts'
 import { ToastContainer } from 'react-toastify'
+import { ChartStoreFactoryContext } from '@palmyralabs/rt-apexchart'
 
 createRoot(document.getElementById('root')!).render(
   // <StrictMode>
   <MantineProvider>
     <StoreFactoryContext.Provider value={AppStoreFactory}>
-      <App />
-      <ToastContainer limit={1} pauseOnFocusLoss={false} autoClose={2000} />
+      <ChartStoreFactoryContext.Provider value={AppStoreFactory} >
+        <App />
+        <ToastContainer limit={1} pauseOnFocusLoss={false} autoClose={2000} />
+      </ChartStoreFactoryContext.Provider>
     </StoreFactoryContext.Provider>
   </MantineProvider>
   // </StrictMode>,
