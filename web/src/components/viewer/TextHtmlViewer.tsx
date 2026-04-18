@@ -180,7 +180,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
   return (
     <div className="p-5 w-full h-full overflow-y-auto">
       <div className="flex justify-between mb-3 items-center">
-        <strong>{file.fileName}</strong>
+        {/* <strong>{file.fileName}</strong> */}
         {
           stampDataArr?.length > 0 && <div>
             <button onClick={saveOverlays} className='cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-linear-to-r pr-bgcolor text-white

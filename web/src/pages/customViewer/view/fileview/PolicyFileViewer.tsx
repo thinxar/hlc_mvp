@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FaEye } from "react-icons/fa";
 import { FaFileCircleXmark } from "react-icons/fa6";
 import { FiFileText } from "react-icons/fi";
@@ -50,36 +50,61 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
         );
     };
 
+    const statusPriority: Record<string, number> = {
+        pending: 1,
+        approved: 2,
+        rejected: 3,
+    };
+
     const groupedByDocketType = data.reduce((acc: any, item: any) => {
         const type = item.pdfFiles?.docketType?.document || '--';
-
-        const fileName = item.pdfFiles?.fileName;
 
         if (!acc[type]) {
             acc[type] = [];
         }
 
-        if (fileName.toLowerCase().includes("bond") || fileName.toLowerCase().includes("proposal")) {
-            acc[type].unshift(item);
-        } else {
-            acc[type].push(item);
-        }
+        acc[type].push(item);
 
-        acc[type].sort(
-            (a: any, b: any) =>
-                new Date(b.pdfFiles.date).getTime() - new Date(a.pdfFiles.date).getTime()
-        );
+        acc[type].sort((a: any, b: any) => {
+            const statusA = a.pdfFiles?.status?.toLowerCase() || '';
+            const statusB = b.pdfFiles?.status?.toLowerCase() || '';
+
+            const priorityA = statusPriority[statusA] ?? 99;
+            const priorityB = statusPriority[statusB] ?? 99;
+
+            if (priorityA !== priorityB) {
+                return priorityA - priorityB;
+            }
+
+            return (
+                new Date(b.pdfFiles.date).getTime() -
+                new Date(a.pdfFiles.date).getTime()
+            );
+        });
+
         return acc;
     }, {});
 
     const docketTypes = Object.keys(groupedByDocketType);
 
+    const pendingIds = useMemo(() => {
+        const ids: number[] = [];
+
+        for (let i = 0; i < data.length; i++) {
+            const file = data[i]?.pdfFiles;
+            if (file?.status === 'pending') {
+                ids.push(file.id);
+            }
+        }
+
+        return ids;
+    }, [data]);
+
     const handleSelectAll = () => {
-        if (selectedFileIds.length === data.length) {
+        if (selectedFileIds.length === pendingIds.length) {
             setSelectedFileIds([]);
         } else {
-            const ids = data.map((f: any) => f.pdfFiles.id);
-            setSelectedFileIds(ids);
+            setSelectedFileIds(pendingIds);
         }
     };
 
@@ -113,7 +138,7 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
 
             {(data.length > 0 && type === 'REV') &&
                 <button onClick={handleSelectAll} className="text-xs cursor-pointer font-bold text-blue-700 hover:underline">
-                    {selectedFileIds.length === data.length ? 'Deselect All' : 'Select All'}
+                    {selectedFileIds.length === pendingIds.length ? 'Deselect All' : 'Select All'}
                 </button>}
         </div>
 

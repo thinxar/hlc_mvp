@@ -1,10 +1,10 @@
-import { Modal, Select } from '@mantine/core';
+import { Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { topic } from '@palmyralabs/ts-utils';
 import { ServiceEndpoint } from 'config/ServiceEndpoint';
 import { fieldConfig } from 'config/TitleConfig';
-import React, { useState } from 'react';
-import { FiArrowLeft, FiCheckCircle, FiClock, FiInfo, FiXCircle } from 'react-icons/fi';
+import { useMemo, useState } from 'react';
+import { FiArrowLeft, FiCheck, FiInfo, FiX } from 'react-icons/fi';
 import { SubmissionModal } from 'src/common/component/SubmissionModal';
 import { handleError } from 'wire/ErrorHandler';
 import { useFormstore } from 'wire/StoreFactory';
@@ -23,16 +23,28 @@ const PolicySubmitSection = (props: policyData) => {
     const { policyData, data, policyId, selectedFile, setSelectedFile, type } = props;
     const [selectedFileIds, setSelectedFileIds] = useState<number[]>([]);
 
-    const [status, setStatus] = useState<any>('pending');
-    const [isSubmitted, setIsSubmitted] = useState(false);
     const [opened, { open, close }] = useDisclosure(false);
-
     const submitApi = ServiceEndpoint.customView.submitApi;
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+    const selectedFileNames = useMemo(() => {
+        const idSet = new Set(selectedFileIds);
+        return data
+            .filter((item: any) => idSet.has(item?.pdfFiles?.id))
+            .map((item: any) => ({
+                id: item.pdfFiles?.id,
+                fileName: item.pdfFiles?.fileName
+            }));
+
+    }, [data, selectedFileIds]);
+
+    const handleRemove = (id: number) => {
+        setSelectedFileIds((prev: number[]) =>
+            prev.filter((itemId) => itemId !== id)
+        );
+    };
+
+    const handleSubmit = (status: 'approved' | 'rejected') => {
         open();
-        setIsSubmitted(true);
 
         const payload = {
             policyId: policyId,
@@ -45,26 +57,7 @@ const PolicySubmitSection = (props: policyData) => {
             topic.publish("fileUpload", "fileUpload")
         }).catch(handleError)
 
-        setTimeout(() => setIsSubmitted(false), 3000);
     };
-
-    const statusOptions: any = [
-        {
-            value: "pending",
-            label: "Pending",
-            icon: <FiClock size={16} />,
-        },
-        {
-            value: "rejected",
-            label: "Reject",
-            icon: <FiXCircle size={16} />,
-        },
-        {
-            value: "approved",
-            label: "Approve",
-            icon: <FiCheckCircle size={16} />,
-        },
-    ];
 
     return (
         <div>
@@ -74,9 +67,7 @@ const PolicySubmitSection = (props: policyData) => {
                     <div className="space-y-3">
                         <div className="flex items-center justify-between bg-[#004C97] p-2 mb-0">
                             <div className='flex items-center gap-2'>
-                                <h2 className="text-sm font-bold text-white ml-1">
-                                    {type == 'REV' ? 'Policy Overview' : `${'Proposal No'}/${policyData?.proposalNo}`}
-                                </h2>
+                                <h2 className="text-sm font-bold text-white ml-1">Policy Overview</h2>
                             </div>
                             {(type === "REV") &&
                                 <button
@@ -111,42 +102,70 @@ const PolicySubmitSection = (props: policyData) => {
                     {type === "REV" && <>
                         <div className="border-b border-dashed border-gray-200 pb-1 mb-3" />
                         <div className="mx-2">
-                            <form onSubmit={handleSubmit} className="space-y-4 pb-3">
+                            <div className="space-y-4 pb-3">
                                 <div className="space-y-2">
                                     <div className='flex justify-between items-center'>
-                                        <h2 className="text-sm font-bold text-gray-500">Selected Documents</h2>
+                                        <h2 className="text-sm font-bold text-gray-800 ml-1">
+                                            {type == 'REV' ? 'Policy Overview' : `${'Proposal No'}/${policyData?.proposalNo}`}
+                                        </h2>
                                         <div className="flex items-center justify-between">
                                             <span className="px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-full">
                                                 {selectedFileIds.length} {selectedFileIds.length === 1 ? 'Doc' : 'Docs'}
                                             </span>
                                         </div>
                                     </div>
+                                </div>
+                                <div className="max-h-20 overflow-y-scroll" >
+                                    <div className="flex flex-wrap gap-2 mb-2">
+                                        {selectedFileNames.map((file: any) => (
+                                            <span
+                                                key={file?.id}
+                                                className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-md"
+                                            >
+                                                {file?.fileName}
 
-                                    <div className="space-y-2">
-                                        <div className="relative">
-                                            <Select allowDeselect={false}
-                                                label="Status"
-                                                value={status} checkIconPosition="right"
-                                                onChange={setStatus}
-                                                data={statusOptions}
-                                            />
-                                        </div>
+                                                <button onClick={() => handleRemove(file.id)}
+                                                    className="ml-1 text-gray-500 hover:text-red-600 transition-colors cursor-pointer"
+                                                >
+                                                    ✕
+                                                </button>
+                                            </span>
+                                        ))}
                                     </div>
                                 </div>
+                                <div className="flex gap-3 mx-1">
+                                    <button
+                                        onClick={() => handleSubmit('rejected')}
+                                        disabled={selectedFileIds.length === 0}
+                                        className={`w-full cursor-pointer py-2 rounded-xl font-semibold  shadow-md 
+                                                      flex items-center justify-center gap-2
+                                                      transition-all duration-200 ease-in-out
+                                                      ${selectedFileIds.length === 0
+                                                ? 'bg-gray-300 cursor-not-allowed opacity-70'
+                                                : 'bg-red-100/90 text-red-700 hover:text-white hover:bg-red-500/80 hover:shadow-xl active:scale-95'
+                                            }`}
+                                    >
+                                        <FiX className="w-4 h-4" />
+                                        Reject
+                                    </button>
 
-                                <button
-                                    type="submit"
-                                    disabled={selectedFileIds.length === 0}
-                                    className={`cursor-pointer
-                  w-full py-2.5 rounded-xl font-bold text-white shadow-lg transition-all flex items-center justify-center gap-2
-                  ${selectedFileIds.length === 0
-                                            ? 'bg-gray-300 cursor-not-allowed'
-                                            : 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98]'}
-                `}
-                                >
-                                    {isSubmitted ? <FiCheckCircle className="w-6 h-6" /> : 'Submit'}
-                                </button>
-                            </form>
+                                    <button
+                                        onClick={() => handleSubmit('approved')}
+                                        disabled={selectedFileIds.length === 0}
+                                        className={`w-full cursor-pointer py-2 rounded-xl font-semibold  shadow-md
+                                                     flex items-center justify-center gap-2
+                                                     transition-all duration-200 ease-in-out
+                                                     ${selectedFileIds.length === 0
+                                                ? 'bg-gray-300 cursor-not-allowed opacity-70'
+                                                : 'bg-green-100/90 text-green-700 hover:text-white hover:bg-green-600/80 hover:shadow-xl active:scale-95'
+                                            }`}
+                                    >
+                                        <FiCheck className="w-4 h-4" />
+                                        Approve
+                                    </button>
+                                </div>
+
+                            </div>
                         </div>
                     </>}
                 </div>
