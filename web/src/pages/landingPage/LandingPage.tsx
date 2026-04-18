@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { FaEye } from "react-icons/fa";
+import { FiClock, FiLock } from "react-icons/fi";
+import { MdOutlineVideoLibrary } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { LicLogo } from 'templates/FlexImport';
 import { storePolicyInfo } from "utils/LocalStorageInfo";
@@ -9,7 +12,7 @@ const appData = [
         title: "Revival",
         path: 'app/customViewer/submission',
         description: "New Document Verification Queue",
-        icon: "✦",
+        icon: FiClock,
         accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
         btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
@@ -20,7 +23,7 @@ const appData = [
         title: "Ananda",
         path: 'app/customViewer/submission',
         description: "Read Only Document CDV i.e. without Accept/Reject Functionality",
-        icon: "◈",
+        icon: FaEye,
         accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
         btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
@@ -31,7 +34,7 @@ const appData = [
         title: "Policy Bazaar",
         path: 'app/customViewer/submission',
         description: "Read Only Document and Video CDV",
-        icon: "⬡",
+        icon: MdOutlineVideoLibrary,
         accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
         btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
@@ -42,7 +45,7 @@ const appData = [
         title: "Policy Documents",
         path: '/login',
         description: "Enter your credentials to access your account",
-        icon: "⊕",
+        icon: FiLock,
         accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
         btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
@@ -61,18 +64,18 @@ export default function LandingPage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-start px-6 py-16 bg-gray-50 relative overflow-hidden">
+        <div className="min-h-screen flex flex-col items-center justify-start px-6 py-16 relative overflow-hidden 
+                        bg-linear-to-br from-[#eef2ff] via-[#f8fafc] to-[#e0f2fe] group">
 
-            <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-violet-200 rounded-full blur-[120px] opacity-40" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-sky-200 rounded-full blur-[120px] opacity-40" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] bg-indigo-100 rounded-full blur-[80px] opacity-40" />
+            <div className="absolute top-[-80px] left-[-80px] w-[400px] h-[400px] bg-blue-300/30 rounded-full blur-[120px] animate-pulse" />
+            <div className="absolute bottom-[-100px] right-[-100px] w-[450px] h-[450px] bg-purple-300/30 rounded-full blur-[140px] animate-pulse" />
+            <div className="absolute top-[40%] left-[50%] -translate-x-1/2 w-[500px] h-[250px] bg-cyan-200/30 rounded-full blur-[100px]" />
 
-            <div
-                className="absolute inset-0 opacity-[0.05]"
+            <div className="absolute inset-0 opacity-[0.03]"
                 style={{
                     backgroundImage:
-                        "linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px)",
-                    backgroundSize: "40px 40px",
+                        "linear-gradient(rgba(0,0,0,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.15) 1px, transparent 1px)",
+                    backgroundSize: "60px 60px",
                 }}
             />
 
@@ -109,7 +112,7 @@ export default function LandingPage() {
                             <div
                                 className={`w-11 h-11 rounded-xl flex items-center justify-center text-xl bg-linear-to-br ${mod.accent} shadow`}
                             >
-                                <span className="text-white">{mod.icon}</span>
+                                <span className="text-white">{<mod.icon />}</span>
                             </div>
                         </div>
 

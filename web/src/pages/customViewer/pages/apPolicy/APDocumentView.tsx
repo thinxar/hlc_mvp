@@ -160,7 +160,7 @@ const APDocumentView = () => {
 
     return (<>
         {policyData && Object.keys(policyData).length > 0 ?
-            <div className="flex transition-all duration-300 ease-in-out gap-4 px-5 mx-auto w-full h-[calc(100vh-25px)] m-3">
+            <div className="flex gap-4 px-5 mx-auto w-full h-[calc(100vh-25px)] m-3">
                 <div className="">
                     <div onClick={handleToggle}
                         className="cursor-pointer bg-white p-1 rounded border border-gray-300 hover:bg-gray-50 transition-colors"

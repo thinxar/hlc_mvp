@@ -3,6 +3,7 @@ import { FaEye } from "react-icons/fa";
 import { FaFileCircleXmark } from "react-icons/fa6";
 import { FiFileText } from "react-icons/fi";
 import { PolicyFileItemList } from "./PolicyFileItemList";
+import { MdOutlinePendingActions } from "react-icons/md";
 
 interface FileProps {
     data: any,
@@ -19,6 +20,7 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
 
     const totalDocs = data.length;
     const viewedDocs = clickedFileId.size;
+    const pendingDocs = totalDocs - viewedDocs;
 
     const handleFileClick = (file: any) => {
 
@@ -87,14 +89,26 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
 
                 <div className="flex items-center gap-1">
                     <FiFileText className="w-4 h-4 opacity-80" />
-                    <span>Docs:</span>
-                    <span className="font-bold">{totalDocs}</span>
+                    <div className="text-xs">
+                        <span>Docs:</span>
+                        <span className="font-bold">{totalDocs}</span>
+                    </div>
                 </div>
                 <span className="opacity-40">|</span>
                 <div className="flex items-center gap-1">
                     <FaEye className="w-4 h-4 opacity-80" />
-                    <span>Viewed:</span>
-                    <span className="font-bold">{viewedDocs}</span>
+                    <div className="text-xs">
+                        <span>Viewed:</span>
+                        <span className="font-bold">{viewedDocs}</span>
+                    </div>
+                </div>
+                <span className="opacity-40">|</span>
+                <div className="flex items-center gap-1">
+                    <MdOutlinePendingActions className="w-4 h-4 opacity-80" />
+                    <div className="text-xs">
+                        <span>Pending:</span>
+                        <span className="font-bold">{pendingDocs}</span>
+                    </div>
                 </div>
             </div>
 
