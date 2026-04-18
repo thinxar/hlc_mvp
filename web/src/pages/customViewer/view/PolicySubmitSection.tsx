@@ -1,12 +1,10 @@
-import { Modal } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { topic } from '@palmyralabs/ts-utils';
 import { ServiceEndpoint } from 'config/ServiceEndpoint';
 import { fieldConfig } from 'config/TitleConfig';
 import { useMemo, useState } from 'react';
 import { FiArrowLeft, FiCheck, FiInfo, FiX } from 'react-icons/fi';
-import { SubmissionModal } from 'src/common/component/SubmissionModal';
 import { handleError } from 'wire/ErrorHandler';
+import { Toast } from 'wire/errorToast';
 import { useFormstore } from 'wire/StoreFactory';
 import { PolicyFileViewer } from './fileview/PolicyFileViewer';
 
@@ -21,9 +19,9 @@ interface policyData {
 
 const PolicySubmitSection = (props: policyData) => {
     const { policyData, data, policyId, selectedFile, setSelectedFile, type } = props;
+
     const [selectedFileIds, setSelectedFileIds] = useState<number[]>([]);
 
-    const [opened, { open, close }] = useDisclosure(false);
     const submitApi = ServiceEndpoint.customView.submitApi;
 
     const selectedFileNames = useMemo(() => {
@@ -44,8 +42,6 @@ const PolicySubmitSection = (props: policyData) => {
     };
 
     const handleSubmit = (status: 'approved' | 'rejected') => {
-        open();
-
         const payload = {
             policyId: policyId,
             status,
@@ -55,14 +51,14 @@ const PolicySubmitSection = (props: policyData) => {
         useFormstore(submitApi).post(payload).then((_d) => {
             setSelectedFileIds([]);
             topic.publish("fileUpload", "fileUpload")
-        }).catch(handleError)
+        }).catch(handleError);
+        Toast.onSaveSuccess(`${selectedFileIds.length} Document${selectedFileIds.length > 1 ? 's' :'' } have been ${status.toLocaleUpperCase()} Successfully !!!`)
 
     };
 
     return (
         <div>
             <section className="border-r border-gray-200 bg-white flex flex-col overflow-hidden">
-
                 <div className="flex-1 overflow-y-auto space-y-4 custom-scrollbar">
                     <div className="space-y-3">
                         <div className="flex items-center justify-between bg-[#004C97] p-2 mb-0">
@@ -182,12 +178,6 @@ const PolicySubmitSection = (props: policyData) => {
                         <li>Please click on SUBMIT button to proceed selected documents.</li>
                     </ul>
                 </div>}
-
-
-            <Modal opened={opened} onClose={close} centered size={"md"} radius={"lg"}
-                styles={{ body: { padding: '0px' } }} withCloseButton={false}>
-                <SubmissionModal onClose={close} />
-            </Modal>
         </div >
     )
 }
