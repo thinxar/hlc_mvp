@@ -1,6 +1,8 @@
-import { FaFileCircleXmark } from "react-icons/fa6";
-import { PolicyFileItemList } from "./PolicyFileItemList";
 import { useState } from "react";
+import { FaEye } from "react-icons/fa";
+import { FaFileCircleXmark } from "react-icons/fa6";
+import { FiFileText } from "react-icons/fi";
+import { PolicyFileItemList } from "./PolicyFileItemList";
 
 interface FileProps {
     data: any,
@@ -14,6 +16,9 @@ interface FileProps {
 
 const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile, setSelectedFileIds, selectedFileIds }: FileProps) => {
     const [clickedFileId, setClickedFileId] = useState(new Set());
+
+    const totalDocs = data.length;
+    const viewedDocs = clickedFileId.size;
 
     const handleFileClick = (file: any) => {
 
@@ -67,10 +72,6 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
 
     const docketTypes = Object.keys(groupedByDocketType);
 
-    // const fileName = selectedFile?.pdfFiles?.fileName || "";
-    // const type = fileName.toLowerCase().includes("bond") ? "Policy" : "Proposal";
-    // const defaultValue: any = docketTypes.includes(type) ? type : docketTypes[0];
-
     const handleSelectAll = () => {
         if (selectedFileIds.length === data.length) {
             setSelectedFileIds([]);
@@ -81,21 +82,30 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
     };
 
     return (<>
-        <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold text-gray-500 ">Documents</h2>
-                <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-bold rounded-full">
-                    {data.length}
-                </span>
+        <div className="flex items-center justify-between bg-[#004C97] p-2 rounded-t-lg">
+            <div className="flex items-center gap-3 text-white text-sm">
+
+                <div className="flex items-center gap-1">
+                    <FiFileText className="w-4 h-4 opacity-80" />
+                    <span>Docs:</span>
+                    <span className="font-bold">{totalDocs}</span>
+                </div>
+                <span className="opacity-40">|</span>
+                <div className="flex items-center gap-1">
+                    <FaEye className="w-4 h-4 opacity-80" />
+                    <span>Viewed:</span>
+                    <span className="font-bold">{viewedDocs}</span>
+                </div>
             </div>
+
             {(data.length > 0 && type === 'REV') &&
-                <button onClick={handleSelectAll} className="text-xs cursor-pointer font-bold text-indigo-600 hover:underline">
+                <button onClick={handleSelectAll} className="text-xs cursor-pointer font-bold text-white hover:underline">
                     {selectedFileIds.length === data.length ? 'Deselect All' : 'Select All'}
                 </button>}
         </div>
 
         {data.length !== 0 ? (
-            <div className={`space-y-2 mt-2 ${type === "REV" ? 'max-h-80' : 'max-h-100'} overflow-y-auto`}>
+            <div className={`space-y-2 py-1 px-2.5 ${type === "REV" ? 'max-h-80' : 'max-h-100'} overflow-y-auto`}>
                 {docketTypes.map((docketType) => {
                     return (
                         <div >
@@ -119,7 +129,7 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
                 })}
             </div>
         ) : (
-            <div className="flex-1 grid place-items-center">
+            <div className="flex-1 grid place-items-center pt-3">
                 <div
                     className="flex flex-col items-center gap-2"
                 >

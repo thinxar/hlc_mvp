@@ -70,39 +70,29 @@ const PolicySubmitSection = (props: policyData) => {
         <div>
             <section className="border-r border-gray-200 bg-white flex flex-col overflow-hidden">
 
-                <div className="flex-1 overflow-y-auto p-3 space-y-4 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto space-y-4 custom-scrollbar">
                     <div className="space-y-3">
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between bg-[#004C97] p-2 mb-0">
                             <div className='flex items-center gap-2'>
-                                <h2 className="text-sm font-bold text-gray-500">Policy Overview</h2>
-                                {/* <Badge styles={{ root: { textTransform: 'none' } }}
-                                    variant="dot" color={policyData?.policyStatus === 1 ? "green" : policyData?.policyStatus === 0 ? "red" : "gray"}
-                                    className={
-                                        policyData?.policyStatus === 1
-                                            ? "bg-green-50! border border-green-500! text-green-700!"
-                                            : policyData?.policyStatus === 0
-                                                ? "bg-red-50! border border-red-500! text-red-700!"
-                                                : "bg-gray-50! border border-gray-400! text-gray-600!"
-                                    }
-                                >
-                                    {policyData?.policyStatus === 1 ? "Active" : policyData?.policyStatus === 0 ? "De-active" : "Unknown"}
-                                </Badge> */}
+                                <h2 className="text-sm font-bold text-white ml-1">Policy Overview</h2>
                             </div>
                             {(type === "REV") &&
                                 <button
                                     onClick={() => window.history.back()}
-                                    className="text-sm cursor-pointer flex items-center gap-2 px-2 py-1 rounded-lg border border-gray-200 hover:bg-gray-100"
+                                    className="text-sm bg-white text-gray-800 cursor-pointer flex items-center gap-2 px-2 py-1 rounded-lg border border-gray-200 hover:bg-gray-100"
                                 >
                                     <FiArrowLeft />
                                     Back
                                 </button>}
                         </div>
-                        <div className="grid grid-cols-2 gap-2 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                        <div className="grid grid-cols-2 gap-2 p-3 bg-slate-100/80">
                             {fieldConfig[type]?.map((field: any) => (
                                 <DetailItem
                                     key={field.key}
                                     label={field.label}
-                                    value={policyData?.[field.key] || "--"}
+                                    value={policyData?.[field.key]}
+                                    Icon={field.icon}
+                                    color={field.color}
                                 />
                             ))}
                         </div>
@@ -110,7 +100,7 @@ const PolicySubmitSection = (props: policyData) => {
 
                     <div className="border-b border-dashed border-gray-200 pb-1 mb-3" />
 
-                    <div>
+                    <div className='rounded'>
                         <PolicyFileViewer data={data} policyId={policyId}
                             selectedFile={selectedFile} setSelectedFile={setSelectedFile}
                             selectedFileIds={selectedFileIds} type={type}
@@ -118,43 +108,44 @@ const PolicySubmitSection = (props: policyData) => {
                     </div>
                     {type === "REV" && <>
                         <div className="border-b border-dashed border-gray-200 pb-1 mb-3" />
-
-                        <form onSubmit={handleSubmit} className="space-y-4 pb-3">
-                            <div className="space-y-2">
-                                <div className='flex justify-between items-center'>
-                                    <h2 className="text-sm font-bold text-gray-500">Submission</h2>
-                                    <div className="flex items-center justify-between">
-                                        <span className="px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-full">
-                                            {selectedFileIds.length} {selectedFileIds.length === 1 ? 'Doc' : 'Docs'}
-                                        </span>
-                                    </div>
-                                </div>
-
+                        <div className="mx-2">
+                            <form onSubmit={handleSubmit} className="space-y-4 pb-3">
                                 <div className="space-y-2">
-                                    <div className="relative">
-                                        <Select allowDeselect={false}
-                                            label="Status"
-                                            value={status} checkIconPosition="right"
-                                            onChange={setStatus}
-                                            data={statusOptions}
-                                        />
+                                    <div className='flex justify-between items-center'>
+                                        <h2 className="text-sm font-bold text-gray-500">Selected Documents</h2>
+                                        <div className="flex items-center justify-between">
+                                            <span className="px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-full">
+                                                {selectedFileIds.length} {selectedFileIds.length === 1 ? 'Doc' : 'Docs'}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <div className="relative">
+                                            <Select allowDeselect={false}
+                                                label="Status"
+                                                value={status} checkIconPosition="right"
+                                                onChange={setStatus}
+                                                data={statusOptions}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <button
-                                type="submit"
-                                disabled={selectedFileIds.length === 0}
-                                className={`cursor-pointer
+                                <button
+                                    type="submit"
+                                    disabled={selectedFileIds.length === 0}
+                                    className={`cursor-pointer
                   w-full py-2.5 rounded-xl font-bold text-white shadow-lg transition-all flex items-center justify-center gap-2
                   ${selectedFileIds.length === 0
-                                        ? 'bg-gray-300 cursor-not-allowed'
-                                        : 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98]'}
+                                            ? 'bg-gray-300 cursor-not-allowed'
+                                            : 'bg-blue-600 hover:bg-blue-700 active:scale-[0.98]'}
                 `}
-                            >
-                                {isSubmitted ? <FiCheckCircle className="w-6 h-6" /> : 'Submit'}
-                            </button>
-                        </form>
+                                >
+                                    {isSubmitted ? <FiCheckCircle className="w-6 h-6" /> : 'Submit'}
+                                </button>
+                            </form>
+                        </div>
                     </>}
                 </div>
             </section>
@@ -183,11 +174,33 @@ const PolicySubmitSection = (props: policyData) => {
 export { PolicySubmitSection };
 
 
-function DetailItem({ label, value }: { label: string, value: string }) {
+function DetailItem({
+    label,
+    value,
+    Icon,
+    color
+}: {
+    label: string;
+    value: string;
+    Icon?: any;
+    color?: string;
+}) {
     return (
-        <div className="space-y-0.5">
-            <p className="text-xs font-semibold text-gray-400">{label}</p>
-            <p className="text-sm font-semibold text-gray-900">{value}</p>
+        <div className="flex items-start gap-3 p-1.5 rounded-lg border border-gray-200 bg-white hover:shadow-sm transition">
+            {Icon && (
+                <div className={`p-2 rounded-md ${color}`}>
+                    <Icon size={16} />
+                </div>
+            )}
+
+            <div className="space-y-1">
+                <p className="text-xs font-medium text-gray-500/80">
+                    {label}
+                </p>
+                <p className="text-sm font-semibold text-gray-900">
+                    {value || "--"}
+                </p>
+            </div>
         </div>
     );
 }
