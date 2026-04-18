@@ -60,6 +60,20 @@ const DocumentPendencyChart = (props: IChartInput) => {
                 }
             }
         },
+        states: {
+            active: {
+                filter: {
+                    type: 'none',
+                    value: 0
+                }
+            },
+            hover: {
+                filter: {
+                    type: 'none',
+                    value: 0
+                }
+            }
+        },
         points: [{
             click: (event: any) => {
                 console.log(event.target.value)

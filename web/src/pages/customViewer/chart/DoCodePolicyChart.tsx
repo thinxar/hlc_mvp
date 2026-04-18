@@ -61,6 +61,20 @@ const DoCodePolicyChart = (props: IChartInput) => {
                 }
             }
         },
+        states: {
+            active: {
+                filter: {
+                    type: 'none',
+                    value: 0
+                }
+            },
+            hover: {
+                filter: {
+                    type: 'none',
+                    value: 0
+                }
+            }
+        },
         dataLabels: {
             enabled: true,
             formatter: function (_val: number, opts: any) {
