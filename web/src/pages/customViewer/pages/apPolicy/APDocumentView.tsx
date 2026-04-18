@@ -29,7 +29,6 @@ const APDocumentView = () => {
     const policyData = location?.state?.policyData || policyDataX;
     const BASE_URL = `${window.location.origin}/api/palmyra`;
 
-
     const params = new URLSearchParams(searchParams);
     params.forEach((value, key) => {
         if (!value || value === "null" || value === "undefined") {
@@ -44,7 +43,8 @@ const APDocumentView = () => {
     const endpoint =
         ServiceEndpoint.customView[appType].policyFileApi + "?" + params.toString();
 
-    const filePoint = StringFormat(ServiceEndpoint.customView[appType].getFileApi, { policyId: policyData?.id, fileId: selectedFile?.pdfFiles?.id });
+    const idKey = appType === "rev" ? "policyId" : "proposalId";
+    const filePoint = StringFormat(ServiceEndpoint.customView[appType].getFileApi, { [idKey]: policyData?.id, fileId: selectedFile?.pdfFiles?.id });
     const fileDetailPoint = StringFormat(ServiceEndpoint.policy.getFileDetailApi, { policyId: policyData?.id, fileId: selectedFile?.pdfFiles?.id });
     const pdfUrl = BASE_URL + filePoint;
 

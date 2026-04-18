@@ -16,29 +16,29 @@ const appData = [
         accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
         btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
-        tag: "QUEUE",
+        key: "REV",
     },
     {
         id: 2,
         title: "Ananda",
-        path: '/app/customViewer/submission',
+        path: '/app/customViewer/NG',
         description: "Read Only Document CDV i.e. without Accept/Reject Functionality",
         icon: FaEye,
         accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
         btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
-        tag: "READ ONLY",
+        key: "AND",
     },
     {
         id: 3,
         title: "Policy Bazaar",
-        path: '/app/customViewer/submission',
+        path: '/app/customViewer/NG',
         description: "Read Only Document and Video CDV",
         icon: MdOutlineVideoLibrary,
         accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
         btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
-        tag: "MEDIA",
+        key: "PBV",
     },
     {
         id: 4,
@@ -49,7 +49,7 @@ const appData = [
         accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
         btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
         glow: "shadow-blue-900/30",
-        tag: "AUTH",
+        key: "AUTH",
     },
 ];
 
@@ -59,7 +59,13 @@ export default function LandingPage() {
     const [hovered, setHovered] = useState(null);
 
     const handleClick = (d: any) => {
-        navigate(d?.path);
+        console.log(d?.path + '?appname=' + d?.key);
+
+        if (d?.key == 'REV') {
+            navigate(d?.path);
+        } else {
+            window.open(d?.path + '?appname=' + d?.key, '_blank');
+        }
         storePolicyInfo(d?.title)
     }
 

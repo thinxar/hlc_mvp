@@ -84,29 +84,32 @@ const ServiceEndpoint = {
             policyPendency: '/rev/policy/pendency',
             Lookup: {
                 officeCode: '/masterdata/rev/officeCode',
-                serialNo: '/masterdata/rev/srNo'
+                serialNo: '/masterdata/rev/srNo',
+                proposalNo: '/rev/proposal/lookup',
             },
-            chart:{
-                doCodeSummary:'/rev/policy/doCode/summary',
-                docPendency:'/rev/policy/pendency/summary'
+            chart: {
+                doCodeSummary: '/rev/policy/doCode/summary',
+                docPendency: '/rev/policy/pendency/summary'
             }
         },
         and: {
-            policyFileApi: '/and/policy/file',
-            getFileApi: '/and/policy/{policyId}/file/{fileId}/download',
-            policyListApi: '/and/policy',
-            policyPendency: '/and/policy/pendency',
+            policyFileApi: '/and/proposal/file',
+            getFileApi: '/and/proposal/{proposalId}/file/{fileId}/download',
+            policyListApi: '/and/proposal',
+            policyPendency: '/and/proposal/pendency',
             Lookup: {
-                officeCode: '/masterdata/rev/officeCode',
+                officeCode: '/masterdata/and/officeCode',
+                proposalNo: '/and/proposal/lookup',
             }
         },
         pbv: {
-            policyFileApi: '/pbv/policy/file',
-            getFileApi: '/pbv/policy/{policyId}/file/{fileId}/download',
-            policyListApi: '/pbv/policy',
-            policyPendency: '/pbv/policy/pendency',
+            policyFileApi: '/pbv/proposal/file',
+            getFileApi: '/pbv/proposal/{proposalId}/file/{fileId}/download',
+            policyListApi: '/pbv/proposal',
+            policyPendency: '/pbv/proposal/pendency',
             Lookup: {
-                officeCode: '/masterdata/rev/officeCode',
+                officeCode: '/masterdata/pbv/officeCode',
+                proposalNo: '/pbv/proposal/lookup',
             }
         }
     }

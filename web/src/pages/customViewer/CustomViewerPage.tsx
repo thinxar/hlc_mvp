@@ -48,13 +48,13 @@ const CustomViewerPage = (props: IPageInput) => {
                     <div className="w-[30%] space-y-2">
                         <div className="dash-cards">
                             <DocumentPendencyChart endPoint={docPendencyApi}
-                                height={CHART_HEIGHT} subText="Pending policy summary"
-                                title="Pendency Report" xKey="name" yKey="value" />
+                                height={CHART_HEIGHT} subText="Pending revival summary"
+                                title="Pending Cases of Revival" xKey="name" yKey="value" />
                         </div>
                         <div className="dash-cards">
                             <DoCodePolicyChart endPoint={approvalSummaryApi}
                                 height={CHART_HEIGHT} subText="DO code wise summary"
-                                title="Policy (DO Code wise)" xKey="name" yKey="value" />
+                                title="Revival Cases by DO Code" xKey="name" yKey="value" />
                         </div>
                     </div>
                 </div>

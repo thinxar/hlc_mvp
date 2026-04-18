@@ -214,7 +214,7 @@ const PolicyListGrid = (props: IOptions) => {
 
     return (
         <div className="grid-container">
-            <PalmyraGrid title={"Policy List"} onRowClick={onRowClick}
+            <PalmyraGrid title={"Revival Policy List"} onRowClick={onRowClick}
                 columns={fields} pageSize={[15, 30, 45]}
                 getPluginOptions={getPluginOptions}
                 ref={gridRef} pagination={{ ignoreSinglePage: true }}
