@@ -7,11 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PbzPolicyFileModel {
+public class PbzProposalFileModel {
 
 	private Integer id;
 
-	private PbzPolicyModel policyId;
+	private PbzProposalModel policyId;
 
 	private String fileName;
 

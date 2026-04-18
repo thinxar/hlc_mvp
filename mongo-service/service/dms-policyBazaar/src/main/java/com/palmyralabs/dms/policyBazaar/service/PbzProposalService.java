@@ -12,24 +12,24 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.palmyralabs.dms.model.PaginatedResponse;
-import com.palmyralabs.dms.policyBazaar.entity.PbzPolicyEntity;
-import com.palmyralabs.dms.policyBazaar.model.PbzPolicyModel;
-import com.palmyralabs.dms.policyBazaar.modelMapper.PbzPolicyModelMapper;
-import com.palmyralabs.dms.policyBazaar.repository.PbzPolicyRepository;
+import com.palmyralabs.dms.policyBazaar.entity.PbzProposalEntity;
+import com.palmyralabs.dms.policyBazaar.model.PbzProposalModel;
+import com.palmyralabs.dms.policyBazaar.modelMapper.PbzProposalModelMapper;
+import com.palmyralabs.dms.policyBazaar.repository.PbzProposalRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class PbzPolicyService {
+public class PbzProposalService {
 
-	private final PbzPolicyRepository PbzPolicyRepository;
-	private final PbzPolicyModelMapper modelMapper;
+	private final PbzProposalRepository PbzPolicyRepository;
+	private final PbzProposalModelMapper modelMapper;
 	private final MongoTemplate mongoTemplate;
 
-	public PbzPolicyModel createPolicy(PbzPolicyModel model) {
-		PbzPolicyEntity policyEntity = new PbzPolicyEntity();
-		Optional<PbzPolicyEntity> dbPolicyOpt = PbzPolicyRepository.findByProposalNoAndBoCode(model.getProposalNo(),
+	public PbzProposalModel createPolicy(PbzProposalModel model) {
+		PbzProposalEntity policyEntity = new PbzProposalEntity();
+		Optional<PbzProposalEntity> dbPolicyOpt = PbzPolicyRepository.findByProposalNoAndBoCode(model.getProposalNo(),
 				model.getBoCode());
 		if(dbPolicyOpt.isPresent()) {
 			policyEntity = dbPolicyOpt.get();
@@ -45,11 +45,11 @@ public class PbzPolicyService {
 		policyEntity.setDob(model.getDob());
 		policyEntity.setMobileNo(model.getMobileNo());
 
-		PbzPolicyEntity savedPolicyEntity = PbzPolicyRepository.save(policyEntity);
+		PbzProposalEntity savedPolicyEntity = PbzPolicyRepository.save(policyEntity);
 		return modelMapper.toPolicyModel(savedPolicyEntity);
 	}
 	
-	public PaginatedResponse<PbzPolicyModel> searchPolicies(String boCode, String year, String proposalNo,int limit,int offset, boolean includeTotal) {
+	public PaginatedResponse<PbzProposalModel> searchPolicies(String boCode, String year, String proposalNo,int limit,int offset, boolean includeTotal) {
 		int page = offset / limit;
 		Pageable pageable = PageRequest.of(page, limit);
 	    Query query = new Query();
@@ -67,14 +67,14 @@ public class PbzPolicyService {
 	                        .append("options", "i"));
 	        query.addCriteria(Criteria.where("$expr").is(regexMatch));
 	    }
-	    long total = mongoTemplate.count(query, PbzPolicyEntity.class);
+	    long total = mongoTemplate.count(query, PbzProposalEntity.class);
 	    query.with(pageable);
-	    List<PbzPolicyEntity> result = mongoTemplate.find(query, PbzPolicyEntity.class);
-	    List<PbzPolicyModel> models = result.stream()
+	    List<PbzProposalEntity> result = mongoTemplate.find(query, PbzProposalEntity.class);
+	    List<PbzProposalModel> models = result.stream()
 	            .map(modelMapper::toPolicyModel)
 	            .toList();
 	     total = includeTotal ? total : 0;
-	    return new PaginatedResponse<PbzPolicyModel>(models,limit,offset, total);
+	    return new PaginatedResponse<PbzProposalModel>(models,limit,offset, total);
 	}
 
 }

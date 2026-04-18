@@ -7,11 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AndPolicyFileModel {
+public class AndProposalFileModel {
 
 	private Integer id;
 
-	private AndPolicyModel policyId;
+	private AndProposalModel policyId;
 
 	private String fileName;
 

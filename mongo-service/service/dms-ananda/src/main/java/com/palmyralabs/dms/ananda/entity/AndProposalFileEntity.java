@@ -12,12 +12,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Document(collection = "and_policy_file")
-public class AndPolicyFileEntity {
+public class AndProposalFileEntity {
 
 	@AutoIncrementId
 	private Integer id;
 	
-	private AndPolicyEntity policyId;
+	private AndProposalEntity policyId;
 
 	private String fileName;
 	

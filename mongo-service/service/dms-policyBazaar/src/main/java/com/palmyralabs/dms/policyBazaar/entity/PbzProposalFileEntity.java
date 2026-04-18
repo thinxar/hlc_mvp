@@ -12,12 +12,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Document(collection = "pbz_policy_file")
-public class PbzPolicyFileEntity {
+public class PbzProposalFileEntity {
 
 	@AutoIncrementId
 	private Integer id;
 	
-	private PbzPolicyEntity policyId;
+	private PbzProposalEntity policyId;
 
 	private String fileName;
 	

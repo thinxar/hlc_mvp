@@ -4,15 +4,15 @@ import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.palmyralabs.dms.ananda.entity.AndPolicyFileEntity;
+import com.palmyralabs.dms.ananda.entity.AndProposalFileEntity;
 
-public interface AndPolicyFileRepository extends MongoRepository<AndPolicyFileEntity, Integer>{
+public interface AndPolicyFileRepository extends MongoRepository<AndProposalFileEntity, Integer>{
 
 
-	Optional<AndPolicyFileEntity> findByObjectUrl(String objectUrl);
+	Optional<AndProposalFileEntity> findByObjectUrl(String objectUrl);
 
-	Optional<AndPolicyFileEntity> findById(Integer id);
+	Optional<AndProposalFileEntity> findById(Integer id);
 
-	AndPolicyFileEntity findByPolicyId_IdAndId(Integer policyId, Integer fileId);
+	AndProposalFileEntity findByPolicyId_IdAndId(Integer policyId, Integer fileId);
 	
 }

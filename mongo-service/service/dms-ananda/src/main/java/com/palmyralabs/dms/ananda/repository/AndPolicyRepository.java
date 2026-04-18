@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.palmyralabs.dms.ananda.entity.AndPolicyEntity;
+import com.palmyralabs.dms.ananda.entity.AndProposalEntity;
 
-public interface AndPolicyRepository extends MongoRepository<AndPolicyEntity, Integer>{
-	Optional<AndPolicyEntity> findById(Integer id);
+public interface AndPolicyRepository extends MongoRepository<AndProposalEntity, Integer>{
+	Optional<AndProposalEntity> findById(Integer id);
 	
-	Optional<AndPolicyEntity> findByProposalNoAndBoCode(String proposalNo, String boCode);
+	Optional<AndProposalEntity> findByProposalNoAndBoCode(String proposalNo, String boCode);
 }

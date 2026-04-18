@@ -11,8 +11,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
-import com.palmyralabs.dms.ananda.entity.AndPolicyEntity;
-import com.palmyralabs.dms.ananda.model.AndPolicyModel;
+import com.palmyralabs.dms.ananda.entity.AndProposalEntity;
+import com.palmyralabs.dms.ananda.model.AndProposalModel;
 import com.palmyralabs.dms.ananda.modelMapper.AndPolicyModelMapper;
 import com.palmyralabs.dms.ananda.repository.AndPolicyRepository;
 import com.palmyralabs.dms.model.PaginatedResponse;
@@ -21,15 +21,15 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AndPolicyService {
+public class AndProposalService {
 
 	private final AndPolicyRepository andPolicyRepository;
 	private final AndPolicyModelMapper modelMapper;
 	private final MongoTemplate mongoTemplate;
 
-	public AndPolicyModel createPolicy(AndPolicyModel model) {
-		AndPolicyEntity policyEntity = new AndPolicyEntity();
-		Optional<AndPolicyEntity> dbPolicyOpt = andPolicyRepository.findByProposalNoAndBoCode(model.getProposalNo(),
+	public AndProposalModel createProposal(AndProposalModel model) {
+		AndProposalEntity  policyEntity = new AndProposalEntity();
+		Optional<AndProposalEntity> dbPolicyOpt = andPolicyRepository.findByProposalNoAndBoCode(model.getProposalNo(),
 				model.getBoCode());
 		if(dbPolicyOpt.isPresent()) {
 			policyEntity = dbPolicyOpt.get();
@@ -47,11 +47,11 @@ public class AndPolicyService {
 		policyEntity.setRequestTime(model.getRequestTime());
 		policyEntity.setPlanCode(model.getPlanCode());
 
-		AndPolicyEntity savedPolicyEntity = andPolicyRepository.save(policyEntity);
-		return modelMapper.toPolicyModel(savedPolicyEntity);
+		AndProposalEntity savedPolicyEntity = andPolicyRepository.save(policyEntity);
+		return modelMapper.toProposalModel(savedPolicyEntity);
 	}
 	
-	public PaginatedResponse<AndPolicyModel> searchPolicies(String boCode, String year, String proposalNo,int limit,int offset, boolean includeTotal) {
+	public PaginatedResponse<AndProposalModel> searchPolicies(String boCode, String year, String proposalNo,int limit,int offset, boolean includeTotal) {
 		int page = offset / limit;
 		Pageable pageable = PageRequest.of(page, limit);
 	    Query query = new Query();
@@ -69,14 +69,14 @@ public class AndPolicyService {
 	                        .append("options", "i"));
 	        query.addCriteria(Criteria.where("$expr").is(regexMatch));
 	    }
-	    long total = mongoTemplate.count(query, AndPolicyEntity.class);
+	    long total = mongoTemplate.count(query, AndProposalEntity.class);
 	    query.with(pageable);
-	    List<AndPolicyEntity> result = mongoTemplate.find(query, AndPolicyEntity.class);
-	    List<AndPolicyModel> models = result.stream()
-	            .map(modelMapper::toPolicyModel)
+	    List<AndProposalEntity> result = mongoTemplate.find(query, AndProposalEntity.class);
+	    List<AndProposalModel> models = result.stream()
+	            .map(modelMapper::toProposalModel)
 	            .toList();
 	     total = includeTotal ? total : 0;
-	    return new PaginatedResponse<AndPolicyModel>(models,limit,offset, total);
+	    return new PaginatedResponse<AndProposalModel>(models,limit,offset, total);
 	}
 
 }

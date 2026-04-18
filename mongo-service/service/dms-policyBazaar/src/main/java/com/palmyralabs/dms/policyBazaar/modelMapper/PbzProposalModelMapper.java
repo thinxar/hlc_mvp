@@ -3,21 +3,21 @@ package com.palmyralabs.dms.policyBazaar.modelMapper;
 import org.springframework.stereotype.Service;
 
 import com.palmyralabs.dms.policyBazaar.entity.PbzDocumentTypeEntity;
-import com.palmyralabs.dms.policyBazaar.entity.PbzPolicyEntity;
-import com.palmyralabs.dms.policyBazaar.entity.PbzPolicyFileEntity;
+import com.palmyralabs.dms.policyBazaar.entity.PbzProposalEntity;
+import com.palmyralabs.dms.policyBazaar.entity.PbzProposalFileEntity;
 import com.palmyralabs.dms.policyBazaar.model.PbzDocumentTypeModel;
-import com.palmyralabs.dms.policyBazaar.model.PbzPolicyFileModel;
-import com.palmyralabs.dms.policyBazaar.model.PbzPolicyModel;
+import com.palmyralabs.dms.policyBazaar.model.PbzProposalFileModel;
+import com.palmyralabs.dms.policyBazaar.model.PbzProposalModel;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class PbzPolicyModelMapper {
+public class PbzProposalModelMapper {
 
 	
-	public PbzPolicyFileModel toPolicyFileModel(PbzPolicyFileEntity entity) {
-		PbzPolicyFileModel model = new PbzPolicyFileModel();
+	public PbzProposalFileModel toProposalFileModel(PbzProposalFileEntity entity) {
+		PbzProposalFileModel model = new PbzProposalFileModel();
 		model.setId(entity.getId());
 		model.setPolicyId(toPolicyModel(entity.getPolicyId()));
 		model.setFileName(entity.getFileName());
@@ -32,8 +32,8 @@ public class PbzPolicyModelMapper {
 		return model;
 	}
 	
-	public PbzPolicyModel toPolicyModel(PbzPolicyEntity entity) {
-		PbzPolicyModel model = new PbzPolicyModel();
+	public PbzProposalModel toPolicyModel(PbzProposalEntity entity) {
+		PbzProposalModel model = new PbzProposalModel();
 		model.setId(entity.getId());
 		model.setPolicyNumber(entity.getPolicyNumber());
 		model.setBoCode(entity.getBoCode());

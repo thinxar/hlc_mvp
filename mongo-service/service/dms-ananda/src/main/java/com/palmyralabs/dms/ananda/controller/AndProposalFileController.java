@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.palmyralabs.dms.ananda.model.AndPolicyFileModel;
-import com.palmyralabs.dms.ananda.service.AndPolicyFileService;
+import com.palmyralabs.dms.ananda.model.AndProposalFileModel;
+import com.palmyralabs.dms.ananda.service.AndProposalFileService;
 import com.palmyralabs.palmyra.base.PalmyraResponse;
 import com.palmyralabs.palmyra.core.rest.controller.AbstractController;
 
@@ -20,22 +20,22 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/and/policy")
-public class AndPolicyFileController extends AbstractController{
-    private final AndPolicyFileService fileService;
+@RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/and/proposal")
+public class AndProposalFileController extends AbstractController{
+    private final AndProposalFileService fileService;
     
-    @PostMapping("/{policyId}/docketType/{docketTypeId}/file")
+    @PostMapping("/{proposalId}/docketType/{docketTypeId}/file")
 	public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file,
-			@PathVariable("policyId") Integer policyId, @PathVariable("docketTypeId") Integer docketTypeId) {
-		String result = fileService.upload(file, policyId, docketTypeId, false);
+			@PathVariable("proposalId") Integer proposalId, @PathVariable("docketTypeId") Integer docketTypeId) {
+		String result = fileService.upload(file, proposalId, docketTypeId, false);
 		return ResponseEntity.ok(result);
 	}
     
 	@GetMapping("/file")
-	public PalmyraResponse<List<AndPolicyFileModel>> getAll(
+	public PalmyraResponse<List<AndProposalFileModel>> getAll(
 			@RequestParam(value = "propno", required = false) String proposalNo,
 			@RequestParam(value = "officecode", required = false) String boCode,
 			@RequestParam(value = "year", required = false) String year) {
-		return apiResponse(fileService.getAllPolicyFiles(proposalNo, boCode, year));
+		return apiResponse(fileService.getAllProposalFiles(proposalNo, boCode, year));
 	}
 }

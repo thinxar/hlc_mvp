@@ -1,16 +1,14 @@
-package com.palmyralabs.dms.ananda.model;
+package com.palmyralabs.dms.policyBazaar.model;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class AndPolicyModel {
-
+public class PbzProposalModel {
+	
 	private Integer id;
-
-	private Long policyNumber;
-
+	
 	private String agentCode;
 
 	private String ackNo;
@@ -20,17 +18,15 @@ public class AndPolicyModel {
 	private String proposalType;
 
 	private String proposalNo;
+	
+	private Long policyNumber;
 
 	private String year;
 
 	private String boCode;
-
-	private String planCode;
-
-	private String objectSubmittedOn;
-
-	private String requestTime;
-
-	private String processTime;
-
+	
+	private String dob;
+	
+	private String mobileNo;
+	
 }

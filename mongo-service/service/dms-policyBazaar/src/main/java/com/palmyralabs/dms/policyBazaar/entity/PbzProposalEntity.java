@@ -1,4 +1,4 @@
-package com.palmyralabs.dms.ananda.entity;
+package com.palmyralabs.dms.policyBazaar.entity;
 
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,8 +10,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Document(collection = "and_policy")
-public class AndPolicyEntity {
+@Document(collection = "pbz_policy")
+public class PbzProposalEntity {
 
 	@AutoIncrementId
 	private Integer id;
@@ -33,13 +33,8 @@ public class AndPolicyEntity {
 
 	private String boCode;
 
-	private String planCode;
-	
-	private String objectSubmittedOn;
-	
-	private String requestTime;
-	
-	private String processTime;
-	
+	private String dob;
+
+	private String mobileNo;
 
 }

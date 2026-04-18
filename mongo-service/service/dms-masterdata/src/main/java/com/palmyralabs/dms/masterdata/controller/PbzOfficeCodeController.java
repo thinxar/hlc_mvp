@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/masterdata/pbz")
+@RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/masterdata/pbv")
 public class PbzOfficeCodeController extends AbstractController {
 
 	private final PbzOfficeCodeService officeCodeService;

@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.palmyralabs.dms.ananda.entity.AndDocumentTypeEntity;
-import com.palmyralabs.dms.ananda.entity.AndPolicyEntity;
-import com.palmyralabs.dms.ananda.entity.AndPolicyFileEntity;
-import com.palmyralabs.dms.ananda.model.AndPolicyFileModel;
+import com.palmyralabs.dms.ananda.entity.AndProposalEntity;
+import com.palmyralabs.dms.ananda.entity.AndProposalFileEntity;
+import com.palmyralabs.dms.ananda.model.AndProposalFileModel;
 import com.palmyralabs.dms.ananda.modelMapper.AndPolicyModelMapper;
 import com.palmyralabs.dms.ananda.repository.AndDocumentTypeRepository;
 import com.palmyralabs.dms.ananda.repository.AndPolicyFileRepository;
@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AndPolicyFileService {
+public class AndProposalFileService {
 	private final AndPolicyModelMapper modelMapper;
 	private final MongoTemplate mongoTemplate;
 	private final SyncFileServiceImpl syncFileService;
@@ -44,10 +44,10 @@ public class AndPolicyFileService {
 	
 	public String upload(MultipartFile file, Integer policyId, Integer docketTypeId, boolean incrementalFileName) {
 		log.info("Initiating upload process for policyId={}, docketTypeId={}", policyId, docketTypeId);
-		Optional<AndPolicyEntity> policyOptional = policyRepository.findById(policyId);
+		Optional<AndProposalEntity> policyOptional = policyRepository.findById(policyId);
 
 		if (policyOptional.isPresent()) {
-			AndPolicyEntity policy = policyOptional.get();
+			AndProposalEntity policy = policyOptional.get();
 			String folder = String.valueOf(policy.getProposalNo()) + "/" + policy.getId();
 			String objectUrl = String.join("/", folder, file.getOriginalFilename());
 
@@ -69,7 +69,7 @@ public class AndPolicyFileService {
 	}
 	
 	public ResponseFileEmitter download(Integer policyId, Integer fileId) {
-		AndPolicyFileEntity policyFileEntity = policyFileRepository.findByPolicyId_IdAndId(policyId, fileId);
+		AndProposalFileEntity policyFileEntity = policyFileRepository.findByPolicyId_IdAndId(policyId, fileId);
 
 		if (policyFileEntity != null) {
 			if (policyFileEntity.getObjectUrl() != null) {
@@ -87,7 +87,7 @@ public class AndPolicyFileService {
 
 	private void savePolicyFile(String fileName, MultipartFile file, Integer policyId, String objectUrl,
 			Integer docketTypeId) {
-		AndPolicyFileEntity fileEntity = new AndPolicyFileEntity();
+		AndProposalFileEntity fileEntity = new AndProposalFileEntity();
 		fileEntity.setFileName(fileName);
 		fileEntity.setFileSize(file.getSize());
 		fileEntity.setFileType(file.getContentType());
@@ -109,7 +109,7 @@ public class AndPolicyFileService {
 	private String checkObjectUrlAlreadyExists(String objectUrl, MultipartFile file, String folder,
 			Integer docketTypeId, boolean incrementalFileName) {
 
-		Optional<AndPolicyFileEntity> optPolicyFile = policyFileRepository.findByObjectUrl(objectUrl);
+		Optional<AndProposalFileEntity> optPolicyFile = policyFileRepository.findByObjectUrl(objectUrl);
 		String fileName = file.getOriginalFilename();
 		boolean isEndorsement = isEndorsement(docketTypeId) && incrementalFileName;
 
@@ -140,7 +140,7 @@ public class AndPolicyFileService {
 	}
 
 
-	public List<AndPolicyFileModel> getAllPolicyFiles(String proposalNo, String boCode, String year) {
+	public List<AndProposalFileModel> getAllProposalFiles(String proposalNo, String boCode, String year) {
 		Query query = new Query();
 		if (proposalNo != null && !proposalNo.isBlank()) {
 			query.addCriteria(Criteria.where("policyId.proposalNo").is(proposalNo));
@@ -151,10 +151,10 @@ public class AndPolicyFileService {
 		if (year != null && !year.isBlank()) {
 			query.addCriteria(Criteria.where("policyId.year").is(year));
 		}
-		List<AndPolicyFileEntity> result = mongoTemplate.find(query, AndPolicyFileEntity.class);
-		List<AndPolicyFileModel> policyFileModels = new ArrayList<AndPolicyFileModel>();
-		for (AndPolicyFileEntity entity : result) {
-			policyFileModels.add(modelMapper.toPolicyFileModel(entity));
+		List<AndProposalFileEntity> result = mongoTemplate.find(query, AndProposalFileEntity.class);
+		List<AndProposalFileModel> policyFileModels = new ArrayList<AndProposalFileModel>();
+		for (AndProposalFileEntity entity : result) {
+			policyFileModels.add(modelMapper.toProposalFileModel(entity));
 		}
 		return policyFileModels;
 	}
@@ -164,7 +164,7 @@ public class AndPolicyFileService {
 				.orElseThrow(() -> new InvalidInputException("INV001", "docketType not found"));
 	}
 	
-	private AndPolicyEntity getPolicyEntity(Integer id) {
+	private AndProposalEntity getPolicyEntity(Integer id) {
 		return policyRepository.findById(id)
 				.orElseThrow(() -> new InvalidInputException("INV001", "policy record not found"));
 	}

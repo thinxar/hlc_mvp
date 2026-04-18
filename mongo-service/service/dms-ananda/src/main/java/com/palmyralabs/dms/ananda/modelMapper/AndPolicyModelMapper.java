@@ -3,11 +3,11 @@ package com.palmyralabs.dms.ananda.modelMapper;
 import org.springframework.stereotype.Service;
 
 import com.palmyralabs.dms.ananda.entity.AndDocumentTypeEntity;
-import com.palmyralabs.dms.ananda.entity.AndPolicyEntity;
-import com.palmyralabs.dms.ananda.entity.AndPolicyFileEntity;
+import com.palmyralabs.dms.ananda.entity.AndProposalEntity;
+import com.palmyralabs.dms.ananda.entity.AndProposalFileEntity;
 import com.palmyralabs.dms.ananda.model.AndDocumentTypeModel;
-import com.palmyralabs.dms.ananda.model.AndPolicyFileModel;
-import com.palmyralabs.dms.ananda.model.AndPolicyModel;
+import com.palmyralabs.dms.ananda.model.AndProposalFileModel;
+import com.palmyralabs.dms.ananda.model.AndProposalModel;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,10 +16,10 @@ import lombok.RequiredArgsConstructor;
 public class AndPolicyModelMapper {
 
 	
-	public AndPolicyFileModel toPolicyFileModel(AndPolicyFileEntity entity) {
-		AndPolicyFileModel model = new AndPolicyFileModel();
+	public AndProposalFileModel toProposalFileModel(AndProposalFileEntity entity) {
+		AndProposalFileModel model = new AndProposalFileModel();
 		model.setId(entity.getId());
-		model.setPolicyId(toPolicyModel(entity.getPolicyId()));
+		model.setPolicyId(toProposalModel(entity.getPolicyId()));
 		model.setFileName(entity.getFileName());
 		model.setFileSize(entity.getFileSize());
 		model.setFileType(entity.getFileType());
@@ -32,8 +32,8 @@ public class AndPolicyModelMapper {
 		return model;
 	}
 	
-	public AndPolicyModel toPolicyModel(AndPolicyEntity entity) {
-		AndPolicyModel model = new AndPolicyModel();
+	public AndProposalModel toProposalModel(AndProposalEntity entity) {
+		AndProposalModel model = new AndProposalModel();
 		model.setId(entity.getId());
 		model.setPolicyNumber(entity.getPolicyNumber());
 		model.setBoCode(entity.getBoCode());

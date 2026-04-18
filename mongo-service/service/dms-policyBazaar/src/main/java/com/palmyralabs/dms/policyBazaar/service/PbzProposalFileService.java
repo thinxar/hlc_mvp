@@ -14,13 +14,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.palmyralabs.dms.base.exception.InvalidInputException;
 import com.palmyralabs.dms.handler.PolicyFileUploadListener;
 import com.palmyralabs.dms.policyBazaar.entity.PbzDocumentTypeEntity;
-import com.palmyralabs.dms.policyBazaar.entity.PbzPolicyEntity;
-import com.palmyralabs.dms.policyBazaar.entity.PbzPolicyFileEntity;
-import com.palmyralabs.dms.policyBazaar.model.PbzPolicyFileModel;
-import com.palmyralabs.dms.policyBazaar.modelMapper.PbzPolicyModelMapper;
+import com.palmyralabs.dms.policyBazaar.entity.PbzProposalEntity;
+import com.palmyralabs.dms.policyBazaar.entity.PbzProposalFileEntity;
+import com.palmyralabs.dms.policyBazaar.model.PbzProposalFileModel;
+import com.palmyralabs.dms.policyBazaar.modelMapper.PbzProposalModelMapper;
 import com.palmyralabs.dms.policyBazaar.repository.PbzDocumentTypeRepository;
-import com.palmyralabs.dms.policyBazaar.repository.PbzPolicyFileRepository;
-import com.palmyralabs.dms.policyBazaar.repository.PbzPolicyRepository;
+import com.palmyralabs.dms.policyBazaar.repository.PbzProposalFileRepository;
+import com.palmyralabs.dms.policyBazaar.repository.PbzProposalRepository;
 import com.palmyralabs.palmyra.base.exception.DataNotFoundException;
 import com.palmyralabs.palmyra.filemgmt.spring.ResponseFileEmitter;
 import com.palmyralabs.palmyra.s3.service.AsyncFileService;
@@ -32,23 +32,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PbzPolicyFileService {
-	private final PbzPolicyModelMapper modelMapper;
+public class PbzProposalFileService {
+	private final PbzProposalModelMapper modelMapper;
 	private final MongoTemplate mongoTemplate;
 	private final SyncFileServiceImpl syncFileService;
 	private final PbzDocumentTypeRepository docTypeRepo;
-	private final PbzPolicyRepository policyRepository;
-	private final PbzPolicyFileRepository policyFileRepository;
+	private final PbzProposalRepository ProposalRepository;
+	private final PbzProposalFileRepository ProposalFileRepository;
 	private final AsyncFileService asyncFileService;
 
 	
-	public String upload(MultipartFile file, Integer policyId, Integer docketTypeId, boolean incrementalFileName) {
-		log.info("Initiating upload process for policyId={}, docketTypeId={}", policyId, docketTypeId);
-		Optional<PbzPolicyEntity> policyOptional = policyRepository.findById(policyId);
+	public String upload(MultipartFile file, Integer ProposalId, Integer docketTypeId, boolean incrementalFileName) {
+		log.info("Initiating upload process for ProposalId={}, docketTypeId={}", ProposalId, docketTypeId);
+		Optional<PbzProposalEntity> ProposalOptional = ProposalRepository.findById(ProposalId);
 
-		if (policyOptional.isPresent()) {
-			PbzPolicyEntity policy = policyOptional.get();
-			String folder = String.valueOf(policy.getProposalNo()) + "/" + policy.getId();
+		if (ProposalOptional.isPresent()) {
+			PbzProposalEntity Proposal = ProposalOptional.get();
+			String folder = String.valueOf(Proposal.getProposalNo()) + "/" + Proposal.getId();
 			String objectUrl = String.join("/", folder, file.getOriginalFilename());
 
 			String fileName = checkObjectUrlAlreadyExists(objectUrl, file, folder, docketTypeId, incrementalFileName);
@@ -61,20 +61,20 @@ public class PbzPolicyFileService {
 				log.error("S3 upload failed for file '{}': {}", fileName, e.getMessage(), e);
 				throw new InvalidInputException("INV400", "File Upload To S3 failed for " + e.getMessage());
 			}
-			savePolicyFile(fileName, file, policyId, objectUrl, docketTypeId);
+			saveProposalFile(fileName, file, ProposalId, objectUrl, docketTypeId);
 			return "completed";
 		} else {
-			throw new DataNotFoundException("INV012", "Policy Record not found");
+			throw new DataNotFoundException("INV012", "Proposal Record not found");
 		}
 	}
 	
-	public ResponseFileEmitter download(Integer policyId, Integer fileId) {
-		PbzPolicyFileEntity policyFileEntity = policyFileRepository.findByPolicyId_IdAndId(policyId, fileId);
+	public ResponseFileEmitter download(Integer ProposalId, Integer fileId) {
+		PbzProposalFileEntity ProposalFileEntity = ProposalFileRepository.findByPolicyId_IdAndId(ProposalId, fileId);
 
-		if (policyFileEntity != null) {
-			if (policyFileEntity.getObjectUrl() != null) {
+		if (ProposalFileEntity != null) {
+			if (ProposalFileEntity.getObjectUrl() != null) {
 				ResponseFileEmitter emitter = new ResponseFileEmitter(60 * 1000L);
-				String key = policyFileEntity.getObjectUrl();
+				String key = ProposalFileEntity.getObjectUrl();
 				asyncFileService.download(key, emitter);
 				return emitter;
 			} else {
@@ -85,20 +85,20 @@ public class PbzPolicyFileService {
 		}
 	}
 
-	private void savePolicyFile(String fileName, MultipartFile file, Integer policyId, String objectUrl,
+	private void saveProposalFile(String fileName, MultipartFile file, Integer ProposalId, String objectUrl,
 			Integer docketTypeId) {
-		PbzPolicyFileEntity fileEntity = new PbzPolicyFileEntity();
+		PbzProposalFileEntity fileEntity = new PbzProposalFileEntity();
 		fileEntity.setFileName(fileName);
 		fileEntity.setFileSize(file.getSize());
 		fileEntity.setFileType(file.getContentType());
-		fileEntity.setPolicyId(getPolicyEntity(policyId));
+		fileEntity.setPolicyId(getProposalEntity(ProposalId));
 		fileEntity.setObjectUrl(objectUrl);
 		fileEntity.setDocketType(getDocketType(docketTypeId));
 		fileEntity.setCreatedOn(LocalDateTime.now());
 		fileEntity.setCreatedBy("Admin");
 		fileEntity.setActionBy("admin");
 		fileEntity.setActionOn(LocalDateTime.now());
-		policyFileRepository.save(fileEntity);
+		ProposalFileRepository.save(fileEntity);
 	}
 	
 	private boolean isEndorsement(Integer docketTypeId) {
@@ -109,11 +109,11 @@ public class PbzPolicyFileService {
 	private String checkObjectUrlAlreadyExists(String objectUrl, MultipartFile file, String folder,
 			Integer docketTypeId, boolean incrementalFileName) {
 
-		Optional<PbzPolicyFileEntity> optPolicyFile = policyFileRepository.findByObjectUrl(objectUrl);
+		Optional<PbzProposalFileEntity> optProposalFile = ProposalFileRepository.findByObjectUrl(objectUrl);
 		String fileName = file.getOriginalFilename();
 		boolean isEndorsement = isEndorsement(docketTypeId) && incrementalFileName;
 
-		if (optPolicyFile.isPresent()) {
+		if (optProposalFile.isPresent()) {
 			if (!isEndorsement) {
 				throw new InvalidInputException("INV400", "File Already Exists");
 			}
@@ -131,8 +131,8 @@ public class PbzPolicyFileService {
 				newFileName = fileName + "_" + count + extension;
 				count++;
 				objectUrl = String.join("/", folder, newFileName);
-				optPolicyFile = policyFileRepository.findByObjectUrl(objectUrl);
-			} while (optPolicyFile.isPresent());
+				optProposalFile = ProposalFileRepository.findByObjectUrl(objectUrl);
+			} while (optProposalFile.isPresent());
 			return newFileName;
 		}
 		return fileName;
@@ -140,7 +140,7 @@ public class PbzPolicyFileService {
 	}
 
 
-	public List<PbzPolicyFileModel> getAllPolicyFiles(String proposalNo, String boCode, String year) {
+	public List<PbzProposalFileModel> getAllProposalFiles(String proposalNo, String boCode, String year) {
 		Query query = new Query();
 		if (proposalNo != null && !proposalNo.isBlank()) {
 			query.addCriteria(Criteria.where("policyId.proposalNo").is(proposalNo));
@@ -151,12 +151,12 @@ public class PbzPolicyFileService {
 		if (year != null && !year.isBlank()) {
 			query.addCriteria(Criteria.where("policyId.year").is(year));
 		}
-		List<PbzPolicyFileEntity> result = mongoTemplate.find(query, PbzPolicyFileEntity.class);
-		List<PbzPolicyFileModel> policyFileModels = new ArrayList<PbzPolicyFileModel>();
-		for (PbzPolicyFileEntity entity : result) {
-			policyFileModels.add(modelMapper.toPolicyFileModel(entity));
+		List<PbzProposalFileEntity> result = mongoTemplate.find(query, PbzProposalFileEntity.class);
+		List<PbzProposalFileModel> ProposalFileModels = new ArrayList<PbzProposalFileModel>();
+		for (PbzProposalFileEntity entity : result) {
+			ProposalFileModels.add(modelMapper.toProposalFileModel(entity));
 		}
-		return policyFileModels;
+		return ProposalFileModels;
 	}
 	
 	private PbzDocumentTypeEntity getDocketType(Integer id) {
@@ -164,9 +164,9 @@ public class PbzPolicyFileService {
 				.orElseThrow(() -> new InvalidInputException("INV001", "docketType not found"));
 	}
 	
-	private PbzPolicyEntity getPolicyEntity(Integer id) {
-		return policyRepository.findById(id)
-				.orElseThrow(() -> new InvalidInputException("INV001", "policy record not found"));
+	private PbzProposalEntity getProposalEntity(Integer id) {
+		return ProposalRepository.findById(id)
+				.orElseThrow(() -> new InvalidInputException("INV001", "Proposal record not found"));
 	}
 
 }
