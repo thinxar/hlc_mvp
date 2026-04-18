@@ -2,7 +2,7 @@ import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { useCommonChartStyles } from "./ChartTheme";
 import type { IChartInput } from "./type";
 
-const DocumentApprovalChart = (props: IChartInput) => {
+const DoCodePolicyChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
 
@@ -46,7 +46,8 @@ const DocumentApprovalChart = (props: IChartInput) => {
             ...commonOptions.subtitle
         },
         colors: [
-            '#3b82f6', '#22c55e', '#ef4444', '#f59e0b',
+            '#6366f1', '#f59e0b', '#10b981',
+            '#3b82f6', '#ec4899', '#8b5cf6', '#14b8a6', '#f97316', '#ef4444',
         ],
         chart: {
             events: {
@@ -61,10 +62,13 @@ const DocumentApprovalChart = (props: IChartInput) => {
             }
         },
         dataLabels: {
-            formatter: function (val: number) {
-                return Math.round(val) + "%";
+            enabled: true,
+            formatter: function (_val: number, opts: any) {
+                const actualValue = opts.w.globals.series[opts.seriesIndex];
+                return actualValue;
             }
         }
+
     }
 
     return (
@@ -79,5 +83,5 @@ const DocumentApprovalChart = (props: IChartInput) => {
 
 };
 
-export { DocumentApprovalChart };
+export { DoCodePolicyChart };
 

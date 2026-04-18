@@ -2,6 +2,20 @@ import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { useRef } from "react";
 import { useCommonChartStyles } from "./ChartTheme";
 import type { IChartInput } from "./type";
+import { topic } from "@palmyralabs/ts-utils";
+
+const normalizePendencyKey = (value: string) => {
+    if (!value) return value;
+
+    const v = value.trim().toLowerCase();
+
+    if (v === 'total') return 'total';
+    if (v.includes('<3')) return '<3';
+    if (v.includes('3-10')) return '3-10';
+    if (v.includes('above 10 days')) return '>10';
+
+    return value;
+};
 
 const DocumentPendencyChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText, endPoint } = props;
@@ -40,6 +54,8 @@ const DocumentPendencyChart = (props: IChartInput) => {
                         const allSeries = chartContext?.w?.config.series;
                         const xValue = allSeries[0]?.data[dataPointIndex]?.x;
                         clickFilter.current = { departmentName: xValue };
+                        const parsedValue = normalizePendencyKey(xValue);
+                        topic.publish('pendencyKey', parsedValue)
                     }
                 }
             }
@@ -103,7 +119,7 @@ const DocumentPendencyChart = (props: IChartInput) => {
 
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="bar" 
+            <PalmyraApexChart options={options} type="bar"
                 endPoint={endPoint} filter={props.filter}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />

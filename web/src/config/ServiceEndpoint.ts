@@ -87,7 +87,7 @@ const ServiceEndpoint = {
                 serialNo: '/masterdata/rev/srNo'
             },
             chart:{
-                approvalSummary:'/rev/policy/file/summary',
+                doCodeSummary:'/rev/policy/doCode/summary',
                 docPendency:'/rev/policy/pendency/summary'
             }
         },

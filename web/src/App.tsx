@@ -1,6 +1,6 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { MainLayout } from './common/layout/MainLayout';
 import PageNotFoundX from './common/pages/PageNotFoundX';
@@ -20,8 +20,8 @@ function App() {
     <div className='min-h-screen bg-linear-to-br bColor relative overflow-hidden' >
       <BrowserRouter>
         <Routes>
-          {/* <Route path="/" element={<Navigate to="/login" replace={true} />} /> */}
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<Navigate to="/landing" replace={true} />} />
+          <Route path="/landing" element={<LandingPage />} />
           <Route path='/login' element={<LoginPage />} />
 
           {/* <Route path='app/CustomViewer/NG' element={<CustomViewerPage pageName="customViewer" />} />

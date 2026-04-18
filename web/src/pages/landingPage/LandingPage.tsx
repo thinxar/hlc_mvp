@@ -10,7 +10,7 @@ const appData = [
     {
         id: 1,
         title: "Revival",
-        path: 'app/customViewer/submission',
+        path: '/app/customViewer/submission',
         description: "New Document Verification Queue",
         icon: FiClock,
         accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
@@ -21,7 +21,7 @@ const appData = [
     {
         id: 2,
         title: "Ananda",
-        path: 'app/customViewer/submission',
+        path: '/app/customViewer/submission',
         description: "Read Only Document CDV i.e. without Accept/Reject Functionality",
         icon: FaEye,
         accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
@@ -32,7 +32,7 @@ const appData = [
     {
         id: 3,
         title: "Policy Bazaar",
-        path: 'app/customViewer/submission',
+        path: '/app/customViewer/submission',
         description: "Read Only Document and Video CDV",
         icon: MdOutlineVideoLibrary,
         accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
@@ -67,7 +67,7 @@ export default function LandingPage() {
         <div className="min-h-screen flex flex-col items-center justify-start px-6 py-16 relative overflow-hidden 
                         bg-linear-to-br from-[#eef2ff] via-[#f8fafc] to-[#e0f2fe] group">
 
-            <div className="absolute top-[-80px] left-[-80px] w-[400px] h-[400px] bg-blue-300/30 rounded-full blur-[120px] animate-pulse" />
+            <div className="absolute top-20 left-20 w-[400px] h-[400px] bg-blue-300/30 rounded-full blur-[120px] animate-pulse" />
             <div className="absolute bottom-[-100px] right-[-100px] w-[450px] h-[450px] bg-purple-300/30 rounded-full blur-[140px] animate-pulse" />
             <div className="absolute top-[40%] left-[50%] -translate-x-1/2 w-[500px] h-[250px] bg-cyan-200/30 rounded-full blur-[100px]" />
 

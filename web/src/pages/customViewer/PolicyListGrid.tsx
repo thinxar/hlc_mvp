@@ -1,29 +1,36 @@
 import { Button } from "@mantine/core";
 import { PalmyraForm, type ColumnDefinition, type IPageQueryable } from "@palmyralabs/rt-forms";
 import { PalmyraGrid } from "@palmyralabs/rt-forms-mantine";
+import { topic } from "@palmyralabs/ts-utils";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
 // import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { useEffect, useRef, useState } from "react";
-import { FiRefreshCw } from "react-icons/fi";
+import { FiFileText, FiRefreshCw } from "react-icons/fi";
+import { LuBuilding2 } from "react-icons/lu";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { HclSummaryGridControls } from "src/common/component/gridControl/HlcSummaryGridControls";
 import { SearchFilterField } from "src/common/component/SearchFilterField";
 import { useFilterHandler } from "src/hook/useFilterHandler";
 import { IPageInput } from "templates/Types";
-import { getCounts } from "utils/FormateDate";
 import { useFormstore } from "wire/StoreFactory";
-import PolicyPendencySummary from "./PolicyPendencySummary";
 interface IOptions extends IPageInput {
     type: 'rev' | 'and' | 'pbv'
+    gridRefX?: any
 }
 
 const PolicyListGrid = (props: IOptions) => {
-    const { type } = props
+    const { type, gridRefX } = props
     const navigate = useNavigate();
-    const gridRef = useRef<IPageQueryable>(null);
+    const gridRef = gridRefX ?? useRef<IPageQueryable>(null);
     const [searchParams] = useSearchParams();
 
-    const [data, setData] = useState([])
+    const [_data, setData] = useState([])
+    const [gridData, setGridData] = useState({
+        data: [],
+        docType: null,
+        soCode: null
+    });
+
     const [filter, setFilter] = useState({ policyNumber: '', dos: '' })
     const { handleFilterChange } = useFilterHandler(setFilter);
 
@@ -51,13 +58,13 @@ const PolicyListGrid = (props: IOptions) => {
             sortable: true,
             type: "string"
         },
-        {
-            attribute: "docType",
-            name: "docType",
-            label: "Doc Type",
-            searchable: true,
-            type: "string"
-        },
+        // {
+        //     attribute: "docType",
+        //     name: "docType",
+        //     label: "Doc Type",
+        //     searchable: true,
+        //     type: "string"
+        // },
         {
             attribute: "srNo",
             name: "srNo",
@@ -65,13 +72,13 @@ const PolicyListGrid = (props: IOptions) => {
             searchable: true,
             type: "string"
         },
-        {
-            attribute: "soCode",
-            name: "soCode",
-            label: "Office Code (SO/BO)",
-            searchable: true,
-            type: "string"
-        },
+        // {
+        //     attribute: "soCode",
+        //     name: "soCode",
+        //     label: "Office Code (SO/BO)",
+        //     searchable: true,
+        //     type: "string"
+        // },
         {
             attribute: "doCode",
             name: "doCode",
@@ -102,7 +109,7 @@ const PolicyListGrid = (props: IOptions) => {
         return [loading, trigger];
     };
 
-    const counts = getCounts(data);
+    // const counts = getCounts(data);
 
     const toggleFilter = (key: any) => {
         setFilter((prev) => ({
@@ -113,9 +120,35 @@ const PolicyListGrid = (props: IOptions) => {
         }));
     };
 
-    const HeaderContent: any = <>
-        <PolicyPendencySummary counts={counts} filter={filter} toggleFilter={toggleFilter} />
-    </>
+    // const HeaderContent: any = <>
+    //     <PolicyPendencySummary counts={counts} filter={filter} toggleFilter={toggleFilter} />
+    // </>
+
+    const HeaderContent: any = (
+        <>
+            <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-100 rounded-lg px-3 py-1.5">
+                    <FiFileText size={13} className="text-blue-500 shrink-0" />
+                    <span className="text-xs font-semibold text-blue-400">
+                        Doc Type
+                    </span>
+                    <span className="text-[13px] font-bold text-blue-700 leading-none">
+                        {gridData?.docType ?? "—"}
+                    </span>
+                </div>
+
+                <div className="flex items-center gap-1.5 bg-violet-50 border border-violet-100 rounded-lg px-3 py-1.5">
+                    <LuBuilding2 size={13} className="text-violet-500 shrink-0" />
+                    <span className="text-xs font-semibold text-violet-400">
+                        Office Code (SO/BO)
+                    </span>
+                    <span className="text-[13px] font-bold text-violet-700 leading-none">
+                        {gridData?.soCode ?? "—"}
+                    </span>
+                </div>
+            </div>
+        </>
+    );
 
     const FilterField: any = <>
         <PalmyraForm>
@@ -145,6 +178,17 @@ const PolicyListGrid = (props: IOptions) => {
     }
 
     useEffect(() => {
+        const handle = topic.subscribe("pendencyKey", (_t: string, data: any) => {
+            if (data) {
+                toggleFilter?.(data)
+            }
+        });
+        return () => {
+            topic.unsubscribe(handle);
+        };
+    }, []);
+
+    useEffect(() => {
         gridRef?.current?.setFilter(filter);
     }, [filter]);
 
@@ -160,6 +204,14 @@ const PolicyListGrid = (props: IOptions) => {
         navigate(`/app/customViewer/operation?${params.toString()}`, { state: { policyData: d } });
     };
 
+    const onDataChange = (d: any) => {
+        setGridData((prev: any) => ({
+            data: d,
+            docType: prev?.docType || d[0]?.docType,
+            soCode: prev?.soCode || d[0]?.soCode
+        }));
+    };
+
     return (
         <div className="grid-container">
             <PalmyraGrid title={"Policy List"} onRowClick={onRowClick}
@@ -167,7 +219,7 @@ const PolicyListGrid = (props: IOptions) => {
                 getPluginOptions={getPluginOptions}
                 ref={gridRef} pagination={{ ignoreSinglePage: true }}
                 DataGridControls={HclSummaryGridControls}
-                endPoint={endPoint} />
+                endPoint={endPoint} onDataChange={onDataChange} />
         </div>
     )
 }
