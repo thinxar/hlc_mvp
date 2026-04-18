@@ -20,7 +20,6 @@ public class RevPolicyPendencyService {
 	private final MongoTemplate mongoTemplate;
 
 	public List<RevPolicyChartModel> searchPolicies(String soCode, String srNo) {
-		
 		 Query query = new Query();
 		    if (soCode != null && !soCode.isBlank()) {
 		        query.addCriteria(Criteria.where("soCode").is(soCode));
@@ -34,7 +33,6 @@ public class RevPolicyPendencyService {
 		for (RevPolicyEntity entity : result) {
 			policyModels.add(toPolicyModel(entity));
 		}
-
 		return policyModels;
 	}
 	
