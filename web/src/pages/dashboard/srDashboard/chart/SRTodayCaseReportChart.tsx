@@ -1,9 +1,9 @@
 import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
-import type { IChartInput } from "../type";
-import { useCommonChartStyles } from "../ChartTheme";
+import type { IChartInput } from "../../type";
+import { useCommonChartStyles } from "../../ChartTheme";
 
-const AgingAnalysisChart = (props: IChartInput) => {
+const SRTodayCaseReportChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText } = props;
     const { commonOptions } = useCommonChartStyles();
 
@@ -24,17 +24,8 @@ const AgingAnalysisChart = (props: IChartInput) => {
                 }
             }]
         },
-        plotOptions: {
-            bar: {
-                borderRadius: 0,
-                horizontal: true,
-                barHeight: '80%',
-                isFunnel: true,
-                distributed: true
-            }
-        },
         colors: [
-            '#22c55e', '#22c55e', '#f59e0b', '#f59e0b', '#ef4444', '#ef4444'
+            '#f59e0b', '#22c55e', '#ef4444'
         ],
         legend: {
             show: true,
@@ -60,7 +51,6 @@ const AgingAnalysisChart = (props: IChartInput) => {
             ...commonOptions.subtitle
         },
         chart: {
-            type: 'bar',
             events: {
                 dataPointSelection: function (_event: any, _chartContext: any, config: any) {
                     const dataPointIndex = config.dataPointIndex;
@@ -88,20 +78,18 @@ const AgingAnalysisChart = (props: IChartInput) => {
         },
         dataLabels: {
             enabled: true,
-            formatter: function (val: number, opt: any) {
-                return opt.w.globals.labels[opt.dataPointIndex] + ': ' + val
-            },
-            dropShadow: {
-                enabled: true,
-            },
+            formatter: function (_val: number, opts: any) {
+                const actualValue = opts.w.globals.series[opts.seriesIndex];
+                return actualValue;
+            }
         }
     }
 
     const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
-    const endPointX = '/AgingAnalysis.json'
+    const endPointX = '/TodayCaseReportChart.json'
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="bar" storeFactory={AppStoreFactory}
+            <PalmyraApexChart options={options} type="pie" storeFactory={AppStoreFactory}
                 endPoint={endPointX} filter={props.filter}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
@@ -110,5 +98,5 @@ const AgingAnalysisChart = (props: IChartInput) => {
 
 };
 
-export { AgingAnalysisChart };
+export { SRTodayCaseReportChart };
 

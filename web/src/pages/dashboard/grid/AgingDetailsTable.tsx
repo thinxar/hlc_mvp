@@ -32,7 +32,7 @@ export const INITIAL_AGING_DATA: AgingRow[] = [
 
 const BUCKETS: BucketMeta[] = [
 
-    { key: "bucket0_3", label: "0–3 Days", color: "#16a34a", bg: "#f0fdf4", border: "#86efac" },
+    { key: "bucket0_3", label: "<3 Days", color: "#16a34a", bg: "#f0fdf4", border: "#86efac" },
     { key: "bucket3_10", label: "3–10 Days", color: "#f78807", bg: "#fffbeb", border: "#fcd34d" },
     { key: "bucketAbove_10", label: "Above 10 Days", color: "#f2370d", bg: "#ffebeb", border: "#fcd34d" }
 
@@ -122,7 +122,7 @@ export default function AgingDetailsTable({
     const grandTotal = getGrandTotal(rows);
 
     return (
-        <div className="bg-white border border-gray-200 rounded shadow-lg overflow-hidden">
+        <div className="bg-white border border-gray-200">
             <div className="px-3 py-2 border-b border-gray-200 flex flex-wrap justify-between items-start gap-4">
                 <div>
                     <div className="text-base font-semibold text-gray-700">{title}</div>
@@ -136,7 +136,7 @@ export default function AgingDetailsTable({
                 <table className="w-full">
                     <thead>
                         <tr>
-                            <th className="px-3 py-2 text-left text-[12px] text-gray-800 font-bold border-b-2 border-gray-200 border-r sticky top-0 bg-white z-10">
+                            <th className="px-3 py-2 text-left text-sm text-gray-800 font-semibold border-b border-gray-200 border-r sticky top-0 bg-white z-10">
                                 Category
                             </th>
 
@@ -145,7 +145,7 @@ export default function AgingDetailsTable({
                                     key={b.key}
                                     onMouseEnter={() => setHighlightBucket(b.key)}
                                     onMouseLeave={() => setHighlightBucket(null)}
-                                    className="p-2 text-left text-[11px] font-bold border-b border-r border-gray-200 sticky top-0 bg-white z-10 cursor-pointer"
+                                    className="p-2 text-left text-sm font-semibold border-b border-r border-gray-200 sticky top-0 bg-white z-10 cursor-pointer"
                                 >
                                     <BucketBadge {...b} />
                                 </th>
@@ -175,7 +175,7 @@ export default function AgingDetailsTable({
                                     <tr key={row.id} className="aging-row">
                                         <td className="px-2 py-1 border-b border-gray-100 border-r bg-white sticky left-0 z-10">
                                             <div className="flex items-center gap-2">
-                                                <div className="text-sm font-bold text-gray-900">
+                                                <div className="text-sm text-gray-900">
                                                     {row.category}
                                                 </div>
                                             </div>
@@ -203,7 +203,7 @@ export default function AgingDetailsTable({
 
                                         <td className="px-3 py-1 border-b border-gray-100 text-right">
                                             <div className="flex flex-col items-end gap-1">
-                                                <span className="text-base font-black text-sky-500">
+                                                <span className="text-base font-semibold">
                                                     {total}
                                                 </span>
                                             </div>
@@ -217,7 +217,7 @@ export default function AgingDetailsTable({
                         <tr className="border-t-2 border-gray-200">
 
                             <td className="px-3 py-1 bg-gray-50 sticky left-0 border-r border-gray-200">
-                                <span className="text-xs font-extrabold text-gray-900 tracking-wide">
+                                <span className="text-xs text-gray-900">
                                     COLUMN TOTAL
                                 </span>
                             </td>
@@ -231,7 +231,7 @@ export default function AgingDetailsTable({
                                         className="px-3 py-1 bg-gray-50 border-r border-gray-200"
                                     >
                                         <span
-                                            className="text-sm font-extrabold"
+                                            className="text-sm font-semibold"
                                             style={{ color: b.color }}
                                         >
                                             {colTotal}
@@ -240,8 +240,8 @@ export default function AgingDetailsTable({
                                 );
                             })}
 
-                            <td className="px-3 py-1 bg-sky-50 text-right">
-                                <span className="text-lg font-black text-sky-600">
+                            <td className="px-3 text-right">
+                                <span className="text-lg font-semibold">
                                     {grandTotal}
                                 </span>
                             </td>

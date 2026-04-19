@@ -26,10 +26,10 @@ const SRDashboardHeader = (props: IOptions) => {
 
                     <div className="flex flex-col">
                         <span className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                            Executive Dashboard
+                            Performance by SR number
                         </span>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Real-time case overview
+                            Today's snapshot — all documents per case
                         </p>
                     </div>
 

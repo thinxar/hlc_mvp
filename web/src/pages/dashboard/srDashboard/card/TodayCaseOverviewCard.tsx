@@ -1,4 +1,4 @@
-import { CalendarDays, CheckCircle, Clock, LayoutGrid } from 'lucide-react';
+import { CheckCircle, Clock, LayoutGrid, Percent } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useFormstore } from 'wire/StoreFactory';
 
@@ -13,10 +13,10 @@ interface ICaseCard {
     approved: number,
     rejected: number,
     pending: number,
-    todayCases: number
+    approvedRate: number
 }
 
-const CaseOverviewCard = (props: IOptions) => {
+const TodayCaseOverviewCard = (props: IOptions) => {
     const { title, endPoint, filter } = props;
     const [_data, setData] = useState<any>(null);
 
@@ -48,7 +48,7 @@ const CaseOverviewCard = (props: IOptions) => {
         approved: 55,
         rejected: 90,
         pending: 89,
-        todayCases: 9
+        approvedRate: 9
     };
 
     const cards = [
@@ -86,9 +86,9 @@ const CaseOverviewCard = (props: IOptions) => {
             textColor: "text-orange-700 dark:text-orange-400",
         },
         {
-            title: "Today's Cases",
-            value: cases.todayCases,
-            icon: CalendarDays,
+            title: "Approval Rate %",
+            value: cases.approvedRate,
+            icon: Percent,
             gradient: "from-teal-400 via-cyan-500 to-blue-500",
             iconBg: "bg-linear-to-br from-teal-100 to-cyan-200 dark:from-teal-100/10 dark:to-cyan-200/10",
             textColor: "text-teal-700 dark:text-teal-400"
@@ -139,5 +139,5 @@ const CaseOverviewCard = (props: IOptions) => {
     );
 };
 
-export { CaseOverviewCard };
+export { TodayCaseOverviewCard };
 
