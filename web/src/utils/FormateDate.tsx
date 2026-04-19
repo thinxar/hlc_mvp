@@ -109,7 +109,20 @@ const getCounts = (data: any[]) => {
 };
 
 
-export { formatDateTime, getDaysBetweenDates, getCounts }
+const getFinancialYears = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+
+    const currentStartYear = month >= 3 ? year : year - 1;
+
+    return {
+        currentFY: `Apr ${currentStartYear} - Mar ${currentStartYear + 1}`,
+        previousFY: `Apr ${currentStartYear - 1} - Mar ${currentStartYear}`
+    };
+};
+
+export { formatDateTime, getDaysBetweenDates, getCounts, getFinancialYears }
 
 
 export { FormateDate, formatRFCDate, handleKeyAction }

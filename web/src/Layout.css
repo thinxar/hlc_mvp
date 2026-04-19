@@ -16,6 +16,10 @@
   z-index: 999999 !important;
 }
 
+.apexcharts-point-annotation-marker {
+  display: none;
+}
+
 .policy-grid .py-selectable-pagination-container,
 .policy-grid .py-selectable-pagination-left-content-container {
   display: block;

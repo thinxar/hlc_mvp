@@ -62,9 +62,25 @@ const TodayCaseReportChart = (props: IChartInput) => {
                 }
             }
         },
+        states: {
+            active: {
+                filter: {
+                    type: 'none',
+                    value: 0
+                }
+            },
+            hover: {
+                filter: {
+                    type: 'none',
+                    value: 0
+                }
+            }
+        },
         dataLabels: {
-            formatter: function (val: number) {
-                return Math.round(val) + "%";
+            enabled: true,
+            formatter: function (_val: number, opts: any) {
+                const actualValue = opts.w.globals.series[opts.seriesIndex];
+                return actualValue;
             }
         }
     }

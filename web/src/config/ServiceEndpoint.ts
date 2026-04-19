@@ -86,6 +86,8 @@ const ServiceEndpoint = {
                 officeCode: '/masterdata/rev/officeCode',
                 serialNo: '/masterdata/rev/srNo',
                 proposalNo: '/rev/proposal/lookup',
+                division:'/rev/division',
+                branch:'/rev/branch'
             },
             chart: {
                 doCodeSummary: '/rev/policy/doCode/summary',

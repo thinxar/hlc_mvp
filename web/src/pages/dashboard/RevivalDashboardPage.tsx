@@ -6,16 +6,27 @@ import { TodayCaseReportChart } from "./chart/TodayCaseReportChart";
 import { WeeklyTrendCaseChart } from "./chart/WeeklyTrendCaseChart";
 import { DailyTrendCaseChart } from "./chart/DailyTrendCaseChart";
 import { TodayCaseBreakdownChart } from "./chart/TodayCaseBreakdownChart";
+import { PreFinancialYearCaseChart } from "./chart/PreFinancialYearCaseChart";
+import { CurrentFinancialYearCaseChart } from "./chart/CurrentFinancialYearCaseChart";
+import { getFinancialYears } from "utils/FormateDate";
+import { AgingAnalysisChart } from "./chart/AgingAnalysisChart";
+import { DashboardHeader } from "./DashboardHeader";
 
 const CHART_HEIGHT = '450';
 const RevivalDashboardPage = () => {
-  const [filter, _setFilter] = useState({ branch: '' });
+  const { currentFY, previousFY } = getFinancialYears();
+  const [filter, setFilter] = useState({ branch: '', division: '' });
 
   const endpoint = '/sdf';
   return (
     <div className="p-4">
+      <div className="bg-white dark:bg-gray-900 rounded-xl shadow mb-3 py-1">
+        <DashboardHeader setFilter={setFilter} />
+      </div>
+
       <CaseOverviewCard title="Case Overview" endPoint={"resourceCardApi"}
         filter={filter} />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3">
         <div className="dash-cards">
           <MonthlyTrendCaseChart endPoint={endpoint}
@@ -29,18 +40,7 @@ const RevivalDashboardPage = () => {
             title="Monthly Acceptance Rate(%) - Last 6 Months" xKey="month"
             yKey="value" />
         </div>
-        <div className="dash-cards">
-          <TodayCaseReportChart endPoint={endpoint}
-            filter={filter} height={CHART_HEIGHT} subText="Case level document status"
-            title="Today - Approval Summary" xKey="name" yKey="value" />
-        </div>
 
-        <div className="dash-cards">
-          <TodayCaseBreakdownChart endPoint={endpoint}
-            filter={filter} height={CHART_HEIGHT} subText="Case level document status"
-            title="Today - Approval Summary" xKey="name"
-            yKey={["pending", "approved", "rejected"]} />
-        </div>
 
         <div className="dash-cards">
           <WeeklyTrendCaseChart endPoint={endpoint}
@@ -56,6 +56,48 @@ const RevivalDashboardPage = () => {
             yKey={["pending", "approved", "rejected"]} />
         </div>
       </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 gap-3 mt-3">
+
+
+        <div className="dash-cards">
+          <TodayCaseReportChart endPoint={endpoint}
+            filter={filter} height={CHART_HEIGHT} subText="Case level document status"
+            title="Today - Approval Summary" xKey="name" yKey="value" />
+        </div>
+
+        <div className="dash-cards">
+          <TodayCaseBreakdownChart endPoint={endpoint}
+            filter={filter} height={CHART_HEIGHT} subText="Case level document status"
+            title="Today - Approval Summary" xKey="name"
+            yKey={["pending", "approved", "rejected"]} />
+        </div>
+
+        <div className="dash-cards">
+          <AgingAnalysisChart endPoint={endpoint}
+            filter={filter} height={CHART_HEIGHT} subText="Number of pending cases by age"
+            title="Aging Analysis" xKey="name" yKey="value" />
+        </div>
+      </div>
+
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 mt-3">
+
+        <div className="dash-cards">
+          <PreFinancialYearCaseChart endPoint={endpoint}
+            height={CHART_HEIGHT} subText="Pending . Approved . Rejected"
+            title={`Previous Financial Year (${previousFY})`} xKey="name"
+            yKey={["pending", "approved", "rejected"]} />
+        </div>
+
+        <div className="dash-cards">
+          <CurrentFinancialYearCaseChart endPoint={endpoint}
+            height={CHART_HEIGHT} subText="Pending . Approved . Rejected"
+            title={`Current Financial Year (${currentFY})`} xKey="name"
+            yKey={["pending", "approved", "rejected"]} />
+        </div>
+      </div>
+
     </div>
   )
 }

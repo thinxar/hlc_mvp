@@ -1,0 +1,28 @@
+{
+    "result": [
+        {
+            "name": "0-7 Days",
+            "value": 750
+        },
+        {
+            "name": "8-15 Days",
+            "value": 700
+        },
+        {
+            "name": "16-30 Days",
+            "value": 600
+        },
+        {
+            "name": "31-60 Days",
+            "value": 400
+        },
+        {
+            "name": "61-90 Days",
+            "value": 300
+        },
+        {
+            "name": "Above 90 Days",
+            "value": 200
+        }
+    ]
+}

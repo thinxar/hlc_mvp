@@ -3,7 +3,7 @@ import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import type { IChartInput } from "../type";
 import { useCommonChartStyles } from "../ChartTheme";
 
-const TodayCaseBreakdownChart = (props: IChartInput) => {
+const AgingAnalysisChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText } = props;
     const { commonOptions } = useCommonChartStyles();
 
@@ -24,8 +24,17 @@ const TodayCaseBreakdownChart = (props: IChartInput) => {
                 }
             }]
         },
+        plotOptions: {
+            bar: {
+                borderRadius: 0,
+                horizontal: true,
+                barHeight: '80%',
+                isFunnel: true,
+                distributed: true
+            }
+        },
         colors: [
-            '#f59e0b', '#22c55e', '#ef4444'
+            '#22c55e', '#22c55e', '#f59e0b', '#f59e0b', '#ef4444', '#ef4444'
         ],
         legend: {
             show: true,
@@ -51,6 +60,7 @@ const TodayCaseBreakdownChart = (props: IChartInput) => {
             ...commonOptions.subtitle
         },
         chart: {
+            type: 'bar',
             events: {
                 dataPointSelection: function (_event: any, _chartContext: any, config: any) {
                     const dataPointIndex = config.dataPointIndex;
@@ -77,23 +87,22 @@ const TodayCaseBreakdownChart = (props: IChartInput) => {
             }
         },
         dataLabels: {
-            formatter: function (val: number) {
-                return Math.round(val) + "%";
-            }
+            enabled: true,
+            formatter: function (val: number, opt: any) {
+                return opt.w.globals.labels[opt.dataPointIndex] + ':  ' + val
+            },
+            dropShadow: {
+                enabled: true,
+            },
         }
     }
 
     const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
-    const endPointX = '/TodayCaseBreakdown.json'
+    const endPointX = '/AgingAnalysis.json'
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="radar" storeFactory={AppStoreFactory}
+            <PalmyraApexChart options={options} type="bar" storeFactory={AppStoreFactory}
                 endPoint={endPointX} filter={props.filter}
-                seriesOptions={[
-                    { name: "Pending" },
-                    { name: "Approved" },
-                    { name: "Rejected" }
-                ]}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
         </div>
@@ -101,5 +110,5 @@ const TodayCaseBreakdownChart = (props: IChartInput) => {
 
 };
 
-export { TodayCaseBreakdownChart };
+export { AgingAnalysisChart };
 
