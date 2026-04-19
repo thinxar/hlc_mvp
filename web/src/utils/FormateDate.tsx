@@ -122,7 +122,22 @@ const getFinancialYears = () => {
     };
 };
 
+function formatAmount(input: any, prefix?: any) {
+    if (input !== 0 && input !== undefined && input !== null) {
+        const numericInput = Number(input);
+        if (isNaN(numericInput)) return '0';
+
+        const convertAmount = numericInput?.toFixed(0);
+        const options = { minimumFractionDigits: 0, maximumFractionDigits: 0 };
+        const formattedAmount = Number(convertAmount).toLocaleString('en-IN', options);
+        return !prefix ? '₹' + formattedAmount : formattedAmount;
+    } else {
+        return '0';
+    }
+}
+
+
 export { formatDateTime, getDaysBetweenDates, getCounts, getFinancialYears }
 
 
-export { FormateDate, formatRFCDate, handleKeyAction }
+export { FormateDate, formatRFCDate, handleKeyAction, formatAmount }

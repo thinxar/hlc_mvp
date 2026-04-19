@@ -4,14 +4,14 @@ const BubbleChart = () => {
 
     const generateBubbleData = (count = 20) => {
         const branches = [
-            "Chennai", "Madurai", "Coimbatore", "Trichy", "Salem",
-            "Erode", "Tirunelveli", "Vellore", "Thoothukudi", "Dindigul",
+            "BHOPAL CBO-3", "BHOPAL CBO (CAB)", "SHAJAPUR", "BIAORA", "BHOPAL CBO-1",
+            "ITARSI", "BHOPAL CBO-2", "SEHORE", "VIDISHA", "HARDA",
             "Karur", "Cuddalore", "Kanchipuram", "Thanjavur", "Nagapattinam",
-            "Krishnagiri", "Dharmapuri", "Virudhunagar", "Sivakasi", "Namakkal",
-            "Perambalur", "Ariyalur", "Ramanathapuram", "Pudukkottai",
-            "Tenkasi", "Villupuram", "Tiruppur", "Nilgiris", "Kanyakumari",
-            "Hosur", "Pollachi", "Mayiladuthurai", "Chidambaram", "Avadi",
-            "Tambaram", "Ambur", "Ranipet", "Kovilpatti", "Gobichettipalayam"
+            "HOSHANGABAD", "Dharmapuri", "Virudhunagar", "Sivakasi", "Namakkal",
+            "Perambalur", "RAISEN", "BHOPAL (BHEL) CBO", "BAIRAGARH",
+            "BARELI", "BHOPAL CBO-4", "GANJ BASODA", "SHUJALPUR", "PIPARIYA",
+            "BETUL", "PATHAKHEDA", "TIKAMGARH", "PANNA", "SATNA-II",
+            "SHAHDOL", "AMBIKAPUR", "UMARIA", "CHIRIMIRI", "SHAHDOL (CAB)"
         ];
 
         const size = Math.min(count, 40);

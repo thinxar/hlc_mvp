@@ -1,5 +1,6 @@
-import { CheckCircle, Clock, LayoutGrid, Percent } from 'lucide-react';
+import { CheckCircle, Clock, Percent } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { MdOutlineNumbers } from 'react-icons/md';
 import { useFormstore } from 'wire/StoreFactory';
 
 interface IOptions {
@@ -55,7 +56,7 @@ const TodayCaseOverviewCard = (props: IOptions) => {
         {
             title: "Total cases",
             value: cases.total,
-            icon: LayoutGrid,
+            icon: MdOutlineNumbers,
             gradient: "from-blue-400 via-blue-500 to-blue-600",
             iconBg: "bg-linear-to-br from-blue-100 to-blue-200 dark:from-blue-100/10 dark:to-blue-200/10",
             textColor: "text-blue-700 dark:text-blue-400"

@@ -1,5 +1,7 @@
-import { CalendarDays, CheckCircle, Clock, LayoutGrid } from 'lucide-react';
+import { CalendarDays, CheckCircle, Clock } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { MdOutlineNumbers } from 'react-icons/md';
+import { formatAmount } from 'utils/FormateDate';
 import { useFormstore } from 'wire/StoreFactory';
 
 interface IOptions {
@@ -9,26 +11,24 @@ interface IOptions {
 }
 
 interface ICaseCard {
-    total: number
-    approved: number,
-    rejected: number,
-    pending: number,
-    todayCases: number
+    total: number | string
+    approved: number | string,
+    rejected: number | string,
+    pending: number | string,
+    todayCases?: number | string
 }
 
 const CaseOverviewCard = (props: IOptions) => {
     const { title, endPoint, filter } = props;
-    const [_data, setData] = useState<any>(null);
+    const [data, setData] = useState<any>(null);
 
     const buildQueryParams = (filter: any) => {
         const params = new URLSearchParams();
-
         Object.entries(filter).forEach(([key, value]) => {
             if (value !== undefined && value !== null && value !== '') {
                 params.append(key, String(value));
             }
         });
-
         return params.toString();
     };
 
@@ -37,25 +37,25 @@ const CaseOverviewCard = (props: IOptions) => {
 
         const query = buildQueryParams(filter);
         const endpoint = query ? `${endPoint}?${query}` : endPoint;
+
         useFormstore(endpoint, {}, '').get({}).then((d) => {
             if (d)
-                setData(d[0])
+                setData(d)
         })
     }, [query])
 
     const cases: ICaseCard = {
-        total: 300,
-        approved: 55,
-        rejected: 90,
-        pending: 89,
-        todayCases: 9
+        total: data ? formatAmount(data[0].value, true) : 0,
+        approved: data ? formatAmount(data[1].value, true) : 0,
+        rejected: data ? formatAmount(data[2].value, true) : 0,
+        pending: data ? formatAmount(data[3].value, true) : 0
     };
 
     const cards = [
         {
             title: "Total cases",
             value: cases.total,
-            icon: LayoutGrid,
+            icon: MdOutlineNumbers,
             gradient: "from-blue-400 via-blue-500 to-blue-600",
             iconBg: "bg-linear-to-br from-blue-100 to-blue-200 dark:from-blue-100/10 dark:to-blue-200/10",
             textColor: "text-blue-700 dark:text-blue-400"
@@ -87,7 +87,7 @@ const CaseOverviewCard = (props: IOptions) => {
         },
         {
             title: "Today's Cases",
-            value: cases.todayCases,
+            value: 0,
             icon: CalendarDays,
             gradient: "from-teal-400 via-cyan-500 to-blue-500",
             iconBg: "bg-linear-to-br from-teal-100 to-cyan-200 dark:from-teal-100/10 dark:to-cyan-200/10",

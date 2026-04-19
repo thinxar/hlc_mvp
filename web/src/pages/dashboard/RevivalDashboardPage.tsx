@@ -15,20 +15,24 @@ import { TodayCaseReportChart } from "./chart/TodayCaseReportChart";
 import { WeeklyTrendCaseChart } from "./chart/WeeklyTrendCaseChart";
 import { DashboardHeader } from "./DashboardHeader";
 import AgingDetailsTable from "./grid/AgingDetailsTable";
+import { ServiceEndpoint } from "config/ServiceEndpoint";
 
 const CHART_HEIGHT = '450';
 const RevivalDashboardPage = () => {
   const { currentFY, previousFY } = getFinancialYears();
-  const [filter, setFilter] = useState({ branch: '', division: '' });
+  const [filter, setFilter] = useState({ branchName: '', divisionName: '' });
 
   const endpoint = '/sdf';
+  const baseUrl = ServiceEndpoint.customView.rev;
+  const overViewEndPoint = baseUrl.cart.summaryView;
+
   return (
     <div className="p-4 bg-slate-50 dark:bg-gray-900">
       <div className="bg-white dark:bg-gray-800/50 rounded-xl shadow mb-3 py-1">
         <DashboardHeader setFilter={setFilter} filter={filter} />
       </div>
 
-      <CaseOverviewCard title="Case Overview" endPoint={"resourceCardApi"}
+      <CaseOverviewCard title="Case Overview" endPoint={overViewEndPoint}
         filter={filter} />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3">
@@ -110,12 +114,6 @@ const RevivalDashboardPage = () => {
             filter={filter} height={CHART_HEIGHT} title="Pending Summary (Comparative Analysis)"
             xKey="name" yKey={["preApproved", "currApproved"]} />
         </div>
-
-        {/* <div className="dash-cards">
-          <CurrentYearBranchStatus endPoint={'/cYearBranchStatus.json'}
-            title="Branch-wise Approved and Pending (Current FY)" height={CHART_HEIGHT}
-            xKey="Xlabel" yKey={["PE", "AC"]} subText="Pending . Approved" />
-        </div> */}
         <div className="dash-cards">
           <PendingCasesAging endPoint={'/PendingCaseAging.json'}
             title="Ageing Bucket Distribution" height={CHART_HEIGHT}

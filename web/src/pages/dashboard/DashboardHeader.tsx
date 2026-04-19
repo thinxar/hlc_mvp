@@ -18,20 +18,20 @@ const DashboardHeader = (props: IOptions) => {
     const { handleFilterChange } = useFilterHandler(setFilter);
 
     const LookupEndPoint = ServiceEndpoint.customView.rev.Lookup;
-    const divisionEndPoint = filter?.branch ? LookupEndPoint.division + `?branchName=${filter?.branch}` : LookupEndPoint.division;
-    const branchEndPoint = filter?.division ? LookupEndPoint.branch + `?divisionName=${filter?.division}` : LookupEndPoint.branch;
+    const divisionEndPoint = filter?.branchName ? LookupEndPoint.division + `?branchName=${filter?.branchName}` : LookupEndPoint.division;
+    const branchEndPoint = filter?.divisionName ? LookupEndPoint.branch + `?divisionName=${filter?.divisionName}` : LookupEndPoint.branch;
 
     useEffect(() => { 
-        if (!filter?.division) {
+        if (!filter?.divisionName) {
             branchRef?.current?.setValue(null);
-            setFilter((prev:any) => ({ ...prev, branch: null })); 
+            setFilter((prev:any) => ({ ...prev, branchName: '' })); 
         }
-    }, [filter?.division]);
+    }, [filter?.divisionName]);
 
     return (
         <div>
             <div className="flex justify-between pt-1 ml-3">
-                <div className="flex items-start gap-3">
+                <div className="flex items-center gap-3">
 
                     <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-100 text-blue-600">
                         <LayoutDashboard size={18} />
@@ -50,13 +50,13 @@ const DashboardHeader = (props: IOptions) => {
                 <div className="pr-3">
                     <PalmyraForm>
                         <FieldGroupContainer columns={2}>
-                            <ServerLookup attribute="division" placeholder="Select Division" ref={divisionRef}
+                            <ServerLookup attribute="divisionName" placeholder="Select Division" ref={divisionRef}
                                 queryOptions={{ endPoint: divisionEndPoint }}
-                                onChange={handleFilterChange("division", 'customLookup', 'divisionName')}
+                                onChange={handleFilterChange("divisionName", 'customLookup', 'divisionName')}
                                 lookupOptions={{ idAttribute: 'id', labelAttribute: 'divisionName' }} />
-                            <ServerLookup attribute="branch" placeholder="Select Branch" ref={branchRef} disabled={!filter?.division}
+                            <ServerLookup attribute="branch" placeholder="Select Branch" ref={branchRef} disabled={!filter?.divisionName}
                                 queryOptions={{ endPoint: branchEndPoint }}
-                                onChange={handleFilterChange("branch", 'customLookup', 'branchName')}
+                                onChange={handleFilterChange("branchName", 'customLookup', 'branchName')}
                                 lookupOptions={{ idAttribute: 'id', labelAttribute: 'branchName' }} />
                         </FieldGroupContainer>
                     </PalmyraForm>
