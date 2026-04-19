@@ -1,0 +1,75 @@
+Zone + Division Reference Data - Extraction Specification
+=========================================================
+
+Purpose: Produce a de-duplicated JSON catalogue of (Zone, Division Name)
+pairs from the master branch CSV. Feeds cascading UI filters
+(zone -> division -> branch) and any report that groups above branch
+grain without needing to scan branch.csv repeatedly.
+
+Source
+------
+File: base_data/branch.csv
+CSV header (exact order): Zone, Division Name, Branch Code, Branch Name,
+                          Number of Cases, Documents
+
+Only the first two columns are consumed by this spec. All other columns
+are ignored.
+
+Output
+------
+File: generated/zone_divisions.json
+Format: single JSON document - a JSON array of flat objects, UTF-8,
+2-space indented, trailing newline.
+
+Record schema (one element per unique zone + divisionName pair):
+
+Field         | Type   | Format / Constraint                                | Example
+--------------|--------|----------------------------------------------------|----------
+zone          | string | from CSV "Zone"; trimmed                           | "CZ"
+divisionName  | string | from CSV "Division Name"; trimmed, ws collapsed    | "Bhopal"
+
+Example element
+---------------
+{
+  "zone": "CZ",
+  "divisionName": "Bhopal"
+}
+
+Rules
+-----
+1. Header mapping: "Zone" -> zone, "Division Name" -> divisionName.
+   Output keys are camelCase.
+2. Whitespace hygiene: for zone and divisionName, replace any \r?\n and
+   repeated whitespace inside the cell with a single space, then trim.
+   Matches the rule used in the branch and data_gen specs.
+3. Uniqueness key: the composite (zone, divisionName). Emit exactly one
+   record per distinct pair. The same divisionName string MAY legally
+   reappear under a different zone - treat those as different records.
+   Case-sensitive comparison (the CSV is internally consistent on case).
+4. Skip blank lines. Skip rows where BOTH zone and divisionName are empty
+   after cleaning. A row that has a zone but an empty divisionName (or
+   vice versa) is a data error - fail the run with a non-zero exit and
+   report the offending source row number.
+5. The CSV header row must be consumed and discarded.
+6. Output sort order: zone ASC, then divisionName ASC (string comparison,
+   case-sensitive). Stable sort.
+7. No additional fields are emitted. Do not include branch counts,
+   division codes, or any aggregate - this artifact is pure reference
+   data.
+8. The output file is overwritten on each run. The script is idempotent:
+   running it twice on the same input produces byte-identical output.
+
+Relationship to other reference artifacts
+-----------------------------------------
+- generated/branches.json (branch_reference_spec.txt) is the finer-grain
+  catalogue. This zone+division file is a projection of that one onto
+  (zone, divisionName) and could equally be derived from it; sourcing
+  both from branch.csv directly keeps the two extractors independent so
+  that neither run order nor branches.json freshness affects this
+  output.
+
+Script location
+---------------
+scripts/reference_data/extract_zone_divisions.js (to be added alongside
+this spec; mirrors the scripts/<domain>/ convention already used by
+scripts/data_gen, scripts/aggregated, and scripts/reference_data).

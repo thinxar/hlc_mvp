@@ -1,0 +1,84 @@
+Branch Reference Data - Extraction Specification
+================================================
+
+Purpose: Produce a clean, de-duplicated JSON catalogue of LIC branches from
+the master CSV so downstream generators and reports can look up branch
+attributes without re-parsing the CSV.
+
+Source
+------
+File: base_data/branch.csv
+CSV header (exact order): Zone, Division Name, Branch Code, Branch Name,
+                          Number of Cases, Documents
+
+Only the first four columns are consumed by this spec. "Number of Cases"
+and "Documents" are ignored for reference output.
+
+Output
+------
+File: generated/branches.json
+Format: single JSON document - a JSON array of flat branch objects, UTF-8,
+2-space indented, trailing newline.
+
+Record schema (one element per unique branch):
+
+Field         | Type   | Format / Constraint                                | Example
+--------------|--------|----------------------------------------------------|--------------------------
+zone          | string | from CSV "Zone"; trimmed                           | "CZ"
+divisionName  | string | from CSV "Division Name"; trimmed, ws collapsed    | "Bhopal"
+branchCode    | string | from CSV "Branch Code"; 3 or 4 chars; preserve     | "034A"
+              |        | leading zeros and alphabetic suffixes as-is        |
+branchName    | string | from CSV "Branch Name"; trimmed, ws collapsed      | "BHOPAL CBO-3"
+
+Example element
+---------------
+{
+  "zone": "CZ",
+  "divisionName": "Bhopal",
+  "branchCode": "206",
+  "branchName": "BHOPAL CBO-3"
+}
+
+Rules
+-----
+1. Header mapping: "Division Name" -> divisionName, "Branch Code" -> branchCode,
+   "Branch Name" -> branchName, "Zone" -> zone. Output keys are camelCase.
+2. Read branchCode as a STRING. Do not coerce to a number - values like
+   "034A", "035B", "0035" must keep their leading zeros and alphabetic
+   suffixes exactly as they appear in the CSV.
+3. Whitespace hygiene (same rule as data_gen spec #3):
+   Replace any \r?\n and repeated whitespace inside divisionName and
+   branchName with a single space, then trim. This handles embedded
+   newlines that appear in some CSV cells.
+4. Uniqueness key: branchCode. branchCode is expected to be globally
+   unique across the CSV; emit exactly one record per distinct branchCode.
+   If the CSV contains duplicate branchCode rows, keep the FIRST occurrence
+   and log subsequent duplicates to stderr (do not silently drop with no
+   signal). If a duplicate branchCode carries conflicting zone/
+   divisionName/branchName values, fail the run with a non-zero exit.
+5. Skip blank lines. Skip rows whose branchCode is empty after trimming.
+6. The CSV header row must be consumed and discarded - do not emit it as
+   data.
+7. Output sort order: zone ASC, then divisionName ASC, then branchCode ASC
+   (string comparison, case-sensitive). Stable sort.
+8. No additional fields are emitted. "Number of Cases" and "Documents"
+   from the CSV are intentionally excluded - this artifact is pure
+   reference data, not case volumes.
+9. The output file is overwritten on each run. The script is idempotent:
+   running it twice on the same input produces byte-identical output.
+
+Consumers
+---------
+- scripts/data_gen/generate_all_cases.js currently reads branch.csv
+  directly; it may switch to generated/branches.json once this spec is
+  implemented (the four fields above are exactly what that generator
+  needs from the CSV, apart from the per-branch case/document counts
+  which remain CSV-only).
+- Future UI dropdowns (zone -> division -> branch cascades) can load
+  this JSON directly.
+
+Script location
+---------------
+scripts/reference_data/extract_branches.js (to be added alongside this
+spec; mirrors the scripts/<domain>/ convention already used by
+scripts/data_gen and scripts/aggregated).
