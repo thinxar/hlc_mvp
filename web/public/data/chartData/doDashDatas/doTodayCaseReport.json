@@ -1,0 +1,12 @@
+{
+    "result": [
+        {
+            "name": "Pending",
+            "value": 400
+        },
+        {
+            "name": "Approved",
+            "value": 800
+        }
+    ]
+}

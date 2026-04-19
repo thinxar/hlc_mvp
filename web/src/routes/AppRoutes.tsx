@@ -4,6 +4,7 @@ import { CustomViewerPage } from "src/pages/customViewer/CustomViewerPage";
 import { APDocumentView } from "src/pages/customViewer/pages/apPolicy/APDocumentView";
 import PolicySubmissionPage from "src/pages/customViewer/pages/PolicySubmissionPage";
 import { CustomViewerViewPage } from "src/pages/customViewer/view/CustomViewerViewPage";
+import RevivalDODashboardPage from "src/pages/dashboard/doDashboard/RevivalDODashboardPage";
 import { RevivalDashboardPage } from "src/pages/dashboard/RevivalDashboardPage";
 import { RevivalSRDashboardPage } from "src/pages/dashboard/srDashboard/RevivalSRDashboardPage";
 import { HomePage } from "src/pages/home/HomePage";
@@ -59,6 +60,10 @@ export const appRoutes = [
             {
                 path: 'srDashboard',
                 element: <RevivalSRDashboardPage />,
+            },
+            {
+                path: 'doDashboard',
+                element: <RevivalDODashboardPage />,
             }
         ]
     }

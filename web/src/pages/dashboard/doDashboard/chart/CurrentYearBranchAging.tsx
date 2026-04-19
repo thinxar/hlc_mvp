@@ -1,10 +1,10 @@
 // import { useDisclosure } from '@mantine/hooks';
 import { PalmyraStoreFactory } from '@palmyralabs/palmyra-wire';
 import { PalmyraApexChart } from '@palmyralabs/rt-apexchart';
-import { IChartInput } from '../../customViewer/chart/type';
-import { useCommonChartStyles } from '../ChartTheme';
+import { useCommonChartStyles } from '../../ChartTheme';
+import { IChartInput } from '../../type';
 
-const CurrentYearBranchStatus = (props: IChartInput) => {
+const CurrentYearBranchAging = (props: IChartInput) => {
     const { title, xKey, yKey, filter, endPoint, subText,height } = props;
     const { commonOptions } = useCommonChartStyles();
 
@@ -112,7 +112,7 @@ const CurrentYearBranchStatus = (props: IChartInput) => {
         colors: ['#f59e0b', '#22c55e', '#ef4444']
     };
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
+    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' });
 
     return <> <PalmyraApexChart options={options} type="bar"
         endPoint={endPoint} filter={filter} height={height} width={'100%'} storeFactory={AppStoreFactory}
@@ -125,4 +125,4 @@ const CurrentYearBranchStatus = (props: IChartInput) => {
     </>
 };
 
-export { CurrentYearBranchStatus };
+export { CurrentYearBranchAging };
