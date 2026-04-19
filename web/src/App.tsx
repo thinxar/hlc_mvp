@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { MainLayout } from './common/layout/MainLayout';
 import PageNotFoundX from './common/pages/PageNotFoundX';
+import './style/DarkMode.css';
 import './Layout.css';
 import LandingPage from './pages/landingPage/LandingPage';
 import LoginPage from './pages/login/LoginPage';

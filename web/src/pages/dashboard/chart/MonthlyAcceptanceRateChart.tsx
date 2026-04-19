@@ -102,7 +102,7 @@ const MonthlyAcceptanceRateChart = (props: IChartInput) => {
                 }
             },
         },
-        colors: ['#f59e0b', '#3b82f6'],
+        colors: ['#f59e0b', '#22c55e', '#3b82f6'],
         active: {
             allowMultipleDataPointsSelection: true,
         },

@@ -7,13 +7,16 @@ import { MantineProvider } from '@mantine/core';
 import AppStoreFactory from './wire/StoreFactory.ts'
 import { ToastContainer, Zoom } from 'react-toastify'
 import { ChartStoreFactoryContext } from '@palmyralabs/rt-apexchart'
+import { ThemeProvider } from 'wire/ThemeProvider.tsx'
 
 createRoot(document.getElementById('root')!).render(
   // <StrictMode>
   <MantineProvider>
     <StoreFactoryContext.Provider value={AppStoreFactory}>
       <ChartStoreFactoryContext.Provider value={AppStoreFactory} >
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
         <ToastContainer
           limit={3} pauseOnFocusLoss={false} autoClose={2000} position="bottom-right" hideProgressBar={false} newestOnTop
           closeOnClick rtl={false} transition={Zoom} pauseOnHover draggable

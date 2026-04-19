@@ -12,8 +12,8 @@ const RevivalSRDashboardPage = () => {
 
   const endpoint = '/sdf';
   return (
-    <div className="p-4 bg-slate-50">
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow mb-3 py-1">
+    <div className="p-4 bg-slate-50 dark:bg-gray-900">
+      <div className="bg-white dark:bg-gray-800/50 rounded-xl shadow mb-3 py-1">
         <SRDashboardHeader setFilter={setFilter} />
       </div>
 
