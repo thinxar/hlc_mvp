@@ -19,9 +19,28 @@ const clearAuthInfo = () => {
 }
 
 
+// dark theme
 
-export { clearAuthInfo, getPolicyInfo, storePolicyInfo };
+const setDarkModeTheme = (theme: any) => {
+    if (theme) {
+        const themeString: string = JSON.stringify(theme);
+        localStorage.setItem('darkMode', themeString);
+    } else {
+        localStorage.removeItem('darkMode');
+    }
+}
+
+const getDarkModeTheme = () => {
+    const themeString = localStorage.getItem('darkMode');
+    if (themeString) {
+        return JSON.parse(themeString);
+    } else
+        return undefined;
+}
 
 
-    export { resetLocalStorageData };
+export { clearAuthInfo, getPolicyInfo, storePolicyInfo, setDarkModeTheme, getDarkModeTheme };
+
+
+export { resetLocalStorageData };
 

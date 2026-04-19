@@ -4,6 +4,7 @@ import { CustomViewerPage } from "src/pages/customViewer/CustomViewerPage";
 import { APDocumentView } from "src/pages/customViewer/pages/apPolicy/APDocumentView";
 import PolicySubmissionPage from "src/pages/customViewer/pages/PolicySubmissionPage";
 import { CustomViewerViewPage } from "src/pages/customViewer/view/CustomViewerViewPage";
+import { RevivalDashboardPage } from "src/pages/dashboard/RevivalDashboardPage";
 import { HomePage } from "src/pages/home/HomePage";
 import { PolicyResultPage } from "src/pages/policyResult/PolicyResultPage";
 
@@ -49,6 +50,10 @@ export const appRoutes = [
             {
                 path: 'operation',
                 element: <CustomViewerViewPage pageName="customViewer" />,
+            },
+            {
+                path: 'dashboard',
+                element: <RevivalDashboardPage />,
             }
         ]
     }

@@ -26,6 +26,7 @@
     "fabric": "^5.5.2",
     "geotiff": "^2.1.4-beta.1",
     "html2canvas": "^1.4.1",
+    "lucide-react": "^1.8.0",
     "motion": "^12.38.0",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.4.296",

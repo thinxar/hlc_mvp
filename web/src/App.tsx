@@ -13,8 +13,21 @@ import './style/ResponsiveLayout.css';
 import './themes/blue/Colors.css';
 import './themes/colorDef.css';
 import { IFrameLayout } from './common/layout/IFrameLayout';
+import { useContext, useEffect } from 'react';
+import { ThemeContext } from 'wire/ThemeProvider';
 
 function App() {
+  const { isDarkMode } = useContext(ThemeContext);
+
+  useEffect(() => {
+    document.body.setAttribute('theme', isDarkMode ? 'dark' : 'light');
+
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [isDarkMode]);
 
   return (
     <div className='min-h-screen bg-linear-to-br bColor relative overflow-hidden' >
