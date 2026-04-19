@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RevPolicyResponseModel {
+public class ResponseModel {
 	private String name;
 	private long value;
 }

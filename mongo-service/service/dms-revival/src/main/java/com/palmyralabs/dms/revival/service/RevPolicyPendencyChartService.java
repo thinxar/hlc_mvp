@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.palmyralabs.dms.revival.entity.RevPolicyEntity;
-import com.palmyralabs.dms.revival.model.RevPolicyResponseModel;
+import com.palmyralabs.dms.revival.model.ResponseModel;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +20,7 @@ public class RevPolicyPendencyChartService {
 
 	private final MongoTemplate mongoTemplate;
 
-	public List<RevPolicyResponseModel> getPendency(String soCode, String srNo) {
+	public List<ResponseModel> getPendency(String soCode, String srNo) {
 		List<RevPolicyEntity> policies = mongoTemplate.find(buildQuery(soCode, srNo), RevPolicyEntity.class);
 		return preparePendencyResponse(policies);
 	}
@@ -36,7 +36,7 @@ public class RevPolicyPendencyChartService {
 		return query;
 	}
 
-	private List<RevPolicyResponseModel> preparePendencyResponse(List<RevPolicyEntity> policies) {
+	private List<ResponseModel> preparePendencyResponse(List<RevPolicyEntity> policies) {
 		long total = policies.size();
 		long lessThan3Days = 0;
 		long between3To10Days = 0;
@@ -54,9 +54,9 @@ public class RevPolicyPendencyChartService {
 			}
 		}
 
-		return List.of(new RevPolicyResponseModel("Total", total), new RevPolicyResponseModel("<3 Days", lessThan3Days),
-				new RevPolicyResponseModel("3-10 Days", between3To10Days),
-				new RevPolicyResponseModel("Above 10 Days", above10Days));
+		return List.of(new ResponseModel("Total", total), new ResponseModel("<3 Days", lessThan3Days),
+				new ResponseModel("3-10 Days", between3To10Days),
+				new ResponseModel("Above 10 Days", above10Days));
 	}
 
 	private long getPendingDays(LocalDate submittedDate, LocalDate today) {

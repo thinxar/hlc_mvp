@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import com.palmyralabs.dms.revival.entity.RevPolicyEntity;
-import com.palmyralabs.dms.revival.model.RevPolicyResponseModel;
+import com.palmyralabs.dms.revival.model.ResponseModel;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +19,7 @@ public class RevDoCodeSummaryService {
 
 	private final MongoTemplate mongoTemplate;
 
-	public List<RevPolicyResponseModel> getPolicyCountByDoCode(String officeCode, String srNo) {
+	public List<ResponseModel> getPolicyCountByDoCode(String officeCode, String srNo) {
 
 		Criteria criteria = new Criteria();
 		if (officeCode != null && !officeCode.isBlank()) {
@@ -33,7 +33,7 @@ public class RevDoCodeSummaryService {
 				Aggregation.group("doCode").count().as("value"),
 				Aggregation.project("value").and("_id").as("name"),
 				Aggregation.sort(Sort.Direction.ASC, "name"));
-		return mongoTemplate.aggregate(aggregation, RevPolicyEntity.class, RevPolicyResponseModel.class)
+		return mongoTemplate.aggregate(aggregation, RevPolicyEntity.class, ResponseModel.class)
 				.getMappedResults();
 	}
 }

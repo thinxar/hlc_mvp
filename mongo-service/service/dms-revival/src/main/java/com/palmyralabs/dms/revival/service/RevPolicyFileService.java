@@ -43,7 +43,6 @@ public class RevPolicyFileService {
 	private final RevPolicyModelMapper modelMapper;
 	private final AsyncFileService asyncFileService;
 
-	
 	public String upload(MultipartFile file, Integer policyId, Integer docketTypeId, boolean incrementalFileName) {
 		log.info("Initiating upload process for policyId={}, docketTypeId={}", policyId, docketTypeId);
 		Optional<RevPolicyEntity> policyOptional = policyRepository.findById(policyId);
@@ -69,7 +68,7 @@ public class RevPolicyFileService {
 			throw new DataNotFoundException("INV012", "Policy Record not found");
 		}
 	}
-	
+
 	public ResponseFileEmitter download(Integer policyId, Integer fileId) {
 		RevPolicyFileEntity policyFileEntity = policyFileRepository.findByPolicyId_IdAndId(policyId, fileId);
 
@@ -103,7 +102,7 @@ public class RevPolicyFileService {
 		fileEntity.setActionOn(LocalDateTime.now());
 		policyFileRepository.save(fileEntity);
 	}
-	
+
 	private boolean isEndorsement(Integer docketTypeId) {
 		RevDocumentTypeEntity docEntity = getDocketType(docketTypeId);
 		return docEntity.getCode().equals("115");
@@ -150,8 +149,11 @@ public class RevPolicyFileService {
 			throw new InvalidInputException("INV003", "Some documents do not belong to the given policy");
 		}
 		List<RevPolicyFileModel> policyFileModels = new ArrayList<RevPolicyFileModel>();
+		String status = request.getStatus();
 		for (RevPolicyFileEntity file : files) {
-			file.setStatus(request.getStatus());
+			if (status.equalsIgnoreCase("approved") || status.equalsIgnoreCase("rejected")) {
+				file.setStatus(status);
+			}
 			file.setActionBy("admin");
 			file.setActionOn(LocalDateTime.now());
 			RevPolicyFileEntity savedPolicyFileEntity = policyFileRepository.save(file);
@@ -172,10 +174,7 @@ public class RevPolicyFileService {
 			query.addCriteria(Criteria.where("policyId.asrNo").is(asrNo));
 		}
 		if (policyNumber != null && !policyNumber.isBlank()) {
-		    query.addCriteria(
-		        Criteria.where("policyId.policyNumber")
-		        .is(Long.valueOf(policyNumber))
-		    );
+			query.addCriteria(Criteria.where("policyId.policyNumber").is(Long.valueOf(policyNumber)));
 		}
 		List<RevPolicyFileEntity> result = mongoTemplate.find(query, RevPolicyFileEntity.class);
 		List<RevPolicyFileModel> policyFileModels = new ArrayList<RevPolicyFileModel>();
@@ -185,16 +184,14 @@ public class RevPolicyFileService {
 
 		return policyFileModels;
 	}
-	
+
 	private RevDocumentTypeEntity getDocketType(Integer id) {
-		return docTypeRepo.findById(id)
-				.orElseThrow(() -> new InvalidInputException("INV001", "docketType not found"));
+		return docTypeRepo.findById(id).orElseThrow(() -> new InvalidInputException("INV001", "docketType not found"));
 	}
-	
+
 	private RevPolicyEntity getPolicyEntity(Integer id) {
 		return policyRepository.findById(id)
 				.orElseThrow(() -> new InvalidInputException("INV001", "policy record not found"));
 	}
-
 
 }
