@@ -4,7 +4,7 @@ import { IChartInput } from "../../type";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 
 const DoTodayCaseSummaryChart = (props: IChartInput) => {
-    const { title, xKey, yKey, subText,endPoint } = props;
+    const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
 
     const options: any = {
@@ -25,7 +25,7 @@ const DoTodayCaseSummaryChart = (props: IChartInput) => {
             }]
         },
         colors: [
-            '#f59e0b', '#22c55e', '#ef4444'
+            '#22c55e', '#f59e0b'
         ],
         legend: {
             show: true,
@@ -85,7 +85,7 @@ const DoTodayCaseSummaryChart = (props: IChartInput) => {
         }
     }
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' }); 
+    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' });
     return (
         <div id="chart">
             <PalmyraApexChart options={options} type="donut" storeFactory={AppStoreFactory}

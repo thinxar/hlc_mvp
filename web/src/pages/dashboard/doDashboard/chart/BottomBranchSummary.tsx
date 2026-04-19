@@ -4,13 +4,13 @@ import { PalmyraApexChart } from '@palmyralabs/rt-apexchart';
 import { useCommonChartStyles } from '../../ChartTheme';
 import { IChartInput } from '../../type';
 
-const CurrentYearBranchAging = (props: IChartInput) => {
-    const { title, xKey, yKey, filter, endPoint, subText,height } = props;
+const BottomBranchSummary = (props: IChartInput) => {
+    const { title, xKey, yKey, filter, endPoint, subText, height } = props;
     const { commonOptions } = useCommonChartStyles();
 
     const options: any = {
         chart: {
-            type: 'bar', 
+            type: 'bar',
             toolbar: {
                 show: true,
                 tools: {
@@ -54,7 +54,7 @@ const CurrentYearBranchAging = (props: IChartInput) => {
         stroke: {
             show: true,
             width: 1,
-            colors: ['#f59e0b', '#22c55e', '#ef4444']
+            colors: ['#22c55e', '#f59e0b']
         },
         title: {
             text: title,
@@ -108,8 +108,8 @@ const CurrentYearBranchAging = (props: IChartInput) => {
                 left: 50,
                 right: 20
             }
-        }, 
-        colors: ['#f59e0b', '#22c55e', '#ef4444']
+        },
+        colors: ['#22c55e', '#f59e0b']
     };
 
     const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' });
@@ -117,12 +117,11 @@ const CurrentYearBranchAging = (props: IChartInput) => {
     return <> <PalmyraApexChart options={options} type="bar"
         endPoint={endPoint} filter={filter} height={height} width={'100%'} storeFactory={AppStoreFactory}
         seriesOptions={[
-            { name: 'Pending' },
             { name: 'Approved' },
-            { name: 'Rejected' },
+            { name: 'Pending' },
         ]}
         transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }} />
     </>
 };
 
-export { CurrentYearBranchAging };
+export { BottomBranchSummary };

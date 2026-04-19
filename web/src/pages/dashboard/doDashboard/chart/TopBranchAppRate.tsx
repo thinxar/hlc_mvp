@@ -1,0 +1,121 @@
+import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
+import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
+import { IChartInput } from '../../type';
+import { useCommonChartStyles } from "../../ChartTheme";
+
+const TopBranchAppRate = (props: IChartInput) => {
+    const { endPoint, title, xKey, yKey, filter,subText } = props;
+        const { commonOptions } = useCommonChartStyles();
+    
+    const colors = ['#22c55e', '#f59e0b']
+
+    const options: any = {
+        plotOptions: {
+            pie: {
+                startAngle: -90,
+                endAngle: 90,
+                offsetY: 10
+            }
+        },
+        chart: {
+
+            toolbar: {
+                show: true,
+                tools: {
+                    download: true,
+                },
+            },
+            zoom: {
+                enabled: false
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (_val: number, opts: any) {
+                const seriesIndex = opts?.seriesIndex;
+                return opts.w.globals?.series[seriesIndex];
+            }
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 0.6,
+            colors: colors
+            // colors: colors
+        },
+        // fill: {
+        //     type: 'gradient',
+        //     opacity: 0.5
+        // },
+        title: {
+            text: title
+        },
+        subtitle: {
+            text: subText ? subText : '',
+            align: 'left',
+            ...commonOptions.subtitle
+        },
+        legend: {
+            show: true,
+            position: 'top',
+            formatter: (val: any) => `${val}`
+        },
+        tooltip: {
+            y: {
+                formatter: (val: any) => `${val}`
+            }
+        },
+        noData: {
+            text: 'No Data Available',
+            align: 'center',
+            verticalAlign: 'middle',
+            offsetX: 0,
+            offsetY: 0,
+            style: {
+                color: 'rgba(var(--dark-color-rgb),0.5)',
+                fontSize: '22px',
+                fontFamily: undefined
+            }
+        },
+        responsive: [{
+            breakpoint: 0,
+            options: {
+                grid: {
+                    padding: {
+                        bottom: 0
+                    }
+                },
+                legend: {
+                    position: 'top'
+                }
+            }
+        }],
+        fill: {
+            opacity: 0.8
+        }, grid: {
+            padding: {
+                bottom: -200
+            }
+        },
+        colors: colors
+    };
+    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas/' });
+
+    return (
+        <div id="chart">
+            <PalmyraApexChart
+                type="donut"
+                options={options}
+                endPoint={endPoint}
+                filter={filter}
+                // filter={filter}
+                // preProcess={PreProcessData}
+                height={'400'}
+                width={'100%'}
+                transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
+                storeFactory={AppStoreFactory}
+            />
+        </div>
+    );
+}
+
+export { TopBranchAppRate };

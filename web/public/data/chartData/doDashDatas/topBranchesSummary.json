@@ -1,0 +1,54 @@
+{
+    "result": [
+        {
+            "Xlabel": "INDORE DBO",
+            "AC": 2000,
+            "PE": 100
+        },
+        {
+            "Xlabel": "INDORE CBO-1",
+            "AC": 1800,
+            "PE": 100
+        },
+        {
+            "Xlabel": "UJJAIN I",
+            "AC": 1700,
+            "PE": 200
+        },
+        {
+            "Xlabel": "RATLAM I",
+            "AC": 1600,
+            "PE": 100
+        },
+        {
+            "Xlabel": "MANDSAUR",
+            "AC": 1500,
+            "PE": 200
+        },
+        {
+            "Xlabel": "RAJNANDGAON",
+            "AC": 1480,
+            "PE": 300
+        },
+         {
+            "Xlabel": "UJJAIN I",
+            "AC": 1400,
+            "PE": 200
+        },
+        {
+            "Xlabel": "RATLAM I",
+            "AC": 1370,
+            "PE": 100
+        },
+        {
+            "Xlabel": "MANDSAUR",
+            "AC": 1300,
+            "PE": 150
+        },
+        {
+            "Xlabel": "RAJNANDGAON",
+            "AC": 1200,
+            "PE": 50
+        }
+    ]
+}

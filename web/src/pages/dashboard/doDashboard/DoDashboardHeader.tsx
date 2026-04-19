@@ -18,8 +18,7 @@ const DoDashboardHeader = (props: IOptions) => {
     return (
         <div>
             <div className="flex justify-between pt-1 ml-3">
-                <div className="flex items-start gap-3">
-
+                <div className="flex items-center gap-3">
                     <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-100 text-blue-600">
                         <LayoutDashboard size={18} />
                     </div>
@@ -35,16 +34,11 @@ const DoDashboardHeader = (props: IOptions) => {
                 </div>
                 <div className="pr-3">
                     <PalmyraForm>
-                        <FieldGroupContainer columns={2}>
+                        <FieldGroupContainer columns={1}>
                             <ServerLookup attribute="srno" placeholder="Deviation Name"
                                 queryOptions={{ endPoint: LookupEndPoint.division, queryAttribute: 'divisionName' }}
                                 onChange={handleFilterChange("srno", 'lookup')}
                                 lookupOptions={{ idAttribute: 'id', labelAttribute: 'divisionName' }} />
-
-                            <ServerLookup attribute="branch" placeholder="Branch"
-                                queryOptions={{ endPoint: LookupEndPoint.branch, queryAttribute: 'branchName' }}
-                                onChange={handleFilterChange("srno", 'lookup')}
-                                lookupOptions={{ idAttribute: 'id', labelAttribute: 'branchName' }} />
                         </FieldGroupContainer>
                     </PalmyraForm>
                 </div>
