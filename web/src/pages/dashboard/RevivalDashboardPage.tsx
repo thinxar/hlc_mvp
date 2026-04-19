@@ -11,6 +11,9 @@ import { CurrentFinancialYearCaseChart } from "./chart/CurrentFinancialYearCaseC
 import { getFinancialYears } from "utils/FormateDate";
 import { AgingAnalysisChart } from "./chart/AgingAnalysisChart";
 import { DashboardHeader } from "./DashboardHeader";
+import { CurrentYearBranchStatus } from "./chart/CurrentYearBranchStatus";
+import { PendingCasesAging } from "./chart/PendingCasesAging";
+import AgingDetailsTable from "./grid/AgingDetailsTable";
 
 const CHART_HEIGHT = '450';
 const RevivalDashboardPage = () => {
@@ -19,7 +22,7 @@ const RevivalDashboardPage = () => {
 
   const endpoint = '/sdf';
   return (
-    <div className="p-4">
+    <div className="p-4 bg-slate-50">
       <div className="bg-white dark:bg-gray-900 rounded-xl shadow mb-3 py-1">
         <DashboardHeader setFilter={setFilter} />
       </div>
@@ -82,7 +85,6 @@ const RevivalDashboardPage = () => {
 
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 mt-3">
-
         <div className="dash-cards">
           <PreFinancialYearCaseChart endPoint={endpoint}
             height={CHART_HEIGHT} subText="Pending . Approved . Rejected"
@@ -96,6 +98,19 @@ const RevivalDashboardPage = () => {
             title={`Current Financial Year (${currentFY})`} xKey="name"
             yKey={["pending", "approved", "rejected"]} />
         </div>
+
+        <div className="dash-cards">
+          <CurrentYearBranchStatus endPoint={'/cYearBranchStatus.json'} title="Branch-wise Accepted and Pending ( Current FY )" height={CHART_HEIGHT}
+            xKey="Xlabel" yKey={["PE", "AC", "RJ"]} subText="Pending . Approved . Rejected" />
+        </div>
+        <div className="dash-cards">
+          <PendingCasesAging endPoint={'/PendingCaseAging.json'} title="Aging Bucket Distribution" height={CHART_HEIGHT}
+            xKey="Xlabel" yKey={["data"]} subText="Number of Pending cases age buckete" />
+        </div>
+        <div className="">
+          <AgingDetailsTable />
+        </div>
+
       </div>
 
     </div>

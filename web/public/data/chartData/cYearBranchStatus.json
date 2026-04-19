@@ -1,0 +1,40 @@
+{
+  "result": [
+    {
+      "Xlabel": "INDORE DBO",
+      "AC": 2000,
+      "PE": 500,
+      "RJ": 300
+    },
+    {
+      "Xlabel": "INDORE CBO-1",
+      "AC": 2000,
+      "PE": 500,
+      "RJ": 500
+    },
+    {
+      "Xlabel": "UJJAIN I",
+      "AC": 1700,
+      "PE": 700,
+      "RJ": 800
+    },
+    {
+      "Xlabel": "RATLAM I",
+      "AC": 1600,
+      "PE": 900,
+      "RJ": 200
+    },
+    {
+      "Xlabel": "MANDSAUR",
+      "AC": 1900,
+      "PE": 800,
+      "RJ": 200
+    },
+    {
+      "Xlabel": "RAJNANDGAON",
+      "AC": 1900,
+      "PE": 600,
+      "RJ": 700
+    }
+  ]
+}

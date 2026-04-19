@@ -1,0 +1,114 @@
+// import { useDisclosure } from '@mantine/hooks';
+import { PalmyraStoreFactory } from '@palmyralabs/palmyra-wire';
+import { PalmyraApexChart } from '@palmyralabs/rt-apexchart';
+import { IChartInput } from '../../customViewer/chart/type';
+import { useCommonChartStyles } from '../ChartTheme';
+
+const CurrentYearBranchStatus = (props: IChartInput) => {
+    const { title, xKey, yKey, filter, endPoint, subText } = props;
+    const { commonOptions } = useCommonChartStyles();
+
+    const options: any = {
+        chart: {
+            type: 'bar', 
+            toolbar: {
+                show: true,
+                tools: {
+                    download: true,
+                    selection: false,
+                    zoom: false,
+                    zoomin: false,
+                    zoomout: false,
+                    pan: false,
+                    reset: false
+                }
+            },
+            zoom: {
+                enabled: true
+            },
+        },
+        plotOptions: {
+            bar: {
+                borderRadius: 2,
+                horizontal: false,
+                rangeBarOverlap: false,
+                columnWidth: '50%',
+                barHeight: '70%',
+                colors: {
+                    ranges: [
+                        {
+                            from: 0,
+                            to: 0,
+                            color: '#ffff00'
+                        }
+                    ]
+                }
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            formatter: function (val: number) {
+                return val === 0 ? '' : val;
+            }
+        },
+        stroke: {
+            show: true,
+            width: 1,
+            colors: ['#f59e0b', '#22c55e', '#ef4444']
+        },
+        title: {
+            text: title,
+        },
+        subtitle: {
+            text: subText ? subText : '',
+            align: 'left',
+            ...commonOptions.subtitle
+        },
+        xaxis: {
+            labels: {
+                rotate: -45,
+                style: {
+                    fontSize: '12px'
+                },
+                trim: true,
+                hideOverlappingLabels: true
+            }
+        },
+        noData: {
+            text: 'No Data Available',
+            align: 'center',
+            verticalAlign: 'middle',
+            offsetX: 0,
+            offsetY: 0,
+            style: {
+                color: 'rgba(var(--dark-color-rgb),0.5)',
+                fontSize: '22px',
+                fontFamily: undefined
+            }
+        },
+        legend: {
+            position: 'top'
+        },
+        grid: {
+            padding: {
+                left: 50,
+                right: 20
+            }
+        }, 
+        colors: ['#f59e0b', '#22c55e', '#ef4444']
+    };
+
+    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
+
+    return <> <PalmyraApexChart options={options} type="bar"
+        endPoint={endPoint} filter={filter} height={'400'} width={'100%'} storeFactory={AppStoreFactory}
+        seriesOptions={[
+            { name: 'Pending' },
+            { name: 'Approved' },
+            { name: 'Rejected' },
+        ]}
+        transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }} />
+    </>
+};
+
+export { CurrentYearBranchStatus };
