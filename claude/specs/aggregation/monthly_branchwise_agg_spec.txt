@@ -1,0 +1,70 @@
+Aggregation Spec - Policy Revival Reports
+=========================================
+
+Source: policyRevivalData/generated/all_cases.jsonl (record schema: data_spec.txt)
+
+
+Report #1 - Monthly Branch Case Summary
+---------------------------------------
+Grain:         one row per (yearMonth, branchCode).
+Output format: flat JSON object per row (file-level container - JSON array
+               or NDJSON - decided when the reporting module is wired up).
+
+Field              | Type    | Format / Constraint                                        | Example
+-------------------|---------|------------------------------------------------------------|------------
+month              | string  | YYYY-MM-DD; first day of the requestDate month (DD = "01") | "2025-09-01"
+zone               | string  | from source record                                         | "CZ"
+divisionName       | string  | from source record                                         | "Bhopal"
+branchCode         | string  | 3 or 4 chars; grouping key                                 | "359"
+branchName         | string  | from source record                                         | "SEHORE"
+noCases           | integer | distinct requestIds whose requestDate falls in yearMonth   | 142
+totalDocuments     | integer | total documents (sum of documents[].length) in the bucket  | 672
+pendingDocuments   | integer | documents (across those cases) with status = "pending"     | 3
+approvedDocuments  | integer | documents (across those cases) with status = "accepted"    | 642
+rejectedDocuments  | integer | documents (across those cases) with status = "rejected"    | 27
+
+Rules
+-----
+1. month is derived from requestDate: take the first 7 characters (YYYY-MM)
+   of requestDate and append "-01" to produce an ISO date pinned to the first
+   day of the month (e.g., requestDate "2025-09-17" -> month "2025-09-01").
+   Dates are date-only strings in data_spec.txt, so no timezone math is
+   required.
+2. noCases = COUNT(DISTINCT requestId) for the (month, branchCode) bucket.
+   requestId is globally unique (data_spec rule 10), so this equals the
+   number of source records in the bucket.
+3. totalDocuments = SUM(length of documents[]) across all source records in
+   the bucket.
+4. pendingDocuments / approvedDocuments / rejectedDocuments are computed by
+   flattening the documents[] arrays of every case in the bucket and
+   counting by status. approvedDocuments counts documents whose status
+   field equals the string "accepted" - the output uses the business term
+   "approved" while the source data uses "accepted" (data_spec document
+   status enum).
+5. zone, divisionName, branchName are constant per branchCode by
+   construction (data_spec rule 1 sources them together from branch.csv);
+   take them from any record in the bucket.
+6. Output is sorted by month ASC, then branchCode ASC. Buckets with
+   noCases = 0 are NOT emitted (sparse output).
+7. A case with zero documents is legal in principle but does not occur in
+   generated data (each case carries >= 2 documents per data_spec rule 8);
+   if one were present it would still contribute to noCases with zero
+   document counts and add 0 to totalDocuments.
+8. Invariant: pendingDocuments + approvedDocuments + rejectedDocuments
+   equals totalDocuments (status enum is closed over
+   {accepted, rejected, pending}).
+
+Example row
+-----------
+{
+  "month": "2025-09-01",
+  "zone": "CZ",
+  "divisionName": "Bhopal",
+  "branchCode": "359",
+  "branchName": "SEHORE",
+  "noCases": 142,
+  "totalDocuments": 672,
+  "pendingDocuments": 3,
+  "approvedDocuments": 642,
+  "rejectedDocuments": 27
+}

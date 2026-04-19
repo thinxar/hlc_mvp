@@ -1,0 +1,130 @@
+Policy Revival Request - Sample Data Specification
+===================================================
+
+Output format: flat JSON object (single document per request).
+
+Field                   | Type    | Format / Constraint                                 | Source / Example
+------------------------|---------|-----------------------------------------------------|--------------------------------------------
+requestId               | string  | Pattern: REV-YYYY-NNNNNNN (7-digit sequence)        | "REV-2026-0482917"
+requestDate             | string  | ISO date (YYYY-MM-DD)                               | "2026-04-19"
+Channel                 | string  | Enum: AGENT_PORTAL | CUSTOMER_PORTAL | BRANCH 	  | "AGENT_PORTAL"
+PolicyNumber            | string  | Pattern: NNNNNNNNN (9-digit)                        | "POL-887766554"
+productCode             | string  | Product catalogue code                              | "TRAD-ENDOW-15"
+commencementDate        | string  | ISO date; policy inception                          | "2019-06-10"
+lastPremiumPaidDate     | string  | ISO date; must be <= requestDate                    | "2024-06-10"
+policyStatus            | string  | Enum: INFORCE | LAPSED | PAIDUP | SURRENDERED         | "LAPSED"
+lapseDate               | string  | ISO date; required when policyStatus = LAPSED       | "2026-01-10"
+revivalPeriodEndDate    | string  | ISO date; typically lapseDate + 5 years             | "2030-01-10"
+submittedBy             | string  | 8-digit numeric value (zero-padded)                 | "45829137"
+Zone                    | string  | LIC zone code; from branch.csv                      | "NCZ"
+divisionName            | string  | Division; from branch.csv                           | "Kanpur"
+branchCode              | string  | 3 or 4 chars; from branch.csv                       | "231"
+branchName              | string  | Branch name; from branch.csv                        | "KANPUR (SHIVOY TOWER) DBO"
+documents               | array   | List of supporting-document objects (see below)     | see Documents section
+
+Documents
+---------
+Each element in "documents" is an object with the following fields:
+
+Field       | Type   | Format / Constraint                                       | Example
+------------|--------|-----------------------------------------------------------|----------------
+name        | string | random file name based on the type, pdf|doc				 | "DGH_FORM"
+type        | string | Enum: DGH_FORM | PAYMENT_RECEIPT | ID_PROOF               | "DGH_FORM"
+status		| string | Enum: accepted,rejected,pending							| "accepted"
+docId       | string | Pattern: DOC-NNNNN                                        | "DOC-10021"
+uploadedOn  | string | ISO date (YYYY-MM-DD); must be > requestDate and <= requestDate + 5 days | "2026-04-22"
+actionOn    | string | ISO date (YYYY-MM-DD); uploadedOn + 1 to 45 days when status != pending; within a single request, max(actionOn) - min(actionOn) MUST be <= 5 days; empty string when status = pending | "2026-04-29"
+
+
+Example value for the "documents" field:
+
+  "documents": [
+    { "type": "DGH_FORM",        "docId": "DOC-10021", "uploadedOn": "2026-04-19" },
+    { "type": "PAYMENT_RECEIPT", "docId": "DOC-10022", "uploadedOn": "2026-04-19" },
+    { "type": "ID_PROOF",        "docId": "DOC-10023", "uploadedOn": "2026-04-19" }
+  ]
+
+Rules
+-----
+1. Zone, divisionName, branchCode, branchName MUST be sourced as a single row
+   from policyRevivalData/branch.csv (columns: Zone, Division Name, Branch Code,
+   Branch Name, Number of Cases, Documents). Do not mix-and-match fields across rows.
+   For each row, let N = 2 * (CSV "Number of Cases" value). Generate exactly N
+   sample request documents, each carrying that row's Zone / divisionName /
+   branchCode / branchName. Subsequent rules that reference the branch's case
+   count use this N.
+2. CSV header uses "Division Name" and "Branch Code" / "Branch Name" - map to
+   camelCase (divisionName, branchCode, branchName) in the output.
+3. Branch name / division values may contain embedded newlines in the CSV;
+   collapse whitespace (replace any \r?\n and repeated spaces with a single space) before use.
+4. submittedBy is always a string of exactly 8 numeric characters, leading zeros not allowed.
+5. All dates are strings in ISO-8601 date form (YYYY-MM-DD); no time component.
+6. requestId year segment should match the calendar year of requestDate.
+7. lapseDate and revivalPeriodEndDate are only meaningful when policyStatus = LAPSED;
+   keep them populated in the sample regardless for schema stability.
+8. Let D = 2 * (CSV "Documents" value). D is the TOTAL number of supporting
+   documents to distribute across that branch's N cases (not per case). Each case
+   must have a MINIMUM of 2 documents. Distribute the remaining (D - 2 * N)
+   documents RANDOMLY across the cases (cap each case at 10 documents) so that the
+   per-branch total equals D exactly. The resulting per-case count therefore
+   varies from 2 up to 10.
+   If D < 2 * N, fall back to the deterministic distribution:
+   base = floor(D / N), remainder = D mod N; first "remainder" cases get one
+   extra document.
+   Document type is chosen RANDOMLY per document from the enum
+   (DGH_FORM, PAYMENT_RECEIPT, ID_PROOF); repeats are permitted.
+9. Document status distribution (random, per document). For each branch, pick a
+   rejected ratio UNIFORMLY at random in the range [3%, 7%] and apply that same
+   ratio to every document of that branch's cases. The 'pending' share depends
+   on the case's age (days from requestDate to the generation date):
+     - 0-90 days (< 3 months)  : pending 15%-40%, scaled linearly by recency
+                                 (40% at day 0, 15% at day 90); more recent cases
+                                 carry more pendency.
+     - 91-180 days (3-6 months): pending strictly < 10% (target ~7%).
+     - > 180 days (> 6 months) : pending MUST NOT be used; the pending bucket
+                                 collapses into 'accepted'.
+   'accepted' is always the remainder. Draw one random number per document and
+   bucket it against these thresholds.
+10. Generate records for EVERY row in branch.csv. The final output file MUST be
+    sorted by requestDate ascending (global sort across all branches, independent
+    of which branch produced each record).
+    After the global sort, assign requestId values as a MONOTONIC global sequence
+    in the same order: REV-YYYY-NNNNNNN where YYYY is the record's own
+    requestDate year and NNNNNNN is a single 7-digit sequence (widened if the
+    total record count exceeds 9,999,999) that increments across all records
+    regardless of branch or year. Every requestId in the output is therefore
+    globally unique and monotonically non-decreasing alongside requestDate.
+11. requestDate MUST be distributed across the range 2024-04-01 through the
+    generation date (inclusive). Derive the policy timeline backwards from requestDate
+    so chronology stays consistent:
+      lapseDate            = requestDate  - (2 to 14 months)
+      lastPremiumPaidDate  = lapseDate    - (5 to 7 months)
+      commencementDate     = lastPremiumPaidDate - (3 to 8 years)
+      revivalPeriodEndDate = lapseDate    + 5 years
+    uploadedOn for each document is 1-5 days AFTER its record's requestDate.
+    requestId year segment must match the year of its own requestDate.
+
+Example
+-------
+{
+  "requestId": "REV-2026-0482917",
+  "requestDate": "2026-04-19",
+  "Channel": "AGENT_PORTAL",
+  "PolicyNumber": "POL-887766554",
+  "productCode": "TRAD-ENDOW-15",
+  "commencementDate": "2019-06-10",
+  "lastPremiumPaidDate": "2024-06-10",
+  "policyStatus": "LAPSED",
+  "lapseDate": "2026-01-10",
+  "revivalPeriodEndDate": "2030-01-10",
+  "submittedBy": "45829137",
+  "Zone": "NCZ",
+  "divisionName": "Kanpur",
+  "branchCode": "231",
+  "branchName": "KANPUR (SHIVOY TOWER) DBO",
+  "documents": [
+    { "type": "DGH_FORM",        "docId": "DOC-10021", "uploadedOn": "2026-04-19" },
+    { "type": "PAYMENT_RECEIPT", "docId": "DOC-10022", "uploadedOn": "2026-04-19" },
+    { "type": "ID_PROOF",        "docId": "DOC-10023", "uploadedOn": "2026-04-19" }
+  ]
+}
