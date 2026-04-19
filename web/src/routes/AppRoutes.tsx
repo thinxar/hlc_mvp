@@ -5,6 +5,7 @@ import { APDocumentView } from "src/pages/customViewer/pages/apPolicy/APDocument
 import PolicySubmissionPage from "src/pages/customViewer/pages/PolicySubmissionPage";
 import { CustomViewerViewPage } from "src/pages/customViewer/view/CustomViewerViewPage";
 import { RevivalDashboardPage } from "src/pages/dashboard/RevivalDashboardPage";
+import { RevivalSRDashboardPage } from "src/pages/dashboard/srDashboard/RevivalSRDashboardPage";
 import { HomePage } from "src/pages/home/HomePage";
 import { PolicyResultPage } from "src/pages/policyResult/PolicyResultPage";
 
@@ -54,6 +55,10 @@ export const appRoutes = [
             {
                 path: 'dashboard',
                 element: <RevivalDashboardPage />,
+            },
+            {
+                path: 'srDashboard',
+                element: <RevivalSRDashboardPage />,
             }
         ]
     }
