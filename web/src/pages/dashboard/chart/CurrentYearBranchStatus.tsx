@@ -86,6 +86,20 @@ const CurrentYearBranchStatus = (props: IChartInput) => {
                 fontFamily: undefined
             }
         },
+        states: {
+            active: {
+                filter: {
+                    type: 'none',
+                    value: 0
+                }
+            },
+            hover: {
+                filter: {
+                    type: 'none',
+                    value: 0
+                }
+            }
+        },
         legend: {
             position: 'top'
         },
@@ -101,7 +115,7 @@ const CurrentYearBranchStatus = (props: IChartInput) => {
     const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
 
     return <> <PalmyraApexChart options={options} type="bar"
-        endPoint={endPoint} filter={filter} height={'400'} width={'100%'} storeFactory={AppStoreFactory}
+        endPoint={endPoint} filter={filter} height={'500'} width={'100%'} storeFactory={AppStoreFactory}
         seriesOptions={[
             { name: 'Pending' },
             { name: 'Approved' },

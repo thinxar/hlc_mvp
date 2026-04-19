@@ -58,12 +58,12 @@ const PendingCasesAging = (props: IChartInput) => {
                     }
                 }
             }
-        }, 
-        colors: ['#22c55e','#f59e0b', '#ef4444'],
- 
+        },
+        colors: ['#22c55e', '#f59e0b', '#ef4444'],
+
         legend: {
             show: true,
-            position: 'bottom',
+            position: 'top',
             fontSize: '13px',
             labels: {
                 colors: '#555'
@@ -78,7 +78,20 @@ const PendingCasesAging = (props: IChartInput) => {
                 vertical: 5
             }
         },
-
+        states: {
+            active: {
+                filter: {
+                    type: 'none',
+                    value: 0
+                }
+            },
+            hover: {
+                filter: {
+                    type: 'none',
+                    value: 0
+                }
+            }
+        },
         stroke: {
             lineCap: 'round'
         },
