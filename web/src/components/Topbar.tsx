@@ -17,7 +17,6 @@ const Topbar = () => {
     const path = PathConfig
 
     const currentPath = location.pathname;
-    const lastPath: any = currentPath?.split('/')?.pop();
 
     const isShowLogout = currentPath.includes("customViewer");
     const logoutApi = ServiceEndpoint.auth.logout;
@@ -37,14 +36,13 @@ const Topbar = () => {
                 <img src={LicLogo} className="h-13 w-24" />
             </div>
             <div className="pr-text font-semibold text-lg">{TitleConfig.appTitle.text}</div>
-            <div>
-                {['dashboard', 'srDashboard'].includes(lastPath) &&
-                    <Tooltip label={isDarkMode ? 'Light Mode' : 'Dark Mode'} >
-                        <ActionIcon variant="subtle" size="md" onClick={toggleTheme}
-                            className="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
-                            {isDarkMode ? <Sun size={18} className='text-orange-300' /> : <MoonStar size={18} />}
-                        </ActionIcon>
-                    </Tooltip>}
+            <div className="flex justify-center gap-3">
+                <Tooltip label={isDarkMode ? 'Light Mode' : 'Dark Mode'} >
+                    <ActionIcon variant="subtle" size="md" onClick={toggleTheme}
+                        className="text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+                        {isDarkMode ? <Sun size={18} className='text-orange-300' /> : <MoonStar size={18} />}
+                    </ActionIcon>
+                </Tooltip>
 
                 <div className='flex text-red-600 items-center gap-2 cursor-pointer' onClick={handleLogOut}>
                     {

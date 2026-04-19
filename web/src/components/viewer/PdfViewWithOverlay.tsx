@@ -138,7 +138,7 @@ export const PDFViewerWithOverlay = (
           </button>
           <button
             onClick={() => setZoom(0.9)}
-            className="bg-gray-200 px-2 py-1 rounded cursor-pointer"
+            className="bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded cursor-pointer"
           >
             Reset
           </button>
@@ -153,7 +153,7 @@ export const PDFViewerWithOverlay = (
         </div>
       </div>
       <div   
-      className="overflow-auto border rounded relative p-2 flex justify-center
+      className="overflow-auto rounded relative p-2 flex justify-center
        items-center bg-black ">
         <div
           ref={containerRef} className="flex justify-center"

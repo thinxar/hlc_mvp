@@ -18,7 +18,7 @@ const APPolicyViewPage = () => {
   return (
     <div className="p-3 overflow-hidden">
       <ApDocumentFilter onChange={setFilterData} type={appName} />
-      <div className="bg-white rounded-lg shadow overflow-auto h-[calc(100vh-170px)]">
+      <div className="rounded-lg shadow overflow-auto h-[calc(100vh-170px)]">
         {isAllSelected ? (
           <IFrameDocRenderer filterData={filterData} />
         ) : (

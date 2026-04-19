@@ -52,13 +52,13 @@ const PolicySubmitSection = (props: policyData) => {
             setSelectedFileIds([]);
             topic.publish("fileUpload", "fileUpload")
         }).catch(handleError);
-        Toast.onSaveSuccess(`${selectedFileIds.length} Document${selectedFileIds.length > 1 ? 's' :'' } have been ${status.toLocaleUpperCase()} Successfully !!!`)
+        Toast.onSaveSuccess(`${selectedFileIds.length} Document${selectedFileIds.length > 1 ? 's' : ''} have been ${status.toLocaleUpperCase()} Successfully !!!`)
 
     };
 
     return (
         <div>
-            <section className="border-r border-gray-200 bg-white flex flex-col overflow-hidden">
+            <section className="border-r border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden">
                 <div className="flex-1 overflow-y-auto space-y-4 custom-scrollbar">
                     <div className="space-y-3">
                         <div className="flex items-center justify-between bg-[#004C97] p-2 mb-0">
@@ -74,7 +74,7 @@ const PolicySubmitSection = (props: policyData) => {
                                     Back
                                 </button>}
                         </div>
-                        <div className="grid grid-cols-2 gap-2 p-3 bg-slate-100/80">
+                        <div className="grid grid-cols-2 gap-2 p-3 bg-slate-100/80 dark:bg-gray-800">
                             {fieldConfig[type]?.map((field: any) => (
                                 <DetailItem
                                     key={field.key}
@@ -101,7 +101,7 @@ const PolicySubmitSection = (props: policyData) => {
                             <div className="space-y-4 pb-3">
                                 <div className="space-y-2">
                                     <div className='flex justify-between items-center'>
-                                        <h2 className="text-sm font-bold text-gray-800 ml-1">
+                                        <h2 className="text-sm font-bold text-gray-800 dark:text-gray-300 ml-1">
                                             {type == 'REV' ? 'Policy Overview' : `${'Proposal No'}/${policyData?.proposalNo}`}
                                         </h2>
                                         <div className="flex items-center justify-between">
@@ -168,12 +168,12 @@ const PolicySubmitSection = (props: policyData) => {
             </section>
 
             {type === "REV" &&
-                <div className="p-2 m-2 bg-blue-50 border border-blue-100 rounded-xl space-y-2">
-                    <div className="flex items-center gap-2 text-blue-700">
+                <div className="p-2 m-2 bg-blue-50 dark:bg-gray-800 border border-blue-100 dark:border-gray-800 rounded-xl space-y-2">
+                    <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
                         <FiInfo className="w-4 h-4" />
                         <h3 className="text-xs font-bold">Note:</h3>
                     </div>
-                    <ul className="text-xs text-blue-800 space-y-1 list-decimal list-inside font-medium">
+                    <ul className="text-xs text-blue-800 dark:text-blue-400 space-y-1 list-decimal list-inside font-medium">
                         <li>SR number will be recorded in system while approving / rejecting documents.</li>
                         <li>Please click on SUBMIT button to proceed selected documents.</li>
                     </ul>
@@ -197,7 +197,7 @@ function DetailItem({
     color?: string;
 }) {
     return (
-        <div className="flex items-start gap-3 p-1.5 rounded-lg border border-gray-200 bg-white hover:shadow-sm transition">
+        <div className="flex items-start gap-3 p-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-sm transition">
             {Icon && (
                 <div className={`p-2 rounded-md ${color}`}>
                     <Icon size={16} />
@@ -205,10 +205,10 @@ function DetailItem({
             )}
 
             <div className="space-y-1">
-                <p className="text-xs font-medium text-gray-500/80">
+                <p className="text-xs font-medium text-gray-500/80 dark:text-gray-400">
                     {label}
                 </p>
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-sm font-semibold text-gray-900 dark:text-gray-300">
                     {value || "--"}
                 </p>
             </div>

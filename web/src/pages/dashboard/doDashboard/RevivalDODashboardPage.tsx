@@ -4,6 +4,7 @@ import { DoSummaryCard } from "./card/DoSummaryCard";
 import { BottomBranchSummary } from "./chart/BottomBranchSummary";
 import { TopBranchAppRate } from "./chart/TopBranchAppRate";
 import { TopBranchSummary } from "./chart/TopBranchSummary";
+import BubbleChart from "./chart/CaseVolumeChart";
 
 const RevivalDODashboardPage = () => {
 
@@ -11,8 +12,8 @@ const RevivalDODashboardPage = () => {
     const CHART_HEIGHT = '450';
 
     return (
-        <div className="p-4 bg-slate-50">
-            <div className="bg-white dark:bg-gray-900 rounded-xl shadow mb-3 py-1">
+        <div className="p-4 bg-slate-50 dark:bg-gray-900">
+            <div className="bg-white dark:bg-gray-800/50 rounded-xl shadow mb-3 py-1">
                 <DoDashboardHeader setFilter={setFilter} />
             </div>
             <div className="bg-white dark:bg-gray-900 rounded-xl shadow mb-3 py-1">
@@ -38,6 +39,9 @@ const RevivalDODashboardPage = () => {
                     <BottomBranchSummary endPoint={'/bottomBranchSummary.json'} filter={filter}
                         title="Least 10 Branch Approval Status" height={CHART_HEIGHT}
                         xKey="Xlabel" yKey={["AC", "PE"]} subText=". Approved .Pending" />
+                </div>
+                <div className="dash-cards">
+                    <BubbleChart />
                 </div>
             </div>
         </div>

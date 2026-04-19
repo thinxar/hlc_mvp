@@ -74,7 +74,7 @@ const ApDocumentFilter = (props: IOptions) => {
                 <div className="flex flex-col gap-1 leading-none">
                     <span
                         className={`
-            font-semibold text-gray-900 text-md
+            font-semibold text-gray-900 dark:text-gray-300 text-md
           `}
                     >
                         {type == 'pbv' ? 'PolicyBazaar' : 'Ananda'}

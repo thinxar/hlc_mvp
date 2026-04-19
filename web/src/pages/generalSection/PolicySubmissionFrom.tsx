@@ -169,7 +169,7 @@ const PolicySubmissionFrom = (props: submissionProps) => {
             <div className="absolute top-8 left-9">
                 <div
                     onClick={() => toNavigate('/')}
-                    className="rounded-full shadow-2xl bg-gray-200 p-2 cursor-pointer"
+                    className="rounded-full shadow-2xl bg-gray-200 dark:bg-gray-800 p-2 cursor-pointer"
                 >
                     <BiArrowBack />
                 </div>
@@ -181,7 +181,7 @@ const PolicySubmissionFrom = (props: submissionProps) => {
                 </h1>
             </div>
 
-            <div className="w-full max-w-md bg-white border border-gray-100 rounded-2xl shadow-sm shadow-gray-100 overflow-hidden">
+            <div className="w-full max-w-md border border-gray-100 dark:border-gray-800 rounded-2xl shadow-sm shadow-gray-100 dark:shadow-gray-800 overflow-hidden">
                 <div className="bg-linear-to-r from-blue-800 to-blue-700 px-6 py-5">
                     <h2 className="text-white font-semibold text-base">
                         {type === 'rev' ? 'Policy Search' : 'Proposal Search'}
@@ -195,7 +195,7 @@ const PolicySubmissionFrom = (props: submissionProps) => {
                     <PalmyraNewForm
                         ref={formRef}
                         endPoint={''}
-                        // onValidChange={setValid}
+                    // onValidChange={setValid}
                     >
                         <div className="">
                             {renderFormFields()}

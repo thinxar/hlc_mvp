@@ -40,8 +40,8 @@ const FileViewer = ({ fileUrl, key, file, selectedStamp, stampData, setSelectedF
 
     return (<>
         {fileData ? <div className="h-auto overflow-hidden" key={key}>
-            <div className="p-">
-                <div className="h-[calc(100vh-90px)] bg-white flex items-center justify-center overflow-auto">
+            <div className="">
+                <div className="h-[calc(100vh-90px)] flex items-center justify-center overflow-auto">
                     {fileData?.fileType === 'application/pdf' ? (
                         <PDFViewerWithOverlay selectedStamp={selectedStamp} pdfUrlFromApi={fileUrl} file={fileData} overlays={stampData}
                             setSelectedFile={setSelectedFile} setSelectedStamp={setSelectedStamp} setSelectedStamps={setSelectedStamps} handleFetch={handleFetch}

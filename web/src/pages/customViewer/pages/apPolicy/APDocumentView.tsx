@@ -165,18 +165,18 @@ const APDocumentView = () => {
             <div className="flex gap-4 px-5 mx-auto w-full h-[calc(100vh-25px)] m-3">
                 <div className="">
                     <div onClick={handleToggle}
-                        className="cursor-pointer bg-white p-1 rounded border border-gray-300 hover:bg-gray-50 transition-colors"
+                        className="cursor-pointer p-1 rounded border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                     >
                         <LuListCollapse
                             className={`transition-transform duration-300 ease-in-out ${toggle ? '' : 'rotate-180'}`}
                         />
                     </div>
                 </div>
-                <div className={`overflow-y-auto ${!toggle ? 'w-100' : 'w-0 opacity-0'} transition-all duration-500 ease-in-out  bg-gray/5 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-hidden`}>
+                <div className={`overflow-y-auto ${!toggle ? 'w-100' : 'w-0 opacity-0'} transition-all duration-500 ease-in-out  bg-gray/5 backdrop-blur-xl rounded-2xl border border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden`}>
                     <PolicySubmitSection policyData={policyData} data={data} policyId={policyData?.id}
                         selectedFile={selectedFile} setSelectedFile={setSelectedFile} type={appName} />
                 </div>
-                <div className="bg-gray-100 flex-1 backdrop-blur-xl rounded-2xl border border-gray-200 flex flex-col overflow-auto">
+                <div className="flex-1 backdrop-blur-xl rounded-2xl border dark:border-gray-800 border-gray-200 flex flex-col overflow-auto">
                     <PolicyViewHeader fileName={selectedFile?.pdfFiles?.fileName} />
                     <FileViewer file={selectedFile?.pdfFiles} fileUrl={pdfUrl} key={selectedFile?.pdfFiles?.id} selectedStamp={selectedStamp}
                         stampData={selectedFile} setSelectedFile={setSelectedFile} setSelectedStamps={setSelectedStamps}
