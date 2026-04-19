@@ -32,18 +32,18 @@ function parseCsv(text) {
 const clean = s => (s == null ? '' : s.replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim());
 
 const projectRoot = path.resolve(__dirname, '..', '..');
-const csvPath = path.join(projectRoot, 'base_data', 'branch.csv');
+const csvPath = path.join(projectRoot, 'generated', 'branch.csv');
 const outDir = path.join(projectRoot, 'generated');
 const outPath = path.join(outDir, 'branches.json');
 
 const rows = parseCsv(fs.readFileSync(csvPath, 'utf8'));
 const header = rows.shift().map(clean);
 const idx = name => header.indexOf(name);
-const iZone = idx('Zone'), iDiv = idx('Division Name'),
+const iZone = idx('Zone'), iDiv = idx('Division Name'), iDoCode = idx('doCode'),
       iCode = idx('Branch Code'), iName = idx('Branch Name');
 
-if ([iZone, iDiv, iCode, iName].some(x => x < 0)) {
-  throw new Error('branch.csv missing required columns. Found: ' + JSON.stringify(header));
+if ([iZone, iDiv, iDoCode, iCode, iName].some(x => x < 0)) {
+  throw new Error('branch.csv missing required columns (did cleansing run?). Found: ' + JSON.stringify(header));
 }
 
 const byCode = new Map();
@@ -53,6 +53,7 @@ for (const raw of rows) {
   const rec = {
     zone: clean(raw[iZone]),
     divisionName: clean(raw[iDiv]),
+    doCode: clean(raw[iDoCode]),
     branchCode: clean(raw[iCode]),
     branchName: clean(raw[iName])
   };
@@ -60,7 +61,8 @@ for (const raw of rows) {
 
   const prior = byCode.get(rec.branchCode);
   if (prior) {
-    if (prior.zone !== rec.zone || prior.divisionName !== rec.divisionName || prior.branchName !== rec.branchName) {
+    if (prior.zone !== rec.zone || prior.divisionName !== rec.divisionName ||
+        prior.doCode !== rec.doCode || prior.branchName !== rec.branchName) {
       throw new Error(
         `Conflicting duplicate branchCode "${rec.branchCode}": ` +
         `first=${JSON.stringify(prior)} vs next=${JSON.stringify(rec)}`

@@ -1,0 +1,142 @@
+Branch CSV Cleansing Specification
+==================================
+
+Purpose: normalize and enrich base_data/branch.csv into a
+generator-ready master file at generated/branch.csv. This
+separates data-quality fixes (whitespace, spelling aliases) and
+deterministic enrichment (doCode assignment) from the
+data-generation and reporting logic, so every downstream stage
+can treat the cleansed CSV as authoritative.
+
+
+Source
+------
+File: base_data/branch.csv
+Columns (order as shipped): Zone, Division Name, Branch Code,
+                            Branch Name, Number of Cases, Documents
+
+
+Output
+------
+File: generated/branch.csv
+Columns (order, left to right):
+  Zone, Division Name, doCode, Branch Code, Branch Name,
+  Number of Cases, Documents
+
+- doCode is a NEW column inserted immediately after Division Name.
+- All other columns keep their source values, with whitespace
+  cleansed (rule 2) and alias merging applied to Division Name
+  (rule 3).
+- CSV format: UTF-8, newline-terminated rows (\n), RFC 4180 quoting.
+  The header row is emitted verbatim in the order above. Cells
+  containing commas, double-quotes, or newlines are double-quoted;
+  embedded double-quotes are escaped by doubling ("").
+
+
+Rules
+-----
+1. Input parse / pass-through fields.
+   Zone, Branch Code, Branch Name, Number of Cases, Documents are
+   passed through after the whitespace normalization in rule 2.
+   Branch Code preserves leading zeros and alphabetic suffixes
+   as-is ("034A", "0035" remain strings).
+
+2. Whitespace normalization (text cells).
+   For Zone, Division Name, Branch Name: replace any \r?\n with a
+   single space, collapse runs of whitespace to a single space,
+   then trim. Numeric cells (Number of Cases, Documents) are
+   trimmed and parsed as integers.
+
+3. Division-name canonicalization.
+   branch.csv occasionally carries the same real-world division
+   under slightly different spellings (e.g. "Ahmedaba d" with a
+   spurious interior space vs "Ahmedabad"). Coalesce them:
+     canon(x) = x with all non-alphanumeric chars removed, then
+                uppercased.
+   Two Division Name strings A and B are ALIASES iff
+   canon(A) == canon(B).
+   For each alias group, pick the CANONICAL display form by this
+   tie-break ladder:
+     1. The display string whose alphanumeric content already
+        equals canon(x) - i.e. no interior non-alphanumeric
+        characters. If exactly one candidate qualifies it wins.
+     2. Otherwise, the display string carried by the MOST rows
+        in branch.csv (majority rule).
+     3. Remaining ties broken ASCII-ascending on the display
+        string itself.
+   The canonical display form replaces the raw Division Name in
+   every row of the alias group. The source CSV is NOT modified.
+
+   Every alias group with count >= 2 MUST be logged to stderr so
+   data stewards can audit the merges. The script MUST NOT fail
+   on merges - a merge is a soft fix, not an error.
+
+4. doCode assignment.
+   Enumerate the distinct CANONICAL Division Name values sorted by
+   (Zone ASC, Division Name ASC), both as case-sensitive ASCII
+   comparisons. Each canonical division is expected to appear under
+   exactly one Zone (a given division never straddles zones in
+   branch.csv); if this invariant is ever violated the cleanser MUST
+   fail with a non-zero exit so the data issue is surfaced, not
+   silently resolved. Assign:
+     doCode(D[i]) = string(200 + i)   for i in 1..K
+   as 3-digit numeric strings, where D[1]..D[K] is the
+   (Zone, Division Name)-sorted list of canonical divisions. Every
+   row belonging to the i-th canonical division carries the same
+   doCode.
+   This zone-first ordering means doCodes cluster by Zone: the
+   divisions in the earliest-sorted Zone occupy the lowest doCode
+   range, the next Zone's divisions follow, and so on. The exact
+   doCode for any given division therefore depends on BOTH the
+   alphabetical position of its Zone among all Zones AND the
+   alphabetical position of its Division Name among the divisions
+   of that Zone.
+   Overflow: if K exceeds 799 the format widens to 4 digits from
+   1000 onward; earlier codes remain 3-digit (purely defensive,
+   branch.csv today has ~113 canonical divisions).
+
+5. Output row order.
+   Rows are sorted Zone ASC, Division Name ASC (canonical),
+   Branch Code ASC. String comparison throughout. Deterministic
+   and git-friendly; downstream scripts do not depend on this
+   order, but idempotent output requires a stable one.
+
+6. Determinism.
+   For a fixed input branch.csv, the cleanser produces
+   byte-identical output. No PRNG, no system date, no randomness.
+
+7. Idempotency.
+   Running the cleanser on its own output (generated/branch.csv)
+   after copying it back to base_data/ would produce an identical
+   file. The doCode column is preserved if present in the input
+   (the script MUST overwrite it deterministically rather than
+   error) so re-running on a partially-cleansed file is safe.
+
+8. Logging.
+   stdout (one line):
+     wrote generated/branch.csv: rows=N branches=N divisions=K merged=M
+   where M is the count of rows whose Division Name differs from
+   its source CSV cell (i.e. rows whose divisionName was rewritten
+   by alias merging).
+   stderr: one line per alias group with >= 2 distinct source
+   spellings, of the form
+     alias merge: "Ahmedaba d" (1 row) + "Ahmedabad" (34 rows) -> "Ahmedabad"
+
+
+Example
+-------
+Given a branch.csv fragment containing two rows:
+
+  CZ,Ahmedaba d,042,AHMEDABAD CBO,50,210
+  CZ,Ahmedabad,206,AHMEDABAD CBO-3,49,200
+
+the cleansed generated/branch.csv emits (after rule 5 sort):
+
+  CZ,Ahmedabad,<NNN>,042,AHMEDABAD CBO,50,210
+  CZ,Ahmedabad,<NNN>,206,AHMEDABAD CBO-3,49,200
+
+Both rows now share the same doCode (sequential per canonical
+(Zone, Division) per rule 4) and share divisionName "Ahmedabad"
+(canonical form). The exact numeric value of <NNN> depends on how
+many Zones precede CZ and how "Ahmedabad" sorts within CZ; see the
+actual generated/branch.csv for the concrete assignment.

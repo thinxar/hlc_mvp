@@ -1,0 +1,195 @@
+Pipeline Run Order Specification
+================================
+
+Purpose: describe the order in which the data-generation and
+aggregation scripts must be executed to build the full
+generated/ dataset from a single input, base_data/branch.csv.
+No piece of the pipeline reads from anything outside base_data/,
+generated/, or its own code.
+
+
+Inputs and outputs at a glance
+------------------------------
+Input (checked in):
+  base_data/branch.csv
+
+Transient output (git-ignored):
+  generated/branch.csv                             <-- Stage 0 cleansed master
+  generated/branches.json
+  generated/zone_divisions.json
+  generated/all_cases.jsonl
+  generated/active_cases_branchwise.json
+  generated/active_cases_weekly_branchwise.json
+  generated/active_cases_monthly_branchwise.json
+  generated/monthly_branchwise_report.json
+
+Nothing outside generated/ is produced or mutated.
+
+
+Stage 0 - Cleansing (master-data normalization)
+-----------------------------------------------
+Produces the CLEANSED master CSV that every other stage reads. Applies
+whitespace normalization, division-name alias merging (e.g. "Ahmedaba d"
+-> "Ahmedabad"), and adds the doCode column (3-digit running sequence
+starting at 201 per canonical division). Deterministic; no PRNG.
+
+  node scripts/cleansing/cleanse_branch_csv.js
+    spec:   specs/cleansing/branch_cleansing_spec.txt
+    input:  base_data/branch.csv
+    output: generated/branch.csv
+
+MUST run before Stages 1 and 2 - both read generated/branch.csv. No
+environment variables.
+
+
+Stage 1 - Reference data extraction
+-----------------------------------
+Purely derived views of generated/branch.csv (Stage 0 output). These
+scripts read ONLY that CSV and write ONLY their own single output
+file. Their outputs are NOT consumed by later stages - they exist
+for UI/lookup use. May be run in any order, in parallel, or skipped
+entirely if the pipeline's goal is only to refresh case data.
+
+  node scripts/reference_data/extract_branches.js
+    spec:   specs/reference_data/branch_reference_spec.txt
+    output: generated/branches.json
+
+  node scripts/reference_data/extract_zone_divisions.js
+    spec:   specs/reference_data/zone_division_reference_spec.txt
+    output: generated/zone_divisions.json
+
+
+Stage 2 - Case generation (master dataset)
+------------------------------------------
+Produces the single JSONL file every aggregator reads. Reads
+generated/branch.csv (Stage 0 output). Dominates the pipeline
+runtime. Deterministic for a fixed PRNG seed (hard-coded in the
+script) and a fixed GEN_TODAY.
+
+  node scripts/data_gen/generate_all_cases.js
+    spec:   specs/data_gen/data_generation.txt
+    output: generated/all_cases.jsonl
+
+  Optional environment:
+    GEN_TODAY=YYYY-MM-DD   (defaults to system date; clamps actionOn
+                            and bounds the requestDate distribution)
+
+
+Stage 3 - Aggregations (branch-level rollups)
+---------------------------------------------
+Each aggregator consumes generated/all_cases.jsonl and writes one
+JSON file. Stage 3 scripts are MUTUALLY INDEPENDENT - once Stage 2
+finishes, they may run in any order or in parallel.
+
+  node scripts/aggregated/generate_active_cases_daily_branchwise.js
+    spec:   specs/aggregation/active_cases_daily_agg_spec.txt
+    output: generated/active_cases_branchwise.json
+    window: last WINDOW_DAYS = 14 calendar days
+
+  node scripts/aggregated/generate_active_cases_weekly_branchwise.js
+    spec:   specs/aggregation/active_cases_weekly_agg_spec.txt
+    output: generated/active_cases_weekly_branchwise.json
+    window: last WINDOW_WEEKS = 8 rolling 7-day periods
+
+  node scripts/aggregated/generate_active_cases_monthly_branchwise.js
+    spec:   specs/aggregation/active_cases_monthly_agg_spec.txt
+    output: generated/active_cases_monthly_branchwise.json
+    window: last WINDOW_MONTHS = 24 calendar months
+
+  node scripts/aggregated/generate_monthly_branchwise_report.js
+    spec:   specs/aggregation/monthly_branchwise_agg_spec.txt
+    output: (see spec)
+    note:   legacy volume report; distinct from the three
+            active_cases_*_agg_spec reports above.
+
+  Optional environment (all aggregators):
+    REPORT_TODAY=YYYY-MM-DD   (defaults to system date; sets REF_DATE
+                               used by case-selection arms and cal_*
+                               window enumeration)
+
+
+Canonical run order
+-------------------
+Simplest sequential run that is guaranteed correct. Safe to paste
+into a shell.
+
+  # Stage 0 (cleanse master CSV; prerequisite for Stages 1 and 2)
+  node scripts/cleansing/cleanse_branch_csv.js
+
+  # Stage 1 (reference extractions; independent of each other)
+  node scripts/reference_data/extract_branches.js
+  node scripts/reference_data/extract_zone_divisions.js
+
+  # Stage 2 (master dataset)
+  node scripts/data_gen/generate_all_cases.js
+
+  # Stage 3 (aggregations; must be after Stage 2)
+  node scripts/aggregated/generate_active_cases_daily_branchwise.js
+  node scripts/aggregated/generate_active_cases_weekly_branchwise.js
+  node scripts/aggregated/generate_active_cases_monthly_branchwise.js
+  node scripts/aggregated/generate_monthly_branchwise_report.js
+
+
+Optimal parallel run order
+--------------------------
+For a faster regeneration when parallelism is available:
+
+  step 1:             Stage 0 (must complete first - single file)
+  step 2 (parallel):  Stage 1 scripts + Stage 2 script
+                      (all three read generated/branch.csv)
+  step 3 (parallel):  all Stage 3 scripts
+                      (once Stage 2 finishes)
+
+
+Dependency graph
+----------------
+    base_data/branch.csv
+        |
+        +-- cleanse_branch_csv.js          -> generated/branch.csv
+                        |        |
+                        |        +-- extract_branches.js         -> branches.json
+                        |        +-- extract_zone_divisions.js   -> zone_divisions.json
+                        |
+                        +-- generate_all_cases.js                -> all_cases.jsonl
+                                        |
+                                        +-- generate_active_cases_daily_branchwise.js
+                                        +-- generate_active_cases_weekly_branchwise.js
+                                        +-- generate_active_cases_monthly_branchwise.js
+                                        +-- generate_monthly_branchwise_report.js
+
+
+Env-variable consistency
+------------------------
+GEN_TODAY (Stage 2) and REPORT_TODAY (Stage 3) are independent but
+SHOULD usually be set to the same value. If Stage 2 is run with
+GEN_TODAY=X, running Stage 3 with REPORT_TODAY different from X is
+legal but will produce reports whose REF_DATE does not align with
+the dataset's TODAY-clamp, which can look confusing (e.g. the last
+day of the daily report carrying an artificial spike of clamped
+actionOn values that sit at X, not at REPORT_TODAY).
+
+Recommended: set both explicitly in the shell, once, before running:
+  export GEN_TODAY=2026-04-19 REPORT_TODAY=2026-04-19
+
+
+Idempotency and re-run semantics
+--------------------------------
+- Every script overwrites its single output file on re-run. None
+  appends.
+- Stage 1 and Stage 3 are byte-deterministic for the same inputs.
+- Stage 2 is deterministic for a fixed PRNG seed (currently hard-
+  coded in generate_all_cases.js) and a fixed GEN_TODAY.
+- For a guaranteed-clean build: delete generated/ and rerun the
+  canonical order. There is no cache or incremental mode to invalidate.
+
+
+Verification (optional)
+-----------------------
+After Stage 2, spec-compliance of the officer-pool / uploadedBy /
+approvedBy rules can be checked with:
+
+  node scripts/data_gen/_verify_pool_rules.js
+
+This script is a test harness, not part of the pipeline. It prints
+a PASS/FAIL summary and is safe to delete once the pipeline is
+trusted.

@@ -18,6 +18,10 @@ revivalPeriodEndDate    | string  | ISO date; typically lapseDate + 5 years     
 submittedBy             | string  | 8-digit numeric value (zero-padded)                 | "45829137"
 Zone                    | string  | LIC zone code; from branch.csv                      | "NCZ"
 divisionName            | string  | Division; from branch.csv                           | "Kanpur"
+doCode                  | string  | Divisional Office code; 3-digit running sequence    | "241"
+                        |         | starting at "201", assigned per distinct            |
+                        |         | CANONICAL divisionName (see rule 13, incl. 13.3     |
+                        |         | name normalization)                                 |
 branchCode              | string  | 3 or 4 chars; from branch.csv                       | "231"
 branchName              | string  | Branch name; from branch.csv                        | "KANPUR (SHIVOY TOWER) DBO"
 documents               | array   | List of supporting-document objects (see below)     | see Documents section
@@ -32,6 +36,8 @@ name        | string | random file name based on the type, pdf|doc				 | "DGH_FO
 type        | string | Enum: DGH_FORM | PAYMENT_RECEIPT | ID_PROOF               | "DGH_FORM"
 status		| string | Enum: accepted,rejected,pending							| "accepted"
 docId       | string | Pattern: DOC-NNNNN                                        | "DOC-10021"
+uploadedBy  | string  | 8-digit numeric value (zero-padded)                 | "45829137"
+approvedBy  | string  | 8-digit numeric value (zero-padded), applicable when status != pending                 | "45829136"
 uploadedOn  | string | ISO date (YYYY-MM-DD); must be > requestDate and <= requestDate + 5 days | "2026-04-22"
 actionOn    | string | ISO date (YYYY-MM-DD); uploadedOn + 1 to 45 days when status != pending; within a single request, max(actionOn) - min(actionOn) MUST be <= 5 days; empty string when status = pending | "2026-04-29"
 
@@ -46,18 +52,54 @@ Example value for the "documents" field:
 
 Rules
 -----
-1. Zone, divisionName, branchCode, branchName MUST be sourced as a single row
-   from policyRevivalData/branch.csv (columns: Zone, Division Name, Branch Code,
-   Branch Name, Number of Cases, Documents). Do not mix-and-match fields across rows.
-   For each row, let N = 2 * (CSV "Number of Cases" value). Generate exactly N
-   sample request documents, each carrying that row's Zone / divisionName /
-   branchCode / branchName. Subsequent rules that reference the branch's case
-   count use this N.
+1. Zone, divisionName, doCode, branchCode, branchName MUST be sourced as a
+   single row from generated/branch.csv (the CLEANSED master file produced
+   by specs/cleansing/branch_cleansing_spec.txt; columns: Zone, Division
+   Name, doCode, Branch Code, Branch Name, Number of Cases, Documents).
+   Do not mix-and-match fields across rows. Running this generator against
+   the raw base_data/branch.csv is unsupported - run the cleansing stage
+   first.
+   For each row, let N = 2 * (CSV "Number of Cases" value). Generate exactly
+   N sample request documents, each carrying that row's Zone / divisionName
+   / doCode / branchCode / branchName. Subsequent rules that reference the
+   branch's case count use this N.
 2. CSV header uses "Division Name" and "Branch Code" / "Branch Name" - map to
    camelCase (divisionName, branchCode, branchName) in the output.
 3. Branch name / division values may contain embedded newlines in the CSV;
    collapse whitespace (replace any \r?\n and repeated spaces with a single space) before use.
 4. submittedBy is always a string of exactly 8 numeric characters, leading zeros not allowed.
+   Officer pool (per month, per branch): for every (YYYY-MM, branchCode)
+   combination that carries at least one case, assign a "monthly officer
+   pool" of 3 to 5 UNIQUE 8-digit officer IDs (pool size drawn uniformly
+   from {3,4,5}). This single pool serves ALL officer roles for that month
+   at that branch - submitter, uploader, approver - there are no separate
+   per-role pools.
+   4.1 Scope: the pool is keyed by (month, branchCode) where month is the
+       YYYY-MM of the case's requestDate. Every case's submittedBy, every
+       document's uploadedBy, and every document's approvedBy on that case
+       MUST come from that (month, branch)'s pool, regardless of when
+       individual documents are uploaded or actioned. A document whose
+       actionOn falls in a later month still draws approvedBy from the
+       case's requestDate month's pool - this keeps one case tied to one
+       pool.
+   4.2 Across months (same branch): pools are STICKY. By default, a branch
+       inherits its pool unchanged from the nearest prior month in which it
+       had cases. Reshuffles (allocating a fresh set of IDs for that branch
+       in that month, discarding the inherited one) are rare: each
+       month-to-month transition reshuffles with a low probability in
+       [0%, 3%] (2% is the recommended default). A branch's very first
+       month of activity always allocates fresh - there is nothing to
+       inherit. Pool disjointness (rule 4.3) still applies, so if the
+       inherited IDs would collide with another branch already allocated
+       for the target month, this transition falls back to a fresh
+       allocation regardless of the reshuffle probability.
+   4.3 Across branches (same month): pools MUST be DISJOINT. Within any
+       given YYYY-MM, no officer ID appears in more than one branch's
+       monthly pool. An implementation typically satisfies this by drawing
+       IDs for a month from a shared month-scoped allocator that hands out
+       each ID at most once.
+   4.4 Determinism: all pool assignments are deterministic for a given run
+       seed so the generator is reproducible.
 5. All dates are strings in ISO-8601 date form (YYYY-MM-DD); no time component.
 6. requestId year segment should match the calendar year of requestDate.
 7. lapseDate and revivalPeriodEndDate are only meaningful when policyStatus = LAPSED;
@@ -103,6 +145,35 @@ Rules
       revivalPeriodEndDate = lapseDate    + 5 years
     uploadedOn for each document is 1-5 days AFTER its record's requestDate.
     requestId year segment must match the year of its own requestDate.
+12. uploadedBy / approvedBy are per-document identities. Both use the same
+    format as submittedBy - 8 numeric characters, leading zeros not allowed -
+    and both are drawn from the case's monthly officer pool (rule 4; keyed
+    by the YYYY-MM of the case's requestDate and the case's branchCode).
+    The same pool is shared across submitters, uploaders, and approvers.
+    12.1 uploadedBy: in MOST documents, uploadedBy equals the case's
+         submittedBy (the submitter is also the uploader). Target ratio 85%,
+         permitted range [80%, 95%]; choose one ratio per branch uniformly in
+         that range and apply it to every document under that branch. For the
+         remaining documents, draw uploadedBy from the case's monthly officer
+         pool but NOT equal to the case's own submittedBy - i.e., a different
+         colleague in the branch uploaded on the submitter's behalf.
+    12.2 approvedBy: for every document whose status is 'accepted' or
+         'rejected', approvedBy is drawn uniformly at random from the
+         case's monthly officer pool. When status is 'pending', approvedBy
+         is the empty string "" (actioning has not occurred yet).
+    12.3 HARD CONSTRAINT: for every document, approvedBy != uploadedBy. The
+         officer pool is shared, so this is NOT satisfied by construction -
+         implementations MUST redraw approvedBy from the pool until the
+         constraint holds. With a minimum pool size of 3, at least two
+         candidates other than uploadedBy are always available, so the
+         redraw always terminates.
+13. doCode is a pass-through field from generated/branch.csv, carried on
+    every case alongside Zone / divisionName / branchCode / branchName
+    (rule 1). The generator does not derive or transform doCode; all
+    normalization and sequence assignment happens in the cleansing
+    stage (see specs/cleansing/branch_cleansing_spec.txt, rules 3 and 4).
+    Every case that shares a divisionName shares the same doCode by
+    construction.
 
 Example
 -------
@@ -120,6 +191,7 @@ Example
   "submittedBy": "45829137",
   "Zone": "NCZ",
   "divisionName": "Kanpur",
+  "doCode": "241",
   "branchCode": "231",
   "branchName": "KANPUR (SHIVOY TOWER) DBO",
   "documents": [

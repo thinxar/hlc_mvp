@@ -1,5 +1,6 @@
 // Generates Policy Revival sample cases for every row in branch.csv,
-// following data_spec.txt. Output: NDJSON sorted by requestDate ascending.
+// following specs/data_gen/data_generation.txt. Output: NDJSON sorted by
+// requestDate ascending.
 
 const fs = require('fs');
 const path = require('path');
@@ -15,6 +16,10 @@ function mulberry32(seed) {
 }
 const rng = mulberry32(20260419);
 const pick = arr => arr[Math.floor(rng() * arr.length)];
+const pickExcept = (arr, ex) => {
+  const options = arr.filter(x => x !== ex);
+  return options[Math.floor(rng() * options.length)];
+};
 const digits = n => Array.from({ length: n }, () => Math.floor(rng() * 10)).join('');
 const pad = (v, w) => String(v).padStart(w, '0');
 
@@ -52,6 +57,43 @@ function parseCsv(text) {
 }
 
 const clean = s => (s == null ? '' : s.replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim());
+
+// ---------- officer-pool machinery (rule 4) ----------
+// IDs are 8 numeric chars, no leading zero => [10000000, 99999999].
+// Within a month, IDs are DISJOINT across branches (rule 4.3).
+// Across months within a branch, pools are STICKY: inherited by default,
+// reshuffled with a small probability (rule 4.2).
+const RESHUFFLE_PROB = 0.02;  // 2%; spec-permitted range [0%, 3%]
+const monthUsedIds = new Map();  // "YYYY-MM" -> Set<string> of IDs already claimed that month
+let reshuffleCount = 0, inheritCount = 0, collisionFallbackCount = 0;
+
+function newOfficerId() {
+  return String(10000000 + Math.floor(rng() * 90000000));
+}
+function getMonthUsed(month) {
+  let used = monthUsedIds.get(month);
+  if (!used) { used = new Set(); monthUsedIds.set(month, used); }
+  return used;
+}
+function allocateFreshPool(month) {
+  const used = getMonthUsed(month);
+  const size = 3 + Math.floor(rng() * 3);   // {3, 4, 5}
+  const pool = [];
+  while (pool.length < size) {
+    const id = newOfficerId();
+    if (!used.has(id)) { used.add(id); pool.push(id); }
+  }
+  return pool;
+}
+// Try to reuse `prevPool` in `month` (claim its IDs in that month's used-set).
+// Returns the pool on success, null if any ID would collide with another
+// branch already allocated for this month (rule 4.3 fallback).
+function tryInheritPool(month, prevPool) {
+  const used = getMonthUsed(month);
+  if (prevPool.some(id => used.has(id))) return null;
+  for (const id of prevPool) used.add(id);
+  return prevPool;
+}
 
 // ---------- spec constants ----------
 const MIN_DOCS = 2, MAX_DOCS = 10;
@@ -106,7 +148,6 @@ function allocateDocCounts(totalDocs, numCases) {
       if (counts[i] < MAX_DOCS) { counts[i]++; remaining--; }
     }
   } else {
-    // fallback: deterministic distribution when doc budget is below the minimum.
     const base = Math.floor(totalDocs / numCases);
     let rem = totalDocs % numCases;
     for (let i = 0; i < numCases; i++) counts[i] = base + (i < rem ? 1 : 0);
@@ -115,19 +156,21 @@ function allocateDocCounts(totalDocs, numCases) {
 }
 
 // ---------- main ----------
-const csvPath = path.join(__dirname, 'branch.csv');
-const outDir = path.join(__dirname, 'generated');
+const projectRoot = path.resolve(__dirname, '..', '..');
+const csvPath = path.join(projectRoot, 'generated', 'branch.csv');   // cleansed CSV; see specs/cleansing/branch_cleansing_spec.txt
+const outDir = path.join(projectRoot, 'generated');
 const outPath = path.join(outDir, 'all_cases.jsonl');
 fs.mkdirSync(outDir, { recursive: true });
 
 const rows = parseCsv(fs.readFileSync(csvPath, 'utf8'));
 const header = rows.shift().map(clean);
 const idx = name => header.indexOf(name);
-const iZone = idx('Zone'), iDiv = idx('Division Name'), iCode = idx('Branch Code'),
-      iName = idx('Branch Name'), iCases = idx('Number of Cases'), iDocs = idx('Documents');
+const iZone = idx('Zone'), iDiv = idx('Division Name'), iDoCode = idx('doCode'),
+      iCode = idx('Branch Code'), iName = idx('Branch Name'),
+      iCases = idx('Number of Cases'), iDocs = idx('Documents');
 
-if ([iZone, iDiv, iCode, iName, iCases, iDocs].some(x => x < 0)) {
-  throw new Error('branch.csv missing required columns. Found: ' + JSON.stringify(header));
+if ([iZone, iDiv, iDoCode, iCode, iName, iCases, iDocs].some(x => x < 0)) {
+  throw new Error('branch.csv missing required columns (did cleansing run?). Found: ' + JSON.stringify(header));
 }
 
 let docCounter = 10000;
@@ -138,6 +181,7 @@ for (const raw of rows) {
   const branch = {
     zone: clean(raw[iZone]),
     division: clean(raw[iDiv]),
+    doCode: clean(raw[iDoCode]),
     code: clean(raw[iCode]),
     name: clean(raw[iName])
   };
@@ -145,19 +189,54 @@ for (const raw of rows) {
   const csvDocs  = parseInt(clean(raw[iDocs])  || '0', 10) || 0;
   if (csvCases <= 0 || !branch.code) continue;
 
-  const N = 2 * csvCases;      // rule 1: double the CSV count
-  const D = 2 * csvDocs;       // rule 8: double the CSV document budget
+  const N = 2 * csvCases;      // rule 1
+  const D = 2 * csvDocs;       // rule 8
 
-  // Per-branch rejected rate: uniform in [3%, 7%] (rule 9).
-  const rejectedPct = 0.03 + rng() * 0.04;
+  // Per-branch draws (fixed for the branch's entire output).
+  const rejectedPct = 0.03 + rng() * 0.04;        // rule 9: [3%, 7%]
+  const uploadRatio = 0.80 + rng() * 0.15;        // rule 12.1: [80%, 95%]
+
+  // Phase 1a: draw ageDays / requestDate for every case up front.
+  const caseInfos = new Array(N);
+  for (let i = 0; i < N; i++) {
+    const ageDays = Math.floor(rng() * (RANGE_DAYS + 1));
+    caseInfos[i] = { ageDays, requestDate: addDays(TODAY, -ageDays) };
+  }
+
+  // Phase 1b: for each month this branch touches, allocate / inherit a pool
+  // walking months in chronological order (rule 4.2 stickiness).
+  const branchMonths = [...new Set(caseInfos.map(c => c.requestDate.slice(0, 7)))].sort();
+  const branchPools = new Map();     // "YYYY-MM" -> string[]
+  let prevPool = null;
+  for (const month of branchMonths) {
+    const shouldReshuffle = prevPool === null || rng() < RESHUFFLE_PROB;
+    let pool;
+    if (shouldReshuffle) {
+      pool = allocateFreshPool(month);
+      if (prevPool !== null) reshuffleCount++;
+    } else {
+      pool = tryInheritPool(month, prevPool);
+      if (pool) {
+        inheritCount++;
+      } else {
+        pool = allocateFreshPool(month);   // rule 4.3 forced fallback on collision
+        collisionFallbackCount++;
+      }
+    }
+    branchPools.set(month, pool);
+    prevPool = pool;
+  }
 
   const docCounts = allocateDocCounts(D, N);
   const branchRecords = [];
 
+  // Phase 2: generate cases using the pre-allocated pools.
   for (let i = 0; i < N; i++) {
-    // requestDate uniformly distributed across [RANGE_START, TODAY] inclusive (rule 11).
-    const ageDays = Math.floor(rng() * (RANGE_DAYS + 1));
-    const requestDate          = addDays(TODAY, -ageDays);
+    const { ageDays, requestDate } = caseInfos[i];
+    const month = requestDate.slice(0, 7);
+    const officerPool = branchPools.get(month);
+    const submittedBy = officerPool[Math.floor(rng() * officerPool.length)];
+
     const lapseDate            = addDays(requestDate,        -(30 * (2 + Math.floor(rng() * 13))));
     const lastPremiumPaidDate  = addDays(lapseDate,          -(30 * (5 + Math.floor(rng() *  3))));
     const policyYears          = 3 + Math.floor(rng() * 6);
@@ -167,31 +246,41 @@ for (const raw of rows) {
 
     // Per-request action window: all non-pending actionOn values fall inside a
     // 5-day jitter window anchored at requestDate + actionBase, so their
-    // max-min spread within this request cannot exceed 5 days (rule: actionOn).
-    // actionBase >= 6 keeps actionOn strictly after uploadedOn (which is <= requestDate+5).
-    const actionBase = 6 + Math.floor(rng() * 35);                          // 6..40 days from requestDate
+    // max-min spread within this request cannot exceed 5 days.
+    // actionBase >= 6 keeps actionOn strictly after uploadedOn (<= requestDate+5).
+    const actionBase = 6 + Math.floor(rng() * 35);
 
     const documents = [];
     for (let d = 0; d < docCounts[i]; d++) {
       const type   = pick(docTypes);
       const status = pickStatus(ageDays, rejectedPct);
-      let uploadedOn = addDays(requestDate, 1 + Math.floor(rng() * 5));     // 1-5 days AFTER requestDate
+      let uploadedOn = addDays(requestDate, 1 + Math.floor(rng() * 5));
       if (uploadedOn > TODAY) uploadedOn = TODAY;
       let actionOn;
       if (status === 'pending') {
-        actionOn = '';                                                      // rule: empty for pending
+        actionOn = '';
       } else {
-        const jitter = Math.floor(rng() * 6);                               // 0..5 days jitter, spread <= 5
+        const jitter = Math.floor(rng() * 6);
         let candidate = addDays(requestDate, actionBase + jitter);
-        if (candidate > TODAY)     candidate = TODAY;                       // never in the future
-        if (candidate < uploadedOn) candidate = uploadedOn;                 // monotonicity guard
+        if (candidate > TODAY)     candidate = TODAY;
+        if (candidate < uploadedOn) candidate = uploadedOn;
         actionOn = candidate;
       }
+
+      // uploadedBy: mostly = submittedBy (rule 12.1).
+      const uploadedBy = (rng() < uploadRatio || officerPool.length < 2)
+        ? submittedBy
+        : pickExcept(officerPool, submittedBy);
+      // approvedBy: pool member != uploadedBy for non-pending, else "" (rule 12.2/12.3).
+      const approvedBy = (status === 'pending') ? '' : pickExcept(officerPool, uploadedBy);
+
       documents.push({
         name: fileNameFor(type, docCounter, policyNumber, requestDate),
         type,
         status,
         docId: `DOC-${docCounter++}`,
+        uploadedBy,
+        approvedBy,
         uploadedOn,
         actionOn
       });
@@ -208,9 +297,10 @@ for (const raw of rows) {
       policyStatus: 'LAPSED',
       lapseDate,
       revivalPeriodEndDate,
-      submittedBy: digits(8),
+      submittedBy,
       Zone: branch.zone,
       divisionName: branch.division,
+      doCode: branch.doCode,
       branchCode: branch.code,
       branchName: branch.name,
       documents
@@ -223,12 +313,11 @@ for (const raw of rows) {
   allRecords.push(...branchRecords);
 }
 
-// Global sort by requestDate ascending (stable; preserves creation order for ties).
+// Global sort by requestDate ascending (stable).
 allRecords.sort((a, b) => (a.requestDate < b.requestDate ? -1
                          : a.requestDate > b.requestDate ?  1 : 0));
 
-// Assign globally-unique requestId in requestDate order: REV-YYYY-NNNNNNN
-// where NNNNNNN is a single monotone sequence across all records (widened if needed).
+// Assign globally-unique requestId in requestDate order: REV-YYYY-NNNNNNN.
 const idWidth = Math.max(7, String(allRecords.length).length);
 let g = 0;
 for (const rec of allRecords) {
@@ -240,8 +329,15 @@ const out = fs.createWriteStream(outPath, { encoding: 'utf8' });
 for (const rec of allRecords) out.write(JSON.stringify(rec) + '\n');
 out.end();
 out.on('finish', () => {
+  let totalPoolIds = 0;
+  for (const s of monthUsedIds.values()) totalPoolIds += s.size;
+  const transitions = inheritCount + reshuffleCount + collisionFallbackCount;
   console.log(`Wrote ${outPath}`);
   console.log(`  branches=${totalBranches} cases=${totalCases} documents=${totalDocs}`);
+  console.log(`  months=${monthUsedIds.size} totalOfficerIds=${totalPoolIds}`);
+  console.log(`  pool transitions: inherit=${inheritCount} reshuffle=${reshuffleCount}` +
+              ` collisionFallback=${collisionFallbackCount} (reshufflePct=` +
+              (transitions > 0 ? (100 * reshuffleCount / transitions).toFixed(2) : '0.00') + '%)');
   console.log(`  TODAY=${TODAY} requestDate range: ${RANGE_START} .. ${TODAY}`);
   console.log(`  actual: ${allRecords[0].requestDate} .. ${allRecords[allRecords.length - 1].requestDate}`);
 });

@@ -8,12 +8,16 @@ grain without needing to scan branch.csv repeatedly.
 
 Source
 ------
-File: base_data/branch.csv
-CSV header (exact order): Zone, Division Name, Branch Code, Branch Name,
-                          Number of Cases, Documents
+File: generated/branch.csv  (CLEANSED master file; see
+      specs/cleansing/branch_cleansing_spec.txt)
+CSV header (exact order): Zone, Division Name, doCode, Branch Code,
+                          Branch Name, Number of Cases, Documents
 
-Only the first two columns are consumed by this spec. All other columns
-are ignored.
+Zone, Division Name, and doCode are consumed by this spec. All
+other columns are ignored. Running this extractor against the raw
+base_data/branch.csv is unsupported - run the cleansing stage first
+so alias merges (e.g. "Ahmedaba d" -> "Ahmedabad") and doCode
+assignment are in effect.
 
 Output
 ------
@@ -27,18 +31,21 @@ Field         | Type   | Format / Constraint                                | Ex
 --------------|--------|----------------------------------------------------|----------
 zone          | string | from CSV "Zone"; trimmed                           | "CZ"
 divisionName  | string | from CSV "Division Name"; trimmed, ws collapsed    | "Bhopal"
+doCode        | string | from CSV "doCode"; constant per canonical          | "201"
+              |        | divisionName regardless of zone                    |
 
 Example element
 ---------------
 {
   "zone": "CZ",
-  "divisionName": "Bhopal"
+  "divisionName": "Bhopal",
+  "doCode": "201"
 }
 
 Rules
 -----
-1. Header mapping: "Zone" -> zone, "Division Name" -> divisionName.
-   Output keys are camelCase.
+1. Header mapping: "Zone" -> zone, "Division Name" -> divisionName,
+   "doCode" -> doCode. Output keys are camelCase.
 2. Whitespace hygiene: for zone and divisionName, replace any \r?\n and
    repeated whitespace inside the cell with a single space, then trim.
    Matches the rule used in the branch and data_gen specs.
@@ -53,9 +60,9 @@ Rules
 5. The CSV header row must be consumed and discarded.
 6. Output sort order: zone ASC, then divisionName ASC (string comparison,
    case-sensitive). Stable sort.
-7. No additional fields are emitted. Do not include branch counts,
-   division codes, or any aggregate - this artifact is pure reference
-   data.
+7. No additional fields are emitted. Do not include branch counts
+   or any aggregate - this artifact is pure reference data (doCode
+   IS reference data and IS emitted, per the schema above).
 8. The output file is overwritten on each run. The script is idempotent:
    running it twice on the same input produces byte-identical output.
 

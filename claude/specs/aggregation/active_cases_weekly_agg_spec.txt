@@ -1,0 +1,202 @@
+Aggregation Spec - Active Cases, Weekly Branch Activity
+=======================================================
+
+Source: generated/all_cases.jsonl (record schema: specs/data_gen/data_generation.txt)
+
+Companion to: specs/aggregation/active_cases_agg_spec.txt (daily variant)
+Same source, same case-selection arms, same pending/processed
+semantics - just rolled up to WEEKLY grain over a longer history.
+
+
+Parameters
+----------
+Single-source-of-truth knobs referenced throughout this spec. Change
+the value here and every derived bound below (case selection arm B,
+cal_week enumeration, Rules 1 and 8) follows automatically.
+
+  WINDOW_WEEKS = 8     # length of the reporting window in weeks
+
+A "week" in this spec is a rolling 7-day period anchored at REF_DATE,
+NOT an ISO calendar week. This keeps the first/last week bounds
+deterministic regardless of which weekday REF_DATE happens to be.
+The WINDOW_WEEKS weeks are indexed from 0 (most recent) backwards:
+
+  week[k] = [REF_DATE - 7k - 6, REF_DATE - 7k]   for k in 0..WINDOW_WEEKS-1
+
+The full window span is therefore
+  [REF_DATE - 7 * WINDOW_WEEKS + 1, REF_DATE]
+which, at WINDOW_WEEKS = 8, is the last 56 calendar days.
+
+All other numeric thresholds (e.g. the 90-day arm-A lookback) are
+deliberately NOT parameterised - if they need to vary, add a named
+parameter here first.
+
+
+Report - Active Cases, Weekly Branch Activity
+---------------------------------------------
+Grain:         one row per (cal_week, branchCode). cal_week is the
+               LAST DAY (YYYY-MM-DD) of one 7-day rolling period in
+               the reporting window. A single source document may be
+               counted in pendingDocuments across many cal_weeks
+               (every week-end from the one covering its uploadedOn
+               through the last week-end before its actionOn), in
+               submittedDocuments in exactly one cal_week (the week
+               containing its uploadedOn), and in processedDocuments
+               in exactly one cal_week (the week containing its
+               actionOn).
+Output format: flat JSON object per row (file-level container - JSON array
+               or NDJSON - decided when the reporting module is wired up).
+Output file:   generated/active_cases_weekly_branchwise.json
+
+Top-level fields
+----------------
+
+Field              | Type    | Format / Constraint                                        | Example
+-------------------|---------|------------------------------------------------------------|------------
+id                 | integer | unique running sequence within this report, 1..N, assigned | 1
+                   |         | AFTER the final sort (rule 8) so id order matches row order|
+branchCode         | string  | 3 or 4 chars; grouping key                                 | "359"
+branchName         | string  | from source record                                         | "SEHORE"
+divisionName       | string  | from source record                                         | "Bhopal"
+doCode             | string  | from source record; constant per divisionName              | "201"
+Zone               | string  | from source record (key preserved as "Zone", not camel)    | "CZ"
+cal_week           | string  | YYYY-MM-DD; last day of a 7-day rolling period             | "2026-04-19"
+pendingDocuments   | integer | open backlog AS OF cal_week (see rule 3)                   | 47
+submittedDocuments | integer | documents uploaded WITHIN the week (see rule 4)            | 285
+processedDocuments | integer | documents actioned WITHIN the week (see rule 5)            | 312
+perApprover        | array   | breakdown of processedDocuments by approver; see schema    | see below
+
+perApprover element schema
+--------------------------
+
+Field              | Type    | Format / Constraint                                        | Example
+-------------------|---------|------------------------------------------------------------|------------
+approvedBy         | string  | officer id from the source document's approvedBy (8-digit)| "57988792"
+accepted           | integer | documents with status "accepted" actioned by this approver| 112
+rejected           | integer | documents with status "rejected" actioned by this approver| 6
+
+Invariants:
+  per-element:  accepted + rejected >= 1 (every emitted element is non-empty)
+  per-bucket:   SUM(perApprover[].accepted + perApprover[].rejected)
+                    == top-level processedDocuments
+Only documents with status in {"accepted","rejected"} contribute to
+perApprover. Pending documents have no approver and are excluded.
+perApprover is sorted by approvedBy ASC and contains no duplicate
+approvedBy values (one entry per approver per bucket). An approver
+whose contribution to this bucket is purely accepted (or purely
+rejected) simply has the other count at 0 - they are NOT emitted as
+two separate elements.
+
+Case selection
+--------------
+Let REF_DATE be the run's reference date - resolved from environment
+variable REPORT_TODAY (YYYY-MM-DD) if set, otherwise the local system
+date at run time. Dates in the source are date-only strings; compare
+as ISO strings, no timezone math required.
+
+A source case qualifies for this report when EITHER condition holds
+(logical OR; a case meeting both is included once):
+
+  A. Recent-and-pending:
+     requestDate >= REF_DATE - 89 days (i.e. within the last 90 days),
+     AND the case has at least one document with status = "pending".
+
+  B. Recently actioned:
+     the case has at least one document whose actionOn falls within
+     the reporting window
+         [REF_DATE - 7 * WINDOW_WEEKS + 1, REF_DATE]
+     (i.e. within the last WINDOW_WEEKS weeks). Only documents with
+     status in {"accepted","rejected"} have a non-empty actionOn, so
+     this arm implicitly considers only those.
+
+Field-name mapping: the user-facing term "approvedOn" maps to the
+source field actionOn (documented in specs/data_gen/data_generation.txt).
+
+Once a case qualifies, ALL of its documents are eligible to contribute
+to bucket counts (no case-level document filter); the per-cal_week
+rules 3 and 4 decide on a per-document, per-week basis whether the
+document is counted in that week's pending or processed total.
+
+Reporting window (cal_week enumeration)
+---------------------------------------
+cal_week takes each of the WINDOW_WEEKS rolling 7-day period end-dates,
+one per week. With REF_DATE anchoring week[0], these are:
+    { REF_DATE, REF_DATE - 7, REF_DATE - 14, ..., REF_DATE - 7*(WINDOW_WEEKS - 1) }
+Every cal_week value is itself a past-or-present date no older than
+REF_DATE - 7 * (WINDOW_WEEKS - 1). Because the window is anchored at
+REF_DATE, there is no "partial / future" week to clamp - the newest
+week ends exactly on REF_DATE.
+
+Rules
+-----
+1. cal_week enumerates the WINDOW_WEEKS rolling-period end dates
+   described above. Only cases that qualify under "Case selection"
+   feed the aggregator; non-qualifying cases and their documents
+   are dropped before bucket evaluation.
+2. Bucket key for aggregation is (cal_week, branchCode). Zone,
+   divisionName, and branchName are constant per branchCode and are
+   carried along, not grouped on.
+3. pendingDocuments - "open backlog as of cal_week" (end-of-week
+   snapshot). Over all documents of all selected cases in the branch,
+   count documents d satisfying:
+       cal_week >= d.uploadedOn
+       AND ( d.status == "pending" OR cal_week < d.actionOn )
+   A document actioned on cal_week itself (cal_week == d.actionOn)
+   drops OUT of the backlog on that week-end - it is counted in
+   processedDocuments instead (rule 4).
+   Note: d.actionOn is the empty string when d.status == "pending";
+   treat that as "no actionOn" so the comparison reduces to the
+   status-pending branch.
+4. submittedDocuments = COUNT of documents d satisfying:
+       d.uploadedOn in [cal_week - 6 days, cal_week]   (the 7-day period)
+   across all selected cases in the branch. Every document thus
+   contributes to exactly one cal_week bucket (the week containing
+   its uploadedOn). Document status is irrelevant to this count -
+   pending, accepted and rejected all contribute.
+5. processedDocuments = COUNT of documents d satisfying:
+       d.actionOn in [cal_week - 6 days, cal_week]    (the 7-day period)
+       AND d.status in {"accepted","rejected"}
+   across all selected cases in the branch. Every processed document
+   thus contributes to exactly one cal_week bucket (the week
+   containing its actionOn).
+6. perApprover: over the same documents that feed processedDocuments
+   for this bucket, group by d.approvedBy, and for each group count
+   accepted and rejected separately. Emit one element per distinct
+   approvedBy, sorted by approvedBy ASC. Pending documents have no
+   approver and are excluded by construction.
+7. branchName, divisionName, doCode, Zone are constant per branchCode by
+   construction (data_gen rule 1); take them from any record in the
+   bucket.
+8. Output is sorted by divisionName ASC, then branchCode ASC, then
+   cal_week ASC. This keeps each branch's WINDOW_WEEKS weekly rows
+   in chronological order within its division grouping. Buckets
+   with pendingDocuments + submittedDocuments + processedDocuments = 0
+   are NOT emitted (sparse output).
+9. A case with zero documents does not occur in generated data
+   (data_gen rule 8 guarantees >= 2); if present it contributes
+   nothing to any count and can be dropped.
+10. Key-name casing: output uses camelCase for every field EXCEPT "Zone",
+    which matches the source record's capitalised key. "cal_week" uses
+    snake_case, consistent with "cal_date" in the daily variant.
+11. Idempotency: for a fixed REF_DATE and a fixed source file, running
+    the aggregator twice produces byte-identical output.
+
+Example row
+-----------
+{
+  "id": 1,
+  "branchCode": "359",
+  "branchName": "SEHORE",
+  "divisionName": "Bhopal",
+  "doCode": "201",
+  "Zone": "CZ",
+  "cal_week": "2026-04-19",
+  "pendingDocuments": 47,
+  "submittedDocuments": 285,
+  "processedDocuments": 312,
+  "perApprover": [
+    { "approvedBy": "47994369", "accepted": 98, "rejected": 6 },
+    { "approvedBy": "57539931", "accepted": 91, "rejected": 5 },
+    { "approvedBy": "57988792", "accepted": 106, "rejected": 6 }
+  ]
+}

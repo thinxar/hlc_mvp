@@ -1,15 +1,15 @@
 // Monthly Branch Case Summary aggregator.
-// Spec:   aggregation/specs/monthly_branchwise_agg_spec.txt
-// Source: policyRevivalData/generated/all_cases.jsonl
-// Output: aggregation/generated/monthly_branchwise_report.json  (JSON array)
+// Spec:   specs/aggregation/monthly_branchwise_agg_spec.txt
+// Source: generated/all_cases.jsonl
+// Output: generated/monthly_branchwise_report.json  (JSON array)
 
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
 const ROOT    = path.resolve(__dirname, '..', '..');
-const INPUT   = path.join(ROOT, 'policyRevivalData', 'generated', 'all_cases.jsonl');
-const OUT_DIR = path.join(ROOT, 'aggregation', 'generated');
+const INPUT   = path.join(ROOT, 'generated', 'all_cases.jsonl');
+const OUT_DIR = path.join(ROOT, 'generated');
 const OUT     = path.join(OUT_DIR, 'monthly_branchwise_report.json');
 
 // Map source document.status (data_spec.txt) -> output field (spec rule 4).
@@ -52,6 +52,7 @@ async function main() {
         month,
         zone: rec.Zone || '',                                 // source uses capitalised "Zone"
         divisionName: rec.divisionName || '',
+        doCode: rec.doCode || '',
         branchCode,
         branchName: rec.branchName || '',
         no_cases: 0,

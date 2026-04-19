@@ -7,12 +7,17 @@ attributes without re-parsing the CSV.
 
 Source
 ------
-File: base_data/branch.csv
-CSV header (exact order): Zone, Division Name, Branch Code, Branch Name,
-                          Number of Cases, Documents
+File: generated/branch.csv  (CLEANSED master file; see
+      specs/cleansing/branch_cleansing_spec.txt)
+CSV header (exact order): Zone, Division Name, doCode, Branch Code,
+                          Branch Name, Number of Cases, Documents
 
-Only the first four columns are consumed by this spec. "Number of Cases"
-and "Documents" are ignored for reference output.
+Zone, Division Name, doCode, Branch Code, and Branch Name are
+consumed by this spec. Number of Cases and Documents are ignored for
+reference output. Running this extractor against the raw
+base_data/branch.csv is unsupported - run the cleansing stage first
+so alias merges, whitespace fixes, and doCode assignment are in
+effect.
 
 Output
 ------
@@ -26,6 +31,8 @@ Field         | Type   | Format / Constraint                                | Ex
 --------------|--------|----------------------------------------------------|--------------------------
 zone          | string | from CSV "Zone"; trimmed                           | "CZ"
 divisionName  | string | from CSV "Division Name"; trimmed, ws collapsed    | "Bhopal"
+doCode        | string | from CSV "doCode"; 3-digit running sequence per    | "201"
+              |        | canonical division (see branch_cleansing_spec)     |
 branchCode    | string | from CSV "Branch Code"; 3 or 4 chars; preserve     | "034A"
               |        | leading zeros and alphabetic suffixes as-is        |
 branchName    | string | from CSV "Branch Name"; trimmed, ws collapsed      | "BHOPAL CBO-3"
@@ -35,6 +42,7 @@ Example element
 {
   "zone": "CZ",
   "divisionName": "Bhopal",
+  "doCode": "201",
   "branchCode": "206",
   "branchName": "BHOPAL CBO-3"
 }
@@ -42,7 +50,8 @@ Example element
 Rules
 -----
 1. Header mapping: "Division Name" -> divisionName, "Branch Code" -> branchCode,
-   "Branch Name" -> branchName, "Zone" -> zone. Output keys are camelCase.
+   "Branch Name" -> branchName, "Zone" -> zone, "doCode" -> doCode.
+   Output keys are camelCase.
 2. Read branchCode as a STRING. Do not coerce to a number - values like
    "034A", "035B", "0035" must keep their leading zeros and alphabetic
    suffixes exactly as they appear in the CSV.

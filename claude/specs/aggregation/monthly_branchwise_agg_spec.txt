@@ -15,6 +15,7 @@ Field              | Type    | Format / Constraint                              
 month              | string  | YYYY-MM-DD; first day of the requestDate month (DD = "01") | "2025-09-01"
 zone               | string  | from source record                                         | "CZ"
 divisionName       | string  | from source record                                         | "Bhopal"
+doCode             | string  | from source record; constant per divisionName              | "201"
 branchCode         | string  | 3 or 4 chars; grouping key                                 | "359"
 branchName         | string  | from source record                                         | "SEHORE"
 noCases           | integer | distinct requestIds whose requestDate falls in yearMonth   | 142
@@ -41,7 +42,7 @@ Rules
    field equals the string "accepted" - the output uses the business term
    "approved" while the source data uses "accepted" (data_spec document
    status enum).
-5. zone, divisionName, branchName are constant per branchCode by
+5. zone, divisionName, doCode, branchName are constant per branchCode by
    construction (data_spec rule 1 sources them together from branch.csv);
    take them from any record in the bucket.
 6. Output is sorted by month ASC, then branchCode ASC. Buckets with
@@ -60,6 +61,7 @@ Example row
   "month": "2025-09-01",
   "zone": "CZ",
   "divisionName": "Bhopal",
+  "doCode": "201",
   "branchCode": "359",
   "branchName": "SEHORE",
   "noCases": 142,

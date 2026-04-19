@@ -32,17 +32,17 @@ function parseCsv(text) {
 const clean = s => (s == null ? '' : s.replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim());
 
 const projectRoot = path.resolve(__dirname, '..', '..');
-const csvPath = path.join(projectRoot, 'base_data', 'branch.csv');
+const csvPath = path.join(projectRoot, 'generated', 'branch.csv');
 const outDir = path.join(projectRoot, 'generated');
 const outPath = path.join(outDir, 'zone_divisions.json');
 
 const rows = parseCsv(fs.readFileSync(csvPath, 'utf8'));
 const header = rows.shift().map(clean);
 const idx = name => header.indexOf(name);
-const iZone = idx('Zone'), iDiv = idx('Division Name');
+const iZone = idx('Zone'), iDiv = idx('Division Name'), iDoCode = idx('doCode');
 
-if ([iZone, iDiv].some(x => x < 0)) {
-  throw new Error('branch.csv missing required columns. Found: ' + JSON.stringify(header));
+if ([iZone, iDiv, iDoCode].some(x => x < 0)) {
+  throw new Error('branch.csv missing required columns (did cleansing run?). Found: ' + JSON.stringify(header));
 }
 
 // Source row number starts at 2 (1 is the header); matches how a spreadsheet would show it.
@@ -53,6 +53,7 @@ for (let r = 0; r < rows.length; r++) {
   const raw = rows[r];
   const zone = clean(raw[iZone]);
   const divisionName = clean(raw[iDiv]);
+  const doCode = clean(raw[iDoCode]);
   const sourceLine = r + 2;
 
   if (!zone && !divisionName) { skippedBlank++; continue; }
@@ -63,7 +64,14 @@ for (let r = 0; r < rows.length; r++) {
   }
 
   const key = zone + '\u0000' + divisionName;
-  if (!seen.has(key)) seen.set(key, { zone, divisionName });
+  const prior = seen.get(key);
+  if (!prior) {
+    seen.set(key, { zone, divisionName, doCode });
+  } else if (prior.doCode !== doCode) {
+    throw new Error(
+      `Row ${sourceLine}: conflicting doCode for (${zone}, ${divisionName}): "${prior.doCode}" vs "${doCode}"`
+    );
+  }
 }
 
 const out = [...seen.values()].sort((a, b) =>
