@@ -1,4 +1,4 @@
-import { BadgeCheck, UserCheck, UserPlus, Users, Workflow } from 'lucide-react';
+import { CalendarDays, CheckCircle, Clock, LayoutGrid, XCircle } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { useFormstore } from 'wire/StoreFactory';
 
@@ -8,12 +8,12 @@ interface IOptions {
     filter?: any
 }
 
-interface IResourceCard {
+interface ICaseCard {
     total: number
-    mobilizedOnSite: number,
-    activePipeline: number,
-    visaApproved: number,
-    rehirePool: number
+    approved: number,
+    rejected: number,
+    pending: number,
+    todayCases: number
 }
 
 const CaseOverviewCard = (props: IOptions) => {
@@ -43,55 +43,55 @@ const CaseOverviewCard = (props: IOptions) => {
         })
     }, [query])
 
-    const resource: IResourceCard = {
+    const cases: ICaseCard = {
         total: 300,
-        mobilizedOnSite: 55,
-        activePipeline: 90,
-        visaApproved: 89,
-        rehirePool: 9
+        approved: 55,
+        rejected: 90,
+        pending: 89,
+        todayCases: 9
     };
 
     const cards = [
         {
-            title: "Total Resource",
-            value: resource.total,
-            icon: Users,
+            title: "Total cases",
+            value: cases.total,
+            icon: LayoutGrid,
             gradient: "from-blue-400 via-blue-500 to-blue-600",
             iconBg: "bg-linear-to-br from-blue-100 to-blue-200 dark:from-blue-100/10 dark:to-blue-200/10",
             textColor: "text-blue-700 dark:text-blue-400"
 
         },
         {
-            title: "Mobilized On Site",
-            value: resource.mobilizedOnSite,
-            icon: UserCheck,
+            title: "Approved Cases",
+            value: cases.approved,
+            icon: CheckCircle,
             gradient: "from-emerald-400 via-green-500 to-emerald-600",
             iconBg: "bg-linear-to-br from-emerald-100 to-green-200 dark:from-emerald-100/10 dark:to-green-600/10",
             textColor: "text-emerald-700 dark:text-emerald-400"
         },
         {
-            title: "Active Pipeline",
-            value: resource.activePipeline,
-            icon: Workflow,
+            title: "Rejected Cases",
+            value: cases.rejected,
+            icon: XCircle,
+            gradient: "from-red-400 via-red-500 to-red-500",
+            iconBg: "bg-linear-to-br from-red-100 to-red-200 dark:from-red-100/10 dark:to-red-200/10",
+            textColor: "text-red-700 dark:text-red-400",
+        },
+        {
+            title: "Pending Cases",
+            value: cases.pending,
+            icon: Clock,
             gradient: "from-amber-400 via-orange-500 to-red-500",
             iconBg: "bg-linear-to-br from-amber-100 to-orange-200 dark:from-amber-100/10 dark:to-orange-200/10",
             textColor: "text-orange-700 dark:text-orange-400",
         },
         {
-            title: "Visa Approved",
-            value: resource.visaApproved,
-            icon: BadgeCheck,
+            title: "Today Cases",
+            value: cases.todayCases,
+            icon: CalendarDays,
             gradient: "from-teal-400 via-cyan-500 to-blue-500",
             iconBg: "bg-linear-to-br from-teal-100 to-cyan-200 dark:from-teal-100/10 dark:to-cyan-200/10",
             textColor: "text-teal-700 dark:text-teal-400"
-        },
-        {
-            title: "Rehire Pool",
-            value: resource.rehirePool,
-            icon: UserPlus,
-            gradient: "from-amber-400 via-orange-500 to-red-500",
-            iconBg: "bg-linear-to-br from-amber-100 to-orange-200 dark:from-amber-100/10 dark:to-orange-200/10",
-            textColor: "text-orange-700 dark:text-orange-400",
         }
     ];
 
