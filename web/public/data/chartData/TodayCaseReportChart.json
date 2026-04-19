@@ -7,10 +7,6 @@
         {
             "name": "Approved",
             "value": 800
-        },
-        {
-            "name": "Rejected",
-            "value": 100
         }
     ]
 }

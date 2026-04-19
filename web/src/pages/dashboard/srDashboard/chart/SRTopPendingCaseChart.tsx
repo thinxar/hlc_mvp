@@ -1,10 +1,10 @@
 import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { useRef } from "react";
-import { useCommonChartStyles } from "../ChartTheme";
-import type { IChartInput } from "../type";
+import { useCommonChartStyles } from "../../ChartTheme";
+import type { IChartInput } from "../../type";
 
-const MonthlyAcceptanceRateChart = (props: IChartInput) => {
+const SRTopPendingCaseChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText } = props;
     const { commonOptions } = useCommonChartStyles();
     const clickFilter = useRef<{ departmentName: string }>(null);
@@ -34,7 +34,6 @@ const MonthlyAcceptanceRateChart = (props: IChartInput) => {
                     download: true,
                 },
             },
-            zoom: false,
             events: {
                 click: function (_event: any, chartContext: any, config: any) {
                     const dataPointIndex = config.dataPointIndex;
@@ -62,10 +61,7 @@ const MonthlyAcceptanceRateChart = (props: IChartInput) => {
             }
         },
         dataLabels: {
-            enabled: true,
-            formatter: function (val: number) {
-                return Math.round(val) + "%";
-            }
+            enabled: true
         },
         tooltip: {
             enabled: true
@@ -95,14 +91,23 @@ const MonthlyAcceptanceRateChart = (props: IChartInput) => {
                 rotate: -45
             },
         },
-        yaxis: {
-            labels: {
-                formatter: function (val: number) {
-                    return Math.round(val) + "%";
+        colors: [
+            '#f59e0b', '#22c55e', '#ef4444'
+        ],
+        states: {
+            active: {
+                filter: {
+                    type: 'none',
+                    value: 0
                 }
             },
+            hover: {
+                filter: {
+                    type: 'none',
+                    value: 0
+                }
+            }
         },
-        colors: ['#f59e0b', '#3b82f6'],
         active: {
             allowMultipleDataPointsSelection: true,
         },
@@ -112,14 +117,15 @@ const MonthlyAcceptanceRateChart = (props: IChartInput) => {
     }
 
     const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
-    const endPointX = '/MonthlyAcceptanceRate.json'
+    const endPointX = '/SRTopPendingCase.json'
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="area" storeFactory={AppStoreFactory}
+            <PalmyraApexChart options={options} type="bar" storeFactory={AppStoreFactory}
                 endPoint={endPointX} filter={props.filter}
                 seriesOptions={[
-                    { name: "Pending", type: 'area' },
-                    { name: "Approved", type: 'area' }
+                    { name: "Pending" },
+                    { name: "Approved" },
+                    { name: "Rejected" }
                 ]}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
@@ -128,5 +134,5 @@ const MonthlyAcceptanceRateChart = (props: IChartInput) => {
 
 };
 
-export { MonthlyAcceptanceRateChart };
+export { SRTopPendingCaseChart };
 

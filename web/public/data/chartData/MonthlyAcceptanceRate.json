@@ -2,27 +2,33 @@
     "result": [
         {
             "month": "Nov 2025",
-            "value": 90
+            "approved": 90,
+            "pending": 90
         },
         {
             "month": "Dec 2025",
-            "value": 45
+            "approved": 45,
+            "pending": 80
         },
         {
             "month": "Jan 2025",
-            "value": 88
+            "approved": 88,
+            "pending": 56
         },
         {
             "month": "Feb 2025",
-            "value": 94
+            "approved": 94,
+            "pending": 62
         },
         {
             "month": "Mar 2025",
-            "value": 78
+            "approved": 78,
+            "pending": 59
         },
         {
             "month": "Apr 2025",
-            "value": 85
+            "approved": 85,
+            "pending": 90
         }
     ]
 }

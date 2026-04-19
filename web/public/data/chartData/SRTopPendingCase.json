@@ -1,0 +1,124 @@
+{
+    "result": [
+        {
+            "name": "SR-0001",
+            "approved": 78,
+            "rejected": 65,
+            "pending": 82
+        },
+        {
+            "name": "SR-0002",
+            "approved": 91,
+            "rejected": 74,
+            "pending": 69
+        },
+        {
+            "name": "SR-0003",
+            "approved": 63,
+            "rejected": 88,
+            "pending": 72
+        },
+        {
+            "name": "SR-0004",
+            "approved": 85,
+            "rejected": 79,
+            "pending": 94
+        },
+        {
+            "name": "SR-0005",
+            "approved": 97,
+            "rejected": 66,
+            "pending": 81
+        },
+        {
+            "name": "SR-0006",
+            "approved": 72,
+            "rejected": 59,
+            "pending": 90
+        },
+        {
+            "name": "SR-0007",
+            "approved": 88,
+            "rejected": 95,
+            "pending": 76
+        },
+        {
+            "name": "SR-0008",
+            "approved": 69,
+            "rejected": 83,
+            "pending": 87
+        },
+        {
+            "name": "SR-0009",
+            "approved": 92,
+            "rejected": 71,
+            "pending": 64
+        },
+        {
+            "name": "SR-0010",
+            "approved": 75,
+            "rejected": 89,
+            "pending": 93
+        },
+        {
+            "name": "SR-0011",
+            "approved": 84,
+            "rejected": 62,
+            "pending": 77
+        },
+        {
+            "name": "SR-0012",
+            "approved": 96,
+            "rejected": 81,
+            "pending": 70
+        },
+        {
+            "name": "SR-0013",
+            "approved": 68,
+            "rejected": 94,
+            "pending": 86
+        },
+        {
+            "name": "SR-0014",
+            "approved": 79,
+            "rejected": 73,
+            "pending": 91
+        },
+        {
+            "name": "SR-0015",
+            "approved": 90,
+            "rejected": 67,
+            "pending": 85
+        },
+        {
+            "name": "SR-0016",
+            "approved": 66,
+            "rejected": 98,
+            "pending": 74
+        },
+        {
+            "name": "SR-0017",
+            "approved": 87,
+            "rejected": 76,
+            "pending": 92
+        },
+        {
+            "name": "SR-0018",
+            "approved": 93,
+            "rejected": 84,
+            "pending": 68
+        },
+        {
+            "name": "SR-0019",
+            "approved": 71,
+            "rejected": 90,
+            "pending": 80
+        },
+        {
+            "name": "SR-0020",
+            "approved": 95,
+            "rejected": 78,
+            "pending": 88
+        }
+    ]
+}
