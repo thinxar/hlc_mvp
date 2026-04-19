@@ -1,40 +1,46 @@
 {
     "result": [
         {
-            "month": "Nov 2025",
+            "name": "Mar W1",
             "approved": 40,
             "rejected": 20,
             "pending": 10
         },
         {
-            "month": "Dec 2025",
+            "name": "Mar W2",
             "approved": 55,
             "rejected": 25,
             "pending": 15
         },
         {
-            "month": "Jan 2025",
+            "name": "Mar W3",
             "approved": 60,
             "rejected": 30,
             "pending": 20
         },
         {
-            "month": "Feb 2025",
+            "name": "Mar W4",
             "approved": 70,
             "rejected": 35,
             "pending": 18
         },
         {
-            "month": "Mar 2025",
+            "name": "Apr W1",
             "approved": 65,
             "rejected": 28,
             "pending": 22
         },
         {
-            "month": "Apr 2025",
+            "name": "Apr W2",
             "approved": 75,
             "rejected": 32,
             "pending": 25
+        },
+        {
+            "name": "Apr W3",
+            "approved": 80,
+            "rejected": 30,
+            "pending": 20
         }
     ]
 }

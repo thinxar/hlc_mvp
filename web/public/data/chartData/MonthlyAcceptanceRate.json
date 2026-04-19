@@ -1,0 +1,28 @@
+{
+    "result": [
+        {
+            "month": "Nov 2025",
+            "value": 90
+        },
+        {
+            "month": "Dec 2025",
+            "value": 45
+        },
+        {
+            "month": "Jan 2025",
+            "value": 88
+        },
+        {
+            "month": "Feb 2025",
+            "value": 94
+        },
+        {
+            "month": "Mar 2025",
+            "value": 78
+        },
+        {
+            "month": "Apr 2025",
+            "value": 85
+        }
+    ]
+}

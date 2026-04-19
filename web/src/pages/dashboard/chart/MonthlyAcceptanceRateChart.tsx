@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useCommonChartStyles } from "../ChartTheme";
 import type { IChartInput } from "../type";
 
-const MonthlyTrendCaseChart = (props: IChartInput) => {
+const MonthlyAcceptanceRateChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText } = props;
     const { commonOptions } = useCommonChartStyles();
     const clickFilter = useRef<{ departmentName: string }>(null);
@@ -34,6 +34,7 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
                     download: true,
                 },
             },
+            zoom: false,
             events: {
                 click: function (_event: any, chartContext: any, config: any) {
                     const dataPointIndex = config.dataPointIndex;
@@ -61,7 +62,10 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
             }
         },
         dataLabels: {
-            enabled: true
+            enabled: true,
+            formatter: function (val: number) {
+                return Math.round(val) + "%";
+            }
         },
         tooltip: {
             enabled: true
@@ -91,23 +95,14 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
                 rotate: -45
             },
         },
-        colors: [
-            '#f59e0b', '#22c55e', '#ef4444'
-        ],
-        states: {
-            active: {
-                filter: {
-                    type: 'none',
-                    value: 0
+        yaxis: {
+            labels: {
+                formatter: function (val: number) {
+                    return Math.round(val) + "%";
                 }
             },
-            hover: {
-                filter: {
-                    type: 'none',
-                    value: 0
-                }
-            }
         },
+        colors: ['#3b82f6', '#f59e0b'],
         active: {
             allowMultipleDataPointsSelection: true,
         },
@@ -117,16 +112,11 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
     }
 
     const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
-    const endPointX = '/MonthlyCaseTrend.json'
+    const endPointX = '/MonthlyAcceptanceRate.json'
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="bar" storeFactory={AppStoreFactory}
+            <PalmyraApexChart options={options} type="area" storeFactory={AppStoreFactory}
                 endPoint={endPointX} filter={props.filter}
-                seriesOptions={[
-                    { name: "Pending" },
-                    { name: "Approved" },
-                    { name: "Rejected" }
-                ]}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
         </div>
@@ -134,5 +124,5 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
 
 };
 
-export { MonthlyTrendCaseChart };
+export { MonthlyAcceptanceRateChart };
 

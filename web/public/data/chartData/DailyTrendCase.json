@@ -1,0 +1,46 @@
+{
+    "result": [
+        {
+            "name": "Mon",
+            "approved": 10,
+            "rejected": 5,
+            "pending": 3
+        },
+        {
+            "name": "Tue",
+            "approved": 15,
+            "rejected": 6,
+            "pending": 4
+        },
+        {
+            "name": "Wed",
+            "approved": 12,
+            "rejected": 7,
+            "pending": 5
+        },
+        {
+            "name": "Thu",
+            "approved": 18,
+            "rejected": 8,
+            "pending": 6
+        },
+        {
+            "name": "Fri",
+            "approved": 20,
+            "rejected": 9,
+            "pending": 7
+        },
+        {
+            "name": "Sat",
+            "approved": 14,
+            "rejected": 6,
+            "pending": 4
+        },
+        {
+            "name": "Sun",
+            "approved": 16,
+            "rejected": 7,
+            "pending": 5
+        }
+    ]
+}

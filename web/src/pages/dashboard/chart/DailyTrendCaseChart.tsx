@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useCommonChartStyles } from "../ChartTheme";
 import type { IChartInput } from "../type";
 
-const MonthlyTrendCaseChart = (props: IChartInput) => {
+const DailyTrendCaseChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText } = props;
     const { commonOptions } = useCommonChartStyles();
     const clickFilter = useRef<{ departmentName: string }>(null);
@@ -117,7 +117,7 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
     }
 
     const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
-    const endPointX = '/MonthlyCaseTrend.json'
+    const endPointX = '/DailyTrendCase.json'
     return (
         <div id="chart">
             <PalmyraApexChart options={options} type="bar" storeFactory={AppStoreFactory}
@@ -134,5 +134,5 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
 
 };
 
-export { MonthlyTrendCaseChart };
+export { DailyTrendCaseChart };
 

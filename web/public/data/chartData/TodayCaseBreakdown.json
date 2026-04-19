@@ -1,37 +1,37 @@
 {
     "result": [
         {
-            "month": "Nov 2025",
+            "name": "New Policy",
             "approved": 40,
             "rejected": 20,
             "pending": 10
         },
         {
-            "month": "Dec 2025",
+            "name": "Renewal",
             "approved": 55,
             "rejected": 25,
             "pending": 15
         },
         {
-            "month": "Jan 2025",
+            "name": "Claim",
             "approved": 60,
             "rejected": 30,
             "pending": 20
         },
         {
-            "month": "Feb 2025",
+            "name": "Surrender",
             "approved": 70,
             "rejected": 35,
             "pending": 18
         },
         {
-            "month": "Mar 2025",
+            "name": "Loan",
             "approved": 65,
             "rejected": 28,
             "pending": 22
         },
         {
-            "month": "Apr 2025",
+            "name": "Maturity",
             "approved": 75,
             "rejected": 32,
             "pending": 25
