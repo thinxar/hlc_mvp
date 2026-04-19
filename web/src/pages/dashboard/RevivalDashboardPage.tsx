@@ -25,7 +25,7 @@ const RevivalDashboardPage = () => {
   return (
     <div className="p-4 bg-slate-50 dark:bg-gray-900">
       <div className="bg-white dark:bg-gray-800/50 rounded-xl shadow mb-3 py-1">
-        <DashboardHeader setFilter={setFilter} />
+        <DashboardHeader setFilter={setFilter} filter={filter} />
       </div>
 
       <CaseOverviewCard title="Case Overview" endPoint={"resourceCardApi"}
@@ -33,13 +33,13 @@ const RevivalDashboardPage = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3">
         <div className="dash-cards">
-          <MonthlyTrendCaseChart endPoint={endpoint}
+          <MonthlyTrendCaseChart endPoint={endpoint} filter={filter}
             height={CHART_HEIGHT} subText="Pending . Approved"
             title="Monthly Trend - Last 6 Months" xKey="month"
             yKey={["pending", "approved"]} />
         </div>
         <div className="dash-cards">
-          <MonthlyAcceptanceRateChart endPoint={endpoint}
+          <MonthlyAcceptanceRateChart endPoint={endpoint} filter={filter}
             height={CHART_HEIGHT} subText="% of approved cases per month"
             title="Monthly Approval Rate(%) - Last 6 Months" xKey="month"
             yKey={["pending", "approved"]} />

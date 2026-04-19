@@ -1,8 +1,9 @@
-import { FieldGroupContainer, PalmyraForm } from "@palmyralabs/rt-forms"
+import { FieldGroupContainer, PalmyraForm } from "@palmyralabs/rt-forms";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { LayoutDashboard } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { useFilterHandler } from "src/hook/useFilterHandler";
-import { ServerLookup } from "templates/mantineForm"
+import { ServerLookup } from "templates/mantineForm";
 
 interface IOptions {
     setFilter: (filter: any) => void;
@@ -10,10 +11,22 @@ interface IOptions {
 }
 
 const DashboardHeader = (props: IOptions) => {
-    const { setFilter } = props;
+    const { setFilter, filter } = props;
+
+    const divisionRef = useRef<any>(null);
+    const branchRef = useRef<any>(null);
     const { handleFilterChange } = useFilterHandler(setFilter);
 
     const LookupEndPoint = ServiceEndpoint.customView.rev.Lookup;
+    const divisionEndPoint = filter?.branch ? LookupEndPoint.division + `?branchName=${filter?.branch}` : LookupEndPoint.division;
+    const branchEndPoint = filter?.division ? LookupEndPoint.branch + `?divisionName=${filter?.division}` : LookupEndPoint.branch;
+
+    useEffect(() => { 
+        if (!filter?.division) {
+            branchRef?.current?.setValue(null);
+            setFilter((prev:any) => ({ ...prev, branch: null })); 
+        }
+    }, [filter?.division]);
 
     return (
         <div>
@@ -37,14 +50,14 @@ const DashboardHeader = (props: IOptions) => {
                 <div className="pr-3">
                     <PalmyraForm>
                         <FieldGroupContainer columns={2}>
-                            <ServerLookup attribute="division" placeholder="Division"
-                                queryOptions={{ endPoint: LookupEndPoint.branch }}
-                                onChange={handleFilterChange("division", 'lookup')}
-                                lookupOptions={{ idAttribute: 'id', labelAttribute: 'division' }} />
-                            <ServerLookup attribute="branch" placeholder="Branch"
-                                queryOptions={{ endPoint: LookupEndPoint.branch }}
-                                onChange={handleFilterChange("branch", 'lookup')}
-                                lookupOptions={{ idAttribute: 'id', labelAttribute: 'branch' }} />
+                            <ServerLookup attribute="division" placeholder="Select Division" ref={divisionRef}
+                                queryOptions={{ endPoint: divisionEndPoint }}
+                                onChange={handleFilterChange("division", 'customLookup', 'divisionName')}
+                                lookupOptions={{ idAttribute: 'id', labelAttribute: 'divisionName' }} />
+                            <ServerLookup attribute="branch" placeholder="Select Branch" ref={branchRef} disabled={!filter?.division}
+                                queryOptions={{ endPoint: branchEndPoint }}
+                                onChange={handleFilterChange("branch", 'customLookup', 'branchName')}
+                                lookupOptions={{ idAttribute: 'id', labelAttribute: 'branchName' }} />
                         </FieldGroupContainer>
                     </PalmyraForm>
                 </div>
@@ -53,5 +66,5 @@ const DashboardHeader = (props: IOptions) => {
     )
 }
 
-export { DashboardHeader }
+export { DashboardHeader };
 

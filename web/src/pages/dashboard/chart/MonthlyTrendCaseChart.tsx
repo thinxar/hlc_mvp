@@ -5,7 +5,7 @@ import { useCommonChartStyles } from "../ChartTheme";
 import type { IChartInput } from "../type";
 
 const MonthlyTrendCaseChart = (props: IChartInput) => {
-    const { title, xKey, yKey, subText } = props;
+    const { title, xKey, yKey, subText ,filter} = props;
     const { commonOptions } = useCommonChartStyles();
     const clickFilter = useRef<{ departmentName: string }>(null);
 
@@ -121,7 +121,7 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
     return (
         <div id="chart">
             <PalmyraApexChart options={options} type="bar" storeFactory={AppStoreFactory}
-                endPoint={endPointX} filter={props.filter}
+                endPoint={endPointX} filter={filter}
                 seriesOptions={[
                     { name: "Pending" },
                     { name: "Approved" },

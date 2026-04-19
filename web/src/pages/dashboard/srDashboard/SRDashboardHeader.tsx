@@ -40,7 +40,7 @@ const SRDashboardHeader = (props: IOptions) => {
                             <ServerLookup attribute="srno" placeholder="SR Number"
                                 queryOptions={{ endPoint: LookupEndPoint.serialNo }}
                                 onChange={handleFilterChange("srno", 'lookup')}
-                                lookupOptions={{ idAttribute: 'id', labelAttribute: 'srno' }} />
+                                lookupOptions={{ idAttribute: 'id', labelAttribute: 'name' }} />
                         </FieldGroupContainer>
                     </PalmyraForm>
                 </div>

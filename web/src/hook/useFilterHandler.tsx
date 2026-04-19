@@ -1,6 +1,6 @@
 import { delayGenerator } from "@palmyralabs/ts-utils";
 
-type FilterType = 'text' | 'lookup' | 'select';
+type FilterType = 'text' | 'lookup' | 'select' | 'customLookup';
 
 const delay = delayGenerator(300);
 export const useFilterHandler = <T extends Record<string, any>>(
@@ -14,7 +14,7 @@ export const useFilterHandler = <T extends Record<string, any>>(
     };
 
     const handleFilterChange =
-        (key: keyof T, type: FilterType) =>
+        (key: keyof T, type: FilterType, customKey?: string) =>
             (a: any, b?: any) => {
                 let value = '';
 
@@ -27,7 +27,10 @@ export const useFilterHandler = <T extends Record<string, any>>(
                 } else if (type === 'select') {
                     value = a || '';
                     value = value ? value : ''
-                } else {
+                } else if (type === 'customLookup') {
+                    value = customKey ? b?.[customKey] || '' : '';
+                }
+                else {
                     value = b?.id || '';
                 }
 
