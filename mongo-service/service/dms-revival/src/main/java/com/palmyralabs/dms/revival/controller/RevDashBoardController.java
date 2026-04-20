@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.palmyralabs.dms.revival.model.DailyDocumentSummaryModel;
 import com.palmyralabs.dms.revival.model.MonthlyDocumentSummaryModel;
+import com.palmyralabs.dms.revival.model.TodayApprovalSummaryModel;
 import com.palmyralabs.dms.revival.model.WeeklyDocumentSummaryModel;
 import com.palmyralabs.dms.revival.service.RevDashBoardService;
 import com.palmyralabs.palmyra.base.PalmyraResponse;
@@ -59,4 +60,15 @@ public class RevDashBoardController extends AbstractController {
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
 		return apiResponse(dashBoardService.getDailyDocumentSummary(doCode, branchCode, fromDate, toDate));
 	}
+	
+	@GetMapping(path = SUMMARY_PATH, params = "window=todayApproval")
+	public PalmyraResponse<List<TodayApprovalSummaryModel>> getTodayApprovalSummary(
+			@RequestParam(name = "date", required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+			@RequestParam(name = "zone", required = false) String zone,
+			@RequestParam(name = "division", required = false) String division,
+			@RequestParam(name = "branch", required = false) String branch) {
+		return apiResponse(dashBoardService.getTodayApprovalSummary(date, zone, division, branch));
+	}
+
 }

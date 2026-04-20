@@ -1,8 +1,9 @@
 # RevDashBoardController — Specification
 
 Dashboard summary endpoints for the **Revival** feature. Single path,
-discriminated by a `window` query param into three aggregations
-(monthly document counts, weekly active-cases, daily active-cases).
+discriminated by a `window` query param into four aggregations
+(monthly document counts, weekly active-cases, daily active-cases,
+and today's approval roll-up with hierarchical drill-down).
 
 **Module**: `mongo-service/service/dms-revival`
 **Controller**: `com.palmyralabs.dms.revival.controller.RevDashBoardController`
@@ -19,29 +20,31 @@ Class-level mapping:
 ```
 
 Combined with the Jetty servlet context (`/api`) and the default prefix
-(`palmyra`), all three endpoints live under
+(`palmyra`), all four endpoints live under
 `/api/palmyra/rev/overAll/document/summary`. The frontend constant
 `ServiceEndpoint.customView.rev.cart.summaryView` holds `/rev/overAll/document/summary`.
 
-Three `@GetMapping` methods share the same path and are selected by
+Four `@GetMapping` methods share the same path and are selected by
 Spring's `params` discriminator:
 
-| Method                         | Discriminator              | Default match? |
-| ------------------------------ | -------------------------- | -------------- |
-| `getMonthlyDocumentSummary`    | *(no `params` constraint)* | Yes — matches if `window` absent or any value other than the explicit ones below |
-| `getWeeklyDocumentSummary`     | `params = "window=weekly"` | No             |
-| `getDailyDocumentSummary`      | `params = "window=daily"`  | No             |
+| Method                             | Discriminator                     | Default match? |
+| ---------------------------------- | --------------------------------- | -------------- |
+| `getMonthlyDocumentSummary`        | *(no `params` constraint)*        | Yes — matches if `window` absent or any value other than the explicit ones below |
+| `getWeeklyDocumentSummary`         | `params = "window=weekly"`        | No             |
+| `getDailyDocumentSummary`          | `params = "window=daily"`         | No             |
+| `getTodayApprovalSummary`          | `params = "window=todayApproval"` | No             |
 
 Because the monthly method has no `params` filter, Spring's
-more-specific rule routes `window=weekly` / `window=daily` to the
-appropriate specific handler and anything else — including no
-`window` at all — to `getMonthlyDocumentSummary`.
+more-specific rule routes `window=weekly` / `window=daily` /
+`window=todayApproval` to the appropriate specific handler and
+anything else — including no `window` at all — to
+`getMonthlyDocumentSummary`.
 
 ---
 
 ## 2. Endpoints
 
-All three return `PalmyraResponse<List<…>>`; only the payload element
+All four return `PalmyraResponse<List<…>>`; only the payload element
 type and query params differ.
 
 ### 2.1 Monthly document summary
@@ -102,16 +105,82 @@ place of `month`; other fields identical to monthly.
 Response element — `DailyDocumentSummaryModel` with `cal_date` in
 place of `month`.
 
+### 2.4 Today's approval summary (hierarchical drill-down)
+
+`GET /rev/overAll/document/summary?window=todayApproval`
+
+Aggregates `active_cases_branchwise` for a **single calendar day** —
+the day is supplied via the `date` param. If `date` is omitted the
+service falls back to `LocalDate.now()` (server's local date — same
+caveat as §9.4) so the out-of-the-box call still behaves as "today's
+approval." The grouping dimension is driven by the filter params: the
+response groups one level *below* the deepest filter supplied. Zero
+filters → zone breakdown; full filter triple → per-SR breakdown inside
+that branch.
+
+| Param      | Type              | Required | Notes                                                                                 |
+| ---------- | ----------------- | -------- | ------------------------------------------------------------------------------------- |
+| `date`     | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; exact match on `cal_date`; defaults to `LocalDate.now()` when omitted   |
+| `zone`     | string            | no       | exact match on stored `Zone`                                                          |
+| `division` | string            | no       | exact match on stored `divisionName`                                                  |
+| `branch`   | string            | no       | exact match on stored `branchCode`                                                    |
+
+**Filter → group dimension** (deepest non-blank filter wins; filters
+below that level are ignored if supplied alone, see §3):
+
+| Filters present                           | `groupBy` | Group field                     | Populated key fields in response |
+| ----------------------------------------- | --------- | ------------------------------- | -------------------------------- |
+| *(none)*                                  | `zone`    | `Zone`                          | `zone`                           |
+| `zone`                                    | `division`| `divisionName`                  | `zone`, `division`               |
+| `zone` + `division`                       | `branch`  | `branchCode` (+ `branchName`)   | `zone`, `division`, `branchCode`, `branchName` |
+| `zone` + `division` + `branch`            | `sr`      | `perApprover.approvedBy` ("SR") | `zone`, `division`, `branchCode`, `branchName`, `approvedBy` |
+
+**Response element** — `TodayApprovalSummaryModel`:
+
+```json
+{
+  "groupBy":            "zone",
+  "zone":               "NORTH",
+  "division":           null,
+  "branchCode":         null,
+  "branchName":         null,
+  "approvedBy":         null,
+  "approvedDocuments":  42,
+  "pendingDocuments":   3,
+  "rejectedDocuments":  1,
+  "processedDocuments": 43
+}
+```
+
+* `groupBy` echoes the grouping dimension — one of `"zone"`,
+  `"division"`, `"branch"`, `"sr"` — so the frontend knows which drill
+  step it's rendering without having to reinterpret its own request.
+* Only the key fields relevant to the current level (plus any ancestor
+  filters) are populated; the rest are `null` and the JSON serializer
+  is expected to emit them (no `@JsonInclude(NON_NULL)`) so the shape
+  is uniform across levels.
+* `processedDocuments = approvedDocuments + rejectedDocuments`,
+  computed server-side inside `$project` — same convention as the
+  other three endpoints.
+* **SR level only**: `pendingDocuments` is reported as `0`. Pending
+  docs sit at the document (branch-day) level, not per approver, so
+  attributing them to a specific SR is not meaningful. Documented
+  caveat, not a bug.
+* List is sorted ascending by the active key field (zone name,
+  division name, branchCode, approvedBy).
+
 ---
 
 ## 3. Validation — error responses (400 Bad Request)
 
 | Condition                                                                                   | Example                                                                              |
 | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Unparseable date in any `from*` / `to*` param                                               | `fromMonth=bogus` → Spring `MethodArgumentTypeMismatchException` → 400               |
-| Non-ISO date format                                                                         | `fromMonth=2024-5-1` → 400 (ISO requires zero-padding)                               |
+| Unparseable date in any `from*` / `to*` / `date` param                                      | `fromMonth=bogus` or `date=xyz` → Spring `MethodArgumentTypeMismatchException` → 400 |
+| Non-ISO date format                                                                         | `fromMonth=2024-5-1` or `date=2026-4-15` → 400 (ISO requires zero-padding)           |
 | Weekly interval > **6 months** (after Sunday normalization)                                 | `fromWeek=2025-10-01&toWeek=2026-05-01` → `weekly interval exceeds 6 months (…)`     |
 | Daily interval > **2 months**                                                               | `fromDate=2026-01-01&toDate=2026-04-20` → `daily interval exceeds 2 months (…)`      |
+| `todayApproval`: `division` supplied without `zone`                                         | `window=todayApproval&division=X` → `division filter requires zone`                  |
+| `todayApproval`: `branch` supplied without `zone` + `division`                              | `window=todayApproval&branch=010A` → `branch filter requires zone and division`      |
 
 Interval cap semantics: `to.isAfter(from.plusMonths(N))` rejects.
 A range exactly N months wide is allowed.
@@ -138,10 +207,22 @@ List<DailyDocumentSummaryModel>   getDailyDocumentSummary(
 
 List<ResponseModel>               getMonthlyActiveCasesSummary(
         String doCode, String branchCode);   // NOT currently exposed as an endpoint
+
+List<TodayApprovalSummaryModel>   getTodayApprovalSummary(
+        LocalDate date, String zone, String division, String branch);
 ```
 
-All four rely on `MongoTemplate` injection via constructor
-(`@RequiredArgsConstructor`).
+All five rely on `MongoTemplate` injection via constructor
+(`@RequiredArgsConstructor`). `getTodayApprovalSummary` is responsible
+for:
+
+* **Date fallback** — if `date == null`, substitute `LocalDate.now()`
+  before building the `$match` so the aggregation always has a
+  concrete day.
+* **Hierarchy validation** (§3) — it rejects `division` without
+  `zone` or `branch` without `zone`+`division` with
+  `ResponseStatusException(HttpStatus.BAD_REQUEST, …)` before building
+  the aggregation.
 
 ---
 
@@ -204,7 +285,7 @@ perApprover: [ { approvedBy, accepted, rejected } ]
 
 ## 6. Aggregation pipelines
 
-All three summary endpoints are implemented as **Mongo aggregation
+All four summary endpoints are implemented as **Mongo aggregation
 pipelines** — no in-JVM summation. Groups happen server-side.
 
 ### 6.1 Monthly pipeline
@@ -276,7 +357,91 @@ present (each optional):
 `doCode` / `branchCode` use `.is(...)` (exact match), not regex —
 codes are unique IDs, no case/space variance to accommodate.
 
-### 6.4 Bound normalization
+### 6.4 Today's approval pipeline (drill-down)
+
+Source: `active_cases_branchwise`. Shared `$match` always clamps to
+the single day `cal_date = <date>` — the caller-supplied `date` param,
+or `LocalDate.now()` when that param is null — and applies whichever
+ancestor filters are present. The grouping stage differs per level;
+the per-level shape is:
+
+**Zone level (default, no drill-down filter):**
+
+```
+[
+  { $match: { cal_date: <date> } },
+  { $group: {
+      _id: "$Zone",
+      approvedDocuments: { $sum: { $sum: "$perApprover.accepted" } },
+      pendingDocuments:  { $sum: "$pendingDocuments" },
+      rejectedDocuments: { $sum: { $sum: "$perApprover.rejected" } }
+  }},
+  { $project: {
+      _id: 0, groupBy: "zone", zone: "$_id",
+      approvedDocuments: 1, pendingDocuments: 1, rejectedDocuments: 1,
+      processedDocuments: { $add: ["$approvedDocuments", "$rejectedDocuments"] }
+  }},
+  { $sort: { zone: 1 } }
+]
+```
+
+**Division level (`zone` supplied):** same shape; `$match` adds
+`Zone: <zone>`; `$group _id` is `$divisionName`; projected as
+`{ groupBy: "division", zone: <zone>, division: "$_id", … }`.
+
+**Branch level (`zone` + `division` supplied):** `$match` adds both;
+`$group _id` is a compound `{ branchCode: "$branchCode",
+branchName: "$branchName" }` so the name comes out alongside the code;
+projected as `{ groupBy: "branch", zone, division,
+branchCode: "$_id.branchCode", branchName: "$_id.branchName", … }`.
+
+**SR level (`zone` + `division` + `branch` all supplied):** requires
+an `$unwind` on `perApprover` before grouping:
+
+```
+[
+  { $match: { cal_date: <date>, Zone: <zone>,
+              divisionName: <division>, branchCode: <branch> } },
+  { $unwind: { path: "$perApprover", preserveNullAndEmptyArrays: false } },
+  { $group: {
+      _id: "$perApprover.approvedBy",
+      approvedDocuments: { $sum: "$perApprover.accepted" },
+      rejectedDocuments: { $sum: "$perApprover.rejected" }
+  }},
+  { $project: {
+      _id: 0, groupBy: "sr",
+      zone: <zone-literal>, division: <division-literal>,
+      branchCode: <branch-literal>,
+      branchName: <resolved separately or projected from a preceding $lookup>,
+      approvedBy: "$_id",
+      approvedDocuments: 1,
+      pendingDocuments: { $literal: 0 },
+      rejectedDocuments: 1,
+      processedDocuments: { $add: ["$approvedDocuments", "$rejectedDocuments"] }
+  }},
+  { $sort: { approvedBy: 1 } }
+]
+```
+
+Notes:
+
+* `preserveNullAndEmptyArrays: false` means docs with no approvers are
+  omitted at SR level — which is correct: there's no SR row to emit.
+  If a branch had only pending docs today, it shows **no rows at all**
+  at SR level.
+* `pendingDocuments` at SR level is hard-coded to `0` (see §2.4).
+  Outer `$sum` of `"$perApprover.accepted"` is **not** nested here
+  because `$unwind` already flattened the array — accepted/rejected
+  are scalars at this point.
+* `branchName` at SR level is either carried through the pipeline
+  from the un-grouped document (using `$first` in the `$group`) or
+  set as a literal from a preceding cheap `findOne` — either is fine,
+  keep whichever matches the service style.
+* Zone/division/branch literal values echoed into projection come
+  from the request filter, not from the aggregated document, because
+  after grouping on `approvedBy` those ancestor fields are gone.
+
+### 6.5 Bound normalization
 
 | Window  | Normalization                                     |
 | ------- | ------------------------------------------------- |
@@ -369,6 +534,31 @@ GET /api/palmyra/rev/overAll/document/summary
     ?window=daily
     &fromDate=2026-01-01&toDate=2026-04-20
 # -> 400 "daily interval exceeds 2 months (from=2026-01-01, to=2026-04-20)"
+
+# Today's approval — default zone breakdown (date defaults to today)
+GET /api/palmyra/rev/overAll/document/summary?window=todayApproval
+
+# Same, but for a specific historical day
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=todayApproval&date=2026-04-15
+
+# Drill: divisions inside one zone, for a given day
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=todayApproval&date=2026-04-15&zone=NORTH
+
+# Drill: branches inside one division
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=todayApproval&date=2026-04-15&zone=NORTH&division=DELHI
+
+# Drill: SR / approver breakdown inside one branch
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=todayApproval&date=2026-04-15
+    &zone=NORTH&division=DELHI&branch=010A
+
+# Rejected: branch filter without its ancestors
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=todayApproval&branch=010A
+# -> 400 "branch filter requires zone and division"
 ```
 
 ---
