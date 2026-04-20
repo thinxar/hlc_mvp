@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Document(collection = "monthly_branchwise_report")
+@Document(collection = "active_cases_branchwise")
 public class DailyBranchWiseReportEntity {
 
 	@Id
@@ -27,13 +27,13 @@ public class DailyBranchWiseReportEntity {
 	private Integer processedDocuments;
 
 	private List<PerApprover> perApprover;
-}
 
-@Getter
-@Setter
-class PerApprover {
+	@Getter
+	@Setter
+	public static class PerApprover {
 
-	private String approvedBy;
-	private Integer accepted;
-	private Integer rejected;
+		private String approvedBy;
+		private Integer accepted;
+		private Integer rejected;
+	}
 }

@@ -17,14 +17,30 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "${palmyra.servlet.prefix-path:#{'palmyra'}}/rev")
-public class RevDashBoardController extends AbstractController{
+public class RevDashBoardController extends AbstractController {
 
-	private final RevDashBoardService monthWiseReportService;
-	
-	@GetMapping("/overAll/document/summary")
-	public PalmyraResponse<List<ResponseModel>> getBranches(
+	private static final String SUMMARY_PATH = "/overAll/document/summary";
+
+	private final RevDashBoardService dashBoardService;
+
+	@GetMapping(path = SUMMARY_PATH)
+	public PalmyraResponse<List<ResponseModel>> getMonthlyDocumentSummary(
 			@RequestParam(name = "divisionName", required = false) String divisionName,
 			@RequestParam(name = "branchName", required = false) String branchName) {
-		return apiResponse(monthWiseReportService.getDocumentSummary(divisionName,branchName));
+		return apiResponse(dashBoardService.getMonthlyDocumentSummary(divisionName, branchName));
+	}
+
+	@GetMapping(path = SUMMARY_PATH, params = "window=weekly")
+	public PalmyraResponse<List<ResponseModel>> getWeeklyDocumentSummary(
+			@RequestParam(name = "divisionName", required = false) String divisionName,
+			@RequestParam(name = "branchName", required = false) String branchName) {
+		return apiResponse(dashBoardService.getWeeklyDocumentSummary(divisionName, branchName));
+	}
+
+	@GetMapping(path = SUMMARY_PATH, params = "window=daily")
+	public PalmyraResponse<List<ResponseModel>> getDailyDocumentSummary(
+			@RequestParam(name = "divisionName", required = false) String divisionName,
+			@RequestParam(name = "branchName", required = false) String branchName) {
+		return apiResponse(dashBoardService.getDailyDocumentSummary(divisionName, branchName));
 	}
 }
