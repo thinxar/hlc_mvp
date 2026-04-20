@@ -3,11 +3,11 @@ import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { IChartInput } from '../../type';
 import { useCommonChartStyles } from "../../ChartTheme";
 
-const TopBranchAppRate = (props: IChartInput) => {
+const TopBranchAppRateChart = (props: IChartInput) => {
     const { endPoint, title, xKey, yKey, filter,subText } = props;
         const { commonOptions } = useCommonChartStyles();
     
-    const colors = ['#22c55e', '#f59e0b']
+    const colors = ['#f59e0b','#22c55e']
 
     const options: any = {
         plotOptions: {
@@ -118,4 +118,4 @@ const TopBranchAppRate = (props: IChartInput) => {
     );
 }
 
-export { TopBranchAppRate };
+export { TopBranchAppRateChart };

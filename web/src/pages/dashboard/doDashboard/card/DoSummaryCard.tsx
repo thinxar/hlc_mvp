@@ -81,7 +81,7 @@ const DoSummaryCard = (props: IOptions) => {
             textColor: "text-orange-700 dark:text-orange-400",
         },
         {
-            title: "Approve / Pending Rate",
+            title: "Avg docs / case",
             value: cases.approvedRate,
             icon: Percent,
             gradient: "from-teal-400 via-cyan-500 to-blue-500",
@@ -102,7 +102,7 @@ const DoSummaryCard = (props: IOptions) => {
                             key={index}
                             className={`relative group transform transition-all duration-500`}
                         >
-                            <div className={`relative rounded-2xl shadow-md  border dark:bg-gray-900 bg-white
+                            <div className={`relative rounded-2xl shadow-md  border dark:bg-gray-800/40 bg-white
                                 dark:border-white/10 border-gray-300 backdrop-blur-sm overflow-hidden transition-all duration-500`}>
                                 <div className="relative p-3 z-10">
                                     <div className="flex items-center justify-between mb-3">

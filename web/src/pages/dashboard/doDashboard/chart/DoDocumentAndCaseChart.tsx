@@ -4,9 +4,15 @@ import { PalmyraApexChart } from '@palmyralabs/rt-apexchart';
 import { useCommonChartStyles } from '../../ChartTheme';
 import { IChartInput } from '../../type';
 
-const TopBranchSummary = (props: IChartInput) => {
+const DoDocumentAndCaseChart = (props: IChartInput) => {
     const { title, xKey, yKey, filter, endPoint, subText, height } = props;
     const { commonOptions } = useCommonChartStyles();
+
+    const style = {
+        color: "gray",
+        fontFamily: 'Helvetica, Arial, sans-serif',
+        fontWeight: 600
+    }
 
     const options: any = {
         chart: {
@@ -54,7 +60,8 @@ const TopBranchSummary = (props: IChartInput) => {
         stroke: {
             show: true,
             width: 1,
-            colors: ['#22c55e', '#f59e0b']
+            colors: ['#2989d6', '#00a387'],
+
         },
         title: {
             text: title,
@@ -72,7 +79,18 @@ const TopBranchSummary = (props: IChartInput) => {
                 },
                 trim: true,
                 hideOverlappingLabels: true
-            }
+            },
+            title: {
+                text: 'Branches',
+                style: style
+            },
+        },
+        yaxis: {
+            min: 0,
+            title: {
+                text: 'count',
+                style: style
+            },
         },
         noData: {
             text: 'No Data Available',
@@ -109,7 +127,8 @@ const TopBranchSummary = (props: IChartInput) => {
                 right: 20
             }
         },
-        colors: ['#22c55e', '#f59e0b']
+        colors: ['#2989d6', '#00a387'],
+
     };
 
     const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' });
@@ -117,11 +136,11 @@ const TopBranchSummary = (props: IChartInput) => {
     return <> <PalmyraApexChart options={options} type="bar"
         endPoint={endPoint} filter={filter} height={height} width={'100%'} storeFactory={AppStoreFactory}
         seriesOptions={[
-            { name: 'Approved' },
-            { name: 'Pending' },
+            { name: 'Case' },
+            { name: 'Documents' },
         ]}
         transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }} />
     </>
 };
 
-export { TopBranchSummary };
+export { DoDocumentAndCaseChart };

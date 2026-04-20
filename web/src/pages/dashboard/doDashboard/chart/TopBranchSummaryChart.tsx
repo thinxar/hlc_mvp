@@ -4,7 +4,7 @@ import { PalmyraApexChart } from '@palmyralabs/rt-apexchart';
 import { useCommonChartStyles } from '../../ChartTheme';
 import { IChartInput } from '../../type';
 
-const BottomBranchSummary = (props: IChartInput) => {
+const TopBranchSummaryChart = (props: IChartInput) => {
     const { title, xKey, yKey, filter, endPoint, subText, height } = props;
     const { commonOptions } = useCommonChartStyles();
 
@@ -54,7 +54,7 @@ const BottomBranchSummary = (props: IChartInput) => {
         stroke: {
             show: true,
             width: 1,
-            colors: ['#22c55e', '#f59e0b']
+            colors: ['#f59e0b', '#22c55e']
         },
         title: {
             text: title,
@@ -109,7 +109,7 @@ const BottomBranchSummary = (props: IChartInput) => {
                 right: 20
             }
         },
-        colors: ['#22c55e', '#f59e0b']
+        colors: ['#f59e0b', '#22c55e']
     };
 
     const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' });
@@ -117,11 +117,11 @@ const BottomBranchSummary = (props: IChartInput) => {
     return <> <PalmyraApexChart options={options} type="bar"
         endPoint={endPoint} filter={filter} height={height} width={'100%'} storeFactory={AppStoreFactory}
         seriesOptions={[
-            { name: 'Approved' },
             { name: 'Pending' },
+            { name: 'Approved' }
         ]}
         transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }} />
     </>
 };
 
-export { BottomBranchSummary };
+export { TopBranchSummaryChart };

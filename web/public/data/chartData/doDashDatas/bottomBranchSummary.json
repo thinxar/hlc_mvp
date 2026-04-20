@@ -2,53 +2,53 @@
     "result": [
         {
             "Xlabel": "SHUJALPUR",
-            "AC": 500,
-            "PE": 600
+            "PE": 600,
+            "AC": 500
         },
         {
             "Xlabel": "BHOPAL CBO-4",
-            "AC": 550,
-            "PE": 650
+            "PE": 650,
+            "AC": 550
         },
         {
             "Xlabel": "ITARSI",
-            "AC": 600,
-            "PE": 500
+            "PE": 500,
+            "AC": 600
         },
         {
             "Xlabel": "PATHAKHEDA",
-            "AC": 700,
-            "PE": 400
+            "PE": 400,
+            "AC": 700
         },
         {
             "Xlabel": "MANDSAUR",
-            "AC": 700,
-            "PE": 450
-        }, 
+            "PE": 450,
+            "AC": 700
+        },
         {
             "Xlabel": "BHOPAL (BHEL) CBO",
-            "AC": 650,
-            "PE": 800
-        }, 
+            "PE": 800,
+            "AC": 650
+        },
         {
             "Xlabel": "BETUL",
-            "AC": 800,
-            "PE": 720
+            "PE": 720,
+            "AC": 800
         },
         {
             "Xlabel": "PIPARIYA",
-            "AC": 850,
-            "PE": 700
+            "PE": 700,
+            "AC": 850
         },
         {
             "Xlabel": "RAJNANDGAON",
-            "AC": 890,
-            "PE": 500
+            "PE": 500,
+            "AC": 890
         },
-         {
+        {
             "Xlabel": "BIAORA",
-            "AC": 899,
-            "PE": 800
+            "PE": 800,
+            "AC": 899
         }
     ]
 }

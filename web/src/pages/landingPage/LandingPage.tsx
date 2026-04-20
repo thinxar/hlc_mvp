@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaEye, FaUserCheck } from "react-icons/fa";
-import { FiLock } from "react-icons/fi";
-import { MdOutlineVideoLibrary } from "react-icons/md";
+import { FiBarChart2, FiLock } from "react-icons/fi";
+import { MdDashboard, MdOutlineVideoLibrary } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { LicLogo } from 'templates/FlexImport';
 import { storePolicyInfo } from "utils/LocalStorageInfo";
@@ -51,6 +51,30 @@ const appData = [
         glow: "shadow-blue-900/30",
         key: "AUTH",
     },
+    {
+        id: 5,
+        title: "Normal Dashboard",
+        path: '/app/customViewer/dashboard',
+        description: "Overview of system performance and activity",
+        icon: FiBarChart2,
+        accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
+        glow: "shadow-blue-900/30",
+        isHighlight: true,
+        key: "DASH",
+    },
+    {
+        id: 6,
+        title: "DO Dashboard",
+        path: '/app/customViewer/doDashboard',
+        description: "Division Office insights and performance tracking",
+        icon: MdDashboard,
+        accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
+        glow: "shadow-blue-900/30",
+        isHighlight: true,
+        key: "DODASH",
+    },
 ];
 
 
@@ -94,7 +118,7 @@ export default function LandingPage() {
                 </h1>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-3xl z-10">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 w-full max-w-6xl z-10">
                 {appData.map((mod: any) => (
                     <div
                         key={mod.id}

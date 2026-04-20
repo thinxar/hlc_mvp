@@ -2,53 +2,53 @@
     "result": [
         {
             "Xlabel": "INDORE DBO",
-            "AC": 2000,
-            "PE": 100
+            "PE": 100,
+            "AC": 2000
         },
         {
             "Xlabel": "INDORE CBO-1",
-            "AC": 1800,
-            "PE": 100
+            "PE": 100,
+            "AC": 1800
         },
         {
             "Xlabel": "UJJAIN I",
-            "AC": 1700,
-            "PE": 200
+            "PE": 200,
+            "AC": 1700
         },
         {
             "Xlabel": "RATLAM I",
-            "AC": 1600,
-            "PE": 100
+            "PE": 100,
+            "AC": 1600
         },
         {
             "Xlabel": "MANDSAUR",
-            "AC": 1500,
-            "PE": 200
+            "PE": 200,
+            "AC": 1500
         },
         {
             "Xlabel": "RAJNANDGAON",
-            "AC": 1480,
-            "PE": 300
+            "PE": 300,
+            "AC": 1480
         },
-         {
+        {
             "Xlabel": "UJJAIN I",
-            "AC": 1400,
-            "PE": 200
+            "PE": 200,
+            "AC": 1400
         },
         {
             "Xlabel": "RATLAM I",
-            "AC": 1370,
-            "PE": 100
+            "PE": 100,
+            "AC": 1370
         },
         {
             "Xlabel": "MANDSAUR",
-            "AC": 1300,
-            "PE": 150
+            "PE": 150,
+            "AC": 1300
         },
         {
             "Xlabel": "RAJNANDGAON",
-            "AC": 1200,
-            "PE": 50
+            "PE": 50,
+            "AC": 1200
         }
     ]
 }

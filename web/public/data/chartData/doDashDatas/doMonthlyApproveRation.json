@@ -1,0 +1,34 @@
+{
+    "result": [
+        {
+            "month": "Nov 2025",
+            "approved": 90,
+            "pending": 90
+        },
+        {
+            "month": "Dec 2025",
+            "approved": 45,
+            "pending": 80
+        },
+        {
+            "month": "Jan 2025",
+            "approved": 88,
+            "pending": 56
+        },
+        {
+            "month": "Feb 2025",
+            "approved": 94,
+            "pending": 62
+        },
+        {
+            "month": "Mar 2025",
+            "approved": 78,
+            "pending": 59
+        },
+        {
+            "month": "Apr 2025",
+            "approved": 85,
+            "pending": 90
+        }
+    ]
+}

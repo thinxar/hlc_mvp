@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { DoDashboardHeader } from "./DoDashboardHeader";
-import { DoSummaryCard } from "./card/DoSummaryCard";
-import { BottomBranchSummary } from "./chart/BottomBranchSummary";
-import { TopBranchAppRate } from "./chart/TopBranchAppRate";
-import { TopBranchSummary } from "./chart/TopBranchSummary";
+import { DoSummaryCard } from "./card/DoSummaryCard";   
 import BubbleChart from "./chart/CaseVolumeChart";
+import { DoDocumentAndCaseChart } from "./chart/DoDocumentAndCaseChart";
+import { DoMonthWiseRadioChart } from "./chart/DoMonthWiseRadioChart";
+import { BottomBranchSummaryChart } from "./chart/BottomBranchSummaryChart";
+import { TopBranchAppRateChart } from "./chart/TopBranchAppRateChart";
+import { TopBranchSummaryChart } from "./chart/TopBranchSummaryChart";
 
 const RevivalDODashboardPage = () => {
 
@@ -12,36 +14,44 @@ const RevivalDODashboardPage = () => {
     const CHART_HEIGHT = '450';
 
     return (
-        <div className="p-4 bg-slate-50 dark:bg-gray-900">
+        <div className="p-4 bg-slate-50 dark:bg-gray-900 px-5">
             <div className="bg-white dark:bg-gray-800/50 rounded-xl shadow mb-3 py-1">
                 <DoDashboardHeader setFilter={setFilter} />
             </div>
-            <div className="bg-white dark:bg-gray-900 rounded-xl shadow mb-3 py-1">
+            <div className="bg-white dark:bg-gray-900 rounded-xl shadow mb-3 py-1 dark:border dark:border-gray-800">
                 <DoSummaryCard title="Branches Overview" endPoint={"resourceCardApi"}
                     filter={filter} />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3">
                 <div className="dash-cards">
-                    <TopBranchAppRate endPoint={"/TopBranchOverView.json"} title="Overall Summary" height=""
-                        xKey="name" yKey={"value"} subText=". Approved .Pending" />
+                    <TopBranchAppRateChart endPoint={"/TopBranchOverView.json"} title="Overall Summary" height=""
+                        xKey="name" yKey={"value"} subText=".Pending . Approved" />
                 </div>
-                {/* <div className="dash-cards">
-                    <BottomBranchRejRate height="" endPoint={'bottomBranchOverView.json'} title="Bottom 10 Branches Overall Summary"
-                        filter={filter} xKey="name" yKey={"value"} subText=". Approved .Pending" />
-                </div> */}
-
                 <div className="dash-cards">
-                    <TopBranchSummary endPoint={'/topBranchesSummary.json'} filter={filter}
+                    <TopBranchSummaryChart endPoint={'/topBranchesSummary.json'} filter={filter}
                         title="Top 10 Branch Approval Status" height={CHART_HEIGHT}
-                        xKey="Xlabel" yKey={["AC", "PE"]} subText=". Approved .Pending" />
+                        xKey="Xlabel" yKey={["PE", "AC"]} subText=".Pending . Approved" />
                 </div>
                 <div className="dash-cards">
-                    <BottomBranchSummary endPoint={'/bottomBranchSummary.json'} filter={filter}
+                    <BottomBranchSummaryChart endPoint={'/bottomBranchSummary.json'} filter={filter}
                         title="Least 10 Branch Approval Status" height={CHART_HEIGHT}
-                        xKey="Xlabel" yKey={["AC", "PE"]} subText=". Approved .Pending" />
+                        xKey="Xlabel" yKey={["PE", "AC"]} subText=".Pending . Approved" />
                 </div>
                 <div className="dash-cards">
                     <BubbleChart />
+                </div>
+            </div>
+            <div className="grid grid-cols-1 gap-3 py-3">
+                <div className="dash-cards">
+                    <DoMonthWiseRadioChart endPoint={'/doCaseAndDocument.json'} filter={filter}
+                        height={CHART_HEIGHT} subText="% of approved cases per month"
+                        title="Branch Approval Summary (Last 6-Month)" xKey="month"
+                        yKey={["pending", "approved"]} />
+                </div>
+                <div className="dash-cards">
+                    <DoDocumentAndCaseChart endPoint={'/doCaseAndDocument.json'} filter={filter}
+                        title="Cases vs Documents — all branches" height={CHART_HEIGHT}
+                        xKey="branch" yKey={["caseCount", "documentCount"]} subText="Side-by-side comparison per branch. Sort by cases to spot workload leaders." />
                 </div>
             </div>
         </div>

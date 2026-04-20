@@ -1,0 +1,104 @@
+{
+    "result": [
+        {
+            "branch": "INDORE DBO",
+            "caseCount": 2100,
+            "documentCount": 4200
+        },
+        {
+            "branch": "INDORE CBO-1",
+            "caseCount": 1900,
+            "documentCount": 3800
+        },
+        {
+            "branch": "UJJAIN I",
+            "caseCount": 1900,
+            "documentCount": 3600
+        },
+        {
+            "branch": "RATLAM I",
+            "caseCount": 1700,
+            "documentCount": 3300
+        },
+        {
+            "branch": "MANDSAUR",
+            "caseCount": 1700,
+            "documentCount": 3200
+        },
+        {
+            "branch": "RAJNANDGAON",
+            "caseCount": 1780,
+            "documentCount": 3500
+        },
+        {
+            "branch": "BHOPAL CBO-1",
+            "caseCount": 1600,
+            "documentCount": 3000
+        },
+        {
+            "branch": "BHOPAL CBO-2",
+            "caseCount": 1470,
+            "documentCount": 2900
+        },
+        {
+            "branch": "SEHORE",
+            "caseCount": 1450,
+            "documentCount": 2700
+        },
+        {
+            "branch": "VIDISHA",
+            "caseCount": 1250,
+            "documentCount": 2400
+        },
+        {
+            "branch": "ITARSI",
+            "caseCount": 1300,
+            "documentCount": 2500
+        },
+        {
+            "branch": "HOSHANGABAD",
+            "caseCount": 1280,
+            "documentCount": 2600
+        },
+        {
+            "branch": "HARDA",
+            "caseCount": 1140,
+            "documentCount": 2200
+        },
+        {
+            "branch": "SHAJAPUR",
+            "caseCount": 1140,
+            "documentCount": 2100
+        },
+        {
+            "branch": "BIAORA",
+            "caseCount": 1060,
+            "documentCount": 2000
+        },
+        {
+            "branch": "BHOPAL CBO-3",
+            "caseCount": 1030,
+            "documentCount": 1950
+        },
+        {
+            "branch": "INDORE CBO-2",
+            "caseCount": 1010,
+            "documentCount": 1900
+        },
+        {
+            "branch": "UJJAIN II",
+            "caseCount": 890,
+            "documentCount": 1700
+        },
+        {
+            "branch": "RATLAM II",
+            "caseCount": 820,
+            "documentCount": 1600
+        },
+        {
+            "branch": "MANDSAUR II",
+            "caseCount": 760,
+            "documentCount": 1500
+        }
+    ]
+}

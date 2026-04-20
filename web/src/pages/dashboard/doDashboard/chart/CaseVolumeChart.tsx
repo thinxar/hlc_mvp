@@ -7,7 +7,7 @@ const BubbleChart = () => {
             "BHOPAL CBO-3", "BHOPAL CBO (CAB)", "SHAJAPUR", "BIAORA", "BHOPAL CBO-1",
             "ITARSI", "BHOPAL CBO-2", "SEHORE", "VIDISHA", "HARDA",
             "Karur", "Cuddalore", "Kanchipuram", "Thanjavur", "Nagapattinam",
-            "HOSHANGABAD", "Dharmapuri", "Virudhunagar", "Sivakasi", "Namakkal",
+            "HOSHANGABAD", "UMARIA", "BETUL", "PANNA", "ITARSI",
             "Perambalur", "RAISEN", "BHOPAL (BHEL) CBO", "BAIRAGARH",
             "BARELI", "BHOPAL CBO-4", "GANJ BASODA", "SHUJALPUR", "PIPARIYA",
             "BETUL", "PATHAKHEDA", "TIKAMGARH", "PANNA", "SATNA-II",
