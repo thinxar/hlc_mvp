@@ -31,6 +31,12 @@ const BubbleChart = () => {
 
     const bubbleData = generateBubbleData(30);
 
+    const style = {
+        color: "gray",
+        fontFamily: 'Helvetica, Arial, sans-serif',
+        fontWeight: 600
+    }
+
     const series = [
         {
             name: "Performance",
@@ -63,8 +69,9 @@ const BubbleChart = () => {
 
         xaxis: {
             title: {
-                text: "Pending Count"
-            }
+                text: "Pending Count",
+                style: style
+            },
         },
 
         yaxis: {

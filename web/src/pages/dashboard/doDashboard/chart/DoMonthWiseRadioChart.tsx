@@ -9,6 +9,11 @@ const DoMonthWiseRadioChart = (props: IChartInput) => {
     const { commonOptions } = useCommonChartStyles();
     const clickFilter = useRef<{ departmentName: string }>(null);
 
+    const style = {
+        color: "gray",
+        fontFamily: 'Helvetica, Arial, sans-serif',
+        fontWeight: 600
+    }
     const options: any = {
         // ...commonOptions,
         animations: {
@@ -94,12 +99,20 @@ const DoMonthWiseRadioChart = (props: IChartInput) => {
             labels: {
                 rotate: -45
             },
+            title: {
+                text: 'Months',
+                style: style
+            },
         },
         yaxis: {
             labels: {
                 formatter: function (val: number) {
                     return Math.round(val) + "%";
                 }
+            },
+            title: {
+                text: 'Count',
+                style: style
             },
         },
         colors: ['#f59e0b', '#22c55e', '#3b82f6'],

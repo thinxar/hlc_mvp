@@ -135,7 +135,7 @@ const PolicySubmitSection = (props: policyData) => {
                                         disabled={selectedFileIds.length === 0}
                                         className={`w-full cursor-pointer py-2 rounded-xl font-semibold  shadow-md 
                                                       flex items-center justify-center gap-2
-                                                      transition-all duration-200 ease-in-out
+                                                      transition-all duration-200 ease-in-out disabled:cursor-not-allowed
                                                       ${selectedFileIds.length === 0
                                                 ? 'bg-gray-300 cursor-not-allowed opacity-70'
                                                 : 'bg-red-100/90 text-red-700 hover:text-white hover:bg-red-500/80 hover:shadow-xl active:scale-95'
@@ -150,7 +150,7 @@ const PolicySubmitSection = (props: policyData) => {
                                         disabled={selectedFileIds.length === 0}
                                         className={`w-full cursor-pointer py-2 rounded-xl font-semibold  shadow-md
                                                      flex items-center justify-center gap-2
-                                                     transition-all duration-200 ease-in-out
+                                                     transition-all duration-200 ease-in-out disabled:cursor-not-allowed
                                                      ${selectedFileIds.length === 0
                                                 ? 'bg-gray-300 cursor-not-allowed opacity-70'
                                                 : 'bg-green-100/90 text-green-700 hover:text-white hover:bg-green-600/80 hover:shadow-xl active:scale-95'

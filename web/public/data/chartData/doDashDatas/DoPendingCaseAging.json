@@ -1,0 +1,16 @@
+{
+  "result": [
+    {
+      "Xlabel": "0 - 3 Days",
+      "data": 90
+    },
+    {
+      "Xlabel": "3 - 10 Days",
+      "data": 70
+    },
+    {
+      "Xlabel": "Above 10 Days",
+      "data": 30
+    }
+  ]
+}

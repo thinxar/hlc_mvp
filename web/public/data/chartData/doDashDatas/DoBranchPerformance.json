@@ -1,0 +1,58 @@
+{
+    "result": [
+        {
+            "branch": "INDORE DBO",
+            "Pending": 473,
+            "In Progress": 357,
+            "Completed": 425
+        },
+        {
+            "branch": "INDORE CBO-1",
+            "Pending": 450,
+            "In Progress": 350,
+            "Completed": 300
+        },
+        {
+            "branch": "UJJAIN I",
+            "Pending": 430,
+            "In Progress": 320,
+            "Completed": 400
+        },
+        {
+            "branch": "MANDSAUR",
+            "Pending": 400,
+            "In Progress": 300,
+            "Completed": 300
+        },
+        {
+            "branch": "UJJAIN I",
+            "Pending": 320,
+            "In Progress": 300,
+            "Completed": 300
+        },
+        {
+            "branch": "RATLAM I",
+            "Pending": 230,
+            "In Progress": 380,
+            "Completed": 400
+        },
+        {
+            "branch": "MANDSAUR",
+            "Pending": 280,
+            "In Progress": 350,
+            "Completed": 300
+        },
+        {
+            "branch": "RAJNANDGAON",
+            "Pending": 270,
+            "In Progress": 300,
+            "Completed": 340
+        },
+        {
+            "branch": "RAJNANDGAON",
+            "Pending": 200,
+            "In Progress": 180,
+            "Completed": 200
+        }
+    ]
+}

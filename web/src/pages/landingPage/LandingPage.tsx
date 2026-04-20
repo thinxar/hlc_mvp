@@ -53,7 +53,7 @@ const appData = [
     },
     {
         id: 5,
-        title: "Normal Dashboard",
+        title: "Overview Dashboard",
         path: '/app/customViewer/dashboard',
         description: "Overview of system performance and activity",
         icon: FiBarChart2,

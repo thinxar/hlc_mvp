@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { DoDashboardHeader } from "./DoDashboardHeader";
-import { DoSummaryCard } from "./card/DoSummaryCard";   
+import { DoSummaryCard } from "./card/DoSummaryCard";
 import BubbleChart from "./chart/CaseVolumeChart";
 import { DoDocumentAndCaseChart } from "./chart/DoDocumentAndCaseChart";
 import { DoMonthWiseRadioChart } from "./chart/DoMonthWiseRadioChart";
 import { BottomBranchSummaryChart } from "./chart/BottomBranchSummaryChart";
 import { TopBranchAppRateChart } from "./chart/TopBranchAppRateChart";
 import { TopBranchSummaryChart } from "./chart/TopBranchSummaryChart";
+import { DoBranchPerformanceChart } from "./chart/DoBranchPerformanceChart";
+import { DoPendingCasesAging } from "./chart/DoPendingCasesAging";
 
 const RevivalDODashboardPage = () => {
 
@@ -24,6 +26,11 @@ const RevivalDODashboardPage = () => {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3">
                 <div className="dash-cards">
+                    <DoPendingCasesAging endPoint={'/DoPendingCaseAging.json'}
+                        title="Ageing Bucket Distribution for all branch" height={CHART_HEIGHT}
+                        xKey="Xlabel" yKey={["data"]} subText="Number of Pending cases age bucket" />
+                </div>
+                <div className="dash-cards">
                     <TopBranchAppRateChart endPoint={"/TopBranchOverView.json"} title="Overall Summary" height=""
                         xKey="name" yKey={"value"} subText=".Pending . Approved" />
                 </div>
@@ -36,6 +43,10 @@ const RevivalDODashboardPage = () => {
                     <BottomBranchSummaryChart endPoint={'/bottomBranchSummary.json'} filter={filter}
                         title="Least 10 Branch Approval Status" height={CHART_HEIGHT}
                         xKey="Xlabel" yKey={["PE", "AC"]} subText=".Pending . Approved" />
+                </div>
+                <div className="dash-cards">
+                    <DoBranchPerformanceChart endPoint={'/DoBranchPerformance.json'} title="Top 10 Branch Pending and In-Progress Status" filter={filter} height=""
+                        xKey="branch" yKey={["Pending", "In Progress"]} />
                 </div>
                 <div className="dash-cards">
                     <BubbleChart />
