@@ -39,7 +39,7 @@ docId       | string | Pattern: DOC-NNNNN                                       
 uploadedBy  | string  | 8-digit numeric value (zero-padded)                 | "45829137"
 approvedBy  | string  | 8-digit numeric value (zero-padded), applicable when status != pending                 | "45829136"
 uploadedOn  | date   | date; must be > requestDate and <= requestDate + 5 days | "2026-04-22"
-actionOn    | date   | date; uploadedOn + 1 to 45 days when status != pending; within a single request, max(actionOn) - min(actionOn) MUST be <= 5 days; null when status = pending | "2026-04-29"
+actionOn    | date   | date; requestDate + 20 to 47 days when status != pending (actionBase 20-42 + jitter 0-5); clamped to >= uploadedOn; MAY extend beyond genDate for recent cases (future-dated docs remain pending in aggregations); within a single request, max(actionOn) - min(actionOn) MUST be <= 5 days; null when status = pending; must not fall on Sunday (rule 14.3) | "2026-04-29"
 
 
 Example value for the "documents" field (every element carries all 8 fields
@@ -151,22 +151,28 @@ Rules
 9. Document status distribution (random, per document). For each branch, pick a
    rejected ratio UNIFORMLY at random in the range [3%, 7%] and apply that same
    ratio to every document of that branch's cases. The 'pending' share depends
-   on the case's age (days from requestDate to the generation date):
-     - 0-90 days (< 3 months)  : pending 15%-40%, scaled linearly by recency
-                                 (40% at day 0, 15% at day 90); more recent cases
-                                 carry more pendency.
-     - 91-180 days (3-6 months): pending strictly < 10% (target ~7%).
-     - > 180 days (> 6 months) : pending MUST NOT be used; the pending bucket
-                                 collapses into 'accepted'.
+   on the case's age (days from requestDate to the generation date).
+   Pending rates are kept low so that the monthly pendingDocuments
+   snapshot stays within 2-5% of monthly processedDocuments:
+     - 0-45 days (< 1.5 months) : pending 2%-5%, scaled linearly by recency
+                                   (5% at day 0, 2% at day 45).
+     - 46-90 days (1.5-3 months): pending ~2%.
+     - 91-180 days (3-6 months) : pending ~1%.
+     - > 180 days (> 6 months)  : pending MUST NOT be used; the pending bucket
+                                  collapses into 'accepted'.
    'accepted' is always the remainder. Draw one random number per document and
    bucket it against these thresholds.
-   9.1 Last-7-day override: for cases whose requestDate falls within the last
-       7 days (inclusive) relative to the generation date, the ratio of
-       approved (accepted) documents to pending documents MUST be between
-       70% and 100%. This overrides the 0-90 day pending band above for
-       this narrow window. rejected ratio still applies per branch as above;
-       the remaining non-rejected share is split so that
-       accepted / (accepted + pending) lies in [70%, 100%].
+   9.1 Last-7-day daily coverage: for the last 7 days (inclusive,
+       i.e. [genDate - 7, genDate]) every branch MUST have at least
+       one case on each day. If the random requestDate distribution
+       leaves a day uncovered for a branch, synthesize a minimal case
+       (2 documents, both "accepted" with valid actionOn/approvedBy)
+       for that day. Additionally, every case in this window MUST have
+       at least a few documents with status in {"accepted","rejected"}.
+       If the random status draw yields zero processed documents for a
+       case, force at least 2 documents (or all if fewer than 2) to
+       "accepted". This ensures the daily aggregation produces non-zero
+       processedDocuments rows for every branch on every recent day.
 10. Generate records for EVERY row in branch.csv. The final output file MUST be
     sorted by requestDate ascending (global sort across all branches, independent
     of which branch produced each record).
@@ -214,6 +220,23 @@ Rules
     stage (see specs/cleansing/branch_cleansing_spec.txt, rules 3 and 4).
     Every case that shares a divisionName shares the same doCode by
     construction.
+14. Weekend exclusion rules:
+    14.1 requestDate MUST NOT fall on a Saturday or Sunday. If the random
+         date selection yields a weekend day, shift forward to the nearest
+         Monday. If that Monday exceeds the generation date, shift backward
+         to the previous Friday instead.
+    14.2 uploadedOn MUST NOT fall on a Saturday or Sunday. Apply the same
+         forward-to-Monday / fallback-to-Friday adjustment as rule 14.1,
+         while still honoring uploadedOn > requestDate and <= generation
+         date.
+    14.3 actionOn MUST NOT fall on a Sunday. Saturday is permitted for
+         approvals. If actionOn lands on Sunday, shift forward to Monday.
+         If that Monday exceeds the generation date, shift backward to
+         Saturday. Constraints actionOn >= uploadedOn and <= generation
+         date still apply.
+    14.4 Rule 9.1 last-7-day coverage: the daily coverage requirement
+         applies only to WEEKDAYS within the [genDate - 7, genDate] window.
+         No synthetic cases are generated for Saturday or Sunday dates.
 
 Example
 -------

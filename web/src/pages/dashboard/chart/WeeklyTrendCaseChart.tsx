@@ -8,6 +8,7 @@ const WeeklyTrendCaseChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
     const clickFilter = useRef<{ departmentName: string }>(null);
+    const rawData = useRef<any[]>([]);
 
     const options: any = {
         // ...commonOptions,
@@ -64,7 +65,30 @@ const WeeklyTrendCaseChart = (props: IChartInput) => {
             enabled: true
         },
         tooltip: {
-            enabled: true
+            enabled: true,
+            custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
+                const seriesName = w.config.series[seriesIndex]?.name;
+                const value = series[seriesIndex][dataPointIndex];
+                const xVal = w.config.series[0]?.data[dataPointIndex]?.x;
+                const label = formatDate(xVal, 'week');
+
+                if (seriesName === 'Processed' && rawData.current[dataPointIndex]) {
+                    const row = rawData.current[dataPointIndex];
+                    const approved = row.approvedDocuments ?? 0;
+                    const rejected = row.rejectedDocuments ?? 0;
+                    return `<div style="padding:8px;font-size:12px">
+                        <b>${label}</b><br/>
+                        <span style="color:#22c55e">Processed: ${value}</span><br/>
+                        <span style="color:#16a34a">&nbsp;&nbsp;Approved: ${approved}</span><br/>
+                        <span style="color:#ef4444">&nbsp;&nbsp;Rejected: ${rejected}</span>
+                    </div>`;
+                }
+                const color = w.config.colors[seriesIndex] || '#333';
+                return `<div style="padding:8px;font-size:12px">
+                    <b>${label}</b><br/>
+                    <span style="color:${color}">${seriesName}: ${value}</span>
+                </div>`;
+            }
         },
         legend: {
             show: true,
@@ -96,7 +120,7 @@ const WeeklyTrendCaseChart = (props: IChartInput) => {
             },
         },
         colors: [
-            '#f59e0b', '#22c55e', '#ef4444'
+            '#3b82f6', '#f59e0b', '#22c55e', '#ef4444'
         ],
         states: {
             active: {
@@ -126,7 +150,9 @@ const WeeklyTrendCaseChart = (props: IChartInput) => {
         <div id="chart">
             <PalmyraApexChart options={options} type="bar"
                 endPoint={endPoint} filter={props.filter}
+                preProcess={(d: any) => { rawData.current = d; return d; }}
                 seriesOptions={[
+                    { name: "Submitted" },
                     { name: "Pending" },
                     { name: "Processed" },
                     { name: "Rejected" }

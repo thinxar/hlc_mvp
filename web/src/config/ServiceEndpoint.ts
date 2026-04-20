@@ -94,7 +94,9 @@ const ServiceEndpoint = {
                 docPendency: '/rev/policy/pendency/summary'
             },
             dashboard: {
-                documentSummaryApi: '/rev/overAll/document/summary'
+                documentSummaryApi: '/rev/overAll/document/summary',
+                agingSummaryApi: '/rev/overAll/agingSummary',
+                tatPerformanceApi: '/rev/overAll/tatPerformance'
             }
         },
         and: {

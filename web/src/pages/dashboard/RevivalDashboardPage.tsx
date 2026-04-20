@@ -12,6 +12,8 @@ import { PreFinancialYearCaseChart } from "./chart/PreFinancialYearCaseChart";
 import { TodayCaseBreakdownChart } from "./chart/TodayCaseBreakdownChart";
 import { TodayCaseReportChart } from "./chart/TodayCaseReportChart";
 import { WeeklyTrendCaseChart } from "./chart/WeeklyTrendCaseChart";
+import { AgingSummaryChart } from "./chart/AgingSummaryChart";
+import { TatPerformanceChart } from "./chart/TatPerformanceChart";
 import { DashboardHeader } from "./DashboardHeader";
 
 const CHART_HEIGHT = '450';
@@ -40,6 +42,11 @@ const RevivalDashboardPage = () => {
   const currFYMonthTrend = `${documentSummaryApi}?fromMonth=${fromCurrFY}&toMonth=${toCurrFY}`;
   const comparativeFYApi = `${documentSummaryApi}?fromMonth=${fromPrevFY}&toMonth=${toCurrFY}`;
 
+  const agingSummaryApi = revivalDashboardUrl.agingSummaryApi;
+  const tatPerformanceApi = revivalDashboardUrl.tatPerformanceApi;
+  const monthlyAgingSummary = `${agingSummaryApi}?fromMonth=${fromMonth}&toMonth=${toMonth}`;
+  const monthlyTatPerformance = `${tatPerformanceApi}?fromMonth=${fromMonth}&toMonth=${toMonth}`;
+
   const todayApprovalSummaryApi = `${documentSummaryApi}?window=todayApproval&date=${getDate}`
 
   return (
@@ -54,30 +61,45 @@ const RevivalDashboardPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3">
         <div className="dash-cards">
           <MonthlyTrendCaseChart endPoint={lastSixMonthTrend} filter={filter}
-            height={CHART_HEIGHT} subText="Pending . Processed"
+            height={CHART_HEIGHT} subText="Submitted . Pending . Processed"
             title="Monthly Trend - Last 6 Months" xKey="calMonth"
-            yKey={["pendingDocuments", "processedDocuments"]} />
+            yKey={["submittedDocuments", "pendingDocuments", "processedDocuments"]} />
         </div>
         <div className="dash-cards">
           <MonthlyAcceptanceRateChart endPoint={lastSixMonthTrend} filter={filter}
-            height={CHART_HEIGHT} subText="Monthly distribution of pending and processed documents"
+            height={CHART_HEIGHT} subText="Monthly distribution of submitted, pending and processed documents"
             title="Document Processing Rate(%) - Last 6 Months" xKey="calMonth"
-            yKey={["pendingDocuments", "processedDocuments"]} />
+            yKey={["submittedDocuments", "pendingDocuments", "processedDocuments"]} />
         </div>
 
 
         <div className="dash-cards">
           <WeeklyTrendCaseChart endPoint={lastSevenWeekTrend}
-            height={CHART_HEIGHT} subText="Pending . Processed"
+            height={CHART_HEIGHT} subText="Submitted . Pending . Processed"
             title="Weekly Trend - Last 7 Weeks" xKey="calWeek" filter={filter}
-            yKey={["pendingDocuments", "processedDocuments"]} />
+            yKey={["submittedDocuments", "pendingDocuments", "processedDocuments"]} />
         </div>
 
         <div className="dash-cards">
           <DailyTrendCaseChart endPoint={lastSevenDaysTrend}
-            height={CHART_HEIGHT} subText="Pending . Processed"
+            height={CHART_HEIGHT} subText="Submitted . Pending . Processed"
             title="Daily Trend - Last 7 Days" xKey="calDate" filter={filter}
-            yKey={["pendingDocuments", "processedDocuments"]} />
+            yKey={["submittedDocuments", "pendingDocuments", "processedDocuments"]} />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 mt-3">
+        <div className="dash-cards">
+          <AgingSummaryChart endPoint={monthlyAgingSummary} filter={filter}
+            height={CHART_HEIGHT} subText="Pending document age distribution"
+            title="Ageing Summary - Last 6 Months" xKey="calMonth"
+            yKey={[]} />
+        </div>
+        <div className="dash-cards">
+          <TatPerformanceChart endPoint={monthlyTatPerformance} filter={filter}
+            height={CHART_HEIGHT} subText="Processing turnaround time distribution"
+            title="TAT Performance - Last 6 Months" xKey="calMonth"
+            yKey={[]} />
         </div>
       </div>
 

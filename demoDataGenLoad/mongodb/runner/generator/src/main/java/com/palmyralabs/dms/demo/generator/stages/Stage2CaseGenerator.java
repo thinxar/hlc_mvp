@@ -124,7 +124,11 @@ public class Stage2CaseGenerator {
             CaseInfo[] caseInfos = new CaseInfo[N];
             for (int i = 0; i < N; i++) {
                 int ageDays = rng.nextIntBelow(rangeDays + 1);
-                caseInfos[i] = new CaseInfo(ageDays, DateUtil.addDays(TODAY, -ageDays));
+                String rawDate = DateUtil.addDays(TODAY, -ageDays);
+                // Rule 14.1: requestDate must not fall on Sat/Sun
+                String reqDate = DateUtil.isWeekend(rawDate) ? DateUtil.nextWeekday(rawDate) : rawDate;
+                if (reqDate.compareTo(TODAY) > 0) reqDate = DateUtil.prevWeekday(rawDate);
+                caseInfos[i] = new CaseInfo(DateUtil.daysBetween(reqDate, TODAY), reqDate);
             }
 
             // Phase 1b: allocate / inherit a pool per month this branch touches, chronological order.
@@ -169,7 +173,8 @@ public class Stage2CaseGenerator {
                 String revivalPeriodEndDate = DateUtil.addDays(lapseDate, 365 * 5);
                 String policyNumber = digits(9);
 
-                int actionBase = 6 + rng.nextIntBelow(35);  // >= 6 keeps actionOn > uploadedOn
+                // actionBase 20-42 days (avg ~31): tuned so month-end backlog ≈ monthly processed (2-5% diff)
+                int actionBase = 20 + rng.nextIntBelow(23);
 
                 List<Doc> documents = new ArrayList<>(docCounts[i]);
                 for (int d = 0; d < docCounts[i]; d++) {
@@ -183,6 +188,11 @@ public class Stage2CaseGenerator {
                     if (candidate.compareTo(TODAY) > 0) candidate = TODAY;
                     String requestPlusOne = DateUtil.addDays(requestDate, 1);
                     String uploadedOn = (candidate.compareTo(requestPlusOne) >= 0) ? candidate : requestPlusOne;
+                    // Rule 14.2: uploadedOn must not fall on Sat/Sun
+                    if (DateUtil.isWeekend(uploadedOn)) {
+                        uploadedOn = DateUtil.nextWeekday(uploadedOn);
+                        if (uploadedOn.compareTo(TODAY) > 0) uploadedOn = DateUtil.prevWeekday(uploadedOn);
+                    }
 
                     String actionOn;
                     if (DocStatus.PENDING.is(status)) {
@@ -190,8 +200,12 @@ public class Stage2CaseGenerator {
                     } else {
                         int actionJitter = rng.nextIntBelow(6);
                         String actCand = DateUtil.addDays(requestDate, actionBase + actionJitter);
-                        if (actCand.compareTo(TODAY) > 0) actCand = TODAY;
+                        // Allow actionOn beyond TODAY — future-dated docs stay pending in aggregations
                         if (actCand.compareTo(uploadedOn) < 0) actCand = uploadedOn;
+                        // Rule 14.3: actionOn must not fall on Sunday
+                        if (DateUtil.isSunday(actCand)) {
+                            actCand = DateUtil.nextNonSunday(actCand);
+                        }
                         actionOn = actCand;
                     }
 
@@ -237,6 +251,98 @@ public class Stage2CaseGenerator {
                 rec.branchName = name;
                 rec.documents = documents;
                 branchRecords.add(rec);
+            }
+
+            // Rule 9.1: ensure every branch has entries on each day of the last-7-day window,
+            // with at least some processed docs per case.
+            String last7Start = DateUtil.addDays(TODAY, -7);
+            Set<String> coveredDays = new HashSet<>();
+            for (Record r : branchRecords) {
+                if (r.requestDate.compareTo(last7Start) >= 0) coveredDays.add(r.requestDate);
+            }
+            for (int dayOff = 7; dayOff >= 0; dayOff--) {
+                String day = DateUtil.addDays(TODAY, -dayOff);
+                if (DateUtil.isWeekend(day)) continue;  // Rule 14.4: no cases on weekends
+                if (coveredDays.contains(day)) continue;
+                // Synthesize a case for this missing day.
+                String month = day.substring(0, 7);
+                List<String> pool = branchPools.get(month);
+                if (pool == null) {
+                    pool = allocateFreshPool(month);
+                    branchPools.put(month, pool);
+                }
+                String submitter = pool.get(rng.nextIntBelow(pool.size()));
+                String uploadedOn = DateUtil.addDays(day, 1);
+                if (DateUtil.isWeekend(uploadedOn)) uploadedOn = DateUtil.nextWeekday(uploadedOn);
+                if (uploadedOn.compareTo(TODAY) > 0) uploadedOn = DateUtil.prevWeekday(TODAY);
+                String policyNum = digits(9);
+
+                List<Doc> docs = new ArrayList<>(2);
+                for (int di = 0; di < 2; di++) {
+                    Doc d = new Doc();
+                    d.type = pick(DOC_TYPES);
+                    d.status = DocStatus.ACCEPTED.value();
+                    d.name = fileNameFor(d.type, docCounter, policyNum, day);
+                    d.docId = "DOC-" + docCounter++;
+                    d.uploadedBy = submitter;
+                    String actCand = DateUtil.addDays(uploadedOn, 1 + rng.nextIntBelow(5));
+                    if (actCand.compareTo(TODAY) > 0) actCand = TODAY;
+                    if (actCand.compareTo(uploadedOn) < 0) actCand = uploadedOn;
+                    if (DateUtil.isSunday(actCand)) {
+                        actCand = DateUtil.nextNonSunday(actCand);
+                        if (actCand.compareTo(TODAY) > 0) actCand = DateUtil.prevNonSunday(actCand);
+                    }
+                    d.actionOn = actCand;
+                    d.approvedBy = pickExcept(pool, d.uploadedBy);
+                    d.uploadedOn = uploadedOn;
+                    docs.add(d);
+                }
+
+                Record rec = new Record();
+                rec.requestDate = day;
+                rec.channel = pick(CHANNELS);
+                rec.policyNumber = policyNum;
+                rec.productCode = pick(PRODUCT_CODES);
+                String lapseDate = DateUtil.addDays(day, -(30 * (2 + rng.nextIntBelow(13))));
+                rec.lastPremiumPaidDate = DateUtil.addDays(lapseDate, -(30 * (5 + rng.nextIntBelow(3))));
+                rec.commencementDate = DateUtil.addDays(rec.lastPremiumPaidDate, -(365 * (3 + rng.nextIntBelow(6))));
+                rec.revivalPeriodEndDate = DateUtil.addDays(lapseDate, 365 * 5);
+                rec.lapseDate = lapseDate;
+                rec.policyStatus = "LAPSED";
+                rec.submittedBy = submitter;
+                rec.zone = zone; rec.divisionName = division; rec.doCode = doCode;
+                rec.branchCode = code; rec.branchName = name;
+                rec.documents = docs;
+                branchRecords.add(rec);
+            }
+
+            // Ensure existing last-7-day cases have at least some processed docs.
+            for (Record r : branchRecords) {
+                if (r.requestDate.compareTo(last7Start) < 0) continue;
+                boolean hasProcessed = false;
+                for (Doc d : r.documents) {
+                    if (!DocStatus.PENDING.is(d.status)) { hasProcessed = true; break; }
+                }
+                if (!hasProcessed) {
+                    int toForce = Math.min(2, r.documents.size());
+                    for (int f = 0; f < toForce; f++) {
+                        Doc d = r.documents.get(f);
+                        d.status = DocStatus.ACCEPTED.value();
+                        List<String> pool = branchPools.get(r.requestDate.substring(0, 7));
+                        if (d.actionOn == null) {
+                            String actCand = DateUtil.addDays(d.uploadedOn, 1 + rng.nextIntBelow(5));
+                            if (actCand.compareTo(TODAY) > 0) actCand = TODAY;
+                            if (DateUtil.isSunday(actCand)) {
+                                actCand = DateUtil.nextNonSunday(actCand);
+                                if (actCand.compareTo(TODAY) > 0) actCand = DateUtil.prevNonSunday(actCand);
+                            }
+                            d.actionOn = actCand;
+                        }
+                        if (pool != null && d.approvedBy.isEmpty()) {
+                            d.approvedBy = pickExcept(pool, d.uploadedBy);
+                        }
+                    }
+                }
             }
 
             totalBranches++;
@@ -366,23 +472,22 @@ public class Stage2CaseGenerator {
         return counts;
     }
 
-    // ---------- status pick (rule 9 + 9.1) ----------
-    private double pendingPctForAge(int ageDays, double rejectedPct) {
+    // ---------- status pick (rule 9) ----------
+    // Pending rates tuned so monthly pendingDocuments ≈ processedDocuments (within 2-5%).
+    // Pending is an AS-OF snapshot that accumulates; processed is a per-month flow.
+    // Low per-document pending rates prevent backlog from dwarfing monthly processing.
+    private double pendingPctForAge(int ageDays) {
         if (ageDays > 180) return 0;
-        // Rule 9.1: last 7 days — accepted/(accepted+pending) in [70%,100%],
-        // so pending <= 30% of non-rejected share.
-        if (ageDays <= 7) {
-            double maxPending = 0.30 * (1.0 - rejectedPct);
-            return maxPending * (1.0 - ageDays / 7.0); // scales from 30% at day 0 to 0% at day 7
-        }
-        if (ageDays > 90) return 0.07;
-        return 0.40 - (0.25 * ageDays / 90.0);
+        if (ageDays > 90)  return 0.01;
+        if (ageDays > 45)  return 0.02;
+        // 0-45 days: 5% at day 0 tapering to 2% at day 45
+        return 0.05 - (0.03 * ageDays / 45.0);
     }
 
     private String pickStatus(int ageDays, double rejectedPct) {
         double r = rng.nextDouble();
         if (r < rejectedPct) return DocStatus.REJECTED.value();
-        double p = pendingPctForAge(ageDays, rejectedPct);
+        double p = pendingPctForAge(ageDays);
         if (p > 0 && r < rejectedPct + p) return DocStatus.PENDING.value();
         return DocStatus.ACCEPTED.value();
     }
