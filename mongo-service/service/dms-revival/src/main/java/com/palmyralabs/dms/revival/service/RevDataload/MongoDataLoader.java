@@ -26,8 +26,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -54,27 +57,29 @@ public final class MongoDataLoader {
     private static final int DEFAULT_BATCH_SIZE = 1000;
 
     private static final String[] CANDIDATE_DATA_ROOTS = {
-            "E:/hlc_mvp/claude/generated",
             "generated",
             "../generated",
-            "../../claude/generated"
+            "../../claude/demo_data_generator/generated",
+            "../../../claude/demo_data_generator/generated"
     };
+
+    private static final String[] NONE = new String[0];
 
     private static final FileSpec[] FILES = new FileSpec[] {
             new FileSpec("branches.json",                        "branches",
-                    new String[] { "branchCode" },            false),
+                    new String[] { "branchCode" },             NONE,                         false),
             new FileSpec("zone_divisions.json",                  "zone_divisions",
-                    new String[] { "zone", "divisionName" },  false),
+                    new String[] { "zone", "divisionName" },   NONE,                         false),
             new FileSpec("monthly_branchwise_report.json",       "monthly_branchwise_report",
-                    new String[] { "month", "branchCode" },   false),
+                    new String[] { "month", "branchCode" },    new String[] { "month" },     false),
             new FileSpec("active_cases_branchwise.json",         "active_cases_branchwise",
-                    new String[] { "branchCode", "cal_date" },  false),
+                    new String[] { "branchCode", "cal_date" },  new String[] { "cal_date" },  false),
             new FileSpec("active_cases_weekly_branchwise.json",  "active_cases_weekly_branchwise",
-                    new String[] { "branchCode", "cal_week" },  false),
+                    new String[] { "branchCode", "cal_week" },  new String[] { "cal_week" },  false),
             new FileSpec("active_cases_monthly_branchwise.json", "active_cases_monthly_branchwise",
-                    new String[] { "branchCode", "cal_month" }, false),
+                    new String[] { "branchCode", "cal_month" }, new String[] { "cal_month" }, false),
             new FileSpec("all_cases.jsonl",                      "all_cases",
-                    new String[] { "requestId" },             true)
+                    new String[] { "requestId" },              NONE,                         true)
     };
 
     public static void main(String[] args) {
@@ -133,6 +138,7 @@ public final class MongoDataLoader {
 
         for (Map<String, Object> map : records) {
             Document doc = new Document(map);
+            normalizeDateFields(doc, spec.dateFields);
             batch.add(buildWrite(doc, spec, total + 1, input, upsert));
             total++;
             if (batch.size() >= batchSize) {
@@ -173,6 +179,7 @@ public final class MongoDataLoader {
             while ((line = reader.readLine()) != null) {
                 if (line.isBlank()) continue;
                 Document doc = Document.parse(line);
+                normalizeDateFields(doc, spec.dateFields);
                 batch.add(buildWrite(doc, spec, total + 1, input, upsert));
                 total++;
                 if (batch.size() >= batchSize) {
@@ -200,6 +207,17 @@ public final class MongoDataLoader {
         System.out.printf("    done records=%d upserted=%d inserted=%d modified=%d matched=%d elapsed=%ds%n",
                 total, upserted, inserted, modified, matched, took.toSeconds());
         return total;
+    }
+
+    private static void normalizeDateFields(Document doc, String[] dateFields) {
+        if (dateFields.length == 0) return;
+        for (String field : dateFields) {
+            Object v = doc.get(field);
+            if (v instanceof String s && !s.isBlank()) {
+                LocalDate ld = LocalDate.parse(s);
+                doc.put(field, Date.from(ld.atStartOfDay(ZoneOffset.UTC).toInstant()));
+            }
+        }
     }
 
     private static WriteModel<Document> buildWrite(Document doc, FileSpec spec, long recordNum,
@@ -268,18 +286,21 @@ public final class MongoDataLoader {
         final String fileName;
         final String collection;
         final String[] keyFields;
+        final String[] dateFields;
         final boolean jsonl;
 
-        FileSpec(String fileName, String collection, String[] keyFields, boolean jsonl) {
+        FileSpec(String fileName, String collection, String[] keyFields, String[] dateFields, boolean jsonl) {
             this.fileName = fileName;
             this.collection = collection;
             this.keyFields = keyFields;
+            this.dateFields = dateFields;
             this.jsonl = jsonl;
         }
 
         @Override
         public String toString() {
-            return fileName + " -> " + collection + " key=" + Arrays.toString(keyFields);
+            return fileName + " -> " + collection + " key=" + Arrays.toString(keyFields)
+                    + " dates=" + Arrays.toString(dateFields);
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.palmyralabs.dms.revival.entity;
 
+import java.time.LocalDate;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,7 +15,7 @@ public class MonthWiseReportEntity {
 
 	@Id
 	private String id;
-	private String month;
+	private LocalDate month;
 	private String zone;
 	private String divisionName;
 	private String doCode;

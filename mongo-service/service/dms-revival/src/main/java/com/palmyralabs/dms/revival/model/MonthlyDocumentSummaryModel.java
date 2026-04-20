@@ -7,18 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MonthWiseReportModel {
+public class MonthlyDocumentSummaryModel {
 
-	private String id;
 	private LocalDate month;
-	private String zone;
-	private String divisionName;
-	private String doCode;
-	private String branchCode;
-	private String branchName;
-	private String no_cases;
-	private Long totalDocuments;
 	private Long approvedDocuments;
 	private Long pendingDocuments;
 	private Long rejectedDocuments;
+	private Long processedDocuments;
 }

@@ -6,13 +6,15 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.palmyralabs.dms.revival.entity.DailyBranchWiseReportEntity.PerApprover;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Document(collection = "active_cases_branchwise")
-public class DailyBranchWiseReportEntity {
+@Document(collection = "active_cases_monthly_branchwise")
+public class MonthlyActiveCasesEntity {
 
 	@Id
 	private String id;
@@ -21,20 +23,11 @@ public class DailyBranchWiseReportEntity {
 	private String divisionName;
 	private String doCode;
 	private String Zone;
-	private LocalDate cal_date;
+	private LocalDate cal_month;
 
 	private Integer pendingDocuments;
 	private Integer submittedDocuments;
 	private Integer processedDocuments;
 
 	private List<PerApprover> perApprover;
-
-	@Getter
-	@Setter
-	public static class PerApprover {
-
-		private String approvedBy;
-		private Integer accepted;
-		private Integer rejected;
-	}
 }
