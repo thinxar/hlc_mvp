@@ -74,7 +74,7 @@ const PolicySubmitSection = (props: policyData) => {
                                     Back
                                 </button>}
                         </div>
-                        <div className="grid grid-cols-2 gap-2 p-3 bg-slate-100/80 dark:bg-gray-800">
+                        <div className="grid grid-cols-2 gap-2 p-3 bg-slate-100/80 dark:bg-gray-900">
                             {fieldConfig[type]?.map((field: any) => (
                                 <DetailItem
                                     key={field.key}
@@ -137,7 +137,7 @@ const PolicySubmitSection = (props: policyData) => {
                                                       flex items-center justify-center gap-2
                                                       transition-all duration-200 ease-in-out disabled:cursor-not-allowed
                                                       ${selectedFileIds.length === 0
-                                                ? 'bg-gray-300 cursor-not-allowed opacity-70'
+                                                ? 'bg-gray-300 dark:bg-gray-800 cursor-not-allowed opacity-70'
                                                 : 'bg-red-100/90 text-red-700 hover:text-white hover:bg-red-500/80 hover:shadow-xl active:scale-95'
                                             }`}
                                     >
@@ -152,7 +152,7 @@ const PolicySubmitSection = (props: policyData) => {
                                                      flex items-center justify-center gap-2
                                                      transition-all duration-200 ease-in-out disabled:cursor-not-allowed
                                                      ${selectedFileIds.length === 0
-                                                ? 'bg-gray-300 cursor-not-allowed opacity-70'
+                                                ? 'bg-gray-300 dark:bg-gray-800 cursor-not-allowed opacity-70'
                                                 : 'bg-green-100/90 text-green-700 hover:text-white hover:bg-green-600/80 hover:shadow-xl active:scale-95'
                                             }`}
                                     >
@@ -197,7 +197,7 @@ function DetailItem({
     color?: string;
 }) {
     return (
-        <div className="flex items-start gap-3 p-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:shadow-sm transition">
+        <div className="flex items-start gap-3 p-1.5 rounded-lg border border-gray-200 bg-white dark:bg-gray-900 dark:border-gray-700 hover:shadow-sm transition">
             {Icon && (
                 <div className={`p-2 rounded-md ${color}`}>
                     <Icon size={16} />

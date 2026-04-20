@@ -136,9 +136,9 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
                 </div>
             </div>
 
-            {(data.length > 0 && type === 'REV') &&
+            {(pendingIds.length > 0 && type === 'REV') &&
                 <button onClick={handleSelectAll} className="text-xs cursor-pointer font-bold text-blue-700 hover:underline">
-                    {selectedFileIds.length === pendingIds.length ? 'Deselect All' : 'Select All'}
+                    {(selectedFileIds.length === data.length) ? 'Deselect All' : 'Select All'}
                 </button>}
         </div>
 
