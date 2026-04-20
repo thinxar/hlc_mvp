@@ -9,6 +9,12 @@ group = 'com.palmyralabs.dms'
 application {
     mainClass = 'com.palmyralabs.dms.AppMain'
 
+    applicationDefaultJvmArgs = [
+        '--add-opens=java.base/java.time=ALL-UNNAMED',
+        '--add-opens=java.base/java.lang=ALL-UNNAMED',
+        '--add-opens=java.base/java.util=ALL-UNNAMED'
+    ]
+
     startScripts {
         classpath += files('conf')
 

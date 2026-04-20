@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.palmyralabs.dms.revival.model.DailyDocumentSummaryModel;
+import com.palmyralabs.dms.revival.model.MonthlyDocumentSummaryModel;
 import com.palmyralabs.dms.revival.model.TodayApprovalSummaryModel;
 import com.palmyralabs.dms.revival.model.WeeklyDocumentSummaryModel;
 import com.palmyralabs.dms.revival.service.RevDashBoardService;
@@ -36,6 +37,17 @@ public class RevDashBoardController extends AbstractController {
 			@RequestParam(name = "toWeek", required = false)
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toWeek) {
 		return apiResponse(dashBoardService.getWeeklyDocumentSummary(doCode, branchCode, fromWeek, toWeek));
+	}
+
+	@GetMapping(path = SUMMARY_PATH, params = "window=monthly")
+	public PalmyraResponse<List<MonthlyDocumentSummaryModel>> getMonthlyDocumentSummary(
+			@RequestParam(name = "doCode", required = false) String doCode,
+			@RequestParam(name = "branchCode", required = false) String branchCode,
+			@RequestParam(name = "fromMonth", required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromMonth,
+			@RequestParam(name = "toMonth", required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toMonth) {
+		return apiResponse(dashBoardService.getMonthlyDocumentSummary(doCode, branchCode, fromMonth, toMonth));
 	}
 
 	@GetMapping(path = SUMMARY_PATH, params = "window=daily")

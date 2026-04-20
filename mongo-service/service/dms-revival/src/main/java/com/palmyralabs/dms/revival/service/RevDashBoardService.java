@@ -16,16 +16,12 @@ import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
 import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.aggregation.UnwindOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.palmyralabs.dms.revival.entity.DailyBranchWiseReportEntity;
-import com.palmyralabs.dms.revival.entity.DailyBranchWiseReportEntity.PerApprover;
-import com.palmyralabs.dms.revival.entity.MonthlyActiveCasesEntity;
 import com.palmyralabs.dms.revival.model.DailyDocumentSummaryModel;
-import com.palmyralabs.dms.revival.model.ResponseModel;
+import com.palmyralabs.dms.revival.model.MonthlyDocumentSummaryModel;
 import com.palmyralabs.dms.revival.model.TodayApprovalSummaryModel;
 import com.palmyralabs.dms.revival.model.WeeklyDocumentSummaryModel;
 
@@ -37,6 +33,7 @@ public class RevDashBoardService {
 
 	private static final String DAILY_COLLECTION = "active_cases_branchwise";
 	private static final String WEEKLY_COLLECTION = "active_cases_weekly_branchwise";
+	private static final String MONTHLY_COLLECTION = "active_cases_monthly_branchwise";
 
 	private static final int DAILY_MAX_INTERVAL_MONTHS = 2;
 	private static final int WEEKLY_MAX_INTERVAL_MONTHS = 6;
@@ -52,6 +49,16 @@ public class RevDashBoardService {
 		assertMaxInterval(from, to, WEEKLY_MAX_INTERVAL_MONTHS, "weekly");
 		return aggregateActiveCasesSummary(WEEKLY_COLLECTION, "calWeek",
 				doCode, branchCode, from, to, WeeklyDocumentSummaryModel.class);
+	}
+
+	public List<MonthlyDocumentSummaryModel> getMonthlyDocumentSummary(String doCode, String branchCode,
+			LocalDate fromMonth, LocalDate toMonth) {
+		LocalDate from = fromMonth == null ? null
+				: fromMonth.with(TemporalAdjusters.firstDayOfMonth());
+		LocalDate to = toMonth == null ? null
+				: toMonth.with(TemporalAdjusters.firstDayOfMonth());
+		return aggregateActiveCasesSummary(MONTHLY_COLLECTION, "calMonth",
+				doCode, branchCode, from, to, MonthlyDocumentSummaryModel.class);
 	}
 
 	public List<DailyDocumentSummaryModel> getDailyDocumentSummary(String doCode, String branchCode,
@@ -106,6 +113,7 @@ public class RevDashBoardService {
 
 		SortOperation sort = Aggregation.sort(Sort.Direction.ASC, "zone");
 
+		
 		Aggregation agg = Aggregation.newAggregation(match, group, project, sort);
 		List<TodayApprovalSummaryModel> rows = mongoTemplate
 				.aggregate(agg, DAILY_COLLECTION, TodayApprovalSummaryModel.class)
@@ -213,29 +221,6 @@ public class RevDashBoardService {
 		return rows;
 	}
 
-	public List<ResponseModel> getMonthlyActiveCasesSummary(String doCode, String branchCode) {
-		Query q = baseFilter(doCode, branchCode);
-		List<MonthlyActiveCasesEntity> list = mongoTemplate.find(q, MonthlyActiveCasesEntity.class);
-
-		long approved = 0;
-		long pending = 0;
-		long rejected = 0;
-
-		for (MonthlyActiveCasesEntity doc : list) {
-			pending += nvl(doc.getPendingDocuments());
-			if (doc.getPerApprover() != null) {
-				for (PerApprover pa : doc.getPerApprover()) {
-					approved += nvl(pa.getAccepted());
-					rejected += nvl(pa.getRejected());
-				}
-			}
-		}
-
-		long total = approved + pending + rejected;
-		long todayDocuments = computeTodayDocuments(doCode, branchCode);
-		return buildResponse(total, approved, pending, rejected, todayDocuments);
-	}
-
 	private <T> List<T> aggregateActiveCasesSummary(String collection, String timeField,
 			String doCode, String branchCode, LocalDate from, LocalDate to, Class<T> modelClass) {
 		MatchOperation match = Aggregation.match(bucketMatch(timeField, doCode, branchCode, from, to));
@@ -273,48 +258,6 @@ public class RevDashBoardService {
 			parts.add(c);
 		}
 		return parts.isEmpty() ? new Criteria() : new Criteria().andOperator(parts.toArray(new Criteria[0]));
-	}
-
-	private long computeTodayDocuments(String doCode, String branchCode) {
-		LocalDate today = LocalDate.now();
-		Query q = baseFilter(doCode, branchCode);
-		q.addCriteria(Criteria.where("calDate").is(today));
-
-		List<DailyBranchWiseReportEntity> list = mongoTemplate.find(q, DailyBranchWiseReportEntity.class);
-
-		long sum = 0;
-		for (DailyBranchWiseReportEntity data : list) {
-			sum += nvl(data.getPendingDocuments())
-					+ nvl(data.getSubmittedDocuments())
-					+ nvl(data.getProcessedDocuments());
-		}
-		return sum;
-	}
-
-	private Query baseFilter(String doCode, String branchCode) {
-		Query q = new Query();
-		if (doCode != null && !doCode.isBlank()) {
-			q.addCriteria(Criteria.where("doCode").is(doCode));
-		}
-		if (branchCode != null && !branchCode.isBlank()) {
-			q.addCriteria(Criteria.where("branchCode").is(branchCode));
-		}
-		return q;
-	}
-
-	private List<ResponseModel> buildResponse(long total, long approved, long pending, long rejected,
-			long todayDocuments) {
-		List<ResponseModel> out = new ArrayList<>(5);
-		out.add(new ResponseModel("total", total));
-		out.add(new ResponseModel("approved", approved));
-		out.add(new ResponseModel("pending", pending));
-		out.add(new ResponseModel("rejected", rejected));
-		out.add(new ResponseModel("todayDocuments", todayDocuments));
-		return out;
-	}
-
-	private long nvl(Integer v) {
-		return v == null ? 0L : v.longValue();
 	}
 
 	private static void assertMaxInterval(LocalDate from, LocalDate to, int maxMonths, String label) {

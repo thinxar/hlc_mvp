@@ -1,9 +1,9 @@
 # RevDashBoardController — Specification
 
 Dashboard summary endpoints for the **Revival** feature. Single path,
-discriminated by a `window` query param into three aggregations
-(weekly active-cases, daily active-cases, and today's approval
-roll-up with hierarchical drill-down).
+discriminated by a `window` query param into four aggregations
+(weekly active-cases, monthly active-cases, daily active-cases, and
+today's approval roll-up with hierarchical drill-down).
 
 **Module**: `mongo-service/service/dms-revival`
 **Controller**: `com.palmyralabs.dms.revival.controller.RevDashBoardController`
@@ -20,29 +20,28 @@ Class-level mapping:
 ```
 
 Combined with the Jetty servlet context (`/api`) and the default prefix
-(`palmyra`), all three endpoints live under
+(`palmyra`), all four endpoints live under
 `/api/palmyra/rev/overAll/document/summary`. The frontend constant
 `ServiceEndpoint.customView.rev.cart.summaryView` holds `/rev/overAll/document/summary`.
 
-Three `@GetMapping` methods share the same path and are selected by
+Four `@GetMapping` methods share the same path and are selected by
 Spring's `params` discriminator on `window`:
 
 | Method                             | Discriminator                     |
 | ---------------------------------- | --------------------------------- |
 | `getWeeklyDocumentSummary`         | `params = "window=weekly"`        |
+| `getMonthlyDocumentSummary`        | `params = "window=monthly"`       |
 | `getDailyDocumentSummary`          | `params = "window=daily"`         |
 | `getTodayApprovalSummary`          | `params = "window=todayApproval"` |
 
-A request with no `window` param (or an unrecognized value) now
-matches none of the three and returns 404 — the previous catch-all
-monthly handler was removed along with the `monthly_branchwise_report`
-collection.
+A request with no `window` param (or an unrecognized value) matches
+none of the four and returns 404.
 
 ---
 
 ## 2. Endpoints
 
-All three return `PalmyraResponse<List<…>>`; only the payload element
+All four return `PalmyraResponse<List<…>>`; only the payload element
 type and query params differ.
 
 ### 2.1 Weekly active-cases summary
@@ -60,7 +59,7 @@ type and query params differ.
 
 ```json
 {
-  "cal_week":           "2026-04-19",
+  "calWeek":            "2026-04-19",
   "approvedDocuments":  112,
   "pendingDocuments":   47,
   "rejectedDocuments":  6,
@@ -68,11 +67,41 @@ type and query params differ.
 }
 ```
 
-* `cal_week` is the last day of each 7-day rolling window.
+* `calWeek` is the last day of each 7-day rolling window.
 * `processedDocuments = approvedDocuments + rejectedDocuments`.
-* List sorted ascending by `cal_week`.
+* List sorted ascending by `calWeek`.
 
-### 2.2 Daily active-cases summary
+### 2.2 Monthly active-cases summary
+
+`GET /rev/overAll/document/summary?window=monthly`
+
+| Param        | Type              | Required | Notes                                                                          |
+| ------------ | ----------------- | -------- | ------------------------------------------------------------------------------ |
+| `doCode`     | string            | no       | exact match                                                                    |
+| `branchCode` | string            | no       | exact match                                                                    |
+| `fromMonth`  | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; snapped to the **first day of the month**                        |
+| `toMonth`    | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; snapped to the **first day of the month** (inclusive)            |
+
+**Response element** — `MonthlyDocumentSummaryModel`:
+
+```json
+{
+  "calMonth":           "2026-04-01",
+  "approvedDocuments":  512,
+  "pendingDocuments":   183,
+  "rejectedDocuments":  24,
+  "processedDocuments": 536
+}
+```
+
+* `calMonth` is the first day of each calendar month
+  (`YYYY-MM-01`).
+* `processedDocuments = approvedDocuments + rejectedDocuments`.
+* List sorted ascending by `calMonth`.
+* No max-interval cap — the monthly collection is small
+  (~48k rows) so unbounded queries are permitted.
+
+### 2.3 Daily active-cases summary
 
 `GET /rev/overAll/document/summary?window=daily`
 
@@ -83,17 +112,17 @@ type and query params differ.
 | `fromDate`   | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; no normalization (day-granular)   |
 | `toDate`     | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; inclusive                         |
 
-Response element — `DailyDocumentSummaryModel` with `cal_date`
-(per-day) in place of `cal_week`.
+Response element — `DailyDocumentSummaryModel` with `calDate`
+(per-day) in place of `calWeek`.
 
-### 2.3 Today's approval summary (hierarchical drill-down)
+### 2.4 Today's approval summary (hierarchical drill-down)
 
 `GET /rev/overAll/document/summary?window=todayApproval`
 
 Aggregates `active_cases_branchwise` for a **single calendar day** —
 the day is supplied via the `date` param. If `date` is omitted the
 service falls back to `LocalDate.now()` (server's local date — same
-caveat as §9.4) so the out-of-the-box call still behaves as "today's
+caveat as §9.2) so the out-of-the-box call still behaves as "today's
 approval." The grouping dimension is driven by the filter params: the
 response groups one level *below* the deepest filter supplied. Zero
 filters → zone breakdown; full filter triple → per-SR breakdown inside
@@ -101,7 +130,7 @@ that branch.
 
 | Param      | Type              | Required | Notes                                                                                 |
 | ---------- | ----------------- | -------- | ------------------------------------------------------------------------------------- |
-| `date`     | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; exact match on `cal_date`; defaults to `LocalDate.now()` when omitted   |
+| `date`     | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; exact match on `calDate`; defaults to `LocalDate.now()` when omitted    |
 | `zone`     | string            | no       | exact match on stored `Zone`                                                          |
 | `division` | string            | no       | exact match on stored `divisionName`                                                  |
 | `branch`   | string            | no       | exact match on stored `branchCode`                                                    |
@@ -160,6 +189,7 @@ below that level are ignored if supplied alone, see §3):
 | Non-ISO date format                                                                         | `fromMonth=2024-5-1` or `date=2026-4-15` → 400 (ISO requires zero-padding)           |
 | Weekly interval > **6 months** (after Sunday normalization)                                 | `fromWeek=2025-10-01&toWeek=2026-05-01` → `weekly interval exceeds 6 months (…)`     |
 | Daily interval > **2 months**                                                               | `fromDate=2026-01-01&toDate=2026-04-20` → `daily interval exceeds 2 months (…)`      |
+| Monthly window has **no interval cap** — unbounded ranges are allowed                       | *(no 400 response — returns the full series)*                                        |
 | `todayApproval`: `division` supplied without `zone`                                         | `window=todayApproval&division=X` → `division filter requires zone`                  |
 | `todayApproval`: `branch` supplied without `zone` + `division`                              | `window=todayApproval&branch=010A` → `branch filter requires zone and division`      |
 
@@ -178,11 +208,11 @@ if that becomes an issue.
 List<WeeklyDocumentSummaryModel>  getWeeklyDocumentSummary(
         String doCode, String branchCode, LocalDate fromWeek, LocalDate toWeek);
 
+List<MonthlyDocumentSummaryModel> getMonthlyDocumentSummary(
+        String doCode, String branchCode, LocalDate fromMonth, LocalDate toMonth);
+
 List<DailyDocumentSummaryModel>   getDailyDocumentSummary(
         String doCode, String branchCode, LocalDate fromDate, LocalDate toDate);
-
-List<ResponseModel>               getMonthlyActiveCasesSummary(
-        String doCode, String branchCode);   // NOT currently exposed as an endpoint
 
 List<TodayApprovalSummaryModel>   getTodayApprovalSummary(
         LocalDate date, String zone, String division, String branch);
@@ -208,13 +238,14 @@ for:
 
 | Purpose              | Collection                          | Entity                              | Time-bucket field |
 | -------------------- | ----------------------------------- | ----------------------------------- | ----------------- |
-| Daily active cases   | `active_cases_branchwise`           | `DailyBranchWiseReportEntity`       | `cal_date`        |
-| Weekly active cases  | `active_cases_weekly_branchwise`    | *(reuses `DailyBranchWiseReport…`)* | `cal_week`        |
-| Monthly active cases | `active_cases_monthly_branchwise`   | `MonthlyActiveCasesEntity`          | `cal_month`       |
+| Daily active cases   | `active_cases_branchwise`           | `DailyBranchWiseReportEntity`       | `calDate`         |
+| Weekly active cases  | `active_cases_weekly_branchwise`    | *(no entity — aggregates straight into `WeeklyDocumentSummaryModel`)*  | `calWeek`         |
+| Monthly active cases | `active_cases_monthly_branchwise`   | *(no entity — aggregates straight into `MonthlyDocumentSummaryModel`)* | `calMonth`        |
 
-Weekly uses the overload `mongoTemplate.aggregate(agg, collectionName,
-targetClass)` so the entity's default `@Document(collection=…)` is
-bypassed.
+Weekly and monthly use the overload `mongoTemplate.aggregate(agg,
+collectionName, targetClass)` with the collection passed by name and
+the result class being the typed summary model, so no `@Document`
+entity is needed for those two collections.
 
 ### 5.2 Date-field storage convention
 
@@ -233,18 +264,21 @@ remove `MongoConfig` or that contract breaks.
 
 ### 5.3 Source-of-truth shapes
 
-`DailyBranchWiseReportEntity` / `MonthlyActiveCasesEntity` (same
-schema, different time-bucket field):
+All three collections share the same document schema; only the
+time-bucket field name differs (`calDate` / `calWeek` / `calMonth`):
 
 ```
-cal_date | cal_month (LocalDate)   pendingDocuments  (Integer)
-doCode   branchCode                submittedDocuments (Integer)
-branchName divisionName  Zone      processedDocuments (Integer)
+calDate | calWeek | calMonth (LocalDate)    pendingDocuments   (Integer)
+doCode   branchCode                         submittedDocuments (Integer)
+branchName divisionName  zone               processedDocuments (Integer)
 perApprover: [ { approvedBy, accepted, rejected } ]
 ```
 
-`PerApprover` is a public static nested class inside
-`DailyBranchWiseReportEntity`; `MonthlyActiveCasesEntity` reuses it.
+`DailyBranchWiseReportEntity` is the only typed Java entity — the
+weekly and monthly collections are never materialized to a full entity
+on the read path; the aggregation pipeline projects directly into the
+typed summary models. `PerApprover` is a public static nested class
+inside `DailyBranchWiseReportEntity`.
 
 ---
 
@@ -253,7 +287,7 @@ perApprover: [ { approvedBy, accepted, rejected } ]
 All three summary endpoints are implemented as **Mongo aggregation
 pipelines** — no in-JVM summation. Groups happen server-side.
 
-### 6.1 Daily / Weekly pipeline (shared, via
+### 6.1 Daily / Weekly / Monthly pipeline (shared, via
 `aggregateActiveCasesSummary(collection, timeField, …)`)
 
 ```
@@ -299,7 +333,7 @@ codes are unique IDs, no case/space variance to accommodate.
 ### 6.3 Today's approval pipeline (drill-down)
 
 Source: `active_cases_branchwise`. Shared `$match` always clamps to
-the single day `cal_date = <date>` — the caller-supplied `date` param,
+the single day `calDate = <date>` — the caller-supplied `date` param,
 or `LocalDate.now()` when that param is null — and applies whichever
 ancestor filters are present. The grouping stage differs per level;
 the per-level shape is:
@@ -308,7 +342,7 @@ the per-level shape is:
 
 ```
 [
-  { $match: { cal_date: <date> } },
+  { $match: { calDate: <date> } },
   { $group: {
       _id: "$Zone",
       approvedDocuments: { $sum: { $sum: "$perApprover.accepted" } },
@@ -339,7 +373,7 @@ an `$unwind` on `perApprover` before grouping:
 
 ```
 [
-  { $match: { cal_date: <date>, Zone: <zone>,
+  { $match: { calDate: <date>, zone: <zone>,
               divisionName: <division>, branchCode: <branch> } },
   { $unwind: { path: "$perApprover", preserveNullAndEmptyArrays: false } },
   { $group: {
@@ -385,10 +419,11 @@ Notes:
 | Window  | Normalization                                     |
 | ------- | ------------------------------------------------- |
 | Weekly  | `with(previousOrSame(SUNDAY))` on both from/to    |
+| Monthly | `with(firstDayOfMonth())` on both from/to         |
 | Daily   | None (stored values are day-granular)             |
 
 Normalization is done in the service, before the interval-cap check
-and before the Criteria is built.
+(when one applies) and before the Criteria is built.
 
 ---
 
@@ -455,6 +490,17 @@ GET /api/palmyra/rev/overAll/document/summary
     &doCode=247&branchCode=010A
     &fromWeek=2026-02-22&toWeek=2026-04-20
 
+# Monthly, full series for one branch (no cap)
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=monthly
+    &branchCode=010A
+
+# Monthly, mid-month inputs snap to the 1st
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=monthly
+    &fromMonth=2025-07-15&toMonth=2026-03-20
+# -> treated as fromMonth=2025-07-01, toMonth=2026-03-01
+
 # Daily, 2-month window exactly (allowed)
 GET /api/palmyra/rev/overAll/document/summary
     ?window=daily
@@ -496,25 +542,20 @@ GET /api/palmyra/rev/overAll/document/summary
 
 ## 9. Known caveats / open items
 
-1. **`getMonthlyActiveCasesSummary`** — exists in the service but is
-   not exposed by any controller mapping. Still uses the legacy
-   `ResponseModel` shape with `total / approved / pending / rejected /
-   todayDocuments`, plus the `computeTodayDocuments` drill-down. Bring
-   in line with the aggregation + typed-model pattern when/if it needs
-   an endpoint.
-2. **Open-ended intervals skip the cap** — `fromDate=2020-01-01` with
+1. **Open-ended intervals skip the cap** — `fromDate=2020-01-01` with
    no `toDate` fetches everything from that date forward. If stricter
    behavior is needed, require both bounds or default the missing side
-   to `LocalDate.now()` before `assertMaxInterval`.
-3. **System-zone `LocalDate.now()`** in `computeTodayDocuments`: reads
-   the JVM's local "today." Combined with the UTC converter, this
-   matches stored `cal_date` only when the server's local date equals
-   the UTC date — i.e. outside the five-and-a-half-hour window each
-   day where IST is already on the next date relative to UTC. Revisit
-   if the `getMonthlyActiveCasesSummary` method gets promoted to a
-   real endpoint.
-4. `pendingDocuments` in the weekly/daily summaries is summed across
-   daily/weekly snapshots. Each day's `pendingDocuments` counts docs
-   still pending at end-of-day, so an item pending for 14 days
-   contributes 14 to the summed `pendingDocuments`. This is a
+   to `LocalDate.now()` before `assertMaxInterval`. (Moot for monthly,
+   which has no cap by design.)
+2. **System-zone `LocalDate.now()` fallback in
+   `getTodayApprovalSummary`** — when the `date` param is omitted, the
+   service substitutes the JVM's local "today." Combined with the UTC
+   converter, this matches stored `calDate` only when the server's
+   local date equals the UTC date — i.e. outside the five-and-a-half-
+   hour window each day where IST is already on the next date relative
+   to UTC. Prefer passing `date` explicitly from the frontend.
+3. `pendingDocuments` in the weekly/monthly/daily summaries is summed
+   across daily/weekly/monthly snapshots. Each day's `pendingDocuments`
+   counts docs still pending at end-of-day, so an item pending for 14
+   days contributes 14 to the summed `pendingDocuments`. This is a
    "pending-days" metric, not a distinct-pending count.

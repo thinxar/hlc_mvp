@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class DailyDocumentSummaryModel {
 
-	private LocalDate cal_date;
+	private LocalDate calDate;
 	private Long approvedDocuments;
 	private Long pendingDocuments;
 	private Long rejectedDocuments;

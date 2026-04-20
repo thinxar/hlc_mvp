@@ -7,9 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class WeeklyDocumentSummaryModel {
+public class MonthlyDocumentSummaryModel {
 
-	private LocalDate calWeek;
+	private LocalDate calMonth;
 	private Long approvedDocuments;
 	private Long pendingDocuments;
 	private Long rejectedDocuments;
