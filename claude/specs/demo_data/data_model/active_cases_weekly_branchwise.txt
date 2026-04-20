@@ -18,7 +18,12 @@ calWeek            | date       | BSON Date at UTC midnight; LAST DAY of a     |
 pendingDocuments   | int / long | open backlog AS OF calWeek                   | 47
 submittedDocuments | int / long | documents uploaded WITHIN the 7-day period   | 285
 processedDocuments | int / long | documents actioned WITHIN the 7-day period   | 312
+ageingSummary      | object     | pending doc age bands; see document_analysis_spec.txt | see below
+tatPerformance     | object     | processed doc TAT bands; see document_analysis_spec.txt | see below
 perApprover        | array      | breakdown of processedDocuments by approver  | see below
+
+ageingSummary / tatPerformance: same shape as active_cases_branchwise
+(d0_5 through d45plus). ageingSummary uses calWeek as bucket_as_of_date.
 
 perApprover element: same shape and invariants as
 active_cases_branchwise - string approvedBy (8-digit id), int

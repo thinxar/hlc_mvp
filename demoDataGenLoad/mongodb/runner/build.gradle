@@ -63,3 +63,9 @@ subprojects {
         useJUnitPlatform()
     }
 }
+
+task installDist {
+    description = 'Creates command-line deployments for generator and loader under dist/'
+    group = 'distribution'
+    dependsOn ':generator:installDist', ':loader:installDist'
+}

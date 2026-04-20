@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./gradlew distGen --dry-run)",
+      "Bash(ls:*)",
+      "Bash(gradle installDist)",
+      "Bash(dist/generator/bin/generator)",
+      "Bash(mongosh --eval \"db.runCommand\\({ping:1}\\)\")",
+      "Bash(mongosh:*)",
+      "Bash(python3 -c ':*)",
+      "Bash(node:*)",
+      "Bash(gradle :generator:compileJava)",
+      "Bash(dist/loader/bin/loader)"
+    ]
+  }
+}

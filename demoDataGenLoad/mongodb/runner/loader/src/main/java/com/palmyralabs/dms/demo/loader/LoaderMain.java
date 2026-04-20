@@ -2,6 +2,7 @@ package com.palmyralabs.dms.demo.loader;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 
 /**
  * Spring Boot entry point for the Mongo loader CLI.
@@ -19,7 +20,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *   java -Dapp.mongo.uri=mongodb://... -jar loader.jar
  * </pre>
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = { MongoAutoConfiguration.class })
 public class LoaderMain {
     public static void main(String[] args) {
         SpringApplication.run(LoaderMain.class, args);

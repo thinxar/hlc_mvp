@@ -18,7 +18,23 @@ calDate            | date       | BSON Date at UTC midnight; a day in          |
 pendingDocuments   | int / long | open backlog AS OF calDate                   | 2
 submittedDocuments | int / long | documents uploaded ON calDate                | 41
 processedDocuments | int / long | documents actioned ON calDate                | 45
+ageingSummary      | object     | pending doc age bands; see document_analysis_spec.txt | see below
+tatPerformance     | object     | processed doc TAT bands; see document_analysis_spec.txt | see below
 perApprover        | array      | breakdown of processedDocuments by approver  | see below
+
+ageingSummary / tatPerformance element (shared shape):
+
+Field    | BSON type  | Description
+---------|------------|---------------------------------------------
+d0_5     | int / long | documents in [0, 5] day band
+d6_10    | int / long | documents in [6, 10] day band
+d11_20   | int / long | documents in [11, 20] day band
+d21_30   | int / long | documents in [21, 30] day band
+d31_45   | int / long | documents in [31, 45] day band
+d45plus  | int / long | documents > 45 days
+
+ageingSummary: document_age = calDate - uploadedOn; sums to pendingDocuments.
+tatPerformance: days_taken = actionOn - uploadedOn; sums to processedDocuments.
 
 perApprover element:
 

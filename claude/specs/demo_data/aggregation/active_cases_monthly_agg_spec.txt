@@ -76,28 +76,16 @@ calMonth          | date    | date (BSON Date at UTC midnight); first day of the
 pendingDocuments   | integer | open backlog AS OF month_end(calMonth) (see rule 3)       | 128
 submittedDocuments | integer | documents uploaded WITHIN calMonth (see rule 4)           | 1380
 processedDocuments | integer | documents actioned WITHIN calMonth (see rule 5)           | 1420
+ageingSummary      | object  | document-age breakdown of pendingDocuments; see schema      | see below
+tatPerformance | object  | turnaround-time breakdown of processedDocuments; see schema | see below
 perApprover        | array   | breakdown of processedDocuments by approver; see schema    | see below
 
-perApprover element schema
---------------------------
-
-Field              | Type    | Format / Constraint                                        | Example
--------------------|---------|------------------------------------------------------------|------------
-approvedBy         | string  | officer id from the source document's approvedBy (8-digit)| "57988792"
-accepted           | integer | documents with status "accepted" actioned by this approver| 456
-rejected           | integer | documents with status "rejected" actioned by this approver| 24
-
-Invariants:
-  per-element:  accepted + rejected >= 1 (every emitted element is non-empty)
-  per-bucket:   SUM(perApprover[].accepted + perApprover[].rejected)
-                    == top-level processedDocuments
-Only documents with status in {"accepted","rejected"} contribute to
-perApprover. Pending documents have no approver and are excluded.
-perApprover is sorted by approvedBy ASC and contains no duplicate
-approvedBy values (one entry per approver per bucket). An approver
-whose contribution to this bucket is purely accepted (or purely
-rejected) simply has the other count at 0 - they are NOT emitted as
-two separate elements.
+ageingSummary, tatPerformance & perApprover schemas
+----------------------------------------------------
+See specs/aggregation/document_analysis_spec.txt for field definitions,
+bucket bands, element schema, and invariants. In this report:
+  - ageingSummary uses bucket_as_of_date = month_end(calMonth)
+  - tatPerformance and perApprover use the same processedDocuments population
 
 Reporting window (calMonth enumeration)
 ----------------------------------------
@@ -191,6 +179,22 @@ Example row
   "pendingDocuments": 128,
   "submittedDocuments": 1380,
   "processedDocuments": 1420,
+  "ageingSummary": {
+    "d0_5": 12,
+    "d6_10": 28,
+    "d11_20": 45,
+    "d21_30": 30,
+    "d31_45": 10,
+    "d45plus": 3
+  },
+  "tatPerformance": {
+    "d0_5": 520,
+    "d6_10": 380,
+    "d11_20": 310,
+    "d21_30": 140,
+    "d31_45": 55,
+    "d45plus": 15
+  },
   "perApprover": [
     { "approvedBy": "47994369", "accepted": 456, "rejected": 24 },
     { "approvedBy": "57539931", "accepted": 418, "rejected": 22 },

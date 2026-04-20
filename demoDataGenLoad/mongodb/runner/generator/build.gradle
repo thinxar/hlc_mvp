@@ -18,6 +18,16 @@ application {
             def unixScriptFile    = file getUnixScript()
             windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME%\\lib\\conf', '%APP_HOME%\\resources')
             unixScriptFile.text  = unixScriptFile.text.replace('$APP_HOME/lib/conf', '$APP_HOME/resources')
+
+            // Set base_data and generated paths relative to APP_HOME (dist/generator/)
+            unixScriptFile.text = unixScriptFile.text.replace(
+                'DEFAULT_JVM_OPTS=""',
+                'DEFAULT_JVM_OPTS="-Dapp.baseDataDir=$APP_HOME/../../base_data -Dapp.dataDir=$APP_HOME/../generated"'
+            )
+            windowsScriptFile.text = windowsScriptFile.text.replace(
+                'set DEFAULT_JVM_OPTS=',
+                'set DEFAULT_JVM_OPTS="-Dapp.baseDataDir=%APP_HOME%\\..\\..\\base_data" "-Dapp.dataDir=%APP_HOME%\\..\\generated"'
+            )
         }
     }
 }
@@ -69,5 +79,5 @@ distributions {
 }
 
 installDist {
-    into '../dist/generator'
+    into '../../dist/generator'
 }

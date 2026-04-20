@@ -1,0 +1,84 @@
+Shared Spec - ageingSummary, tatPerformance & perApprover
+=========================================================
+
+Reusable document-analysis objects included by:
+  - specs/aggregation/active_cases_daily_agg_spec.txt
+  - specs/aggregation/active_cases_weekly_agg_spec.txt
+  - specs/aggregation/active_cases_monthly_agg_spec.txt
+
+Each aggregation spec produces per-bucket counts of pendingDocuments
+and processedDocuments. The objects below break those totals into
+age/turnaround bands and per-approver breakdowns.
+
+Bucket bands (shared by both objects)
+-------------------------------------
+  d0_5     :  [0, 5]   days
+  d6_10    :  [6, 10]  days
+  d11_20   :  [11, 20] days
+  d21_30   :  [21, 30] days
+  d31_45   :  [31, 45] days
+  d45plus  :  > 45     days
+
+
+ageingSummary
+-------------
+Scope:   documents counted in the bucket's pendingDocuments.
+Metric:  document_age = bucket_as_of_date - d.uploadedOn   (in days)
+
+  bucket_as_of_date is the snapshot date for the bucket:
+    - daily:   calDate
+    - weekly:  calWeek
+    - monthly: month_end(calMonth)
+
+Field              | Type    | Format / Constraint                                        | Example
+-------------------|---------|------------------------------------------------------------|------------
+d0_5               | integer | documents with document_age in [0, 5]                      | 12
+d6_10              | integer | documents with document_age in [6, 10]                     | 28
+d11_20             | integer | documents with document_age in [11, 20]                    | 45
+d21_30             | integer | documents with document_age in [21, 30]                    | 30
+d31_45             | integer | documents with document_age in [31, 45]                    | 10
+d45plus            | integer | documents with document_age > 45                           | 3
+
+Invariant: d0_5 + d6_10 + d11_20 + d21_30 + d31_45 + d45plus == pendingDocuments
+
+
+tatPerformance (turn-around time performance)
+---------------------------------------------
+Scope:   documents counted in the bucket's processedDocuments.
+Metric:  days_taken = d.actionOn - d.uploadedOn   (in days)
+
+Field              | Type    | Format / Constraint                                        | Example
+-------------------|---------|------------------------------------------------------------|------------
+d0_5               | integer | documents with days_taken in [0, 5]                        | 520
+d6_10              | integer | documents with days_taken in [6, 10]                       | 380
+d11_20             | integer | documents with days_taken in [11, 20]                      | 310
+d21_30             | integer | documents with days_taken in [21, 30]                      | 140
+d31_45             | integer | documents with days_taken in [31, 45]                      | 55
+d45plus            | integer | documents with days_taken > 45                             | 15
+
+Invariant: d0_5 + d6_10 + d11_20 + d21_30 + d31_45 + d45plus == processedDocuments
+
+
+perApprover
+-----------
+Scope:   documents counted in the bucket's processedDocuments.
+Grouping: by d.approvedBy, counting accepted and rejected separately.
+
+Element schema:
+
+Field              | Type    | Format / Constraint                                        | Example
+-------------------|---------|------------------------------------------------------------|------------
+approvedBy         | string  | officer id from the source document's approvedBy (8-digit)| "57988792"
+accepted           | integer | documents with status "accepted" actioned by this approver| 456
+rejected           | integer | documents with status "rejected" actioned by this approver| 24
+
+Invariants:
+  per-element:  accepted + rejected >= 1 (every emitted element is non-empty)
+  per-bucket:   SUM(perApprover[].accepted + perApprover[].rejected)
+                    == top-level processedDocuments
+
+Only documents with status in {"accepted","rejected"} contribute.
+Pending documents have no approver and are excluded.
+Sorted by approvedBy ASC, no duplicate approvedBy values per bucket.
+An approver with only accepted (or only rejected) has the other count
+at 0 — NOT emitted as two separate elements.

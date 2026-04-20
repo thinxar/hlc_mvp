@@ -18,6 +18,16 @@ application {
             def unixScriptFile    = file getUnixScript()
             windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME%\\lib\\conf', '%APP_HOME%\\resources')
             unixScriptFile.text  = unixScriptFile.text.replace('$APP_HOME/lib/conf', '$APP_HOME/resources')
+
+            // Set dataDir to dist/generated/ relative to APP_HOME (dist/loader/)
+            unixScriptFile.text = unixScriptFile.text.replace(
+                'DEFAULT_JVM_OPTS=""',
+                'DEFAULT_JVM_OPTS="-Dapp.dataDir=$APP_HOME/../generated"'
+            )
+            windowsScriptFile.text = windowsScriptFile.text.replace(
+                'set DEFAULT_JVM_OPTS=',
+                'set DEFAULT_JVM_OPTS="-Dapp.dataDir=%APP_HOME%\\..\\generated"'
+            )
         }
     }
 }
@@ -36,6 +46,8 @@ jar {
 
 dependencies {
     implementation deps.mongo.sync
+    implementation "org.mongodb:mongodb-driver-core:${deps.versions.mongo_driver}"
+    implementation "org.mongodb:bson:${deps.versions.mongo_driver}"
     implementation("ch.qos.logback:logback-classic:1.5.11")
 }
 
@@ -69,5 +81,5 @@ distributions {
 }
 
 installDist {
-    into '../dist/loader'
+    into '../../dist/loader'
 }

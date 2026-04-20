@@ -3,6 +3,7 @@ package com.palmyralabs.dms.demo.generator.stages;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.palmyralabs.dms.demo.generator.model.DocStatus;
 import com.palmyralabs.dms.demo.generator.PipelineContext;
 import com.palmyralabs.dms.demo.generator.util.CsvUtil;
 import com.palmyralabs.dms.demo.generator.util.DateUtil;
@@ -184,7 +185,7 @@ public class Stage2CaseGenerator {
                     String uploadedOn = (candidate.compareTo(requestPlusOne) >= 0) ? candidate : requestPlusOne;
 
                     String actionOn;
-                    if ("pending".equals(status)) {
+                    if (DocStatus.PENDING.is(status)) {
                         actionOn = null;
                     } else {
                         int actionJitter = rng.nextIntBelow(6);
@@ -202,7 +203,7 @@ public class Stage2CaseGenerator {
                         uploadedBy = pickExcept(officerPool, submittedBy);
                     }
                     // approvedBy: pool member != uploadedBy for non-pending, else "" (rule 12.2/12.3).
-                    String approvedBy = "pending".equals(status) ? "" : pickExcept(officerPool, uploadedBy);
+                    String approvedBy = DocStatus.PENDING.is(status) ? "" : pickExcept(officerPool, uploadedBy);
 
                     Doc doc = new Doc();
                     doc.name = fileNameFor(type, docCounter, policyNumber, requestDate);
@@ -365,19 +366,25 @@ public class Stage2CaseGenerator {
         return counts;
     }
 
-    // ---------- status pick (rule 9) ----------
-    private double pendingPctForAge(int ageDays) {
+    // ---------- status pick (rule 9 + 9.1) ----------
+    private double pendingPctForAge(int ageDays, double rejectedPct) {
         if (ageDays > 180) return 0;
+        // Rule 9.1: last 7 days — accepted/(accepted+pending) in [70%,100%],
+        // so pending <= 30% of non-rejected share.
+        if (ageDays <= 7) {
+            double maxPending = 0.30 * (1.0 - rejectedPct);
+            return maxPending * (1.0 - ageDays / 7.0); // scales from 30% at day 0 to 0% at day 7
+        }
         if (ageDays > 90) return 0.07;
         return 0.40 - (0.25 * ageDays / 90.0);
     }
 
     private String pickStatus(int ageDays, double rejectedPct) {
         double r = rng.nextDouble();
-        if (r < rejectedPct) return "rejected";
-        double p = pendingPctForAge(ageDays);
-        if (p > 0 && r < rejectedPct + p) return "pending";
-        return "accepted";
+        if (r < rejectedPct) return DocStatus.REJECTED.value();
+        double p = pendingPctForAge(ageDays, rejectedPct);
+        if (p > 0 && r < rejectedPct + p) return DocStatus.PENDING.value();
+        return DocStatus.ACCEPTED.value();
     }
 
     // ---------- misc helpers ----------

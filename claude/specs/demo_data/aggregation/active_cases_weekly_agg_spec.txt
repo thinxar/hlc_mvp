@@ -65,28 +65,16 @@ calWeek           | date    | date (BSON Date at UTC midnight); last day of a 7-
 pendingDocuments   | integer | open backlog AS OF calWeek (see rule 3)                   | 47
 submittedDocuments | integer | documents uploaded WITHIN the week (see rule 4)            | 285
 processedDocuments | integer | documents actioned WITHIN the week (see rule 5)            | 312
+ageingSummary      | object  | document-age breakdown of pendingDocuments; see schema      | see below
+tatPerformance     | object  | turnaround-time breakdown of processedDocuments; see schema | see below
 perApprover        | array   | breakdown of processedDocuments by approver; see schema    | see below
 
-perApprover element schema
---------------------------
-
-Field              | Type    | Format / Constraint                                        | Example
--------------------|---------|------------------------------------------------------------|------------
-approvedBy         | string  | officer id from the source document's approvedBy (8-digit)| "57988792"
-accepted           | integer | documents with status "accepted" actioned by this approver| 112
-rejected           | integer | documents with status "rejected" actioned by this approver| 6
-
-Invariants:
-  per-element:  accepted + rejected >= 1 (every emitted element is non-empty)
-  per-bucket:   SUM(perApprover[].accepted + perApprover[].rejected)
-                    == top-level processedDocuments
-Only documents with status in {"accepted","rejected"} contribute to
-perApprover. Pending documents have no approver and are excluded.
-perApprover is sorted by approvedBy ASC and contains no duplicate
-approvedBy values (one entry per approver per bucket). An approver
-whose contribution to this bucket is purely accepted (or purely
-rejected) simply has the other count at 0 - they are NOT emitted as
-two separate elements.
+ageingSummary, tatPerformance & perApprover schemas
+----------------------------------------------------
+See specs/aggregation/document_analysis_spec.txt for field definitions,
+bucket bands, element schema, and invariants. In this report:
+  - ageingSummary uses bucket_as_of_date = calWeek
+  - tatPerformance and perApprover use the same processedDocuments population
 
 Case selection
 --------------
@@ -194,6 +182,22 @@ Example row
   "pendingDocuments": 47,
   "submittedDocuments": 285,
   "processedDocuments": 312,
+  "ageingSummary": {
+    "d0_5": 8,
+    "d6_10": 15,
+    "d11_20": 12,
+    "d21_30": 7,
+    "d31_45": 3,
+    "d45plus": 2
+  },
+  "tatPerformance": {
+    "d0_5": 115,
+    "d6_10": 88,
+    "d11_20": 65,
+    "d21_30": 30,
+    "d31_45": 10,
+    "d45plus": 4
+  },
   "perApprover": [
     { "approvedBy": "47994369", "accepted": 98, "rejected": 6 },
     { "approvedBy": "57539931", "accepted": 91, "rejected": 5 },

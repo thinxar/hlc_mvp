@@ -57,6 +57,30 @@
               "pendingDocuments":   { "bsonType": ["int", "long"] },
               "submittedDocuments": { "bsonType": ["int", "long"] },
               "processedDocuments": { "bsonType": ["int", "long"] },
+              "ageingSummary": {
+                "bsonType": "object",
+                "description": "Pending document age bands (bucket_as_of_date - uploadedOn)",
+                "properties": {
+                  "d0_5":    { "bsonType": ["int", "long"] },
+                  "d6_10":   { "bsonType": ["int", "long"] },
+                  "d11_20":  { "bsonType": ["int", "long"] },
+                  "d21_30":  { "bsonType": ["int", "long"] },
+                  "d31_45":  { "bsonType": ["int", "long"] },
+                  "d45plus": { "bsonType": ["int", "long"] }
+                }
+              },
+              "tatPerformance": {
+                "bsonType": "object",
+                "description": "Processed document turnaround bands (actionOn - uploadedOn)",
+                "properties": {
+                  "d0_5":    { "bsonType": ["int", "long"] },
+                  "d6_10":   { "bsonType": ["int", "long"] },
+                  "d11_20":  { "bsonType": ["int", "long"] },
+                  "d21_30":  { "bsonType": ["int", "long"] },
+                  "d31_45":  { "bsonType": ["int", "long"] },
+                  "d45plus": { "bsonType": ["int", "long"] }
+                }
+              },
               "perApprover": {
                 "bsonType": "array",
                 "items": {
@@ -94,6 +118,30 @@
               "pendingDocuments":   { "bsonType": ["int", "long"] },
               "submittedDocuments": { "bsonType": ["int", "long"] },
               "processedDocuments": { "bsonType": ["int", "long"] },
+              "ageingSummary": {
+                "bsonType": "object",
+                "description": "Pending document age bands (bucket_as_of_date - uploadedOn)",
+                "properties": {
+                  "d0_5":    { "bsonType": ["int", "long"] },
+                  "d6_10":   { "bsonType": ["int", "long"] },
+                  "d11_20":  { "bsonType": ["int", "long"] },
+                  "d21_30":  { "bsonType": ["int", "long"] },
+                  "d31_45":  { "bsonType": ["int", "long"] },
+                  "d45plus": { "bsonType": ["int", "long"] }
+                }
+              },
+              "tatPerformance": {
+                "bsonType": "object",
+                "description": "Processed document turnaround bands (actionOn - uploadedOn)",
+                "properties": {
+                  "d0_5":    { "bsonType": ["int", "long"] },
+                  "d6_10":   { "bsonType": ["int", "long"] },
+                  "d11_20":  { "bsonType": ["int", "long"] },
+                  "d21_30":  { "bsonType": ["int", "long"] },
+                  "d31_45":  { "bsonType": ["int", "long"] },
+                  "d45plus": { "bsonType": ["int", "long"] }
+                }
+              },
               "perApprover": {
                 "bsonType": "array",
                 "items": {
@@ -131,6 +179,30 @@
               "pendingDocuments":   { "bsonType": ["int", "long"] },
               "submittedDocuments": { "bsonType": ["int", "long"] },
               "processedDocuments": { "bsonType": ["int", "long"] },
+              "ageingSummary": {
+                "bsonType": "object",
+                "description": "Pending document age bands (bucket_as_of_date - uploadedOn)",
+                "properties": {
+                  "d0_5":    { "bsonType": ["int", "long"] },
+                  "d6_10":   { "bsonType": ["int", "long"] },
+                  "d11_20":  { "bsonType": ["int", "long"] },
+                  "d21_30":  { "bsonType": ["int", "long"] },
+                  "d31_45":  { "bsonType": ["int", "long"] },
+                  "d45plus": { "bsonType": ["int", "long"] }
+                }
+              },
+              "tatPerformance": {
+                "bsonType": "object",
+                "description": "Processed document turnaround bands (actionOn - uploadedOn)",
+                "properties": {
+                  "d0_5":    { "bsonType": ["int", "long"] },
+                  "d6_10":   { "bsonType": ["int", "long"] },
+                  "d11_20":  { "bsonType": ["int", "long"] },
+                  "d21_30":  { "bsonType": ["int", "long"] },
+                  "d31_45":  { "bsonType": ["int", "long"] },
+                  "d45plus": { "bsonType": ["int", "long"] }
+                }
+              },
               "perApprover": {
                 "bsonType": "array",
                 "items": {

@@ -1,7 +1,9 @@
 package com.palmyralabs.dms.demo.generator.stages;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.palmyralabs.dms.demo.generator.model.DocStatus;
 import com.palmyralabs.dms.demo.generator.PipelineContext;
+import com.palmyralabs.dms.demo.generator.util.AgeBands;
 import com.palmyralabs.dms.demo.generator.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -50,7 +52,7 @@ public class Stage3WeeklyAggregator {
                 for (JsonNode d : docs) {
                     String status = text(d, "status");
                     String actionOn = text(d, "actionOn");
-                    if ("pending".equals(status)) hasPending = true;
+                    if (DocStatus.PENDING.is(status)) hasPending = true;
                     if (!actionOn.isEmpty()
                             && actionOn.compareTo(WINDOW_START) >= 0
                             && actionOn.compareTo(REF_DATE) <= 0) hasRecentAction = true;
@@ -80,7 +82,7 @@ public class Stage3WeeklyAggregator {
                     if (cw != null) getBucket(buckets, cw, rec).submitted++;
                 }
                 // processedDocuments + perApprover.
-                if (!"pending".equals(status)
+                if (!DocStatus.PENDING.is(status)
                         && !actionOn.isEmpty()
                         && actionOn.compareTo(WINDOW_START) >= 0
                         && actionOn.compareTo(REF_DATE) <= 0) {
@@ -88,16 +90,21 @@ public class Stage3WeeklyAggregator {
                     if (cw != null) {
                         Bucket b = getBucket(buckets, cw, rec);
                         b.processed++;
+                        AgeBands.increment(b.tat, DateUtil.daysBetween(uploadedOn, actionOn));
                         ApproverCount ac = b.perApprover.computeIfAbsent(approvedBy, k -> new ApproverCount());
-                        if ("accepted".equals(status)) ac.accepted++; else ac.rejected++;
+                        if (DocStatus.ACCEPTED.is(status)) ac.accepted++; else ac.rejected++;
                     }
                 }
                 // pendingDocuments - walk every cal_week.
                 for (String cw : calWeeks) {
                     if (cw.compareTo(uploadedOn) < 0) continue;
-                    boolean stillOpen = "pending".equals(status)
+                    boolean stillOpen = DocStatus.PENDING.is(status)
                             || (!actionOn.isEmpty() && cw.compareTo(actionOn) < 0);
-                    if (stillOpen) getBucket(buckets, cw, rec).pending++;
+                    if (stillOpen) {
+                        Bucket pb = getBucket(buckets, cw, rec);
+                        pb.pending++;
+                        AgeBands.increment(pb.ageing, DateUtil.daysBetween(uploadedOn, cw));
+                    }
                 }
             }
         });
@@ -125,6 +132,8 @@ public class Stage3WeeklyAggregator {
             row.put("pendingDocuments", b.pending);
             row.put("submittedDocuments", b.submitted);
             row.put("processedDocuments", b.processed);
+            row.put("ageingSummary", AgeBands.toMap(b.ageing));
+            row.put("tatPerformance", AgeBands.toMap(b.tat));
             List<Map<String, Object>> perApp = new ArrayList<>();
             for (Map.Entry<String, ApproverCount> e : new TreeMap<>(b.perApprover).entrySet()) {
                 Map<String, Object> ap = new LinkedHashMap<>();
@@ -178,6 +187,8 @@ public class Stage3WeeklyAggregator {
     private static final class Bucket {
         String calWeek, branchCode, branchName, divisionName, doCode, zone;
         int pending, submitted, processed;
+        int[] ageing = AgeBands.create();
+        int[] tat = AgeBands.create();
         Map<String, ApproverCount> perApprover = new LinkedHashMap<>();
     }
 

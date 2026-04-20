@@ -18,7 +18,13 @@ calMonth           | date       | BSON Date at UTC midnight; FIRST DAY of a    |
 pendingDocuments   | int / long | open backlog AS OF month_end(calMonth)       | 128
 submittedDocuments | int / long | documents uploaded WITHIN the calendar month | 1380
 processedDocuments | int / long | documents actioned WITHIN the calendar month | 1420
+ageingSummary      | object     | pending doc age bands; see document_analysis_spec.txt | see below
+tatPerformance     | object     | processed doc TAT bands; see document_analysis_spec.txt | see below
 perApprover        | array      | breakdown of processedDocuments by approver  | see below
+
+ageingSummary / tatPerformance: same shape as active_cases_branchwise
+(d0_5 through d45plus). ageingSummary uses month_end(calMonth) as
+bucket_as_of_date.
 
 perApprover element: same shape and invariants as active_cases_branchwise.
 

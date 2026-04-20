@@ -34,7 +34,7 @@ Field       | Type   | Format / Constraint                                      
 ------------|--------|-----------------------------------------------------------|----------------
 name        | string | random file name derived from type, with .pdf / .doc / .docx / .jpg / .png extension | "dgh_form_010021.pdf"
 type        | string | Enum: DGH_FORM | PAYMENT_RECEIPT | ID_PROOF               | "DGH_FORM"
-status		| string | Enum: accepted,rejected,pending							| "accepted"
+status		| string | Enum: accepted | rejected | pending (see DocStatus enum)	| "accepted"
 docId       | string | Pattern: DOC-NNNNN                                        | "DOC-10021"
 uploadedBy  | string  | 8-digit numeric value (zero-padded)                 | "45829137"
 approvedBy  | string  | 8-digit numeric value (zero-padded), applicable when status != pending                 | "45829136"
@@ -160,6 +160,13 @@ Rules
                                  collapses into 'accepted'.
    'accepted' is always the remainder. Draw one random number per document and
    bucket it against these thresholds.
+   9.1 Last-7-day override: for cases whose requestDate falls within the last
+       7 days (inclusive) relative to the generation date, the ratio of
+       approved (accepted) documents to pending documents MUST be between
+       70% and 100%. This overrides the 0-90 day pending band above for
+       this narrow window. rejected ratio still applies per branch as above;
+       the remaining non-rejected share is split so that
+       accepted / (accepted + pending) lies in [70%, 100%].
 10. Generate records for EVERY row in branch.csv. The final output file MUST be
     sorted by requestDate ascending (global sort across all branches, independent
     of which branch produced each record).
