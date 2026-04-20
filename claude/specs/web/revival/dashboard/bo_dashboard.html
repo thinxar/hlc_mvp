@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BO Manager Dashboard</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;padding:16px}
+  .hdr{background:#fff;border-radius:12px;padding:14px 24px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:space-between}
+  .hdr h1{font-size:18px;font-weight:600}
+  .hdr .flt{display:flex;gap:12px}
+  .hdr select{padding:6px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;background:#f8fafc}
+  .bdg{background:#e0f2fe;color:#0369a1;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:500;margin-left:8px}
+  .sec{font-size:13px;font-weight:600;color:#475569;margin:14px 0 8px;padding-left:8px;border-left:3px solid #3b82f6}
+
+  .health{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  .hc{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);text-align:center}
+  .hc .v{font-size:30px;font-weight:700}.hc .l{font-size:10px;color:#94a3b8;text-transform:uppercase;margin-top:2px}
+  .hc.g .v{color:#16a34a}.hc.a .v{color:#f59e0b}.hc.b .v{color:#3b82f6}
+
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+  .cb{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);min-height:220px;position:relative}
+  .cb .t{font-size:14px;font-weight:600;margin-bottom:3px}.cb .s{font-size:11px;color:#94a3b8;margin-bottom:12px}
+
+  .bars{display:flex;align-items:flex-end;gap:6px;height:140px;padding-top:10px}
+  .bg{display:flex;flex-direction:column;align-items:center;flex:1}
+  .bp{display:flex;gap:3px;align-items:flex-end;height:120px}
+  .b{width:18px;border-radius:3px 3px 0 0}
+  .b.gn{background:#22c55e}.b.am{background:#f59e0b}.b.bl{background:#3b82f6}
+  .bl-l{font-size:9px;color:#64748b;margin-top:4px;text-align:center}
+
+  .ar{display:flex;align-items:center;margin-bottom:7px}
+  .ar .al{width:70px;font-size:11px;color:#64748b}
+  .ar .bh{height:18px;border-radius:3px}
+  .ar span{font-size:11px;margin-left:6px}
+
+  .lg{display:flex;gap:14px;font-size:11px;color:#64748b;margin-bottom:10px}
+  .lg span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
+  .lg .lg-g::before{background:#22c55e}.lg .lg-a::before{background:#f59e0b}
+
+  .tbl{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:14px}
+  .tbl th{background:#f8fafc;padding:10px 14px;text-align:left;font-weight:600;color:#475569;border-bottom:2px solid #e2e8f0}
+  .tbl td{padding:8px 14px;border-bottom:1px solid #f1f5f9}
+  .tbl tr:hover{background:#f8fafc}
+  .tbl .n{text-align:right;font-variant-numeric:tabular-nums}
+  .tbl .gv{color:#16a34a;font-weight:600}.tbl .av{color:#f59e0b;font-weight:600}.tbl .rv{color:#ef4444;font-weight:600}
+  .spark{display:inline-block;width:50px;height:14px;vertical-align:middle;margin-left:6px}
+  .pct-bar{display:inline-block;height:8px;border-radius:4px;vertical-align:middle}
+  .red-row{background:#fef2f2}
+
+  .ring{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+  .ring .inner{background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column}
+
+  .gauge{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto}
+  .gauge .inner{font-size:18px;font-weight:700;background:#fff;width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+  .today-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+  .td-card{background:#fff;border-radius:10px;padding:18px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .td-card .v{font-size:28px;font-weight:700}.td-card .l{font-size:10px;color:#94a3b8;text-transform:uppercase;margin-top:2px}
+  .td-card.g .v{color:#16a34a}.td-card.a .v{color:#f59e0b}.td-card.b .v{color:#3b82f6}
+
+  .foot{text-align:center;font-size:11px;color:#94a3b8;margin-top:20px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div><h1>BO Manager Dashboard</h1><span class="bdg">KANPUR CITY DBO (231)</span><span class="bdg">DO: Kanpur</span></div>
+  <div class="flt"><select><option>Division: Kanpur</option></select><select><option>Branch: KANPUR CITY DBO (231)</option></select></div>
+</div>
+
+<!-- 1. Branch Health -->
+<div class="sec">My Branch — Current Month</div>
+<div class="health">
+  <div class="hc b"><div class="v">160</div><div class="l">Total Cases</div></div>
+  <div class="hc g"><div class="v">142</div><div class="l">Accepted Cases</div></div>
+  <div class="hc a"><div class="v">18</div><div class="l">Pending Cases</div></div>
+  <div class="hc" style="position:relative">
+    <div class="gauge" style="background:conic-gradient(#16a34a 0% 89%,#e2e8f0 89% 100%)"><div class="inner">89%</div></div>
+    <div style="font-size:10px;color:#94a3b8;text-transform:uppercase;margin-top:4px;text-align:center">Acceptance Rate</div>
+  </div>
+</div>
+
+<!-- 2. Today's Work -->
+<div class="sec">Today — Did we clear today's intake?</div>
+<div class="today-grid">
+  <div class="td-card b"><div class="v">15</div><div class="l">Cases Submitted</div></div>
+  <div class="td-card g"><div class="v">12</div><div class="l">Cases Accepted</div></div>
+  <div class="td-card a"><div class="v">3</div><div class="l">Still Pending</div></div>
+</div>
+
+<div class="g2">
+  <!-- 3. Pending Aging -->
+  <div class="cb">
+    <div class="t">What's Pending? — How old is the backlog?</div>
+    <div class="s">Older cases need immediate action</div>
+    <div style="padding:8px 0">
+      <div class="ar"><div class="al">0-5 days</div><div class="bh" style="width:140px;background:#22c55e"></div><span>8 <span style="color:#94a3b8;font-size:9px">— normal</span></span></div>
+      <div class="ar"><div class="al">6-10 days</div><div class="bh" style="width:80px;background:#3b82f6"></div><span>4</span></div>
+      <div class="ar"><div class="al">11-20 days</div><div class="bh" style="width:55px;background:#f59e0b"></div><span>3</span></div>
+      <div class="ar"><div class="al">21-30 days</div><div class="bh" style="width:30px;background:#f97316"></div><span>2 <span style="color:#f97316;font-size:9px">— follow up</span></span></div>
+      <div class="ar"><div class="al" style="color:#ef4444;font-weight:600">31-45 days</div><div class="bh" style="width:15px;background:#ef4444"></div><span style="color:#ef4444;font-weight:600">1 <span style="font-size:9px">— overdue</span></span></div>
+      <div class="ar"><div class="al">45+ days</div><div class="bh" style="width:0;background:#7c3aed"></div><span>0</span></div>
+    </div>
+  </div>
+
+  <!-- 4. Processing Speed -->
+  <div class="cb">
+    <div class="t">Processing Speed — How fast are we clearing?</div>
+    <div class="s">TAT distribution of processed cases this month</div>
+    <div style="display:flex;gap:8px;align-items:flex-end;height:140px;padding:10px 0">
+      <div style="text-align:center;flex:1"><div style="background:#22c55e;height:110px;border-radius:4px 4px 0 0;margin:0 4px"></div><div style="font-size:9px;color:#64748b;margin-top:3px">0-5d</div><div style="font-size:11px;font-weight:600">68</div></div>
+      <div style="text-align:center;flex:1"><div style="background:#3b82f6;height:80px;border-radius:4px 4px 0 0;margin:0 4px"></div><div style="font-size:9px;color:#64748b;margin-top:3px">6-10d</div><div style="font-size:11px;font-weight:600">42</div></div>
+      <div style="text-align:center;flex:1"><div style="background:#f59e0b;height:45px;border-radius:4px 4px 0 0;margin:0 4px"></div><div style="font-size:9px;color:#64748b;margin-top:3px">11-20d</div><div style="font-size:11px;font-weight:600">22</div></div>
+      <div style="text-align:center;flex:1"><div style="background:#f97316;height:20px;border-radius:4px 4px 0 0;margin:0 4px"></div><div style="font-size:9px;color:#64748b;margin-top:3px">21-30d</div><div style="font-size:11px;font-weight:600">8</div></div>
+      <div style="text-align:center;flex:1"><div style="background:#ef4444;height:8px;border-radius:4px 4px 0 0;margin:0 4px"></div><div style="font-size:9px;color:#64748b;margin-top:3px">31-45d</div><div style="font-size:11px;font-weight:600">2</div></div>
+      <div style="text-align:center;flex:1"><div style="background:#7c3aed;height:2px;border-radius:4px 4px 0 0;margin:0 4px"></div><div style="font-size:9px;color:#64748b;margin-top:3px">45+d</div><div style="font-size:11px;font-weight:600">0</div></div>
+    </div>
+    <div style="font-size:10px;color:#16a34a;font-weight:500;margin-top:4px">77% processed within 10 days — good</div>
+  </div>
+</div>
+
+<!-- 5. SR Performance -->
+<div class="sec">SR Performance — Who is delivering?</div>
+<table class="tbl">
+  <thead><tr><th>SR Number</th><th class="n">Accepted</th><th class="n">Pending</th><th class="n">Total</th><th class="n">Avg TAT</th><th class="n">Today</th><th class="n">Acceptance %</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>45829137</td><td class="n gv">38</td><td class="n av">4</td><td class="n">42</td><td class="n">8d</td><td class="n">5</td><td class="n">90%</td><td><span class="pct-bar" style="width:90px;background:#22c55e"></span></td></tr>
+    <tr><td>45829138</td><td class="n gv">35</td><td class="n av">3</td><td class="n">38</td><td class="n">7d</td><td class="n">4</td><td class="n">92%</td><td><span class="pct-bar" style="width:92px;background:#22c55e"></span></td></tr>
+    <tr><td>45829139</td><td class="n gv">32</td><td class="n av">5</td><td class="n">37</td><td class="n">12d</td><td class="n">3</td><td class="n">86%</td><td><span class="pct-bar" style="width:86px;background:#22c55e"></span></td></tr>
+    <tr class="red-row"><td>45829140</td><td class="n gv">20</td><td class="n rv">6</td><td class="n">26</td><td class="n" style="color:#ef4444;font-weight:600">24d</td><td class="n">0</td><td class="n rv">77%</td><td><span class="pct-bar" style="width:77px;background:#ef4444"></span></td></tr>
+    <tr><td>45829141</td><td class="n gv">17</td><td class="n av">0</td><td class="n">17</td><td class="n">6d</td><td class="n">0</td><td class="n">100%</td><td><span class="pct-bar" style="width:100px;background:#22c55e"></span></td></tr>
+  </tbody>
+</table>
+<div style="font-size:10px;color:#ef4444;font-weight:500;margin-top:-8px;margin-bottom:14px;padding-left:4px">SR 45829140: high pending (23%), slow TAT (24d), 0 cases today — needs review</div>
+
+<!-- 6. Monthly Trend -->
+<div class="sec">Monthly Trend — Am I improving?</div>
+<div class="g2">
+  <div class="cb">
+    <div class="t">Last 6 Months — Case Status</div>
+    <div class="s">Accepted vs Pending cases</div>
+    <div class="lg"><span class="lg-g">Accepted</span><span class="lg-a">Pending</span></div>
+    <div class="bars">
+      <div class="bg"><div class="bp"><div class="b gn" style="height:80px"></div><div class="b am" style="height:20px"></div></div><div class="bl-l">Nov</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:88px"></div><div class="b am" style="height:18px"></div></div><div class="bl-l">Dec</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:85px"></div><div class="b am" style="height:16px"></div></div><div class="bl-l">Jan</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:78px"></div><div class="b am" style="height:14px"></div></div><div class="bl-l">Feb</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:95px"></div><div class="b am" style="height:12px"></div></div><div class="bl-l">Mar</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:90px"></div><div class="b am" style="height:10px"></div></div><div class="bl-l">Apr</div></div>
+    </div>
+  </div>
+
+  <div class="cb">
+    <div class="t">SLA Compliance</div>
+    <div class="s">% cases processed within 30 days</div>
+    <div style="display:flex;justify-content:center;gap:30px;margin-top:16px">
+      <div style="text-align:center">
+        <div class="gauge" style="background:conic-gradient(#16a34a 0% 94%,#e2e8f0 94% 100%)"><div class="inner">94%</div></div>
+        <div style="font-size:10px;color:#94a3b8;margin-top:6px">THIS MONTH</div>
+      </div>
+      <div style="text-align:center">
+        <div class="gauge" style="background:conic-gradient(#3b82f6 0% 91%,#e2e8f0 91% 100%)"><div class="inner">91%</div></div>
+        <div style="font-size:10px;color:#94a3b8;margin-top:6px">YTD</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:10px;color:#16a34a;font-weight:500;text-align:center">Above 85% SLA target</div>
+  </div>
+</div>
+
+<!-- 7. Financial Year -->
+<div class="sec">Financial Year — Am I on track?</div>
+<div class="g2">
+  <div class="cb">
+    <div class="t">Previous FY (2024-25)</div>
+    <div class="s">Accepted vs Pending</div>
+    <div class="lg"><span class="lg-g">Accepted</span><span class="lg-a">Pending</span></div>
+    <div class="bars" style="height:110px">
+      <div class="bg"><div class="bp" style="height:90px"><div class="b gn" style="height:65px"></div><div class="b am" style="height:20px"></div></div><div class="bl-l">Q1</div></div>
+      <div class="bg"><div class="bp" style="height:90px"><div class="b gn" style="height:72px"></div><div class="b am" style="height:18px"></div></div><div class="bl-l">Q2</div></div>
+      <div class="bg"><div class="bp" style="height:90px"><div class="b gn" style="height:78px"></div><div class="b am" style="height:15px"></div></div><div class="bl-l">Q3</div></div>
+      <div class="bg"><div class="bp" style="height:90px"><div class="b gn" style="height:82px"></div><div class="b am" style="height:14px"></div></div><div class="bl-l">Q4</div></div>
+    </div>
+  </div>
+  <div class="cb">
+    <div class="t">Current FY (2025-26)</div>
+    <div class="s">Accepted vs Pending</div>
+    <div class="lg"><span class="lg-g">Accepted</span><span class="lg-a">Pending</span></div>
+    <div class="bars" style="height:110px">
+      <div class="bg"><div class="bp" style="height:90px"><div class="b gn" style="height:75px"></div><div class="b am" style="height:16px"></div></div><div class="bl-l">Q1</div></div>
+      <div class="bg"><div class="bp" style="height:90px"><div class="b gn" style="height:82px"></div><div class="b am" style="height:14px"></div></div><div class="bl-l">Q2</div></div>
+      <div class="bg"><div class="bp" style="height:90px"><div class="b gn" style="height:88px"></div><div class="b am" style="height:12px"></div></div><div class="bl-l">Q3</div></div>
+      <div class="bg"><div class="bp" style="height:90px"><div class="b gn" style="height:90px"></div><div class="b am" style="height:10px"></div></div><div class="bl-l">Apr</div></div>
+    </div>
+  </div>
+</div>
+
+<p class="foot">BO Manager Dashboard — "What's pending on my desk and who needs help?"</p>
+</body>
+</html>

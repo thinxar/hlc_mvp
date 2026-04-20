@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DO Manager Dashboard</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#f1f5f9;color:#1e293b;padding:16px}
+  .hdr{background:#fff;border-radius:12px;padding:14px 24px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:space-between}
+  .hdr h1{font-size:18px;font-weight:600}
+  .hdr .flt{display:flex;gap:12px}
+  .hdr select{padding:6px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;background:#f8fafc}
+  .bdg{background:#e0f2fe;color:#0369a1;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:500;margin-left:8px}
+  .sec{font-size:13px;font-weight:600;color:#475569;margin:14px 0 8px;padding-left:8px;border-left:3px solid #3b82f6}
+
+  /* Health Cards */
+  .health{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  .hc{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);text-align:center}
+  .hc .v{font-size:30px;font-weight:700}.hc .l{font-size:10px;color:#94a3b8;text-transform:uppercase;margin-top:2px}
+  .hc.g .v{color:#16a34a}.hc.a .v{color:#f59e0b}.hc.b .v{color:#3b82f6}.hc.r .v{color:#ef4444}
+
+  /* Branch table */
+  .tbl{width:100%;border-collapse:collapse;font-size:12px;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:14px}
+  .tbl th{background:#f8fafc;padding:10px 14px;text-align:left;font-weight:600;color:#475569;border-bottom:2px solid #e2e8f0}
+  .tbl td{padding:8px 14px;border-bottom:1px solid #f1f5f9}
+  .tbl tr:hover{background:#f8fafc}
+  .tbl .n{text-align:right;font-variant-numeric:tabular-nums}
+  .tbl .gv{color:#16a34a;font-weight:600}.tbl .av{color:#f59e0b;font-weight:600}
+  .pct-bar{display:inline-block;height:8px;border-radius:4px;vertical-align:middle}
+  .red-row{background:#fef2f2}.amber-row{background:#fffbeb}
+
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+  .cb{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);min-height:240px;position:relative}
+  .cb .t{font-size:14px;font-weight:600;margin-bottom:3px}.cb .s{font-size:11px;color:#94a3b8;margin-bottom:12px}
+
+  .bars{display:flex;align-items:flex-end;gap:6px;height:150px;padding-top:10px}
+  .bg{display:flex;flex-direction:column;align-items:center;flex:1}
+  .bp{display:flex;gap:3px;align-items:flex-end;height:130px}
+  .b{width:18px;border-radius:3px 3px 0 0}
+  .b.gn{background:#22c55e}.b.am{background:#f59e0b}.b.bl{background:#3b82f6}
+  .bl-l{font-size:9px;color:#64748b;margin-top:4px;text-align:center}
+
+  .ar{display:flex;align-items:center;margin-bottom:7px}
+  .ar .al{width:70px;font-size:11px;color:#64748b}
+  .ar .bh{height:18px;border-radius:3px}
+  .ar span{font-size:11px;margin-left:6px}
+
+  .lg{display:flex;gap:14px;font-size:11px;color:#64748b;margin-bottom:10px}
+  .lg span::before{content:'';display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:middle}
+  .lg .lg-g::before{background:#22c55e}.lg .lg-a::before{background:#f59e0b}
+  .wm{position:absolute;bottom:8px;right:12px;font-size:9px;color:#cbd5e1}
+
+  .gauge{width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto}
+  .gauge .inner{font-size:22px;font-weight:700}
+  .foot{text-align:center;font-size:11px;color:#94a3b8;margin-top:20px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div><h1>DO Manager Dashboard</h1><span class="bdg">Kanpur Division (241)</span><span class="bdg">Zone: NCZ</span></div>
+  <div class="flt"><select><option>Zone: NCZ</option></select><select><option>Division: Kanpur</option></select></div>
+</div>
+
+<!-- 1. At-a-Glance Health -->
+<div class="sec">Division Health — Current Month</div>
+<div class="health">
+  <div class="hc b"><div class="v">451</div><div class="l">Total Cases</div></div>
+  <div class="hc g"><div class="v">392</div><div class="l">Accepted Cases</div></div>
+  <div class="hc a"><div class="v">59</div><div class="l">Pending Cases</div></div>
+  <div class="hc" style="position:relative">
+    <div class="gauge" style="background:conic-gradient(#16a34a 0% 87%,#e2e8f0 87% 100%)"><div class="inner" style="background:#fff;width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center">87%</div></div>
+    <div class="l" style="font-size:10px;color:#94a3b8;text-transform:uppercase;margin-top:4px;text-align:center">Acceptance Rate</div>
+  </div>
+</div>
+
+<!-- 2. Branch Comparison -->
+<div class="sec">Branch Comparison — Which branches need attention?</div>
+<table class="tbl">
+  <thead><tr><th>Branch</th><th>Code</th><th class="n">Accepted</th><th class="n">Pending</th><th class="n">Total</th><th class="n">Acceptance %</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>KANPUR CITY DBO</td><td>231</td><td class="n gv">142</td><td class="n av">18</td><td class="n">160</td><td class="n">89%</td><td><span class="pct-bar" style="width:89px;background:#22c55e"></span></td></tr>
+    <tr><td>KANPUR (SHIVOY) DBO</td><td>232</td><td class="n gv">98</td><td class="n av">12</td><td class="n">110</td><td class="n">89%</td><td><span class="pct-bar" style="width:89px;background:#22c55e"></span></td></tr>
+    <tr><td>UNNAO BO</td><td>233</td><td class="n gv">67</td><td class="n av">9</td><td class="n">76</td><td class="n">88%</td><td><span class="pct-bar" style="width:88px;background:#22c55e"></span></td></tr>
+    <tr class="amber-row"><td>FATEHPUR BO</td><td>234</td><td class="n gv">54</td><td class="n av">6</td><td class="n">60</td><td class="n">90%</td><td><span class="pct-bar" style="width:90px;background:#22c55e"></span></td></tr>
+    <tr class="red-row"><td>HAMIRPUR BO</td><td>235</td><td class="n gv">31</td><td class="n av">14</td><td class="n">45</td><td class="n" style="color:#ef4444;font-weight:600">69%</td><td><span class="pct-bar" style="width:69px;background:#ef4444"></span></td></tr>
+  </tbody>
+</table>
+
+<div class="g2">
+  <!-- 3. Pending Aging -->
+  <div class="cb">
+    <div class="t">Pending Aging — Where is the backlog stuck?</div>
+    <div class="s">Older cases need escalation</div>
+    <div style="padding:8px 0">
+      <div class="ar"><div class="al">0-5 days</div><div class="bh" style="width:180px;background:#22c55e"></div><span>24</span></div>
+      <div class="ar"><div class="al">6-10 days</div><div class="bh" style="width:130px;background:#3b82f6"></div><span>17</span></div>
+      <div class="ar"><div class="al">11-20 days</div><div class="bh" style="width:90px;background:#f59e0b"></div><span>12</span></div>
+      <div class="ar"><div class="al">21-30 days</div><div class="bh" style="width:50px;background:#f97316"></div><span>6</span></div>
+      <div class="ar"><div class="al" style="color:#ef4444;font-weight:600">31-45 days</div><div class="bh" style="width:25px;background:#ef4444"></div><span style="color:#ef4444;font-weight:600">3</span></div>
+      <div class="ar"><div class="al" style="color:#7c3aed;font-weight:600">45+ days</div><div class="bh" style="width:12px;background:#7c3aed"></div><span style="color:#7c3aed;font-weight:600">1</span></div>
+    </div>
+    <div style="margin-top:6px;font-size:10px;color:#ef4444;font-weight:500">4 cases overdue (&gt;30 days) — needs escalation</div>
+  </div>
+
+  <!-- 4. Monthly Trend -->
+  <div class="cb">
+    <div class="t">Monthly Trend — Are we improving?</div>
+    <div class="s">Accepted vs Pending cases (last 6 months)</div>
+    <div class="lg"><span class="lg-g">Accepted</span><span class="lg-a">Pending</span></div>
+    <div class="bars">
+      <div class="bg"><div class="bp"><div class="b gn" style="height:85px"></div><div class="b am" style="height:28px"></div></div><div class="bl-l">Nov</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:95px"></div><div class="b am" style="height:25px"></div></div><div class="bl-l">Dec</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:100px"></div><div class="b am" style="height:22px"></div></div><div class="bl-l">Jan</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:90px"></div><div class="b am" style="height:18px"></div></div><div class="bl-l">Feb</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:110px"></div><div class="b am" style="height:16px"></div></div><div class="bl-l">Mar</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:105px"></div><div class="b am" style="height:14px"></div></div><div class="bl-l">Apr</div></div>
+    </div>
+    <div style="margin-top:8px;font-size:10px;color:#16a34a;font-weight:500">Pending trending down — good progress</div>
+  </div>
+</div>
+
+<div class="g2">
+  <!-- 5. Today's Snapshot -->
+  <div class="cb">
+    <div class="t">Today — What needs action now?</div>
+    <div class="s">Cases submitted today by branch</div>
+    <div class="lg"><span class="lg-g">Accepted</span><span class="lg-a">Still Pending</span></div>
+    <div class="bars">
+      <div class="bg"><div class="bp"><div class="b gn" style="height:60px"></div><div class="b am" style="height:8px"></div></div><div class="bl-l">231</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:45px"></div><div class="b am" style="height:5px"></div></div><div class="bl-l">232</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:30px"></div><div class="b am" style="height:4px"></div></div><div class="bl-l">233</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:25px"></div><div class="b am" style="height:3px"></div></div><div class="bl-l">234</div></div>
+      <div class="bg"><div class="bp"><div class="b gn" style="height:15px"></div><div class="b am" style="height:10px"></div></div><div class="bl-l" style="color:#ef4444;font-weight:600">235</div></div>
+    </div>
+    <div style="margin-top:8px;font-size:10px;color:#f59e0b;font-weight:500">Branch 235: 40% still pending today — follow up</div>
+  </div>
+
+  <!-- 6. SLA Compliance -->
+  <div class="cb">
+    <div class="t">SLA Compliance — Are we within targets?</div>
+    <div class="s">% cases processed within 30 days</div>
+    <div style="display:flex;justify-content:center;gap:40px;margin-top:20px">
+      <div style="text-align:center">
+        <div class="gauge" style="background:conic-gradient(#16a34a 0% 92%,#e2e8f0 92% 100%);width:100px;height:100px"><div class="inner" style="background:#fff;width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px">92%</div></div>
+        <div style="font-size:10px;color:#94a3b8;margin-top:6px">THIS MONTH</div>
+      </div>
+      <div style="text-align:center">
+        <div class="gauge" style="background:conic-gradient(#f59e0b 0% 85%,#e2e8f0 85% 100%);width:100px;height:100px"><div class="inner" style="background:#fff;width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px">85%</div></div>
+        <div style="font-size:10px;color:#94a3b8;margin-top:6px">LAST MONTH</div>
+      </div>
+      <div style="text-align:center">
+        <div class="gauge" style="background:conic-gradient(#3b82f6 0% 88%,#e2e8f0 88% 100%);width:100px;height:100px"><div class="inner" style="background:#fff;width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px">88%</div></div>
+        <div style="font-size:10px;color:#94a3b8;margin-top:6px">YTD AVERAGE</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:10px;color:#16a34a;font-weight:500;text-align:center">SLA target: 85% — division is above target</div>
+  </div>
+</div>
+
+<!-- 7. Financial Year -->
+<div class="sec">Financial Year — Are we doing better than last year?</div>
+<div class="g2">
+  <div class="cb">
+    <div class="t">Previous FY (2024-25)</div>
+    <div class="s">Monthly accepted vs pending</div>
+    <div class="lg"><span class="lg-g">Accepted</span><span class="lg-a">Pending</span></div>
+    <div class="bars" style="height:120px">
+      <div class="bg"><div class="bp" style="height:100px"><div class="b gn" style="height:70px"></div><div class="b am" style="height:22px"></div></div><div class="bl-l">Apr</div></div>
+      <div class="bg"><div class="bp" style="height:100px"><div class="b gn" style="height:75px"></div><div class="b am" style="height:20px"></div></div><div class="bl-l">Jul</div></div>
+      <div class="bg"><div class="bp" style="height:100px"><div class="b gn" style="height:80px"></div><div class="b am" style="height:18px"></div></div><div class="bl-l">Oct</div></div>
+      <div class="bg"><div class="bp" style="height:100px"><div class="b gn" style="height:85px"></div><div class="b am" style="height:16px"></div></div><div class="bl-l">Jan</div></div>
+      <div class="bg"><div class="bp" style="height:100px"><div class="b gn" style="height:82px"></div><div class="b am" style="height:15px"></div></div><div class="bl-l">Mar</div></div>
+    </div>
+  </div>
+  <div class="cb">
+    <div class="t">Current FY (2025-26)</div>
+    <div class="s">Monthly accepted vs pending</div>
+    <div class="lg"><span class="lg-g">Accepted</span><span class="lg-a">Pending</span></div>
+    <div class="bars" style="height:120px">
+      <div class="bg"><div class="bp" style="height:100px"><div class="b gn" style="height:78px"></div><div class="b am" style="height:18px"></div></div><div class="bl-l">Apr</div></div>
+      <div class="bg"><div class="bp" style="height:100px"><div class="b gn" style="height:85px"></div><div class="b am" style="height:16px"></div></div><div class="bl-l">Jul</div></div>
+      <div class="bg"><div class="bp" style="height:100px"><div class="b gn" style="height:92px"></div><div class="b am" style="height:14px"></div></div><div class="bl-l">Oct</div></div>
+      <div class="bg"><div class="bp" style="height:100px"><div class="b gn" style="height:98px"></div><div class="b am" style="height:12px"></div></div><div class="bl-l">Jan</div></div>
+      <div class="bg"><div class="bp" style="height:100px"><div class="b gn" style="height:95px"></div><div class="b am" style="height:10px"></div></div><div class="bl-l">Apr</div></div>
+    </div>
+  </div>
+</div>
+
+<p class="foot">DO Manager Dashboard — "Which branches need my attention today?"</p>
+</body>
+</html>

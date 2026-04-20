@@ -1,0 +1,186 @@
+DO & BO Level Dashboard - Metrics Design
+==========================================
+
+Wireframes: do_dashboard.html, bo_dashboard.html (open in browser)
+
+
+Terminology
+-----------
+  Accepted Case : a case where EVERY document is accepted
+  Pending Case  : a case with at least one document not yet accepted
+  SR            : Service Representative (officer handling revival cases)
+  TAT           : Turn-Around Time (days from submission to action)
+
+
+========================================================================
+DO MANAGER — What they care about
+========================================================================
+
+A DO Manager oversees 5-20 branches. Their daily concerns:
+
+  "Which branches are falling behind?"
+  "Is my division clearing cases fast enough?"
+  "Are we going to miss SLA targets this month?"
+  "Where should I intervene today?"
+
+
+1. At-a-Glance Health
+   ---------------------------------------------------------
+   What       : Division-level totals for the current month
+   Metrics    : Total Cases | Accepted | Pending | Acceptance Rate %
+   Why        : Instant read on division health without drilling down
+   Represent  : 4 headline cards at the top
+
+2. Branch Comparison
+   ---------------------------------------------------------
+   What       : Side-by-side performance of all branches under this DO
+   Metrics    : Per branch — acceptedCases, pendingCases, acceptance%
+   Why        : Spot underperforming branches immediately.
+                A branch at 60% acceptance needs attention,
+                one at 95% does not.
+   Represent  : Sorted table or card grid, color-coded by acceptance%
+                Red < 70%, Amber 70-85%, Green > 85%
+
+3. Pending Aging — Where is the backlog stuck?
+   ---------------------------------------------------------
+   What       : Age distribution of pending cases across the division
+   Metrics    : Count of pending cases in each age band
+                (0-5d, 6-10d, 11-20d, 21-30d, 31-45d, 45+d)
+   Why        : Old pending cases (30+ days) signal process failures,
+                not just volume. DO Manager needs to escalate these.
+   Represent  : Horizontal bar chart, longest bars = most urgent
+
+4. Monthly Trend — Are we improving?
+   ---------------------------------------------------------
+   What       : Last 6 months acceptance vs pending trend
+   Metrics    : acceptedCases, pendingCases per month
+   Why        : Shows if the division is trending better or worse.
+                A rising pending line = growing backlog problem.
+   Represent  : Line chart or grouped bar chart over 6 months
+
+5. Today's Snapshot — What needs action now?
+   ---------------------------------------------------------
+   What       : Cases submitted today and their current status
+   Metrics    : Per branch — today's new cases, accepted, still pending
+   Why        : Same-day visibility. If cases submitted in the morning
+                are still pending by evening, something is stuck.
+   Represent  : Bar chart by branch for today
+
+6. SLA Compliance
+   ---------------------------------------------------------
+   What       : % of cases processed within target TAT (e.g., 30 days)
+   Metrics    : Cases within SLA / Total processed cases
+   Why        : Management tracks SLA. DO Manager needs to know if
+                their division will meet the target.
+   Represent  : Single gauge or % card, with monthly trend line
+
+7. Financial Year View
+   ---------------------------------------------------------
+   What       : YTD performance for current FY, compared to prev FY
+   Metrics    : Cumulative accepted/pending cases, prev FY vs current FY
+   Why        : Annual targets. "Are we doing better than last year?"
+   Represent  : Two grouped bar charts side by side (prev FY / current FY)
+
+
+========================================================================
+BO MANAGER — What they care about
+========================================================================
+
+A BO Manager runs a single branch with 3-5 SRs. Their daily concerns:
+
+  "What is pending on my desk right now?"
+  "Which SR is not closing cases?"
+  "How long are cases sitting unprocessed?"
+  "Am I meeting this month's targets?"
+
+
+1. My Branch Health
+   ---------------------------------------------------------
+   What       : Branch-level totals for the current month
+   Metrics    : Total Cases | Accepted | Pending | Acceptance Rate %
+   Why        : The first thing a BO Manager checks every morning.
+   Represent  : 4 headline cards
+
+2. What's Pending Right Now?
+   ---------------------------------------------------------
+   What       : List/count of currently pending cases with age
+   Metrics    : Pending cases count, broken down by age bands
+   Why        : Drives daily action. Cases in 0-5 day band are normal
+                workflow. Cases in 30+ day band are problems.
+   Represent  : Horizontal bar chart (aging bands) +
+                optionally a drillable list of old pending cases
+
+3. SR Performance — Who is delivering?
+   ---------------------------------------------------------
+   What       : Per-SR breakdown of cases handled
+   Metrics    : Per SR — acceptedCases, pendingCases, avgTAT,
+                cases processed today
+   Why        : BO Manager assigns work and reviews SR output daily.
+                An SR with high pending and slow TAT needs coaching.
+   Represent  : Table sorted by pending desc or acceptance% asc
+                Columns: SR | Accepted | Pending | Total | Avg TAT | Today
+
+4. Processing Speed — How fast are we clearing?
+   ---------------------------------------------------------
+   What       : TAT distribution for processed cases
+   Metrics    : Cases processed in 0-5d, 6-10d, 11-20d, 21-30d, 31-45d, 45+d
+   Why        : Even if acceptance rate is high, slow processing is a
+                problem. A branch clearing everything in 40 days is
+                worse than one clearing in 10 days.
+   Represent  : Stacked bar chart (monthly trend of TAT bands)
+
+5. Monthly Trend — Am I improving?
+   ---------------------------------------------------------
+   What       : Last 6 months accepted vs pending
+   Metrics    : acceptedCases, pendingCases per month
+   Why        : Same as DO level but branch-specific. Shows if the
+                branch is improving or deteriorating.
+   Represent  : Line or grouped bar chart
+
+6. Today's Work
+   ---------------------------------------------------------
+   What       : Cases submitted today, accepted today, still pending
+   Metrics    : todaySubmitted, todayAccepted, todayPending
+   Why        : End-of-day accountability. "Did we clear today's intake?"
+   Represent  : Donut or simple 3-card row
+
+7. Financial Year Progress
+   ---------------------------------------------------------
+   What       : YTD vs prev FY at the same point
+   Metrics    : Cumulative accepted/pending, prev FY vs current FY
+   Why        : Branch targets are annual. "Am I on track?"
+   Represent  : Comparative bar chart
+
+
+========================================================================
+METRICS SUMMARY
+========================================================================
+
+                              DO Level    BO Level
+                              --------    --------
+Division/Branch Health Cards     Y           Y
+Branch Comparison Table          Y           -
+Pending Aging Analysis           Y           Y
+SR Performance Table             -           Y
+TAT / Processing Speed           -           Y
+Monthly Trend (6 months)         Y           Y
+Today's Snapshot                 Y           Y
+SLA Compliance %                 Y           Y
+Previous FY                      Y           Y
+Current FY                       Y           Y
+FY Comparison                    Y           Y
+
+
+========================================================================
+DATA NOT YET AVAILABLE
+========================================================================
+
+The following metrics require NEW case-level aggregation from all_cases:
+  - acceptedCases / pendingCases (all existing aggregations are document-level)
+  - Per-SR case counts (existing perApprover is document-level)
+  - Case-level SLA compliance (requires case-level TAT calculation)
+
+The following metrics can use EXISTING APIs:
+  - Pending document aging (agingSummary API)
+  - Document-level TAT distribution (tatPerformance API)
+  - Document-level monthly/weekly/daily trends (document summary API)
