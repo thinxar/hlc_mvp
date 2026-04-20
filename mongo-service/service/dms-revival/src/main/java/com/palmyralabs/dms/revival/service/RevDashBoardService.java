@@ -20,12 +20,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.palmyralabs.dms.revival.model.ApproverBreakdownModel;
 import com.palmyralabs.dms.revival.model.DailyDocumentSummaryModel;
+import com.palmyralabs.dms.revival.model.HeadlineSummaryModel;
 import com.palmyralabs.dms.revival.model.MonthlyDocumentSummaryModel;
+import com.palmyralabs.dms.revival.model.PerApproverSummary;
 import com.palmyralabs.dms.revival.model.TodayApprovalSummaryModel;
 import com.palmyralabs.dms.revival.model.WeeklyDocumentSummaryModel;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Service
 @RequiredArgsConstructor
@@ -66,6 +71,93 @@ public class RevDashBoardService {
 		assertMaxInterval(fromDate, toDate, DAILY_MAX_INTERVAL_MONTHS, "daily");
 		return aggregateActiveCasesSummary(DAILY_COLLECTION, "calDate",
 				doCode, branchCode, fromDate, toDate, DailyDocumentSummaryModel.class);
+	}
+
+	public ApproverBreakdownModel getApproverBreakdown(String grain,
+			LocalDate fromDate, LocalDate toDate, String doCode, String branchCode) {
+		String g = grain == null || grain.isBlank() ? "monthly" : grain.toLowerCase();
+
+		String collection;
+		String timeField;
+		switch (g) {
+			case "daily":
+				collection = DAILY_COLLECTION;
+				timeField = "calDate";
+				break;
+			case "weekly":
+				collection = WEEKLY_COLLECTION;
+				timeField = "calWeek";
+				break;
+			case "monthly":
+				collection = MONTHLY_COLLECTION;
+				timeField = "calMonth";
+				break;
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+						"grain must be one of: daily, weekly, monthly");
+		}
+
+		if (fromDate.isAfter(toDate)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fromDate after toDate");
+		}
+
+		ApproverBreakdownModel out = new ApproverBreakdownModel();
+		out.setGrain(g);
+		out.setFromBucket(fromDate);
+		out.setToBucket(toDate);
+		out.setProcessedDocuments(aggregateRangedProcessed(collection, timeField,
+				fromDate, toDate, doCode, branchCode));
+		out.setPerApprover(aggregateRangedApprovers(collection, timeField,
+				fromDate, toDate, doCode, branchCode));
+		return out;
+	}
+
+	private Long aggregateRangedProcessed(String collection, String timeField,
+			LocalDate from, LocalDate to, String doCode, String branchCode) {
+		MatchOperation match = Aggregation.match(
+				bucketMatch(timeField, doCode, branchCode, from, to));
+
+		GroupOperation group = Aggregation.group()
+				.sum("processedDocuments").as("processedDocuments");
+
+		ProjectionOperation project = Aggregation.project("processedDocuments").andExclude("_id");
+
+		Aggregation agg = Aggregation.newAggregation(match, group, project);
+		List<ProcessedSumRow> rows = mongoTemplate
+				.aggregate(agg, collection, ProcessedSumRow.class)
+				.getMappedResults();
+		if (rows.isEmpty()) return 0L;
+		Long v = rows.get(0).getProcessedDocuments();
+		return v != null ? v : 0L;
+	}
+
+	private List<PerApproverSummary> aggregateRangedApprovers(String collection, String timeField,
+			LocalDate from, LocalDate to, String doCode, String branchCode) {
+		MatchOperation match = Aggregation.match(
+				bucketMatch(timeField, doCode, branchCode, from, to));
+		UnwindOperation unwind = Aggregation.unwind("perApprover");
+
+		GroupOperation group = Aggregation.group("perApprover.approvedBy")
+				.sum("perApprover.accepted").as("approvedCount")
+				.sum("perApprover.rejected").as("rejectedCount");
+
+		ProjectionOperation project = Aggregation
+				.project("approvedCount", "rejectedCount")
+				.and("_id").as("approvedBy")
+				.andExclude("_id");
+
+		SortOperation sort = Aggregation.sort(Sort.Direction.ASC, "approvedBy");
+
+		Aggregation agg = Aggregation.newAggregation(match, unwind, group, project, sort);
+		return mongoTemplate
+				.aggregate(agg, collection, PerApproverSummary.class)
+				.getMappedResults();
+	}
+
+	@Getter
+	@Setter
+	private static class ProcessedSumRow {
+		private Long processedDocuments;
 	}
 
 	public List<TodayApprovalSummaryModel> getTodayApprovalSummary(LocalDate date,
@@ -226,14 +318,16 @@ public class RevDashBoardService {
 		MatchOperation match = Aggregation.match(bucketMatch(timeField, doCode, branchCode, from, to));
 
 		GroupOperation group = Aggregation.group(timeField)
-				.sum(AccumulatorOperators.Sum.sumOf("perApprover.accepted")).as("approvedDocuments")
 				.sum("pendingDocuments").as("pendingDocuments")
+				.sum("submittedDocuments").as("submittedDocuments")
+				.sum("processedDocuments").as("processedDocuments")
+				.sum(AccumulatorOperators.Sum.sumOf("perApprover.accepted")).as("approvedDocuments")
 				.sum(AccumulatorOperators.Sum.sumOf("perApprover.rejected")).as("rejectedDocuments");
 
 		ProjectionOperation project = Aggregation
-				.project("approvedDocuments", "pendingDocuments", "rejectedDocuments")
+				.project("pendingDocuments", "submittedDocuments", "processedDocuments",
+						"approvedDocuments", "rejectedDocuments")
 				.and("_id").as(timeField)
-				.andExpression("approvedDocuments + rejectedDocuments").as("processedDocuments")
 				.andExclude("_id");
 
 		SortOperation sort = Aggregation.sort(Sort.Direction.ASC, timeField);
@@ -268,4 +362,91 @@ public class RevDashBoardService {
 							label, maxMonths, from, to));
 		}
 	}
+	
+	public HeadlineSummaryModel getHeadlineSummary(LocalDate fromMonth, LocalDate toMonth,
+			LocalDate date, String doCode, String branchCode) {
+		LocalDate fromM = fromMonth != null ? fromMonth.withDayOfMonth(1) : null;
+		LocalDate toM = toMonth != null ? toMonth.withDayOfMonth(1) : null;
+		LocalDate nowFirst = LocalDate.now().withDayOfMonth(1);
+		if (fromM == null && toM == null) {
+			fromM = nowFirst.minusMonths(5);
+			toM = nowFirst;
+		} else if (fromM == null) {
+			fromM = toM.minusMonths(5);
+		} else if (toM == null) {
+			toM = nowFirst;
+		}
+		if (fromM.isAfter(toM)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fromMonth after toMonth");
+		}
+
+		LocalDate queryDate = date != null ? date : LocalDate.now();
+
+		HeadlineSummaryModel out = aggregateHeadlineMonthly(fromM, toM, doCode, branchCode);
+		out.setTodayProcessed(aggregateHeadlineTodayProcessed(queryDate, doCode, branchCode));
+		return out;
+	}
+
+	private HeadlineSummaryModel aggregateHeadlineMonthly(LocalDate from, LocalDate to,
+			String doCode, String branchCode) {
+		MatchOperation match = Aggregation.match(
+				bucketMatch("calMonth", doCode, branchCode, from, to));
+
+		GroupOperation group = Aggregation.group()
+				.sum("pendingDocuments").as("pendingDocuments")
+				.sum("submittedDocuments").as("submittedDocuments")
+				.sum("processedDocuments").as("processedDocuments")
+				.sum(AccumulatorOperators.Sum.sumOf("perApprover.accepted")).as("approvedDocuments")
+				.sum(AccumulatorOperators.Sum.sumOf("perApprover.rejected")).as("rejectedDocuments");
+
+		ProjectionOperation project = Aggregation
+				.project("pendingDocuments", "submittedDocuments", "processedDocuments",
+						"approvedDocuments", "rejectedDocuments")
+				.andExpression("pendingDocuments + submittedDocuments + processedDocuments")
+				.as("totalDocuments")
+				.andExclude("_id");
+
+		Aggregation agg = Aggregation.newAggregation(match, group, project);
+		List<HeadlineSummaryModel> results = mongoTemplate
+				.aggregate(agg, MONTHLY_COLLECTION, HeadlineSummaryModel.class)
+				.getMappedResults();
+
+		HeadlineSummaryModel out = results.isEmpty() ? new HeadlineSummaryModel() : results.get(0);
+		if (out.getTotalDocuments() == null) out.setTotalDocuments(0L);
+		if (out.getPendingDocuments() == null) out.setPendingDocuments(0L);
+		if (out.getSubmittedDocuments() == null) out.setSubmittedDocuments(0L);
+		if (out.getProcessedDocuments() == null) out.setProcessedDocuments(0L);
+		if (out.getApprovedDocuments() == null) out.setApprovedDocuments(0L);
+		if (out.getRejectedDocuments() == null) out.setRejectedDocuments(0L);
+		return out;
+	}
+
+	private HeadlineSummaryModel.TodayProcessed aggregateHeadlineTodayProcessed(LocalDate date,
+			String doCode, String branchCode) {
+		MatchOperation match = Aggregation.match(
+				bucketMatch("calDate", doCode, branchCode, date, date));
+
+		GroupOperation group = Aggregation.group()
+				.sum("processedDocuments").as("totalProcessed")
+				.sum(AccumulatorOperators.Sum.sumOf("perApprover.accepted")).as("approved")
+				.sum(AccumulatorOperators.Sum.sumOf("perApprover.rejected")).as("rejected");
+
+		ProjectionOperation project = Aggregation
+				.project("totalProcessed", "approved", "rejected")
+				.andExclude("_id");
+
+		Aggregation agg = Aggregation.newAggregation(match, group, project);
+		List<HeadlineSummaryModel.TodayProcessed> results = mongoTemplate
+				.aggregate(agg, DAILY_COLLECTION, HeadlineSummaryModel.TodayProcessed.class)
+				.getMappedResults();
+
+		HeadlineSummaryModel.TodayProcessed out = results.isEmpty()
+				? new HeadlineSummaryModel.TodayProcessed()
+				: results.get(0);
+		if (out.getTotalProcessed() == null) out.setTotalProcessed(0L);
+		if (out.getApproved() == null) out.setApproved(0L);
+		if (out.getRejected() == null) out.setRejected(0L);
+		return out;
+	}
+
 }

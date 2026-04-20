@@ -25,12 +25,12 @@ public class BranchService {
 	private final MongoTemplate mongoTemplate;
 
 	public PaginatedResponse<BranchModel> getBranchesByDivision(int limit, int offset, boolean includeTotal,
-			String divisionName, String branchName) {
+			String doCode, String branchName) {
 		int page = offset / limit;
 		Pageable pageable = PageRequest.of(page, limit);
 		Query query = new Query();
-		if (divisionName != null && !divisionName.isBlank()) {
-			query.addCriteria(Criteria.where("divisionName").is(divisionName));
+		if (doCode != null && !doCode.isBlank()) {
+			query.addCriteria(Criteria.where("doCode").is(doCode));
 		}
 		if (branchName != null && !branchName.isBlank()) {
 			String regex = branchName.replace("*", ".*");
@@ -50,13 +50,13 @@ public class BranchService {
 	}
 
 	public PaginatedResponse<DivisionModel> getDivisionByBranch(int limit, int offset, boolean includeTotal,
-			String branchName, String divisionName) {
+			String branchCode, String divisionName) {
 
 		int page = offset / limit;
 		Pageable pageable = PageRequest.of(page, limit);
-		if (branchName != null && !branchName.isBlank()) {
+		if (branchCode != null && !branchCode.isBlank()) {
 			Query branchQuery = new Query();
-			branchQuery.addCriteria(Criteria.where("branchName").regex(branchName, "i"));
+			branchQuery.addCriteria(Criteria.where("branchCode").regex(branchCode, "i"));
 			if (divisionName != null && !divisionName.isBlank()) {
 				branchQuery.addCriteria(Criteria.where("divisionName").regex(divisionName, "i"));
 			}
@@ -99,6 +99,7 @@ public class BranchService {
 		BranchModel model = new BranchModel();
 		model.setId(entity.getId());
 		model.setBranchName(entity.getBranchName());
+		model.setBranchCode(entity.getBranchCode());
 		return model;
 	}
 
@@ -106,7 +107,7 @@ public class BranchService {
 		DivisionModel model = new DivisionModel();
 		model.setId(entity.getId());
 		model.setDivisionName(entity.getDivisionName());
-
+		model.setDoCode(entity.getDoCode());
 		return model;
 	}
 }

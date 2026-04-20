@@ -10,8 +10,9 @@ import lombok.Setter;
 public class DailyDocumentSummaryModel {
 
 	private LocalDate calDate;
-	private Long approvedDocuments;
-	private Long pendingDocuments;
-	private Long rejectedDocuments;
 	private Long processedDocuments;
+	private Long approvedDocuments;
+	private Long rejectedDocuments;
+	private Long pendingDocuments;
+	private Long submittedDocuments;
 }

@@ -25,9 +25,9 @@ public class RevBranchController extends AbstractController {
 			@RequestParam(name = "_limit", defaultValue = "15") int limit,
 			@RequestParam(name = "_offset", defaultValue = "-1") int offset,
 			@RequestParam(name = "_total", defaultValue = "false") boolean includeTotal,
-			@RequestParam(name = "divisionName", required = false) String divisionName,
+			@RequestParam(name = "doCode", required = false) String doCode,
 			@RequestParam(name = "branchName", required = false) String branchName) {
-		return branchService.getBranchesByDivision(limit,offset,includeTotal,divisionName,branchName);
+		return branchService.getBranchesByDivision(limit,offset,includeTotal,doCode,branchName);
 	}
 
 	@GetMapping("/division")
@@ -35,7 +35,7 @@ public class RevBranchController extends AbstractController {
 			@RequestParam(name = "_offset", defaultValue = "-1") int offset,
 			@RequestParam(name = "_total", defaultValue = "false") boolean includeTotal,
 			@RequestParam(name = "divisionName", required = false) String divisionName,
-			@RequestParam(name = "branchName", required = false) String branchName) {
-		return branchService.getDivisionByBranch(limit,offset,includeTotal,branchName,divisionName);
+			@RequestParam(name = "branchCode", required = false) String branchCode) {
+		return branchService.getDivisionByBranch(limit,offset,includeTotal,branchCode,divisionName);
 	}
 }

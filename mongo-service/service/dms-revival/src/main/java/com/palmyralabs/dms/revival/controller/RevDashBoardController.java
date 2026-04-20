@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.palmyralabs.dms.revival.model.ApproverBreakdownModel;
 import com.palmyralabs.dms.revival.model.DailyDocumentSummaryModel;
+import com.palmyralabs.dms.revival.model.HeadlineSummaryModel;
 import com.palmyralabs.dms.revival.model.MonthlyDocumentSummaryModel;
 import com.palmyralabs.dms.revival.model.TodayApprovalSummaryModel;
 import com.palmyralabs.dms.revival.model.WeeklyDocumentSummaryModel;
@@ -39,7 +41,7 @@ public class RevDashBoardController extends AbstractController {
 		return apiResponse(dashBoardService.getWeeklyDocumentSummary(doCode, branchCode, fromWeek, toWeek));
 	}
 
-	@GetMapping(path = SUMMARY_PATH, params = "window=monthly")
+	@GetMapping(path = SUMMARY_PATH)
 	public PalmyraResponse<List<MonthlyDocumentSummaryModel>> getMonthlyDocumentSummary(
 			@RequestParam(name = "doCode", required = false) String doCode,
 			@RequestParam(name = "branchCode", required = false) String branchCode,
@@ -69,6 +71,33 @@ public class RevDashBoardController extends AbstractController {
 			@RequestParam(name = "division", required = false) String division,
 			@RequestParam(name = "branch", required = false) String branch) {
 		return apiResponse(dashBoardService.getTodayApprovalSummary(date, zone, division, branch));
+	}
+	
+	@GetMapping(path = SUMMARY_PATH, params = "window=headline")
+	public PalmyraResponse<HeadlineSummaryModel> getHeadlineSummary(
+			@RequestParam(name = "fromMonth", required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromMonth,
+			@RequestParam(name = "toMonth", required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toMonth,
+			@RequestParam(name = "date", required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+			@RequestParam(name = "doCode", required = false) String doCode,
+			@RequestParam(name = "branchCode", required = false) String branchCode) {
+		return apiResponse(dashBoardService.getHeadlineSummary(
+				fromMonth, toMonth, date, doCode, branchCode));
+	}
+
+	@GetMapping(path = SUMMARY_PATH, params = "window=approverBreakdown")
+	public PalmyraResponse<ApproverBreakdownModel> getApproverBreakdown(
+			@RequestParam(name = "grain", required = false) String grain,
+			@RequestParam(name = "fromDate", required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+			@RequestParam(name = "toDate", required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+			@RequestParam(name = "doCode", required = false) String doCode,
+			@RequestParam(name = "branchCode", required = false) String branchCode) {
+		return apiResponse(dashBoardService.getApproverBreakdown(
+				grain, fromDate, toDate, doCode, branchCode));
 	}
 
 }

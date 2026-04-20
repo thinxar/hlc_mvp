@@ -1,9 +1,10 @@
 # RevDashBoardController — Specification
 
 Dashboard summary endpoints for the **Revival** feature. Single path,
-discriminated by a `window` query param into four aggregations
-(weekly active-cases, monthly active-cases, daily active-cases, and
-today's approval roll-up with hierarchical drill-down).
+discriminated by a `window` query param into six aggregations
+(weekly active-cases, monthly active-cases, daily active-cases,
+today's approval roll-up with hierarchical drill-down, a six-month
+headline scorecard, and a single-bucket approver breakdown).
 
 **Module**: `mongo-service/service/dms-revival`
 **Controller**: `com.palmyralabs.dms.revival.controller.RevDashBoardController`
@@ -20,22 +21,24 @@ Class-level mapping:
 ```
 
 Combined with the Jetty servlet context (`/api`) and the default prefix
-(`palmyra`), all four endpoints live under
+(`palmyra`), all six endpoints live under
 `/api/palmyra/rev/overAll/document/summary`. The frontend constant
 `ServiceEndpoint.customView.rev.cart.summaryView` holds `/rev/overAll/document/summary`.
 
-Four `@GetMapping` methods share the same path and are selected by
+Six `@GetMapping` methods share the same path and are selected by
 Spring's `params` discriminator on `window`:
 
-| Method                             | Discriminator                     |
-| ---------------------------------- | --------------------------------- |
-| `getWeeklyDocumentSummary`         | `params = "window=weekly"`        |
-| `getMonthlyDocumentSummary`        | `params = "window=monthly"`       |
-| `getDailyDocumentSummary`          | `params = "window=daily"`         |
-| `getTodayApprovalSummary`          | `params = "window=todayApproval"` |
+| Method                             | Discriminator                            |
+| ---------------------------------- | ---------------------------------------- |
+| `getWeeklyDocumentSummary`         | `params = "window=weekly"`               |
+| `getMonthlyDocumentSummary`        | `params = "window=monthly"`              |
+| `getDailyDocumentSummary`          | `params = "window=daily"`                |
+| `getTodayApprovalSummary`          | `params = "window=todayApproval"`        |
+| `getHeadlineSummary`               | `params = "window=headline"`             |
+| `getApproverBreakdown`             | `params = "window=approverBreakdown"`    |
 
 A request with no `window` param (or an unrecognized value) matches
-none of the four and returns 404.
+none of the six and returns 404.
 
 ---
 
@@ -60,16 +63,27 @@ type and query params differ.
 ```json
 {
   "calWeek":            "2026-04-19",
+  "processedDocuments": 118,
   "approvedDocuments":  112,
+  "rejectedDocuments":   6,
   "pendingDocuments":   47,
-  "rejectedDocuments":  6,
-  "processedDocuments": 118
+  "submittedDocuments": 128
 }
 ```
 
 * `calWeek` is the last day of each 7-day rolling window.
-* `processedDocuments = approvedDocuments + rejectedDocuments`.
+* `processedDocuments = approvedDocuments + rejectedDocuments` by the
+  source invariant — served from the stored scalar, not recomputed.
+* `pendingDocuments` / `submittedDocuments` / `processedDocuments` are
+  summed directly from the branch-level scalars across every branch
+  that falls in the same `calWeek` within the filter scope.
+* `approvedDocuments` / `rejectedDocuments` are the scope-wide totals
+  rolled up from each branch's `perApprover[].accepted` / `.rejected`
+  (nested `$sum` trick — see §6.1).
 * List sorted ascending by `calWeek`.
+* **Per-approver breakdown is not included here.** To retrieve the
+  per-approver split for a specific bucket, call the `approverBreakdown`
+  endpoint (§2.6) with `grain=weekly&date=<any day in the week>`.
 
 ### 2.2 Monthly active-cases summary
 
@@ -87,19 +101,30 @@ type and query params differ.
 ```json
 {
   "calMonth":           "2026-04-01",
+  "processedDocuments": 536,
   "approvedDocuments":  512,
+  "rejectedDocuments":   24,
   "pendingDocuments":   183,
-  "rejectedDocuments":  24,
-  "processedDocuments": 536
+  "submittedDocuments": 594
 }
 ```
 
 * `calMonth` is the first day of each calendar month
   (`YYYY-MM-01`).
-* `processedDocuments = approvedDocuments + rejectedDocuments`.
+* `processedDocuments = approvedDocuments + rejectedDocuments` by the
+  source invariant — served from the stored scalar, not recomputed.
+* `pendingDocuments` / `submittedDocuments` / `processedDocuments` are
+  summed directly from the branch-level scalars across every branch
+  that falls in the same `calMonth` within the filter scope.
+* `approvedDocuments` / `rejectedDocuments` are rolled up from each
+  branch's `perApprover[].accepted` / `.rejected` via the nested
+  `$sum` trick (§6.1).
 * List sorted ascending by `calMonth`.
 * No max-interval cap — the monthly collection is small
   (~48k rows) so unbounded queries are permitted.
+* **Per-approver breakdown is not included here.** Call
+  `approverBreakdown` (§2.6) with `grain=monthly&date=<any day in the
+  month>` to retrieve the per-approver split for a specific month.
 
 ### 2.3 Daily active-cases summary
 
@@ -112,8 +137,29 @@ type and query params differ.
 | `fromDate`   | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; no normalization (day-granular)   |
 | `toDate`     | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; inclusive                         |
 
-Response element — `DailyDocumentSummaryModel` with `calDate`
-(per-day) in place of `calWeek`.
+**Response element** — `DailyDocumentSummaryModel`:
+
+```json
+{
+  "calDate":            "2026-04-17",
+  "processedDocuments": 45,
+  "approvedDocuments":  41,
+  "rejectedDocuments":   4,
+  "pendingDocuments":    2,
+  "submittedDocuments": 41
+}
+```
+
+* `calDate` is the single day the row summarizes.
+* Same roll-up semantics as the weekly / monthly endpoints:
+  `pendingDocuments` / `submittedDocuments` / `processedDocuments`
+  sum the stored scalars across branches in scope on this `calDate`;
+  `approvedDocuments` / `rejectedDocuments` use the nested `$sum`
+  trick against `perApprover[]`.
+* List sorted ascending by `calDate`.
+* **Per-approver breakdown is not included here.** Call
+  `approverBreakdown` (§2.6) with `grain=daily&date=<calDate>` for
+  the per-approver split on a specific day.
 
 ### 2.4 Today's approval summary (hierarchical drill-down)
 
@@ -179,6 +225,169 @@ below that level are ignored if supplied alone, see §3):
 * List is sorted ascending by the active key field (zone name,
   division name, branchCode, approvedBy).
 
+### 2.5 Six-month headline scorecard
+
+`GET /rev/overAll/document/summary?window=headline`
+
+Single-object KPI card: six totals rolled up from the **monthly**
+collection over a (default: trailing-six-months) window, plus a
+nested three-number snapshot of processed work for one specific day
+from the **daily** collection. Intended to back the dashboard header
+tiles.
+
+Sources:
+
+* **Part A** — `active_cases_monthly_branchwise` (same fields as
+  `DailyBranchWiseReportEntity`, time-bucketed by `calMonth` — see §5).
+* **Part B** — `active_cases_branchwise` (daily), one day only.
+
+| Param        | Type              | Required | Drives                 | Notes                                                                                                  |
+| ------------ | ----------------- | -------- | ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| `fromMonth`  | `LocalDate` (ISO) | no       | Part A (monthly)       | `yyyy-MM-dd`; snapped to 1st of month. Defaults to `firstOfMonth(LocalDate.now()).minusMonths(5)`.     |
+| `toMonth`    | `LocalDate` (ISO) | no       | Part A (monthly)       | `yyyy-MM-dd`; snapped to 1st of month, inclusive. Defaults to `firstOfMonth(LocalDate.now())`.         |
+| `date`       | `LocalDate` (ISO) | no       | Part B (today section) | `yyyy-MM-dd`; exact match on `calDate`. Defaults to `LocalDate.now()`.                                 |
+| `doCode`     | string            | no       | **Both pipelines**     | exact match on stored `doCode`.                                                                        |
+| `branchCode` | string            | no       | **Both pipelines**     | exact match on stored `branchCode`.                                                                    |
+
+Param independence:
+
+* `fromMonth` / `toMonth` drive only the six monthly totals.
+* `date` drives only the nested `todayProcessed` block.
+* `doCode` / `branchCode` clamp **both** pipelines so the whole card
+  stays scoped to the same slice of the business.
+* Omit everything for the classic "last 6 months + today, all
+  branches" default. No hierarchy enforcement on the scope params —
+  branchCode alone is a legal filter because it's unique.
+
+One-sided monthly window: if only `fromMonth` is supplied,
+`toMonth` defaults to `firstOfMonth(now)`; if only `toMonth` is
+supplied, `fromMonth = toMonth.minusMonths(5)` so the window stays
+6 months wide but shifts. `fromMonth > toMonth` rejects with 400.
+
+**Response element** — `HeadlineSummaryModel` (**single object, not
+a list**):
+
+```json
+{
+  "totalDocuments":      1234,
+  "pendingDocuments":     230,
+  "submittedDocuments":   450,
+  "processedDocuments":   554,
+  "approvedDocuments":    480,
+  "rejectedDocuments":     74,
+  "todayProcessed": {
+    "totalProcessed":      18,
+    "approved":            15,
+    "rejected":             3
+  }
+}
+```
+
+Field definitions — six-month block:
+
+| Field                | Formula                                                             | Notes                                                                                                                                        |
+| -------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `totalDocuments`     | Σ (`pendingDocuments + submittedDocuments + processedDocuments`)    | Aggregate "work touched" over the window. The three sub-categories overlap semantically (a doc submitted and processed in the same month contributes to both); this field is deliberately a pure sum, not a distinct count. |
+| `pendingDocuments`   | Σ `pendingDocuments`                                                | Pending-**months** metric: each monthly row holds the backlog at month-end, so summing across N months multiplies a long-pending item by N. Document this on the UI tile.                                                      |
+| `submittedDocuments` | Σ `submittedDocuments`                                              | Straight sum of uploads per calMonth.                                                                                                        |
+| `processedDocuments` | Σ `processedDocuments`                                              | Straight sum of actioned per calMonth. Equal to `approvedDocuments + rejectedDocuments` by the per-doc invariant (§6.4 / data-model spec).   |
+| `approvedDocuments`  | Σ (Σ `perApprover.accepted`)                                        | Nested `$sum` — inner sums the approver array on each doc, outer sums across the group.                                                      |
+| `rejectedDocuments`  | Σ (Σ `perApprover.rejected`)                                        | Same nested-sum pattern.                                                                                                                     |
+
+Field definitions — `todayProcessed` block:
+
+| Field            | Source                                                      | Notes                                                                                                            |
+| ---------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `totalProcessed` | Σ `processedDocuments` on `calDate = <date>`                | Scalar sum — no unwind, no approver math needed.                                                                  |
+| `approved`       | Σ (Σ `perApprover.accepted`) on `calDate = <date>`          | Nested sum, same trick as the monthly block.                                                                      |
+| `rejected`       | Σ (Σ `perApprover.rejected`) on `calDate = <date>`          | Nested sum.                                                                                                       |
+
+Guarantees:
+
+* All nine fields are always emitted; if the respective pipeline
+  returns zero rows the service substitutes `0L`, never `null`.
+* `todayProcessed` is always present as a sub-object (never `null`).
+* Field name `todayProcessed` keeps the `today` prefix even when
+  `date` is a past day — treat it as "processed count for the queried
+  day," with today as the default.
+* Default `LocalDate.now()` uses the server's local date (same caveat
+  as §9's "system-zone `LocalDate.now()`").
+
+### 2.6 Approver breakdown over a date range
+
+`GET /rev/overAll/document/summary?window=approverBreakdown`
+
+Returns the `processedDocuments` total and the per-approver split
+aggregated across a **range** of time buckets at the caller-chosen
+grain (daily, weekly, or monthly). The range is inclusive on both
+ends after the grain's snap rule (so e.g. `fromDate=2026-02-15` with
+`grain=monthly` becomes "Feb 2026 onwards"). Carved out of §2.1 /
+§2.2 / §2.3 so those list endpoints stay lean — the per-approver
+breakdown is only fetched on demand when the UI drills in.
+
+| Param        | Type              | Required | Notes                                                                                                            |
+| ------------ | ----------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
+| `grain`      | string            | no       | `daily` \| `weekly` \| `monthly`; defaults to `monthly`. Anything else → 400.                                     |
+| `fromDate`   | `LocalDate` (ISO) | no       | Start of the range (any day — snapped per grain). Defaults to the snapped bucket containing `LocalDate.now()`.    |
+| `toDate`     | `LocalDate` (ISO) | no       | End of the range, inclusive (snapped per grain). Defaults to the snapped bucket containing `LocalDate.now()`.     |
+| `doCode`     | string            | no       | exact match on `doCode`.                                                                                           |
+| `branchCode` | string            | no       | exact match on `branchCode`.                                                                                       |
+
+Range resolution — the service snaps each bound independently to the
+grain's canonical bucket key before matching. Both bounds share one
+snap rule per grain (no directional rounding; the caller is expected
+to pass days that already sit inside the intended buckets):
+
+| `grain`   | Collection                          | Snap rule (applied to both `fromDate` and `toDate`) |
+| --------- | ----------------------------------- | --------------------------------------------------- |
+| `daily`   | `active_cases_branchwise`           | none — `calDate` is day-granular                    |
+| `weekly`  | `active_cases_weekly_branchwise`    | `with(previousOrSame(SUNDAY))`                      |
+| `monthly` | `active_cases_monthly_branchwise`   | `withDayOfMonth(1)`                                 |
+
+If both bounds are omitted, both default to the snapped bucket for
+today; that reproduces the "single current bucket" behaviour the
+endpoint had before the range parameters were introduced. If only one
+bound is supplied, the other defaults to the snapped bucket for
+today. `fromDate > toDate` (after snap) → 400.
+
+**Response element** — `ApproverBreakdownModel` (**single object, not
+a list** — the range is aggregated into one breakdown):
+
+```json
+{
+  "grain":              "monthly",
+  "fromBucket":         "2026-02-01",
+  "toBucket":           "2026-04-01",
+  "processedDocuments": 1650,
+  "perApprover": [
+    { "approvedBy": "57988792", "approvedCount": 648, "rejectedCount": 32 },
+    { "approvedBy": "61230015", "approvedCount": 920, "rejectedCount": 50 }
+  ]
+}
+```
+
+* `grain` echoes the resolved grain (always lowercase) so the caller
+  sees what the service actually used.
+* `fromBucket` / `toBucket` are the snapped bounds actually applied to
+  the `$match`. Lets the client round-trip without re-computing.
+* `processedDocuments` is the scope-wide sum of the stored scalar
+  across every branch-bucket row in `[fromBucket, toBucket]` — no
+  `$unwind` needed.
+* `perApprover` is the per-approver breakdown aggregated across the
+  whole range and scope. One row per distinct `approvedBy`;
+  `approvedCount` = sum of DB `accepted`, `rejectedCount` = sum of DB
+  `rejected` (renamed at the API boundary). Sorted ascending by
+  `approvedBy`.
+* Invariant:
+  `sum(perApprover[].approvedCount) + sum(perApprover[].rejectedCount)
+  == processedDocuments`.
+* Empty range → `processedDocuments = 0` and `perApprover = []`;
+  never `null`.
+* Unlike §2.1 / §2.2 / §2.3, the response is **not** broken down per
+  bucket — if the UI needs per-bucket approver splits, call this
+  endpoint once per bucket or use the ranged scalar endpoints together
+  with bucket-specific approver calls.
+
 ---
 
 ## 3. Validation — error responses (400 Bad Request)
@@ -192,6 +401,9 @@ below that level are ignored if supplied alone, see §3):
 | Monthly window has **no interval cap** — unbounded ranges are allowed                       | *(no 400 response — returns the full series)*                                        |
 | `todayApproval`: `division` supplied without `zone`                                         | `window=todayApproval&division=X` → `division filter requires zone`                  |
 | `todayApproval`: `branch` supplied without `zone` + `division`                              | `window=todayApproval&branch=010A` → `branch filter requires zone and division`      |
+| `headline`: `fromMonth` (after snap to 1st) strictly after `toMonth`                        | `window=headline&fromMonth=2026-04-01&toMonth=2026-02-01` → `fromMonth after toMonth`|
+| `approverBreakdown`: unrecognized `grain`                                                   | `window=approverBreakdown&grain=hourly` → `grain must be one of: daily, weekly, monthly` |
+| `approverBreakdown`: `fromDate` (after grain snap) strictly after `toDate`                  | `window=approverBreakdown&grain=monthly&fromDate=2026-04-01&toDate=2026-02-01` → `fromDate after toDate` |
 
 Interval cap semantics: `to.isAfter(from.plusMonths(N))` rejects.
 A range exactly N months wide is allowed.
@@ -216,9 +428,17 @@ List<DailyDocumentSummaryModel>   getDailyDocumentSummary(
 
 List<TodayApprovalSummaryModel>   getTodayApprovalSummary(
         LocalDate date, String zone, String division, String branch);
+
+HeadlineSummaryModel              getHeadlineSummary(
+        LocalDate fromMonth, LocalDate toMonth, LocalDate date,
+        String doCode, String branchCode);
+
+ApproverBreakdownModel            getApproverBreakdown(
+        String grain, LocalDate fromDate, LocalDate toDate,
+        String doCode, String branchCode);
 ```
 
-All four rely on `MongoTemplate` injection via constructor
+All five rely on `MongoTemplate` injection via constructor
 (`@RequiredArgsConstructor`). `getTodayApprovalSummary` is responsible
 for:
 
@@ -229,6 +449,17 @@ for:
   `zone` or `branch` without `zone`+`division` with
   `ResponseStatusException(HttpStatus.BAD_REQUEST, …)` before building
   the aggregation.
+
+`getHeadlineSummary` is responsible for:
+
+* **Independent normalization** per param (§2.5) — snap `fromMonth` /
+  `toMonth` to first-of-month, default-fill whichever bound is null,
+  default `date` to `LocalDate.now()`.
+* **Range check** — reject `fromMonth > toMonth` with 400.
+* Running **two separate aggregations** (one per collection) and
+  merging the scalar results into one `HeadlineSummaryModel`
+  instance. Zero-fill any null scalar in either pipeline's output so
+  the response never contains a `null` count.
 
 ---
 
@@ -290,21 +521,28 @@ pipelines** — no in-JVM summation. Groups happen server-side.
 ### 6.1 Daily / Weekly / Monthly pipeline (shared, via
 `aggregateActiveCasesSummary(collection, timeField, …)`)
 
+Single aggregation, no `$unwind` — the stored `pendingDocuments` /
+`submittedDocuments` / `processedDocuments` are branch-day scalars
+that can be summed directly, and the approved / rejected totals use
+the nested `$sum` trick against `perApprover[]` without flattening
+the array:
+
 ```
 [
   { $match: { doCode?, branchCode?, <timeField>: { $gte?, $lte? } } },
   { $group: {
       _id: "$<timeField>",
-      approvedDocuments: { $sum: { $sum: "$perApprover.accepted" } },
-      pendingDocuments:  { $sum: "$pendingDocuments" },
-      rejectedDocuments: { $sum: { $sum: "$perApprover.rejected" } }
+      pendingDocuments:   { $sum: "$pendingDocuments" },
+      submittedDocuments: { $sum: "$submittedDocuments" },
+      processedDocuments: { $sum: "$processedDocuments" },
+      approvedDocuments:  { $sum: { $sum: "$perApprover.accepted" } },
+      rejectedDocuments:  { $sum: { $sum: "$perApprover.rejected" } }
   }},
   { $project: {
       _id: 0,
       <timeField>: "$_id",
-      approvedDocuments: 1, pendingDocuments: 1, rejectedDocuments: 1,
-      processedDocuments: { $add: ["$approvedDocuments",
-                                  "$rejectedDocuments"] }
+      pendingDocuments: 1, submittedDocuments: 1, processedDocuments: 1,
+      approvedDocuments: 1, rejectedDocuments: 1
   }},
   { $sort: { <timeField>: 1 } }
 ]
@@ -316,6 +554,12 @@ values; the outer `$sum` accumulator adds those per-doc totals across
 the group. In Spring Data Mongo DSL that's
 `AccumulatorOperators.Sum.sumOf("perApprover.accepted")` inside
 `GroupOperation.sum(AggregationExpression)`.
+
+The per-approver breakdown has deliberately been **lifted out** of
+this pipeline — on a wide range the unwind + regroup would multiply
+the result size by the approver cardinality for no benefit, since the
+main list view never renders the breakdown. Callers that need it fetch
+one bucket at a time via §2.6.
 
 ### 6.2 Filter composition
 
@@ -414,13 +658,152 @@ Notes:
   from the request filter, not from the aggregated document, because
   after grouping on `approvedBy` those ancestor fields are gone.
 
-### 6.4 Bound normalization
+### 6.4 Headline pipelines (six-month totals + one-day processed)
 
-| Window  | Normalization                                     |
-| ------- | ------------------------------------------------- |
-| Weekly  | `with(previousOrSame(SUNDAY))` on both from/to    |
-| Monthly | `with(firstDayOfMonth())` on both from/to         |
-| Daily   | None (stored values are day-granular)             |
+Two independent aggregations stitched together in Java, because the
+sources are different collections. Both pipelines layer the same
+optional scope criteria into their `$match` stage — whichever of
+`doCode` / `branchCode` is non-blank adds an equality clause. Below,
+`<scopeMatch>` is shorthand for that set of clauses (may be empty).
+
+**Part A — six-month totals** (`active_cases_monthly_branchwise`).
+Anchored to `fromMonth` / `toMonth` (both snapped to first-of-month
+and defaulted independently per §2.5); the `date` request param does
+**not** influence this pipeline:
+
+```
+[
+  { $match: {
+      calMonth: { $gte: <fromMonth>, $lte: <toMonth> },
+      <scopeMatch>        // doCode? branchCode?
+  }},
+  { $group: {
+      _id: null,
+      pendingDocuments:   { $sum: "$pendingDocuments" },
+      submittedDocuments: { $sum: "$submittedDocuments" },
+      processedDocuments: { $sum: "$processedDocuments" },
+      approvedDocuments:  { $sum: { $sum: "$perApprover.accepted" } },
+      rejectedDocuments:  { $sum: { $sum: "$perApprover.rejected" } }
+  }},
+  { $project: {
+      _id: 0,
+      pendingDocuments: 1, submittedDocuments: 1, processedDocuments: 1,
+      approvedDocuments: 1, rejectedDocuments: 1,
+      totalDocuments: { $add: [
+          "$pendingDocuments",
+          "$submittedDocuments",
+          "$processedDocuments"
+      ]}
+  }}
+]
+```
+
+No `$unwind` — the nested `$sum` trick (`$sum: { $sum: "$perApprover.accepted" }`)
+lets the outer accumulator add up per-doc approver totals across the
+group.
+
+**Part B — processed on a given day** (`active_cases_branchwise`).
+Clamped to `calDate = <date>`, where `<date>` is the caller's param
+or `LocalDate.now()` when absent. Same `<scopeMatch>` layered on top:
+
+```
+[
+  { $match: {
+      calDate: <date>,
+      <scopeMatch>        // doCode? branchCode?
+  }},
+  { $group: {
+      _id: null,
+      totalProcessed: { $sum: "$processedDocuments" },
+      approved:       { $sum: { $sum: "$perApprover.accepted" } },
+      rejected:       { $sum: { $sum: "$perApprover.rejected" } }
+  }},
+  { $project: { _id: 0,
+      totalProcessed: 1, approved: 1, rejected: 1 } }
+]
+```
+
+Both pipelines return a single document (or zero if the respective
+window is empty — the service substitutes `0L` for every missing
+scalar before assembling the `HeadlineSummaryModel`).
+
+By the per-doc invariant documented in
+`specs/demo_data/data_model/active_cases_branchwise.txt`
+(`SUM(perApprover.accepted + perApprover.rejected) == processedDocuments`),
+Part B's `totalProcessed` should equal `approved + rejected` to the
+integer. Treat a mismatch as a data-quality signal, not a bug in this
+endpoint.
+
+### 6.5 Approver breakdown pipelines (ranged)
+
+Runs against the grain-specific collection (daily / weekly / monthly)
+with `<timeField>` clamped to the snapped `[fromBucket, toBucket]`
+range. Two small aggregations — the scalar-total query is no-unwind,
+the approver query is the only place that unwinds.
+
+**Part A — ranged processed total** (no `$unwind`):
+
+```
+[
+  { $match: {
+      <timeField>: { $gte: <fromBucket>, $lte: <toBucket> },
+      doCode?, branchCode?
+  }},
+  { $group: {
+      _id: null,
+      processedDocuments: { $sum: "$processedDocuments" }
+  }},
+  { $project: { _id: 0, processedDocuments: 1 } }
+]
+```
+
+Single-doc result; service substitutes `0L` when empty.
+
+**Part B — per-approver breakdown over the range** (unwinds
+`perApprover`, groups by `approvedBy`):
+
+```
+[
+  { $match: {
+      <timeField>: { $gte: <fromBucket>, $lte: <toBucket> },
+      doCode?, branchCode?
+  }},
+  { $unwind: { path: "$perApprover", preserveNullAndEmptyArrays: false } },
+  { $group: {
+      _id: "$perApprover.approvedBy",
+      approvedCount: { $sum: "$perApprover.accepted" },
+      rejectedCount: { $sum: "$perApprover.rejected" }
+  }},
+  { $project: {
+      _id: 0,
+      approvedBy: "$_id",
+      approvedCount: 1,
+      rejectedCount: 1
+  }},
+  { $sort: { approvedBy: 1 } }
+]
+```
+
+`preserveNullAndEmptyArrays: false` is fine here — branch-buckets
+with no approver activity contribute nothing to the per-approver
+breakdown and their `processedDocuments` of 0 already doesn't move
+the Part A total.
+
+**Invariant check**: by the per-doc invariant
+(`SUM(perApprover.accepted + perApprover.rejected) == processedDocuments`),
+`sum(perApprover[].approvedCount) + sum(perApprover[].rejectedCount)
+== processedDocuments` over the whole range. A mismatch is a
+data-quality signal, not a bug.
+
+### 6.6 Bound normalization
+
+| Window             | Normalization                                                      |
+| ------------------ | ------------------------------------------------------------------ |
+| Weekly             | `with(previousOrSame(SUNDAY))` on both from/to                     |
+| Monthly            | `with(firstDayOfMonth())` on both from/to                          |
+| Daily              | None (stored values are day-granular)                              |
+| Headline           | `withDayOfMonth(1)` on `fromMonth`/`toMonth`; `date` unchanged     |
+| Approver breakdown | Same rule applied to both `fromDate` and `toDate` — `daily`: as-is; `weekly`: `previousOrSame(SUNDAY)`; `monthly`: `withDayOfMonth(1)` |
 
 Normalization is done in the service, before the interval-cap check
 (when one applies) and before the Criteria is built.
@@ -536,6 +919,79 @@ GET /api/palmyra/rev/overAll/document/summary
 GET /api/palmyra/rev/overAll/document/summary
     ?window=todayApproval&branch=010A
 # -> 400 "branch filter requires zone and division"
+
+# Headline scorecard — all defaults (last 6 months + today, all branches)
+GET /api/palmyra/rev/overAll/document/summary?window=headline
+# -> { "totalDocuments": 1234, "pendingDocuments": 230,
+#      "submittedDocuments": 450, "processedDocuments": 554,
+#      "approvedDocuments": 480, "rejectedDocuments": 74,
+#      "todayProcessed": {
+#          "totalProcessed": 18, "approved": 15, "rejected": 3 } }
+
+# Headline: only the processed-day shifts; 6-month block unchanged
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=headline&date=2026-04-15
+
+# Headline: custom monthly window, today default
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=headline&fromMonth=2025-10-01&toMonth=2026-01-01
+
+# Headline scoped to one branch (applies to both pipelines)
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=headline&branchCode=359
+
+# Headline scoped to one DO office, with a custom window and date
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=headline
+    &doCode=201
+    &fromMonth=2025-11-01&toMonth=2026-04-01
+    &date=2026-04-18
+
+# Rejected: fromMonth after toMonth
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=headline&fromMonth=2026-04-01&toMonth=2026-02-01
+# -> 400 "fromMonth after toMonth"
+
+# Approver breakdown — defaults to current monthly bucket (fromDate/toDate both = firstOfMonth(now))
+GET /api/palmyra/rev/overAll/document/summary?window=approverBreakdown
+# -> { "grain": "monthly", "fromBucket": "2026-04-01", "toBucket": "2026-04-01",
+#      "processedDocuments": 536,
+#      "perApprover": [
+#        { "approvedBy": "57988792", "approvedCount": 210, "rejectedCount": 11 },
+#        { "approvedBy": "61230015", "approvedCount": 302, "rejectedCount": 13 } ] }
+
+# Approver breakdown — quarter-wide monthly range (Feb–Apr 2026)
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverBreakdown&grain=monthly
+    &fromDate=2026-02-01&toDate=2026-04-01
+
+# Approver breakdown — single day (daily grain, fromDate == toDate)
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverBreakdown&grain=daily
+    &fromDate=2026-04-17&toDate=2026-04-17
+
+# Approver breakdown — last 8 weeks (weekly grain), scoped to one branch
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverBreakdown&grain=weekly
+    &fromDate=2026-02-22&toDate=2026-04-19
+    &branchCode=359
+
+# Approver breakdown — monthly range for one DO office
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverBreakdown&grain=monthly
+    &fromDate=2026-01-01&toDate=2026-03-01
+    &doCode=201
+
+# Rejected: bad grain
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverBreakdown&grain=hourly
+# -> 400 "grain must be one of: daily, weekly, monthly"
+
+# Rejected: fromDate after toDate (after snap)
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverBreakdown&grain=monthly
+    &fromDate=2026-04-01&toDate=2026-02-01
+# -> 400 "fromDate after toDate"
 ```
 
 ---
