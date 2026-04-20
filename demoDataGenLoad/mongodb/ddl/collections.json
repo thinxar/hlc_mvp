@@ -1,0 +1,205 @@
+{
+  "_comment": "Canonical MongoDB collection definitions for the demo pipeline. Consumed by the mongosh appliers in this directory AND by any Spring Boot / Node.js code that wants to provision the same collections programmatically. All field names are camelCase (no PascalCase, no snake_case). Date fields are BSON Date at UTC midnight.",
+  "collections": [
+    {
+      "name": "branches",
+      "options": {
+        "validator": {
+          "$jsonSchema": {
+            "bsonType": "object",
+            "required": ["branchCode", "branchName", "zone", "divisionName", "doCode"],
+            "properties": {
+              "branchCode":   { "bsonType": "string", "minLength": 1, "description": "3 or 4 chars; unique" },
+              "branchName":   { "bsonType": "string" },
+              "zone":         { "bsonType": "string" },
+              "divisionName": { "bsonType": "string" },
+              "doCode":       { "bsonType": "string", "minLength": 3 }
+            }
+          }
+        },
+        "validationLevel": "moderate",
+        "validationAction": "warn"
+      }
+    },
+    {
+      "name": "zone_divisions",
+      "options": {
+        "validator": {
+          "$jsonSchema": {
+            "bsonType": "object",
+            "required": ["zone", "divisionName", "doCode"],
+            "properties": {
+              "zone":         { "bsonType": "string" },
+              "divisionName": { "bsonType": "string" },
+              "doCode":       { "bsonType": "string" }
+            }
+          }
+        },
+        "validationLevel": "moderate",
+        "validationAction": "warn"
+      }
+    },
+    {
+      "name": "active_cases_branchwise",
+      "options": {
+        "validator": {
+          "$jsonSchema": {
+            "bsonType": "object",
+            "required": ["branchCode", "calDate", "zone", "divisionName", "doCode"],
+            "properties": {
+              "id":                 { "bsonType": ["int", "long"] },
+              "branchCode":         { "bsonType": "string" },
+              "branchName":         { "bsonType": "string" },
+              "divisionName":       { "bsonType": "string" },
+              "doCode":             { "bsonType": "string" },
+              "zone":               { "bsonType": "string" },
+              "calDate":            { "bsonType": "date", "description": "UTC-midnight BSON Date" },
+              "pendingDocuments":   { "bsonType": ["int", "long"] },
+              "submittedDocuments": { "bsonType": ["int", "long"] },
+              "processedDocuments": { "bsonType": ["int", "long"] },
+              "perApprover": {
+                "bsonType": "array",
+                "items": {
+                  "bsonType": "object",
+                  "required": ["approvedBy"],
+                  "properties": {
+                    "approvedBy": { "bsonType": "string" },
+                    "accepted":   { "bsonType": ["int", "long"] },
+                    "rejected":   { "bsonType": ["int", "long"] }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "validationLevel": "moderate",
+        "validationAction": "warn"
+      }
+    },
+    {
+      "name": "active_cases_weekly_branchwise",
+      "options": {
+        "validator": {
+          "$jsonSchema": {
+            "bsonType": "object",
+            "required": ["branchCode", "calWeek", "zone", "divisionName", "doCode"],
+            "properties": {
+              "id":                 { "bsonType": ["int", "long"] },
+              "branchCode":         { "bsonType": "string" },
+              "branchName":         { "bsonType": "string" },
+              "divisionName":       { "bsonType": "string" },
+              "doCode":             { "bsonType": "string" },
+              "zone":               { "bsonType": "string" },
+              "calWeek":            { "bsonType": "date", "description": "UTC-midnight BSON Date" },
+              "pendingDocuments":   { "bsonType": ["int", "long"] },
+              "submittedDocuments": { "bsonType": ["int", "long"] },
+              "processedDocuments": { "bsonType": ["int", "long"] },
+              "perApprover": {
+                "bsonType": "array",
+                "items": {
+                  "bsonType": "object",
+                  "required": ["approvedBy"],
+                  "properties": {
+                    "approvedBy": { "bsonType": "string" },
+                    "accepted":   { "bsonType": ["int", "long"] },
+                    "rejected":   { "bsonType": ["int", "long"] }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "validationLevel": "moderate",
+        "validationAction": "warn"
+      }
+    },
+    {
+      "name": "active_cases_monthly_branchwise",
+      "options": {
+        "validator": {
+          "$jsonSchema": {
+            "bsonType": "object",
+            "required": ["branchCode", "calMonth", "zone", "divisionName", "doCode"],
+            "properties": {
+              "id":                 { "bsonType": ["int", "long"] },
+              "branchCode":         { "bsonType": "string" },
+              "branchName":         { "bsonType": "string" },
+              "divisionName":       { "bsonType": "string" },
+              "doCode":             { "bsonType": "string" },
+              "zone":               { "bsonType": "string" },
+              "calMonth":           { "bsonType": "date", "description": "UTC-midnight BSON Date" },
+              "pendingDocuments":   { "bsonType": ["int", "long"] },
+              "submittedDocuments": { "bsonType": ["int", "long"] },
+              "processedDocuments": { "bsonType": ["int", "long"] },
+              "perApprover": {
+                "bsonType": "array",
+                "items": {
+                  "bsonType": "object",
+                  "required": ["approvedBy"],
+                  "properties": {
+                    "approvedBy": { "bsonType": "string" },
+                    "accepted":   { "bsonType": ["int", "long"] },
+                    "rejected":   { "bsonType": ["int", "long"] }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "validationLevel": "moderate",
+        "validationAction": "warn"
+      }
+    },
+    {
+      "name": "all_cases",
+      "options": {
+        "validator": {
+          "$jsonSchema": {
+            "bsonType": "object",
+            "required": ["requestId", "requestDate", "branchCode", "policyStatus"],
+            "description": "Date fields are BSON Date at UTC midnight; the loader normalizes ISO-8601 wire strings on ingest.",
+            "properties": {
+              "requestId":            { "bsonType": "string", "pattern": "^REV-[0-9]{4}-[0-9]{7,}$" },
+              "requestDate":          { "bsonType": "date" },
+              "channel":              { "bsonType": "string", "enum": ["AGENT_PORTAL", "CUSTOMER_PORTAL", "BRANCH"] },
+              "policyNumber":         { "bsonType": "string" },
+              "productCode":          { "bsonType": "string" },
+              "commencementDate":     { "bsonType": "date" },
+              "lastPremiumPaidDate":  { "bsonType": "date" },
+              "policyStatus":         { "bsonType": "string", "enum": ["INFORCE", "LAPSED", "PAIDUP", "SURRENDERED"] },
+              "lapseDate":            { "bsonType": "date" },
+              "revivalPeriodEndDate": { "bsonType": "date" },
+              "submittedBy":          { "bsonType": "string", "pattern": "^[1-9][0-9]{7}$" },
+              "zone":                 { "bsonType": "string" },
+              "divisionName":         { "bsonType": "string" },
+              "doCode":               { "bsonType": "string" },
+              "branchCode":           { "bsonType": "string" },
+              "branchName":           { "bsonType": "string" },
+              "documents": {
+                "bsonType": "array",
+                "minItems": 2,
+                "maxItems": 10,
+                "items": {
+                  "bsonType": "object",
+                  "required": ["type", "status", "docId", "uploadedOn"],
+                  "properties": {
+                    "name":       { "bsonType": "string" },
+                    "type":       { "bsonType": "string", "enum": ["DGH_FORM", "PAYMENT_RECEIPT", "ID_PROOF"] },
+                    "status":     { "bsonType": "string", "enum": ["accepted", "rejected", "pending"] },
+                    "docId":      { "bsonType": "string", "pattern": "^DOC-[0-9]+$" },
+                    "uploadedBy": { "bsonType": "string", "pattern": "^[1-9][0-9]{7}$" },
+                    "approvedBy": { "bsonType": "string", "description": "empty string when status=pending" },
+                    "uploadedOn": { "bsonType": "date" },
+                    "actionOn":   { "bsonType": ["date", "null"], "description": "null when status=pending" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "validationLevel": "moderate",
+        "validationAction": "warn"
+      }
+    }
+  ]
+}

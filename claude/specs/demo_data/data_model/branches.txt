@@ -1,0 +1,59 @@
+Data Model - branches
+=====================
+
+Document schema
+---------------
+
+Field        | BSON type | Format / Constraint                       | Example
+-------------|-----------|-------------------------------------------|--------
+_id          | ObjectId  | mongo-assigned; not meaningful            | -
+branchCode   | string    | 3 or 4 chars; preserves leading zeros     | "034A"
+             |           | and alphabetic suffixes                   |
+branchName   | string    | whitespace-collapsed; upper-case in source| "AHMEDABAD CBO-3"
+zone         | string    | LIC zone code                             | "CZ"
+divisionName | string    | canonical form; alias merges already      | "Ahmedabad"
+             |           | applied in the cleansing stage            |
+doCode       | string    | 3-digit running sequence (widens past 999)| "206"
+             |           | constant per canonical divisionName       |
+
+No nested objects, no arrays. Date fields: none.
+
+
+Indexes
+-------
+1. { branchCode: 1 }                   unique   (primary identity)
+2. { zone: 1, divisionName: 1 }                 (UI cascade)
+3. { doCode: 1 }                                (doCode lookups)
+
+The loader creates index #1. Secondary indexes come from
+ddl/02_indexes.js.
+
+
+Relationships
+-------------
+- zone + divisionName is a projection of this collection into
+  zone_divisions (one row per distinct pair). No referential integrity
+  at the Mongo layer.
+- doCode appears on every aggregation document (active_cases_*) and
+  on all_cases as a pass-through. Joins happen client-side.
+- branchCode is the grouping key in every aggregation collection
+  and in all_cases.
+
+
+Expected volume
+---------------
+~2,000 branches across ~113 canonical divisions and ~8 zones.
+Collection fits comfortably in RAM.
+
+
+Known caveats
+-------------
+1. The cleansing stage fails loudly if a canonical division straddles
+   zones, so by construction every (divisionName, doCode) pair maps to
+   exactly one zone in this collection.
+2. branchCode is stringly typed (never cast to numeric) because values
+   like "034A" are real. Downstream consumers MUST preserve that.
+3. The collection is fully regenerated on every loader run; there is
+   no incremental mode. Rows for branches removed from branch.csv will
+   linger unless the collection is dropped (ddl/99_drop.js) before
+   reload.

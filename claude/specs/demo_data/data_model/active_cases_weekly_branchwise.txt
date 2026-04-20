@@ -1,0 +1,66 @@
+Data Model - active_cases_weekly_branchwise
+===========================================
+
+Document schema
+---------------
+
+Field              | BSON type  | Format / Constraint                          | Example
+-------------------|------------|----------------------------------------------|------------
+_id                | ObjectId   | mongo-assigned                               | -
+id                 | int / long | within-run sequence, assigned after sort     | 1
+branchCode         | string     | grouping key                                 | "359"
+branchName         | string     | constant per branchCode                      | "SEHORE"
+divisionName       | string     | constant per branchCode                      | "Bhopal"
+doCode             | string     | constant per divisionName                    | "201"
+zone               | string     | LIC zone                                     | "CZ"
+calWeek            | date       | BSON Date at UTC midnight; LAST DAY of a     | 2026-04-19T00:00:00Z
+                   |            | 7-day rolling period anchored at REF_DATE    |
+pendingDocuments   | int / long | open backlog AS OF calWeek                   | 47
+submittedDocuments | int / long | documents uploaded WITHIN the 7-day period   | 285
+processedDocuments | int / long | documents actioned WITHIN the 7-day period   | 312
+perApprover        | array      | breakdown of processedDocuments by approver  | see below
+
+perApprover element: same shape and invariants as
+active_cases_branchwise - string approvedBy (8-digit id), int
+accepted, int rejected. Sorted by approvedBy ASC, no duplicates,
+SUM == processedDocuments, non-empty rows only.
+
+
+Indexes
+-------
+1. { branchCode: 1, calWeek: 1 }      unique   (primary identity)
+2. { calWeek: 1 }                              (time-range scans)
+3. { doCode: 1, calWeek: 1 }                   (DO-scoped weekly query)
+
+
+Relationships
+-------------
+- branchCode joins to branches; doCode joins to zone_divisions.
+- Full recompute from all_cases on every generator run.
+- Companion to active_cases_branchwise and
+  active_cases_monthly_branchwise.
+- Java entity mongo-service/.../DailyBranchWiseReportEntity is reused
+  for this collection via an explicit collection name on the Mongo
+  aggregate call - the @Document(collection=...) default is bypassed.
+
+
+Expected volume
+---------------
+~2,000 branches * up to 8 weekly rows = ~16,000 rows upper bound.
+Sparse-output drops zero-rows.
+
+
+Known caveats
+-------------
+1. "Week" is a rolling 7-day period anchored at REF_DATE, NOT an ISO
+   calendar week. Stored calWeek values align with REF_DATE's
+   weekday; Sundays are NOT used.
+2. Spring service code that normalizes user-supplied from/to to
+   "previousOrSame(SUNDAY)" (see RevDashBoardService) can produce
+   dates that do not equality-match any stored calWeek. Range
+   queries ($gte / $lte) still work if the bounds straddle stored
+   values.
+3. pendingDocuments has the same as-of summation caveat as the daily
+   variant, at week grain: summing across calWeeks yields
+   "pending-weeks", not distinct-pending.
+4. id is a within-run sequence, not stable across runs.

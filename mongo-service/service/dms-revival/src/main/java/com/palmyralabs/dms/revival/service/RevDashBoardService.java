@@ -23,10 +23,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.palmyralabs.dms.revival.entity.DailyBranchWiseReportEntity;
 import com.palmyralabs.dms.revival.entity.DailyBranchWiseReportEntity.PerApprover;
-import com.palmyralabs.dms.revival.entity.MonthWiseReportEntity;
 import com.palmyralabs.dms.revival.entity.MonthlyActiveCasesEntity;
 import com.palmyralabs.dms.revival.model.DailyDocumentSummaryModel;
-import com.palmyralabs.dms.revival.model.MonthlyDocumentSummaryModel;
 import com.palmyralabs.dms.revival.model.ResponseModel;
 import com.palmyralabs.dms.revival.model.TodayApprovalSummaryModel;
 import com.palmyralabs.dms.revival.model.WeeklyDocumentSummaryModel;
@@ -45,29 +43,6 @@ public class RevDashBoardService {
 
 	private final MongoTemplate mongoTemplate;
 
-	public List<MonthlyDocumentSummaryModel> getMonthlyDocumentSummary(String doCode, String branchCode,
-			LocalDate fromMonth, LocalDate toMonth) {
-		MatchOperation match = Aggregation.match(monthlyMatch(doCode, branchCode, fromMonth, toMonth));
-
-		GroupOperation group = Aggregation.group("month")
-				.sum("approvedDocuments").as("approvedDocuments")
-				.sum("pendingDocuments").as("pendingDocuments")
-				.sum("rejectedDocuments").as("rejectedDocuments");
-
-		ProjectionOperation project = Aggregation
-				.project("approvedDocuments", "pendingDocuments", "rejectedDocuments")
-				.and("_id").as("month")
-				.andExpression("approvedDocuments + rejectedDocuments").as("processedDocuments")
-				.andExclude("_id");
-
-		SortOperation sort = Aggregation.sort(Sort.Direction.ASC, "month");
-
-		Aggregation agg = Aggregation.newAggregation(match, group, project, sort);
-		return mongoTemplate
-				.aggregate(agg, MonthWiseReportEntity.class, MonthlyDocumentSummaryModel.class)
-				.getMappedResults();
-	}
-
 	public List<WeeklyDocumentSummaryModel> getWeeklyDocumentSummary(String doCode, String branchCode,
 			LocalDate fromWeek, LocalDate toWeek) {
 		LocalDate from = fromWeek == null ? null
@@ -75,14 +50,14 @@ public class RevDashBoardService {
 		LocalDate to = toWeek == null ? null
 				: toWeek.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
 		assertMaxInterval(from, to, WEEKLY_MAX_INTERVAL_MONTHS, "weekly");
-		return aggregateActiveCasesSummary(WEEKLY_COLLECTION, "cal_week",
+		return aggregateActiveCasesSummary(WEEKLY_COLLECTION, "calWeek",
 				doCode, branchCode, from, to, WeeklyDocumentSummaryModel.class);
 	}
 
 	public List<DailyDocumentSummaryModel> getDailyDocumentSummary(String doCode, String branchCode,
 			LocalDate fromDate, LocalDate toDate) {
 		assertMaxInterval(fromDate, toDate, DAILY_MAX_INTERVAL_MONTHS, "daily");
-		return aggregateActiveCasesSummary(DAILY_COLLECTION, "cal_date",
+		return aggregateActiveCasesSummary(DAILY_COLLECTION, "calDate",
 				doCode, branchCode, fromDate, toDate, DailyDocumentSummaryModel.class);
 	}
 
@@ -116,9 +91,9 @@ public class RevDashBoardService {
 	}
 
 	private List<TodayApprovalSummaryModel> aggregateTodayByZone(LocalDate date) {
-		MatchOperation match = Aggregation.match(Criteria.where("cal_date").is(date));
+		MatchOperation match = Aggregation.match(Criteria.where("calDate").is(date));
 
-		GroupOperation group = Aggregation.group("Zone")
+		GroupOperation group = Aggregation.group("zone")
 				.sum(AccumulatorOperators.Sum.sumOf("perApprover.accepted")).as("approvedDocuments")
 				.sum("pendingDocuments").as("pendingDocuments")
 				.sum(AccumulatorOperators.Sum.sumOf("perApprover.rejected")).as("rejectedDocuments");
@@ -141,8 +116,8 @@ public class RevDashBoardService {
 
 	private List<TodayApprovalSummaryModel> aggregateTodayByDivision(LocalDate date, String zone) {
 		MatchOperation match = Aggregation.match(new Criteria().andOperator(
-				Criteria.where("cal_date").is(date),
-				Criteria.where("Zone").is(zone)));
+				Criteria.where("calDate").is(date),
+				Criteria.where("zone").is(zone)));
 
 		GroupOperation group = Aggregation.group("divisionName")
 				.sum(AccumulatorOperators.Sum.sumOf("perApprover.accepted")).as("approvedDocuments")
@@ -171,8 +146,8 @@ public class RevDashBoardService {
 	private List<TodayApprovalSummaryModel> aggregateTodayByBranch(LocalDate date,
 			String zone, String division) {
 		MatchOperation match = Aggregation.match(new Criteria().andOperator(
-				Criteria.where("cal_date").is(date),
-				Criteria.where("Zone").is(zone),
+				Criteria.where("calDate").is(date),
+				Criteria.where("zone").is(zone),
 				Criteria.where("divisionName").is(division)));
 
 		GroupOperation group = Aggregation.group("branchCode")
@@ -204,8 +179,8 @@ public class RevDashBoardService {
 	private List<TodayApprovalSummaryModel> aggregateTodayBySr(LocalDate date,
 			String zone, String division, String branch) {
 		MatchOperation match = Aggregation.match(new Criteria().andOperator(
-				Criteria.where("cal_date").is(date),
-				Criteria.where("Zone").is(zone),
+				Criteria.where("calDate").is(date),
+				Criteria.where("zone").is(zone),
 				Criteria.where("divisionName").is(division),
 				Criteria.where("branchCode").is(branch)));
 
@@ -300,16 +275,10 @@ public class RevDashBoardService {
 		return parts.isEmpty() ? new Criteria() : new Criteria().andOperator(parts.toArray(new Criteria[0]));
 	}
 
-	private Criteria monthlyMatch(String doCode, String branchCode, LocalDate fromMonth, LocalDate toMonth) {
-		LocalDate from = fromMonth == null ? null : fromMonth.withDayOfMonth(1);
-		LocalDate to = toMonth == null ? null : toMonth.withDayOfMonth(1);
-		return bucketMatch("month", doCode, branchCode, from, to);
-	}
-
 	private long computeTodayDocuments(String doCode, String branchCode) {
 		LocalDate today = LocalDate.now();
 		Query q = baseFilter(doCode, branchCode);
-		q.addCriteria(Criteria.where("cal_date").is(today));
+		q.addCriteria(Criteria.where("calDate").is(today));
 
 		List<DailyBranchWiseReportEntity> list = mongoTemplate.find(q, DailyBranchWiseReportEntity.class);
 

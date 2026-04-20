@@ -1,0 +1,30 @@
+{
+  "_comment": "Canonical index definitions for every collection in the demo pipeline. Key-direction values are integers (1 asc, -1 desc) and MUST be preserved as integers when parsed. Unique primary key appears first for each collection; secondary indexes follow. Index names are pre-set so repeated applies are idempotent and the same indexes are identifiable across drivers.",
+  "indexes": [
+    { "collection": "branches",                         "keys": { "branchCode": 1 },                    "options": { "unique": true, "name": "branchCode_1" } },
+    { "collection": "branches",                         "keys": { "zone": 1, "divisionName": 1 },        "options": { "name": "zone_1_divisionName_1" } },
+    { "collection": "branches",                         "keys": { "doCode": 1 },                        "options": { "name": "doCode_1" } },
+
+    { "collection": "zone_divisions",                   "keys": { "zone": 1, "divisionName": 1 },        "options": { "unique": true, "name": "zone_1_divisionName_1" } },
+    { "collection": "zone_divisions",                   "keys": { "doCode": 1 },                        "options": { "name": "doCode_1" } },
+
+    { "collection": "active_cases_branchwise",          "keys": { "branchCode": 1, "calDate": 1 },      "options": { "unique": true, "name": "branchCode_1_calDate_1" } },
+    { "collection": "active_cases_branchwise",          "keys": { "calDate": 1 },                       "options": { "name": "calDate_1" } },
+    { "collection": "active_cases_branchwise",          "keys": { "doCode": 1, "calDate": 1 },          "options": { "name": "doCode_1_calDate_1" } },
+
+    { "collection": "active_cases_weekly_branchwise",   "keys": { "branchCode": 1, "calWeek": 1 },      "options": { "unique": true, "name": "branchCode_1_calWeek_1" } },
+    { "collection": "active_cases_weekly_branchwise",   "keys": { "calWeek": 1 },                       "options": { "name": "calWeek_1" } },
+    { "collection": "active_cases_weekly_branchwise",   "keys": { "doCode": 1, "calWeek": 1 },          "options": { "name": "doCode_1_calWeek_1" } },
+
+    { "collection": "active_cases_monthly_branchwise",  "keys": { "branchCode": 1, "calMonth": 1 },     "options": { "unique": true, "name": "branchCode_1_calMonth_1" } },
+    { "collection": "active_cases_monthly_branchwise",  "keys": { "calMonth": 1 },                      "options": { "name": "calMonth_1" } },
+    { "collection": "active_cases_monthly_branchwise",  "keys": { "doCode": 1, "calMonth": 1 },         "options": { "name": "doCode_1_calMonth_1" } },
+
+    { "collection": "all_cases",                        "keys": { "requestId": 1 },                     "options": { "unique": true, "name": "requestId_1" } },
+    { "collection": "all_cases",                        "keys": { "branchCode": 1, "requestDate": 1 },   "options": { "name": "branchCode_1_requestDate_1" } },
+    { "collection": "all_cases",                        "keys": { "doCode": 1, "requestDate": 1 },       "options": { "name": "doCode_1_requestDate_1" } },
+    { "collection": "all_cases",                        "keys": { "requestDate": 1 },                   "options": { "name": "requestDate_1" } },
+    { "collection": "all_cases",                        "keys": { "policyNumber": 1 },                  "options": { "name": "policyNumber_1" } },
+    { "collection": "all_cases",                        "keys": { "documents.status": 1 },               "options": { "name": "documents_status_1" } }
+  ]
+}

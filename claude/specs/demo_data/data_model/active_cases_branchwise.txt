@@ -1,0 +1,74 @@
+Data Model - active_cases_branchwise
+====================================
+
+Document schema
+---------------
+
+Field              | BSON type  | Format / Constraint                          | Example
+-------------------|------------|----------------------------------------------|------------
+_id                | ObjectId   | mongo-assigned                               | -
+id                 | int / long | within-run sequence, assigned AFTER sort     | 1
+branchCode         | string     | grouping key                                 | "359"
+branchName         | string     | constant per branchCode                      | "SEHORE"
+divisionName       | string     | constant per branchCode                      | "Bhopal"
+doCode             | string     | constant per divisionName                    | "201"
+zone               | string     | LIC zone                                     | "CZ"
+calDate            | date       | BSON Date at UTC midnight; a day in          | 2026-04-17T00:00:00Z
+                   |            | [REF_DATE - 13, REF_DATE]                    |
+pendingDocuments   | int / long | open backlog AS OF calDate                   | 2
+submittedDocuments | int / long | documents uploaded ON calDate                | 41
+processedDocuments | int / long | documents actioned ON calDate                | 45
+perApprover        | array      | breakdown of processedDocuments by approver  | see below
+
+perApprover element:
+
+Field      | BSON type  | Format / Constraint                        | Example
+-----------|------------|--------------------------------------------|------------
+approvedBy | string     | 8-digit officer id                         | "57988792"
+accepted   | int / long | documents actioned with status="accepted"  | 16
+rejected   | int / long | documents actioned with status="rejected"  | 1
+
+Invariants:
+- SUM(perApprover[].accepted + .rejected) == processedDocuments
+- Every emitted perApprover element has (accepted + rejected) >= 1
+- perApprover is sorted by approvedBy ASC, no duplicates
+
+
+Indexes
+-------
+1. { branchCode: 1, calDate: 1 }      unique   (primary identity)
+2. { calDate: 1 }                              (time-range scans)
+3. { doCode: 1, calDate: 1 }                   (DO-scoped daily query)
+
+
+Relationships
+-------------
+- branchCode joins to branches; doCode joins to zone_divisions.
+- Feeder is all_cases (NDJSON master). This collection is fully
+  recomputed on every generator run - it is NOT a materialized view,
+  so dropping and reloading is safe.
+- Companion to active_cases_weekly_branchwise and
+  active_cases_monthly_branchwise (same perApprover shape, different
+  time-bucket grain).
+
+
+Expected volume
+---------------
+~2,000 branches * up to 14 daily rows = ~28,000 rows upper bound.
+Sparse-output drops zero-rows, so the real count is typically
+30-60% of the cap depending on activity.
+
+
+Known caveats
+-------------
+1. pendingDocuments is an AS-OF count. Summing it across calDates
+   yields "pending-days", not distinct-pending - a document pending
+   for 5 days contributes 5 to a 5-day sum, not 1.
+2. id is a within-run sequence, not a stable identifier. Re-running
+   the generator reassigns ids. Do not use as a join key.
+3. REF_DATE is env-resolved (REPORT_TODAY). A collection loaded on
+   2026-04-20 with REPORT_TODAY=2026-04-15 covers a different 14-day
+   window than a system-date run; query code must not hardcode
+   "today minus 13 days" without matching REF_DATE.
+4. calDate is a BSON Date at UTC midnight. See MongoConfig for the
+   LocalDate <-> Date converter contract.

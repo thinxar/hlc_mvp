@@ -258,7 +258,7 @@ for (const raw of rows) {
       if (uploadedOn > TODAY) uploadedOn = TODAY;
       let actionOn;
       if (status === 'pending') {
-        actionOn = '';
+        actionOn = null;
       } else {
         const jitter = Math.floor(rng() * 6);
         let candidate = addDays(requestDate, actionBase + jitter);
@@ -289,8 +289,8 @@ for (const raw of rows) {
     branchRecords.push({
       requestId: null, // assigned after global sort so IDs flow with requestDate
       requestDate,
-      Channel: pick(channels),
-      PolicyNumber: policyNumber,
+      channel: pick(channels),
+      policyNumber: policyNumber,
       productCode: pick(productCodes),
       commencementDate,
       lastPremiumPaidDate,
@@ -298,7 +298,7 @@ for (const raw of rows) {
       lapseDate,
       revivalPeriodEndDate,
       submittedBy,
-      Zone: branch.zone,
+      zone: branch.zone,
       divisionName: branch.division,
       doCode: branch.doCode,
       branchCode: branch.code,

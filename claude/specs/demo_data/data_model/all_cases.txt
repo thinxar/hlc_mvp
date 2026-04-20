@@ -1,0 +1,98 @@
+Data Model - all_cases
+======================
+
+Document schema
+---------------
+
+Field                | BSON type | Format / Constraint                          | Example
+---------------------|-----------|----------------------------------------------|-------------------------
+_id                  | ObjectId  | mongo-assigned                               | -
+requestId            | string    | pattern REV-YYYY-NNNNNNN (7+ digit seq,      | "REV-2026-0482917"
+                     |           | widens past 9,999,999); globally unique      |
+                     |           | and monotonic with requestDate               |
+requestDate          | date      | BSON Date at UTC midnight; wire form         | 2026-04-19T00:00:00Z
+                     |           | YYYY-MM-DD in JSONL, normalized by loader    |
+channel              | string    | enum AGENT_PORTAL | CUSTOMER_PORTAL | BRANCH  | "AGENT_PORTAL"
+policyNumber         | string    | 9 numeric digits (stored as string)          | "887766554"
+productCode          | string    | catalogue code                               | "TRAD-ENDOW-15"
+commencementDate     | date      | BSON Date; policy inception                  | 2019-06-10T00:00:00Z
+lastPremiumPaidDate  | date      | BSON Date; <= requestDate                    | 2024-06-10T00:00:00Z
+policyStatus         | string    | enum INFORCE | LAPSED | PAIDUP | SURRENDERED  | "LAPSED"
+                     |           | (generator currently always emits LAPSED)    |
+lapseDate            | date      | BSON Date; required when policyStatus=LAPSED | 2026-01-10T00:00:00Z
+revivalPeriodEndDate | date      | BSON Date; typically lapseDate + 5 years     | 2030-01-10T00:00:00Z
+submittedBy          | string    | 8-digit officer id, leading zero disallowed  | "45829137"
+zone                 | string    | LIC zone code                                | "NCZ"
+divisionName         | string    | canonical division name                      | "Kanpur"
+doCode               | string    | DO code; constant per divisionName           | "241"
+branchCode           | string    | 3 or 4 chars                                 | "231"
+branchName           | string    | whitespace-collapsed                         | "KANPUR (SHIVOY TOWER) DBO"
+documents            | array     | 2..10 supporting document objects            | see below
+
+Each documents[] element:
+
+Field      | BSON type | Format / Constraint                                   | Example
+-----------|-----------|-------------------------------------------------------|-----------------------
+name       | string    | random file name with extension                       | "dgh_form_signed_010021.pdf"
+type       | string    | enum DGH_FORM | PAYMENT_RECEIPT | ID_PROOF            | "DGH_FORM"
+status     | string    | enum accepted | rejected | pending                    | "accepted"
+docId      | string    | pattern DOC-NNNNN (monotonic across the whole file)   | "DOC-10021"
+uploadedBy | string    | 8-digit officer id; from the case's monthly pool      | "45829137"
+approvedBy | string    | 8-digit officer id when status != pending;            | "45829136"
+           |           | empty string when status == pending                   |
+uploadedOn | date      | BSON Date; strictly > requestDate,                    | 2026-04-22T00:00:00Z
+           |           | <= requestDate + 5 days                               |
+actionOn   | date      | BSON Date when status != pending;                     | 2026-04-29T00:00:00Z
+           |           | null when status == pending. Within a case,           |
+           |           | max(actionOn) - min(actionOn) <= 5 days               |
+
+
+Indexes
+-------
+1. { requestId: 1 }                    unique   (primary identity)
+2. { branchCode: 1, requestDate: 1 }            (branch-scoped history)
+3. { doCode: 1, requestDate: 1 }                (DO-scoped history)
+4. { requestDate: 1 }                           (time-range scans)
+5. { policyNumber: 1 }                          (policy lookup)
+6. { "documents.status": 1 }                    (pending-queue scans)
+
+
+Relationships
+-------------
+- branchCode joins to branches (dimension lookup).
+- doCode joins to zone_divisions.
+- The three aggregation collections (active_cases_branchwise,
+  active_cases_weekly_branchwise, active_cases_monthly_branchwise)
+  are derived views of this one. When you regenerate all_cases, all
+  three aggregations must be regenerated too - they contain frozen
+  counts that do not update when cases change.
+
+
+Expected volume
+---------------
+~2,000 branches * 2 * mean(CSV.Number_of_Cases) -> ~500K to ~2M cases.
+Each case has 2-10 documents -> a few million embedded doc records.
+NDJSON size at scale is 0.5-2 GB on disk before compression.
+
+
+Known caveats
+-------------
+1. All date fields are BSON Date at UTC midnight. The JSON/JSONL
+   wire representation is ISO-8601 YYYY-MM-DD; the loader normalizes
+   those strings to BSON Date on ingest. Spring Data Mongo's
+   LocalDate <-> Date converter (see MongoConfig) keeps the Java
+   entity side in LocalDate.
+2. documents[].actionOn is null (not an empty string) when
+   status == "pending". The companion approvedBy stays an empty
+   string because it is a string-typed officer id, not a date.
+3. policyStatus is always "LAPSED" in generated data today - the
+   schema allows four values for future flexibility. Business logic
+   that assumes a mix of statuses is mock-driven, not data-driven.
+4. requestId is the only unique key - duplicate checks on
+   (policyNumber, requestDate) or any other field must be done at
+   query time, not via a unique index.
+5. Regenerating all_cases with a different seed or GEN_TODAY
+   produces a completely different dataset - requestIds, policy
+   numbers, officer ids, document counts, everything. Treat the
+   collection as ephemeral demo data; do not reference specific
+   requestIds from application code or test fixtures.

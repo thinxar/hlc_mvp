@@ -1,0 +1,47 @@
+Data Model - zone_divisions
+===========================
+
+Document schema
+---------------
+
+Field        | BSON type | Format / Constraint                       | Example
+-------------|-----------|-------------------------------------------|----------
+_id          | ObjectId  | mongo-assigned                            | -
+zone         | string    | LIC zone code; trimmed                    | "CZ"
+divisionName | string    | canonical form (alias-merged in stage 0)  | "Bhopal"
+doCode       | string    | 3-digit running sequence; constant per    | "201"
+             |           | canonical divisionName regardless of zone |
+
+No nested objects, no arrays. Date fields: none.
+
+
+Indexes
+-------
+1. { zone: 1, divisionName: 1 }        unique   (primary identity)
+2. { doCode: 1 }                                (doCode -> division lookup)
+
+
+Relationships
+-------------
+- Projection of the branches collection onto (zone, divisionName) +
+  doCode. The two collections are sourced independently from the
+  cleansed branch.csv so neither depends on the other's freshness.
+- doCode is the stable join key with every aggregation collection
+  (active_cases_*) and all_cases.
+
+
+Expected volume
+---------------
+~113 rows. Effectively static reference data.
+
+
+Known caveats
+-------------
+1. The same divisionName string MAY legally reappear under different
+   zones - each pair is a distinct document. Consumers that display a
+   flat division list must disambiguate by zone.
+2. Uniqueness is on the composite (zone, divisionName). Do not add a
+   unique index on divisionName alone.
+3. Like branches, this collection is fully regenerated on every load;
+   stale divisions are not purged automatically - drop the collection
+   (ddl/99_drop.js) before a clean reload if that matters.

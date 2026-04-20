@@ -1,0 +1,20 @@
+spring:
+  main:
+    web-application-type: none
+    banner-mode: "off"
+
+logging:
+  level:
+    root: INFO
+
+app:
+  # Directory holding the generator's output files.
+  # Relative to process CWD; env DATA_DIR or first CLI positional arg overrides.
+  # Defaults assume CWD is demoDataGenLoad/mongodb/ (i.e. one level above runner/).
+  dataDir: generated
+  mongo:
+    uri: mongodb://demouser:secret@localhost:27017/dms?authSource=dms
+    db: dms
+    batchSize: 1000
+    # upsert (default) or insert
+    mode: upsert

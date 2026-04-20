@@ -1,0 +1,22 @@
+spring:
+  main:
+    web-application-type: none
+    banner-mode: "off"
+
+logging:
+  level:
+    root: INFO
+
+app:
+  # Base data CSV (input) directory, relative to process CWD.
+  # Defaults assume CWD is demoDataGenLoad/mongodb/ (i.e. one level above runner/).
+  baseDataDir: base_data
+  # Output directory for all generated files, relative to process CWD.
+  dataDir: generated
+  # ISO-8601 date YYYY-MM-DD. Leave blank / null to use system date.
+  genToday:
+  reportToday:
+  # Pipeline stage skip flags (mirrors SKIP_STAGE_* env vars from the Node pipeline).
+  skipStage0: false
+  skipStage1: false
+  skipStage2: false

@@ -16,32 +16,27 @@ shorter-horizon reports exist to keep those outputs focused on
 recently-active work; over 24 months that focus is not useful, so
 the filter is dropped.
 
-This spec is distinct from specs/aggregation/monthly_branchwise_agg_spec.txt -
-that earlier spec is a simpler volume report and does not use the
-as-of pending / per-approver machinery.
-
-
 Parameters
 ----------
 Single-source-of-truth knobs referenced throughout this spec. Change
-the value here and every derived bound below (cal_month enumeration,
+the value here and every derived bound below (calMonth enumeration,
 Rules 1 and 8) follows automatically.
 
   WINDOW_MONTHS = 24     # length of the reporting window in calendar months
 
 Let REF_DATE be the run's reference date - resolved from environment
 variable REPORT_TODAY (YYYY-MM-DD) if set, otherwise the local system
-date at run time. Dates in the source are date-only strings; compare
-as ISO strings, no timezone math required.
+date at run time. Dates in the source are BSON Date at UTC midnight;
+comparisons use standard BSON ordering, no timezone math required.
 
 A "month" here is a calendar month (YYYY-MM). The WINDOW_MONTHS
 months are the most recent WINDOW_MONTHS calendar months ending with
 the month that contains REF_DATE:
 
-  cal_month[0] = first day of REF_DATE's month                    (most recent)
-  cal_month[k] = first day of (REF_DATE's month - k months)       for k in 1..WINDOW_MONTHS-1
+  calMonth[0] = first day of REF_DATE's month                    (most recent)
+  calMonth[k] = first day of (REF_DATE's month - k months)       for k in 1..WINDOW_MONTHS-1
 
-The current month (cal_month[0]) is typically PARTIAL: it covers
+The current month (calMonth[0]) is typically PARTIAL: it covers
 [first of month, REF_DATE] rather than the full calendar month.
 Rules 3 and 4 clamp the as-of date to REF_DATE for that bucket.
 
@@ -51,15 +46,15 @@ source field actionOn (documented in specs/data_gen/data_generation.txt).
 
 Report - Active Cases, Monthly Branch Activity
 ----------------------------------------------
-Grain:         one row per (cal_month, branchCode). cal_month is
+Grain:         one row per (calMonth, branchCode). calMonth is
                the FIRST DAY (YYYY-MM-01) of a calendar month in the
                reporting window. A single source document may be
-               counted in pendingDocuments across many cal_months
+               counted in pendingDocuments across many calMonths
                (every month-end from the one containing its uploadedOn
                through the last month-end before its actionOn), in
-               submittedDocuments in exactly one cal_month (the month
+               submittedDocuments in exactly one calMonth (the month
                containing its uploadedOn), and in processedDocuments
-               in exactly one cal_month (the month containing its
+               in exactly one calMonth (the month containing its
                actionOn).
 Output format: flat JSON object per row (file-level container - JSON array
                or NDJSON - decided when the reporting module is wired up).
@@ -76,11 +71,11 @@ branchCode         | string  | 3 or 4 chars; grouping key                       
 branchName         | string  | from source record                                         | "SEHORE"
 divisionName       | string  | from source record                                         | "Bhopal"
 doCode             | string  | from source record; constant per divisionName              | "201"
-Zone               | string  | from source record (key preserved as "Zone", not camel)    | "CZ"
-cal_month          | string  | YYYY-MM-DD; first day of the calendar month (DD = "01")    | "2026-04-01"
-pendingDocuments   | integer | open backlog AS OF month_end(cal_month) (see rule 3)       | 128
-submittedDocuments | integer | documents uploaded WITHIN cal_month (see rule 4)           | 1380
-processedDocuments | integer | documents actioned WITHIN cal_month (see rule 5)           | 1420
+zone               | string  | from source record (key preserved as "zone", not camel)    | "CZ"
+calMonth          | date    | date (BSON Date at UTC midnight); first day of the calendar month | "2026-04-01"
+pendingDocuments   | integer | open backlog AS OF month_end(calMonth) (see rule 3)       | 128
+submittedDocuments | integer | documents uploaded WITHIN calMonth (see rule 4)           | 1380
+processedDocuments | integer | documents actioned WITHIN calMonth (see rule 5)           | 1420
 perApprover        | array   | breakdown of processedDocuments by approver; see schema    | see below
 
 perApprover element schema
@@ -104,63 +99,61 @@ whose contribution to this bucket is purely accepted (or purely
 rejected) simply has the other count at 0 - they are NOT emitted as
 two separate elements.
 
-Reporting window (cal_month enumeration)
+Reporting window (calMonth enumeration)
 ----------------------------------------
-cal_month takes one value per calendar month in the window -
+calMonth takes one value per calendar month in the window -
 WINDOW_MONTHS values in total, ending with the month of REF_DATE.
-Each cal_month is represented as the ISO date of the first day of
-that month (DD = "01"), matching the convention in
-monthly_branchwise_agg_spec.txt.
+Each calMonth is the first day of that month at UTC midnight (BSON
+Date).
 
-For each cal_month, define its "as-of date" as:
-    month_end(cal_month) = min(
-        last calendar day of cal_month,
+For each calMonth, define its "as-of date" as:
+    month_end(calMonth) = min(
+        last calendar day of calMonth,
         REF_DATE
     )
-For every cal_month except the current one, the clamp is a no-op
+For every calMonth except the current one, the clamp is a no-op
 and month_end is simply the last day of the month. For the current
-cal_month (cal_month[0]), month_end = REF_DATE, giving a partial
+calMonth (calMonth[0]), month_end = REF_DATE, giving a partial
 month-to-date snapshot.
 
 Rules
 -----
-1. cal_month enumerates the WINDOW_MONTHS most recent calendar
+1. calMonth enumerates the WINDOW_MONTHS most recent calendar
    months as described above. ALL source cases feed the aggregator;
    rules 3 and 4 decide per-document whether a document contributes
-   to a given (cal_month, branchCode) bucket. A case that has no
-   documents overlapping any cal_month simply produces no rows
+   to a given (calMonth, branchCode) bucket. A case that has no
+   documents overlapping any calMonth simply produces no rows
    (sparse output, rule 7).
-2. Bucket key for aggregation is (cal_month, branchCode). Zone,
+2. Bucket key for aggregation is (calMonth, branchCode). zone,
    divisionName, and branchName are constant per branchCode and are
    carried along, not grouped on.
-3. pendingDocuments - "open backlog as of month_end(cal_month)"
+3. pendingDocuments - "open backlog as of month_end(calMonth)"
    (end-of-month snapshot, clamped to REF_DATE for the current
    month). Over all documents of all cases in the branch, count
    documents d satisfying:
-       month_end(cal_month) >= d.uploadedOn
-       AND ( d.status == "pending" OR month_end(cal_month) < d.actionOn )
+       month_end(calMonth) >= d.uploadedOn
+       AND ( d.status == "pending" OR month_end(calMonth) < d.actionOn )
    A document actioned on month_end itself drops OUT of the backlog
    on that month's snapshot - it is counted in processedDocuments
    instead (rule 4).
-   Note: d.actionOn is the empty string when d.status == "pending";
-   treat that as "no actionOn" so the comparison reduces to the
-   status-pending branch.
+   Note: d.actionOn is null when d.status == "pending"; treat null as
+   "no actionOn" so the comparison reduces to the status-pending branch.
 4. submittedDocuments = COUNT of documents d satisfying:
-       d.uploadedOn in [cal_month, month_end(cal_month)]
+       d.uploadedOn in [calMonth, month_end(calMonth)]
    across all cases in the branch. Every document thus contributes
-   to exactly one cal_month bucket (the month containing its
+   to exactly one calMonth bucket (the month containing its
    uploadedOn). Document status is irrelevant to this count -
    pending, accepted and rejected all contribute. The current-month
    clamp on month_end means docs uploaded on any day up to REF_DATE
-   land in cal_month[0]; uploadedOn > REF_DATE cannot occur in
+   land in calMonth[0]; uploadedOn > REF_DATE cannot occur in
    source data (data_gen rule 11).
 5. processedDocuments = COUNT of documents d satisfying:
-       d.actionOn in [cal_month, month_end(cal_month)]
+       d.actionOn in [calMonth, month_end(calMonth)]
        AND d.status in {"accepted","rejected"}
    across all cases in the branch. Every processed document
-   thus contributes to exactly one cal_month bucket (the month
+   thus contributes to exactly one calMonth bucket (the month
    containing its actionOn). The current-month clamp on month_end
-   means documents actioned on REF_DATE are counted in cal_month[0]
+   means documents actioned on REF_DATE are counted in calMonth[0]
    as expected; documents with actionOn > REF_DATE do not exist in
    source data by construction (data_gen rule 11 clamps actionOn to
    TODAY).
@@ -169,20 +162,19 @@ Rules
    accepted and rejected separately. Emit one element per distinct
    approvedBy, sorted by approvedBy ASC. Pending documents have no
    approver and are excluded by construction.
-7. branchName, divisionName, doCode, Zone are constant per branchCode by
+7. branchName, divisionName, doCode, zone are constant per branchCode by
    construction (data_gen rule 1); take them from any record in the
    bucket.
 8. Output is sorted by divisionName ASC, then branchCode ASC, then
-   cal_month ASC. This keeps each branch's WINDOW_MONTHS monthly
+   calMonth ASC. This keeps each branch's WINDOW_MONTHS monthly
    rows in chronological order within its division grouping. Buckets
    with pendingDocuments + submittedDocuments + processedDocuments = 0
    are NOT emitted (sparse output).
 9. A case with zero documents does not occur in generated data
    (data_gen rule 8 guarantees >= 2); if present it contributes
    nothing to any count and can be dropped.
-10. Key-name casing: output uses camelCase for every field EXCEPT "Zone",
-    which matches the source record's capitalised key. "cal_month" uses
-    snake_case, consistent with "cal_date" in the daily variant.
+10. Key-name casing: output fields use camelCase throughout (zone,
+    calMonth, calDate, branchCode, etc.).
 11. Idempotency: for a fixed REF_DATE and a fixed source file, running
     the aggregator twice produces byte-identical output.
 
@@ -194,8 +186,8 @@ Example row
   "branchName": "SEHORE",
   "divisionName": "Bhopal",
   "doCode": "201",
-  "Zone": "CZ",
-  "cal_month": "2026-04-01",
+  "zone": "CZ",
+  "calMonth": "2026-04-01",
   "pendingDocuments": 128,
   "submittedDocuments": 1380,
   "processedDocuments": 1420,

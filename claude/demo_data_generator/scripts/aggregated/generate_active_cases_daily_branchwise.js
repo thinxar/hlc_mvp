@@ -38,8 +38,8 @@ function getBucket(calDate, rec) {
       branchName: rec.branchName,
       divisionName: rec.divisionName,
       doCode: rec.doCode,
-      Zone: rec.Zone,
-      cal_date: calDate,
+      zone: rec.zone,
+      calDate: calDate,
       pendingDocuments: 0,
       submittedDocuments: 0,
       processedDocuments: 0,
@@ -107,15 +107,15 @@ async function main() {
     .sort((a, b) =>
       a.divisionName.localeCompare(b.divisionName) ||
       a.branchCode.localeCompare(b.branchCode) ||
-      a.cal_date.localeCompare(b.cal_date))
+      a.calDate.localeCompare(b.calDate))
     .map((b, i) => ({
       id: i + 1,
       branchCode: b.branchCode,
       branchName: b.branchName,
       divisionName: b.divisionName,
       doCode: b.doCode,
-      Zone: b.Zone,
-      cal_date: b.cal_date,
+      zone: b.zone,
+      calDate: b.calDate,
       pendingDocuments: b.pendingDocuments,
       submittedDocuments: b.submittedDocuments,
       processedDocuments: b.processedDocuments,

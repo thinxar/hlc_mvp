@@ -1,0 +1,17 @@
+Data Model - Summary
+====================
+
+One-liner per MongoDB collection produced by the demo pipeline. See
+each collection's own .txt file in this directory for the full shape
+(document schema, indexes, relationships, expected volume, known
+caveats).
+
+Collection                           | One-liner
+-------------------------------------|----------------------------------------------------------------------
+branches                             | reference catalogue: one row per LIC branch (branchCode unique).
+zone_divisions                       | reference projection: (zone, divisionName) -> doCode.
+all_cases                            | master NDJSON dataset: one row per Policy Revival request + embedded documents[]; feeder for every aggregation.
+active_cases_branchwise              | 14-day daily working-queue rollup with per-approver breakdown; key (branchCode, calDate).
+active_cases_weekly_branchwise       | 8-week rolling working-queue rollup with per-approver breakdown; key (branchCode, calWeek).
+active_cases_monthly_branchwise      | 24-month calendar working-queue rollup with per-approver breakdown; key (branchCode, calMonth). Not yet wired to an endpoint.
+

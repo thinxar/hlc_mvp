@@ -86,6 +86,5 @@ fi
 run "stage3 daily"   node scripts/aggregated/generate_active_cases_daily_branchwise.js
 run "stage3 weekly"  node scripts/aggregated/generate_active_cases_weekly_branchwise.js
 run "stage3 monthly" node scripts/aggregated/generate_active_cases_monthly_branchwise.js
-run "stage3 monthly_branchwise (legacy)" node scripts/aggregated/generate_monthly_branchwise_report.js
 
 echo "=== pipeline complete ==="

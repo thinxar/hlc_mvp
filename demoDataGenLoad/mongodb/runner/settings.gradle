@@ -1,0 +1,4 @@
+rootProject.name = 'demo-data-runner'
+
+include 'generator'
+include 'loader'

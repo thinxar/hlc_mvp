@@ -44,11 +44,10 @@ import java.util.Map;
  * Files -> collections:
  *  1. branches.json                        -> branches                         (key: branchCode)
  *  2. zone_divisions.json                  -> zone_divisions                   (key: zone, divisionName)
- *  3. monthly_branchwise_report.json       -> monthly_branchwise_report        (key: month, branchCode)
- *  4. active_cases_branchwise.json         -> active_cases_branchwise          (key: branchCode, cal_date)
- *  5. active_cases_weekly_branchwise.json  -> active_cases_weekly_branchwise   (key: branchCode, cal_week)
- *  6. active_cases_monthly_branchwise.json -> active_cases_monthly_branchwise  (key: branchCode, cal_month)
- *  7. all_cases.jsonl                      -> all_cases                        (key: requestId) [streamed]
+ *  3. active_cases_branchwise.json         -> active_cases_branchwise          (key: branchCode, cal_date)
+ *  4. active_cases_weekly_branchwise.json  -> active_cases_weekly_branchwise   (key: branchCode, cal_week)
+ *  5. active_cases_monthly_branchwise.json -> active_cases_monthly_branchwise  (key: branchCode, cal_month)
+ *  6. all_cases.jsonl                      -> all_cases                        (key: requestId) [streamed]
  */
 public final class MongoDataLoader {
 
@@ -70,16 +69,18 @@ public final class MongoDataLoader {
                     new String[] { "branchCode" },             NONE,                         false),
             new FileSpec("zone_divisions.json",                  "zone_divisions",
                     new String[] { "zone", "divisionName" },   NONE,                         false),
-            new FileSpec("monthly_branchwise_report.json",       "monthly_branchwise_report",
-                    new String[] { "month", "branchCode" },    new String[] { "month" },     false),
             new FileSpec("active_cases_branchwise.json",         "active_cases_branchwise",
-                    new String[] { "branchCode", "cal_date" },  new String[] { "cal_date" },  false),
+                    new String[] { "branchCode", "calDate" },   new String[] { "calDate" },   false),
             new FileSpec("active_cases_weekly_branchwise.json",  "active_cases_weekly_branchwise",
-                    new String[] { "branchCode", "cal_week" },  new String[] { "cal_week" },  false),
+                    new String[] { "branchCode", "calWeek" },   new String[] { "calWeek" },   false),
             new FileSpec("active_cases_monthly_branchwise.json", "active_cases_monthly_branchwise",
-                    new String[] { "branchCode", "cal_month" }, new String[] { "cal_month" }, false),
+                    new String[] { "branchCode", "calMonth" },  new String[] { "calMonth" },  false),
             new FileSpec("all_cases.jsonl",                      "all_cases",
-                    new String[] { "requestId" },              NONE,                         true)
+                    new String[] { "requestId" },
+                    new String[] { "requestDate", "commencementDate", "lastPremiumPaidDate",
+                                   "lapseDate", "revivalPeriodEndDate",
+                                   "documents[].uploadedOn", "documents[].actionOn" },
+                    true)
     };
 
     public static void main(String[] args) {
@@ -212,11 +213,28 @@ public final class MongoDataLoader {
     private static void normalizeDateFields(Document doc, String[] dateFields) {
         if (dateFields.length == 0) return;
         for (String field : dateFields) {
-            Object v = doc.get(field);
-            if (v instanceof String s && !s.isBlank()) {
-                LocalDate ld = LocalDate.parse(s);
-                doc.put(field, Date.from(ld.atStartOfDay(ZoneOffset.UTC).toInstant()));
+            int bracket = field.indexOf("[]");
+            if (bracket < 0) {
+                convertIfString(doc, field);
+            } else {
+                // Path like "documents[].uploadedOn" — traverse the array.
+                String parentKey = field.substring(0, bracket);
+                String childKey = field.substring(bracket + 3);  // skip "[]."
+                Object arr = doc.get(parentKey);
+                if (arr instanceof List<?> list) {
+                    for (Object item : list) {
+                        if (item instanceof Document d) convertIfString(d, childKey);
+                    }
+                }
             }
+        }
+    }
+
+    private static void convertIfString(Document doc, String field) {
+        Object v = doc.get(field);
+        if (v instanceof String s && !s.isBlank()) {
+            LocalDate ld = LocalDate.parse(s);
+            doc.put(field, Date.from(ld.atStartOfDay(ZoneOffset.UTC).toInstant()));
         }
     }
 

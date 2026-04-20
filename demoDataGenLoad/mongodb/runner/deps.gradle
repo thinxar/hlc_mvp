@@ -1,0 +1,38 @@
+def versions = [
+    spring_boot: '3.3.4',
+    log4j2:      '2.25.1',
+    jackson:     '2.17.2',
+    slf4j:       '2.0.17',
+    lombok:      '1.18.40',
+    mongo_driver:'5.2.0'
+]
+
+def jackson = [
+    annotations: "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}",
+    core:        "com.fasterxml.jackson.core:jackson-core:${versions.jackson}",
+    databind:    "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}",
+    jsr310:      "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${versions.jackson}"
+]
+
+def apache = [
+    log4j2: [
+        slf4j_adapter: "org.apache.logging.log4j:log4j-to-slf4j:${versions.log4j2}"
+    ]
+]
+
+def org = [
+    lombok: "org.projectlombok:lombok:${versions.lombok}",
+    slf4j:  [ api: "org.slf4j:slf4j-api:${versions.slf4j}" ]
+]
+
+def mongo = [
+    sync: "org.mongodb:mongodb-driver-sync:${versions.mongo_driver}"
+]
+
+ext.deps = [
+    'versions': versions,
+    'jackson':  jackson,
+    'apache':   apache,
+    'org':      org,
+    'mongo':    mongo
+]

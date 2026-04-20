@@ -6,17 +6,17 @@ Output format: flat JSON object (single document per request).
 Field                   | Type    | Format / Constraint                                 | Source / Example
 ------------------------|---------|-----------------------------------------------------|--------------------------------------------
 requestId               | string  | Pattern: REV-YYYY-NNNNNNN (7-digit sequence)        | "REV-2026-0482917"
-requestDate             | string  | ISO date (YYYY-MM-DD)                               | "2026-04-19"
-Channel                 | string  | Enum: AGENT_PORTAL | CUSTOMER_PORTAL | BRANCH 	  | "AGENT_PORTAL"
-PolicyNumber            | string  | Pattern: NNNNNNNNN (9-digit)                        | "POL-887766554"
+requestDate             | date    | date (BSON Date at UTC midnight); YYYY-MM-DD on wire| "2026-04-19"
+channel                 | string  | Enum: AGENT_PORTAL | CUSTOMER_PORTAL | BRANCH 	  | "AGENT_PORTAL"
+policyNumber            | string  | Pattern: NNNNNNNNN (9-digit)                        | "POL-887766554"
 productCode             | string  | Product catalogue code                              | "TRAD-ENDOW-15"
-commencementDate        | string  | ISO date; policy inception                          | "2019-06-10"
-lastPremiumPaidDate     | string  | ISO date; must be <= requestDate                    | "2024-06-10"
+commencementDate        | date    | date; policy inception                              | "2019-06-10"
+lastPremiumPaidDate     | date    | date; must be <= requestDate                        | "2024-06-10"
 policyStatus            | string  | Enum: INFORCE | LAPSED | PAIDUP | SURRENDERED         | "LAPSED"
-lapseDate               | string  | ISO date; required when policyStatus = LAPSED       | "2026-01-10"
-revivalPeriodEndDate    | string  | ISO date; typically lapseDate + 5 years             | "2030-01-10"
+lapseDate               | date    | date; required when policyStatus = LAPSED           | "2026-01-10"
+revivalPeriodEndDate    | date    | date; typically lapseDate + 5 years                 | "2030-01-10"
 submittedBy             | string  | 8-digit numeric value (zero-padded)                 | "45829137"
-Zone                    | string  | LIC zone code; from branch.csv                      | "NCZ"
+zone                    | string  | LIC zone code; from branch.csv                      | "NCZ"
 divisionName            | string  | Division; from branch.csv                           | "Kanpur"
 doCode                  | string  | Divisional Office code; 3-digit running sequence    | "241"
                         |         | starting at "201", assigned per distinct            |
@@ -38,8 +38,8 @@ status		| string | Enum: accepted,rejected,pending							| "accepted"
 docId       | string | Pattern: DOC-NNNNN                                        | "DOC-10021"
 uploadedBy  | string  | 8-digit numeric value (zero-padded)                 | "45829137"
 approvedBy  | string  | 8-digit numeric value (zero-padded), applicable when status != pending                 | "45829136"
-uploadedOn  | string | ISO date (YYYY-MM-DD); must be > requestDate and <= requestDate + 5 days | "2026-04-22"
-actionOn    | string | ISO date (YYYY-MM-DD); uploadedOn + 1 to 45 days when status != pending; within a single request, max(actionOn) - min(actionOn) MUST be <= 5 days; empty string when status = pending | "2026-04-29"
+uploadedOn  | date   | date; must be > requestDate and <= requestDate + 5 days | "2026-04-22"
+actionOn    | date   | date; uploadedOn + 1 to 45 days when status != pending; within a single request, max(actionOn) - min(actionOn) MUST be <= 5 days; null when status = pending | "2026-04-29"
 
 
 Example value for the "documents" field:
@@ -52,15 +52,16 @@ Example value for the "documents" field:
 
 Rules
 -----
-1. Zone, divisionName, doCode, branchCode, branchName MUST be sourced as a
+1. zone, divisionName, doCode, branchCode, branchName MUST be sourced as a
    single row from generated/branch.csv (the CLEANSED master file produced
    by specs/cleansing/branch_cleansing_spec.txt; columns: Zone, Division
    Name, doCode, Branch Code, Branch Name, Number of Cases, Documents).
+   The CSV column header "Zone" maps to the output field `zone` (camelCase).
    Do not mix-and-match fields across rows. Running this generator against
    the raw base_data/branch.csv is unsupported - run the cleansing stage
    first.
    For each row, let N = 2 * (CSV "Number of Cases" value). Generate exactly
-   N sample request documents, each carrying that row's Zone / divisionName
+   N sample request documents, each carrying that row's zone / divisionName
    / doCode / branchCode / branchName. Subsequent rules that reference the
    branch's case count use this N.
 2. CSV header uses "Division Name" and "Branch Code" / "Branch Name" - map to
@@ -100,7 +101,10 @@ Rules
        each ID at most once.
    4.4 Determinism: all pool assignments are deterministic for a given run
        seed so the generator is reproducible.
-5. All dates are strings in ISO-8601 date form (YYYY-MM-DD); no time component.
+5. All dates are modeled as BSON Date at UTC midnight (no intra-day time
+   component). The JSON/JSONL wire representation remains ISO-8601
+   YYYY-MM-DD for readability; the loader normalizes those strings to
+   UTC-midnight BSON Date at ingest.
 6. requestId year segment should match the calendar year of requestDate.
 7. lapseDate and revivalPeriodEndDate are only meaningful when policyStatus = LAPSED;
    keep them populated in the sample regardless for schema stability.
@@ -168,7 +172,7 @@ Rules
          candidates other than uploadedBy are always available, so the
          redraw always terminates.
 13. doCode is a pass-through field from generated/branch.csv, carried on
-    every case alongside Zone / divisionName / branchCode / branchName
+    every case alongside zone / divisionName / branchCode / branchName
     (rule 1). The generator does not derive or transform doCode; all
     normalization and sequence assignment happens in the cleansing
     stage (see specs/cleansing/branch_cleansing_spec.txt, rules 3 and 4).
@@ -177,11 +181,15 @@ Rules
 
 Example
 -------
+(The JSON/JSONL wire-format representation of date fields is the ISO-8601
+string form YYYY-MM-DD shown below; the loader converts these to BSON Date
+at UTC midnight on ingest per rule 5.)
+
 {
   "requestId": "REV-2026-0482917",
   "requestDate": "2026-04-19",
-  "Channel": "AGENT_PORTAL",
-  "PolicyNumber": "POL-887766554",
+  "channel": "AGENT_PORTAL",
+  "policyNumber": "POL-887766554",
   "productCode": "TRAD-ENDOW-15",
   "commencementDate": "2019-06-10",
   "lastPremiumPaidDate": "2024-06-10",
@@ -189,7 +197,7 @@ Example
   "lapseDate": "2026-01-10",
   "revivalPeriodEndDate": "2030-01-10",
   "submittedBy": "45829137",
-  "Zone": "NCZ",
+  "zone": "NCZ",
   "divisionName": "Kanpur",
   "doCode": "241",
   "branchCode": "231",

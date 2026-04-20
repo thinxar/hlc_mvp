@@ -22,8 +22,8 @@ public class MonthlyActiveCasesEntity {
 	private String branchName;
 	private String divisionName;
 	private String doCode;
-	private String Zone;
-	private LocalDate cal_month;
+	private String zone;
+	private LocalDate calMonth;
 
 	private Integer pendingDocuments;
 	private Integer submittedDocuments;

@@ -20,8 +20,8 @@ public class DailyBranchWiseReportEntity {
 	private String branchName;
 	private String divisionName;
 	private String doCode;
-	private String Zone;
-	private LocalDate cal_date;
+	private String zone;
+	private LocalDate calDate;
 
 	private Integer pendingDocuments;
 	private Integer submittedDocuments;

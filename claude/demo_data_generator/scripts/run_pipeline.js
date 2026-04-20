@@ -89,9 +89,8 @@ if (!skipStage2) {
 }
 
 // Stage 3 - aggregations (independent of each other; run sequentially for simpler logs)
-run('stage3 daily',                       'scripts/aggregated/generate_active_cases_daily_branchwise.js');
-run('stage3 weekly',                      'scripts/aggregated/generate_active_cases_weekly_branchwise.js');
-run('stage3 monthly',                     'scripts/aggregated/generate_active_cases_monthly_branchwise.js');
-run('stage3 monthly_branchwise (legacy)', 'scripts/aggregated/generate_monthly_branchwise_report.js');
+run('stage3 daily',   'scripts/aggregated/generate_active_cases_daily_branchwise.js');
+run('stage3 weekly',  'scripts/aggregated/generate_active_cases_weekly_branchwise.js');
+run('stage3 monthly', 'scripts/aggregated/generate_active_cases_monthly_branchwise.js');
 
 console.log('=== pipeline complete ===');

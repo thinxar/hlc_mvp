@@ -1,0 +1,64 @@
+Data Model - active_cases_monthly_branchwise
+============================================
+
+Document schema
+---------------
+
+Field              | BSON type  | Format / Constraint                          | Example
+-------------------|------------|----------------------------------------------|------------
+_id                | ObjectId   | mongo-assigned                               | -
+id                 | int / long | within-run sequence, assigned after sort     | 1
+branchCode         | string     | grouping key                                 | "359"
+branchName         | string     | constant per branchCode                      | "SEHORE"
+divisionName       | string     | constant per branchCode                      | "Bhopal"
+doCode             | string     | constant per divisionName                    | "201"
+zone               | string     | LIC zone                                     | "CZ"
+calMonth           | date       | BSON Date at UTC midnight; FIRST DAY of a    | 2026-04-01T00:00:00Z
+                   |            | calendar month (DD = "01")                   |
+pendingDocuments   | int / long | open backlog AS OF month_end(calMonth)       | 128
+submittedDocuments | int / long | documents uploaded WITHIN the calendar month | 1380
+processedDocuments | int / long | documents actioned WITHIN the calendar month | 1420
+perApprover        | array      | breakdown of processedDocuments by approver  | see below
+
+perApprover element: same shape and invariants as active_cases_branchwise.
+
+month_end(calMonth) = min(last calendar day of calMonth, REF_DATE).
+The current month's as-of snapshot is partial (month-to-date).
+
+
+Indexes
+-------
+1. { branchCode: 1, calMonth: 1 }     unique   (primary identity)
+2. { calMonth: 1 }                             (time-range scans)
+3. { doCode: 1, calMonth: 1 }                  (DO-scoped monthly query)
+
+
+Relationships
+-------------
+- branchCode joins to branches; doCode joins to zone_divisions.
+- Source is all_cases; full recompute every run.
+- Companion to the daily / weekly variants.
+
+
+Expected volume
+---------------
+~2,000 branches * up to 24 calMonth rows = ~48,000 rows upper bound.
+Sparse-output drops zero-rows.
+
+
+Known caveats
+-------------
+1. Not wired up to an endpoint yet. The Java service method
+   RevDashBoardService.getMonthlyActiveCasesSummary exists but is not
+   mapped by any RevDashBoardController path. It still uses the
+   legacy ResponseModel shape + computeTodayDocuments.
+2. Unlike the daily and weekly variants, this aggregation has NO
+   case-selection pre-filter at generation time - all source cases
+   feed the aggregator. The "recently-active" focus offered no value
+   over a 24-month horizon.
+3. The current-month row is a partial month-to-date snapshot;
+   callers comparing "current vs previous" must account for the
+   clamp on month_end.
+4. pendingDocuments has the same as-of summation caveat when rolled
+   up across calMonths ("pending-months").
+5. id is a within-run sequence, not stable across runs.

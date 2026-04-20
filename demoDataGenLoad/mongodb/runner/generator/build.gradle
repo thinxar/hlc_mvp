@@ -1,0 +1,73 @@
+plugins {
+  id 'application'
+  id 'org.springframework.boot'
+  id 'io.spring.dependency-management'
+}
+
+compileJava.options.encoding = 'UTF-8'
+group = 'com.palmyralabs.dms.demo'
+
+application {
+    mainClass = 'com.palmyralabs.dms.demo.generator.GeneratorMain'
+
+    startScripts {
+        classpath += files('conf')
+
+        doLast {
+            def windowsScriptFile = file getWindowsScript()
+            def unixScriptFile    = file getUnixScript()
+            windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME%\\lib\\conf', '%APP_HOME%\\resources')
+            unixScriptFile.text  = unixScriptFile.text.replace('$APP_HOME/lib/conf', '$APP_HOME/resources')
+        }
+    }
+}
+
+bootJar {
+    archiveClassifier = ''
+    mainClass = 'com.palmyralabs.dms.demo.generator.GeneratorMain'
+}
+
+// Build both the plain jar (for libraries) and the bootJar (fat / executable).
+jar {
+    enabled = true
+    archiveClassifier = 'plain'
+    exclude('**/*.yaml')
+    exclude('**/*.xml')
+}
+
+dependencies {
+    implementation("ch.qos.logback:logback-classic:1.5.11")
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+
+    all*.exclude module: 'spring-boot-starter-logging'
+}
+
+distZip {
+   exclude('**/*.yaml')
+   exclude('**/*.xml')
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+distributions {
+    main {
+        contents {
+            from ('src/main/resources') {
+                exclude('application.yaml')
+                into 'resources'
+            }
+            from 'src/main/resources/application.yaml'
+        }
+    }
+}
+
+installDist {
+    into '../dist/generator'
+}
