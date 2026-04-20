@@ -11,10 +11,10 @@ semantics - just rolled up to WEEKLY grain over a longer history.
 Parameters
 ----------
 Single-source-of-truth knobs referenced throughout this spec. Change
-the value here and every derived bound below (case selection arm B,
-calWeek enumeration, Rules 1 and 8) follows automatically.
+the value here and every derived bound below (case selection arms A
+and B, calWeek enumeration, Rules 1 and 8) follows automatically.
 
-  WINDOW_WEEKS = 8     # length of the reporting window in weeks
+  WINDOW_WEEKS = 52    # length of the reporting window in weeks
 
 A "week" in this spec is a rolling 7-day period anchored at REF_DATE,
 NOT an ISO calendar week. This keeps the first/last week bounds
@@ -25,11 +25,12 @@ The WINDOW_WEEKS weeks are indexed from 0 (most recent) backwards:
 
 The full window span is therefore
   [REF_DATE - 7 * WINDOW_WEEKS + 1, REF_DATE]
-which, at WINDOW_WEEKS = 8, is the last 56 calendar days.
+which, at WINDOW_WEEKS = 52, is the last 364 calendar days.
 
-All other numeric thresholds (e.g. the 90-day arm-A lookback) are
-deliberately NOT parameterised - if they need to vary, add a named
-parameter here first.
+The recent-and-pending arm-A lookback is derived from WINDOW_WEEKS
+(see Case selection: requestDate >= REF_DATE - 7 * WINDOW_WEEKS - 89 days).
+No other numeric thresholds in this spec are parameterised - if they
+need to vary, add a named parameter here first.
 
 
 Report - Active Cases, Weekly Branch Activity
@@ -98,7 +99,8 @@ A source case qualifies for this report when EITHER condition holds
 (logical OR; a case meeting both is included once):
 
   A. Recent-and-pending:
-     requestDate >= REF_DATE - 89 days (i.e. within the last 90 days),
+     requestDate >= REF_DATE - 7 * WINDOW_WEEKS - 89 days
+     (i.e. within the last 7 * WINDOW_WEEKS + 90 calendar days),
      AND the case has at least one document with status = "pending".
 
   B. Recently actioned:

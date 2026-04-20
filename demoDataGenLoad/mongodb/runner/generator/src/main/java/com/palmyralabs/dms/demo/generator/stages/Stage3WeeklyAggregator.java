@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Stage 3: weekly aggregator (WINDOW_WEEKS = 8 rolling 7-day periods ending
+ * Stage 3: weekly aggregator (WINDOW_WEEKS rolling 7-day periods ending
  * at REF_DATE). Each cal_week is the LAST day of a rolling 7-day period.
  * Matches {@code specs/aggregation/active_cases_weekly_agg_spec.txt}.
  */
@@ -24,7 +24,7 @@ import java.util.TreeMap;
 @Component
 public class Stage3WeeklyAggregator {
 
-    private static final int WINDOW_WEEKS = 8;
+    private static final int WINDOW_WEEKS = 52;
     private static final int WEEK_DAYS = 7;
 
     public void run(PipelineContext ctx) throws IOException {
@@ -32,7 +32,7 @@ public class Stage3WeeklyAggregator {
         Path outPath = ctx.getDataDir().resolve("active_cases_weekly_branchwise.json");
         String REF_DATE = ctx.getReportToday();
         String WINDOW_START = DateUtil.addDays(REF_DATE, -(WEEK_DAYS * WINDOW_WEEKS - 1));
-        String ARM_A_START  = DateUtil.addDays(REF_DATE, -89);
+        String ARM_A_START  = DateUtil.addDays(REF_DATE, -(WEEK_DAYS * WINDOW_WEEKS + 89));
 
         List<String> calWeeks = new ArrayList<>(WINDOW_WEEKS);
         for (int k = WINDOW_WEEKS - 1; k >= 0; k--) {

@@ -58,8 +58,8 @@ public final class MongoDataLoader {
     private static final String[] CANDIDATE_DATA_ROOTS = {
             "generated",
             "../generated",
-            "../../claude/demo_data_generator/generated",
-            "../../../claude/demo_data_generator/generated"
+            "../../demoDataGenLoad/mongodb/generated",
+            "../../../demoDataGenLoad/mongodb/generated"
     };
 
     private static final String[] NONE = new String[0];

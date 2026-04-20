@@ -8,7 +8,7 @@ Field                   | Type    | Format / Constraint                         
 requestId               | string  | Pattern: REV-YYYY-NNNNNNN (7-digit sequence)        | "REV-2026-0482917"
 requestDate             | date    | date (BSON Date at UTC midnight); YYYY-MM-DD on wire| "2026-04-19"
 channel                 | string  | Enum: AGENT_PORTAL | CUSTOMER_PORTAL | BRANCH 	  | "AGENT_PORTAL"
-policyNumber            | string  | Pattern: NNNNNNNNN (9-digit)                        | "POL-887766554"
+policyNumber            | string  | Pattern: NNNNNNNNN (9-digit, no prefix)             | "887766554"
 productCode             | string  | Product catalogue code                              | "TRAD-ENDOW-15"
 commencementDate        | date    | date; policy inception                              | "2019-06-10"
 lastPremiumPaidDate     | date    | date; must be <= requestDate                        | "2024-06-10"
@@ -32,7 +32,7 @@ Each element in "documents" is an object with the following fields:
 
 Field       | Type   | Format / Constraint                                       | Example
 ------------|--------|-----------------------------------------------------------|----------------
-name        | string | random file name based on the type, pdf|doc				 | "DGH_FORM"
+name        | string | random file name derived from type, with .pdf / .doc / .docx / .jpg / .png extension | "dgh_form_010021.pdf"
 type        | string | Enum: DGH_FORM | PAYMENT_RECEIPT | ID_PROOF               | "DGH_FORM"
 status		| string | Enum: accepted,rejected,pending							| "accepted"
 docId       | string | Pattern: DOC-NNNNN                                        | "DOC-10021"
@@ -42,12 +42,41 @@ uploadedOn  | date   | date; must be > requestDate and <= requestDate + 5 days |
 actionOn    | date   | date; uploadedOn + 1 to 45 days when status != pending; within a single request, max(actionOn) - min(actionOn) MUST be <= 5 days; null when status = pending | "2026-04-29"
 
 
-Example value for the "documents" field:
+Example value for the "documents" field (every element carries all 8 fields
+listed in the table above; approvedBy is "" when status = pending, and
+actionOn is null when status = pending):
 
   "documents": [
-    { "type": "DGH_FORM",        "docId": "DOC-10021", "uploadedOn": "2026-04-19" },
-    { "type": "PAYMENT_RECEIPT", "docId": "DOC-10022", "uploadedOn": "2026-04-19" },
-    { "type": "ID_PROOF",        "docId": "DOC-10023", "uploadedOn": "2026-04-19" }
+    {
+      "name": "dgh_form_010021.pdf",
+      "type": "DGH_FORM",
+      "status": "accepted",
+      "docId": "DOC-10021",
+      "uploadedBy": "45829137",
+      "approvedBy": "45829136",
+      "uploadedOn": "2026-04-22",
+      "actionOn": "2026-04-29"
+    },
+    {
+      "name": "payment_receipt-6554-10022.pdf",
+      "type": "PAYMENT_RECEIPT",
+      "status": "pending",
+      "docId": "DOC-10022",
+      "uploadedBy": "45829137",
+      "approvedBy": "",
+      "uploadedOn": "2026-04-22",
+      "actionOn": null
+    },
+    {
+      "name": "id_proof_20260422_0023.pdf",
+      "type": "ID_PROOF",
+      "status": "rejected",
+      "docId": "DOC-10023",
+      "uploadedBy": "45829138",
+      "approvedBy": "45829139",
+      "uploadedOn": "2026-04-22",
+      "actionOn": "2026-04-27"
+    }
   ]
 
 Rules
@@ -189,7 +218,7 @@ at UTC midnight on ingest per rule 5.)
   "requestId": "REV-2026-0482917",
   "requestDate": "2026-04-19",
   "channel": "AGENT_PORTAL",
-  "policyNumber": "POL-887766554",
+  "policyNumber": "887766554",
   "productCode": "TRAD-ENDOW-15",
   "commencementDate": "2019-06-10",
   "lastPremiumPaidDate": "2024-06-10",
@@ -203,8 +232,35 @@ at UTC midnight on ingest per rule 5.)
   "branchCode": "231",
   "branchName": "KANPUR (SHIVOY TOWER) DBO",
   "documents": [
-    { "type": "DGH_FORM",        "docId": "DOC-10021", "uploadedOn": "2026-04-19" },
-    { "type": "PAYMENT_RECEIPT", "docId": "DOC-10022", "uploadedOn": "2026-04-19" },
-    { "type": "ID_PROOF",        "docId": "DOC-10023", "uploadedOn": "2026-04-19" }
+    {
+      "name": "dgh_form_010021.pdf",
+      "type": "DGH_FORM",
+      "status": "accepted",
+      "docId": "DOC-10021",
+      "uploadedBy": "45829137",
+      "approvedBy": "45829136",
+      "uploadedOn": "2026-04-22",
+      "actionOn": "2026-04-29"
+    },
+    {
+      "name": "payment_receipt-6554-10022.pdf",
+      "type": "PAYMENT_RECEIPT",
+      "status": "pending",
+      "docId": "DOC-10022",
+      "uploadedBy": "45829137",
+      "approvedBy": "",
+      "uploadedOn": "2026-04-22",
+      "actionOn": null
+    },
+    {
+      "name": "id_proof_20260422_0023.pdf",
+      "type": "ID_PROOF",
+      "status": "rejected",
+      "docId": "DOC-10023",
+      "uploadedBy": "45829138",
+      "approvedBy": "45829139",
+      "uploadedOn": "2026-04-22",
+      "actionOn": "2026-04-27"
+    }
   ]
 }

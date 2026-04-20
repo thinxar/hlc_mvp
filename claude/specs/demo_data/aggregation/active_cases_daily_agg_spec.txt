@@ -12,16 +12,17 @@ variants; only the reporting grain differs.
 Parameters
 ----------
 Single-source-of-truth knobs referenced throughout this spec. Change
-the value here and every derived bound below (case selection arm B,
-calDate enumeration, Rules 1 and 8) follows automatically.
+the value here and every derived bound below (case selection arms A
+and B, calDate enumeration, Rules 1 and 8) follows automatically.
 
-  WINDOW_DAYS = 14     # length of the reporting / "recently actioned" window
+  WINDOW_DAYS = 90     # length of the reporting / "recently actioned" window
                         # in calendar days, inclusive. Window spans
                         # [REF_DATE - (WINDOW_DAYS - 1), REF_DATE].
 
-All other numeric thresholds in this spec (e.g. the 90-day arm-A
-lookback) are deliberately NOT parameterised - if they need to vary,
-add a named parameter here first.
+The recent-and-pending arm-A lookback is derived from WINDOW_DAYS
+(see Case selection: requestDate >= REF_DATE - WINDOW_DAYS - 89 days).
+No other numeric thresholds in this spec are parameterised - if they
+need to vary, add a named parameter here first.
 
 
 Report - Active Cases, Daily Branch Activity
@@ -89,7 +90,8 @@ A source case qualifies for this report when EITHER condition holds
 (logical OR; a case meeting both is included once):
 
   A. Recent-and-pending:
-     requestDate >= REF_DATE - 89 days (i.e. within the last 90 days),
+     requestDate >= REF_DATE - WINDOW_DAYS - 89 days
+     (i.e. within the last WINDOW_DAYS + 90 calendar days),
      AND the case has at least one document with status = "pending".
 
   B. Recently actioned:

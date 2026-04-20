@@ -24,14 +24,14 @@ import java.util.TreeMap;
 @Component
 public class Stage3DailyAggregator {
 
-    private static final int WINDOW_DAYS = 14;
+    private static final int WINDOW_DAYS = 90;
 
     public void run(PipelineContext ctx) throws IOException {
         Path inPath = ctx.allCasesPath();
         Path outPath = ctx.getDataDir().resolve("active_cases_branchwise.json");
         String REF_DATE = ctx.getReportToday();
         String WINDOW_START = DateUtil.addDays(REF_DATE, -(WINDOW_DAYS - 1));
-        String ARM_A_START  = DateUtil.addDays(REF_DATE, -89);
+        String ARM_A_START  = DateUtil.addDays(REF_DATE, -(WINDOW_DAYS + 89));
 
         List<String> calDates = new ArrayList<>(WINDOW_DAYS);
         for (int i = WINDOW_DAYS - 1; i >= 0; i--) calDates.add(DateUtil.addDays(REF_DATE, -i));

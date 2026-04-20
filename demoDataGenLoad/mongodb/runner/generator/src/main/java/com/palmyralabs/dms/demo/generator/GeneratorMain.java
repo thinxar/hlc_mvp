@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * Spring Boot entry point for the demo-data generator CLI.
  *
- * <p>Java port of the Node.js pipeline in {@code claude/demo_data_generator/scripts/}.
- * The pipeline is orchestrated by {@link PipelineRunner}; individual stages are
+ * <p>Implements the pipeline specified in {@code claude/specs/demo_data/}.
+ * Orchestrated by {@link PipelineRunner}; individual stages are
  * Spring {@code @Component}s under {@code com.palmyralabs.dms.demo.generator.stages}.
  *
  * <p>Usage:

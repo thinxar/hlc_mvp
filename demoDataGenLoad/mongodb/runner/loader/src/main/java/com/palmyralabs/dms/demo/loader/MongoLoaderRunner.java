@@ -63,9 +63,7 @@ public class MongoLoaderRunner implements ApplicationRunner {
     private static final String[] CANDIDATE_DATA_ROOTS = {
             "generated",
             "../generated",
-            "../../generated",
-            "../../claude/demo_data_generator/generated",
-            "../../../claude/demo_data_generator/generated"
+            "../../generated"
     };
 
     private static final String[] NONE = new String[0];

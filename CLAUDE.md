@@ -10,9 +10,10 @@ Multi-module monorepo for an insurance document-management MVP. The top-level fo
 - `service/` — **older JPA/Postgres variant of the same backend.** Same module names minus the `dms-revival`/`dms-policyBazaar`/`dms-ananda` packages. Kept for reference; new work goes into `mongo-service/service/`.
 - `web/` — React 19 + Vite 7 + TypeScript frontend (Mantine 8, Tailwind 4, palmyralabs `rt-forms` / `palmyra-wire` / `rt-apexchart`). Entry `src/main.tsx` → `src/App.tsx` → routes in `src/routes/AppRoutes.tsx`. Dev server runs on port 5000 and proxies `/api` to `http://192.168.1.101:7070/`.
 - `dataloader/`, `hlc_ananda_dataload/`, `hlc_policyBazaar_dataload/`, `hlc_revival_dataload/` — standalone Spring Boot / Gradle CLI apps (each with a `DataLoadMain`) that bulk-load CSV data into the backend's Mongo. Independent `settings.gradle` per folder.
-- `claude/` — AI-authored artifacts folder with two distinct purposes:
-  - `claude/demo_data_generator/` — synthetic dataset pipeline (Node.js, no package.json). Converts `base_data/branch.csv` into `generated/*.json[l]` fixtures the backend loads. See **Data pipeline** below.
-  - `claude/service/<module>/<feature>/` — per-feature specification docs for backend services (e.g. `claude/service/dms_revival/dashboard/RevDashBoardController.md`). Note the underscore in `dms_revival` — the spec tree uses `_` where the Gradle module name uses `-`. Prefer editing an existing spec over creating a new one when updating an already-documented feature.
+- `demoDataGenLoad/mongodb/` — **demo-data toolchain for the Mongo backend.** Gradle multi-module under `runner/` (`generator` + `loader`, Spring Boot 3.3 CLIs, Java 17). `generator` converts `base_data/branch.csv` into `generated/*.json[l]` fixtures; `loader` upserts those fixtures into MongoDB. Input CSV lives in `demoDataGenLoad/mongodb/base_data/`; outputs land in `demoDataGenLoad/mongodb/generated/`. See **Data pipeline** below.
+- `claude/` — AI-authored artifacts: per-feature specification docs for backend services and demo data.
+  - `claude/service/<module>/<feature>/` — per-feature backend-service specs (e.g. `claude/service/dms_revival/dashboard/RevDashBoardController.md`). Note the underscore in `dms_revival` — the spec tree uses `_` where the Gradle module name uses `-`. Prefer editing an existing spec over creating a new one when updating an already-documented feature.
+  - `claude/specs/demo_data/` — authoritative specs for the demo-data pipeline: `pipeline/`, `cleansing/`, `reference_data/`, `data_gen/`, `aggregation/`, and `data_model/`. The `demoDataGenLoad/mongodb/runner/` stages implement these specs.
 - `dbscripts/` — PostgreSQL DDL and `alter_*.sql` migrations for the legacy `service/` variant. Not used by `mongo-service/`.
 - `nginx/nginx.conf` — production reverse proxy: serves `web/` build from `/opt/ldm/web`, proxies `/api/*` to upstream `127.0.0.1:8080`.
 
@@ -47,23 +48,29 @@ npm run preview      # preview production build
 
 TS path aliases (see `tsconfig.app.json`): `config/*`, `templates/*`, `wire/*`, `components/*`, `utils/*`, `public/*` — all rooted at `web/`. Import with these aliases rather than long relative paths.
 
-### Data pipeline (`claude/demo_data_generator/`)
+### Data pipeline (`demoDataGenLoad/mongodb/runner/`)
 
-Generates demo fixtures from the single input `base_data/branch.csv`. Bootstrap: create `claude/demo_data_generator/base_data/` and drop `branch.csv` there before the first run.
+Java/Gradle Spring Boot CLIs. `generator` builds demo fixtures from the single input `base_data/branch.csv`; `loader` upserts the generated files into MongoDB. Authoritative specs live in `claude/specs/demo_data/` — the runtime stages (`Stage0Cleanser`, `Stage1BranchExtractor`, `Stage1ZoneDivisionExtractor`, `Stage2CaseGenerator`, `Stage3{Daily,Weekly,Monthly}Aggregator`) implement those specs 1:1.
 
 ```bash
-# from claude/demo_data_generator/
-node scripts/run_pipeline.js                         # full pipeline, system date
-node scripts/run_pipeline.js 2026-04-19              # pin GEN_TODAY and REPORT_TODAY
-GEN_TODAY=2026-04-19 REPORT_TODAY=2026-04-19 node scripts/run_pipeline.js
-SKIP_STAGE_0=1 node scripts/run_pipeline.js          # reuse generated/branch.csv
-SKIP_STAGE_1=1 node scripts/run_pipeline.js          # skip reference extractions
-SKIP_STAGE_2=1 node scripts/run_pipeline.js          # reuse generated/all_cases.jsonl
+# from demoDataGenLoad/mongodb/runner/
+./gradlew :generator:build :loader:build              # build both modules
+./gradlew :generator:bootRun                          # run generator, system date
+./gradlew :generator:bootRun --args='2026-04-19'      # pin genToday + reportToday
+./gradlew :loader:bootRun                             # load generated/ into Mongo
+
+# Env overrides (mirror the original Node pipeline flags)
+GEN_TODAY=2026-04-19 REPORT_TODAY=2026-04-19 ./gradlew :generator:bootRun
+SKIP_STAGE_0=1 ./gradlew :generator:bootRun           # reuse generated/branch.csv
+SKIP_STAGE_1=1 ./gradlew :generator:bootRun           # skip reference extractions
+SKIP_STAGE_2=1 ./gradlew :generator:bootRun           # reuse generated/all_cases.jsonl
 ```
 
-Stages (see `specs/pipeline/run_order_spec.txt` inside the pipeline root for the authoritative spec): **Stage 0** cleanses master CSV → `generated/branch.csv`; **Stage 1** reference extractions (`branches.json`, `zone_divisions.json`) — parallel-safe; **Stage 2** `generate_all_cases.js` builds the master `all_cases.jsonl` (dominates runtime, deterministic per fixed seed + `GEN_TODAY`); **Stage 3** four independent aggregators consume `all_cases.jsonl`. `GEN_TODAY` and `REPORT_TODAY` should be set to the same date — misaligned values produce reports whose `REF_DATE` doesn't match the dataset clamp. Every script overwrites its single output; no append, no cache — for a clean build delete `generated/` and rerun.
+The generator's CWD must let it resolve `base_data/branch.csv` and write to `generated/`. Defaults in `generator/src/main/resources/application.yaml` (`app.baseDataDir=base_data`, `app.dataDir=generated`) assume CWD is `demoDataGenLoad/mongodb/`.
 
-The generated JSON/JSONL fixtures are consumed by `mongo-service/service/dms-revival/src/main/java/com/palmyralabs/dms/revival/service/RevDataload/MongoDataLoader.java`, which upserts them into MongoDB. After the April 2026 Date migration, the loader normalizes ISO-date string fields (`month`, `cal_date`, `cal_week`, `cal_month`) to BSON `Date` at UTC midnight during ingest — see `FileSpec.dateFields` and `normalizeDateFields`. ⚠️ `MongoDataLoader.CANDIDATE_DATA_ROOTS` still points at the old paths (`E:/hlc_mvp/claude/generated`, `../../claude/generated`) — update to `.../claude/demo_data_generator/generated` or pass `-DDATA_DIR=...` explicitly.
+Stages (see `claude/specs/demo_data/pipeline/run_order_spec.txt` for the authoritative spec): **Stage 0** cleanses master CSV → `generated/branch.csv`; **Stage 1** reference extractions (`branches.json`, `zone_divisions.json`) — parallel-safe; **Stage 2** `Stage2CaseGenerator` builds the master `all_cases.jsonl` (dominates runtime, deterministic per fixed PRNG seed in `Mulberry32` + `GEN_TODAY`); **Stage 3** three independent aggregators (daily/weekly/monthly) consume `all_cases.jsonl`. `GEN_TODAY` and `REPORT_TODAY` should be set to the same date — misaligned values produce reports whose `REF_DATE` doesn't match the dataset clamp. Every stage overwrites its single output; no append, no cache — for a clean build delete `generated/` and rerun.
+
+The generated JSON/JSONL fixtures are consumed by two paths: the standalone `loader` under `demoDataGenLoad/mongodb/runner/loader/` (preferred for demo seeding), and `mongo-service/service/dms-revival/src/main/java/com/palmyralabs/dms/revival/service/RevDataload/MongoDataLoader.java` (backend-embedded loader). Both normalize ISO-date string fields (`month`, `cal_date`, `cal_week`, `cal_month`) to BSON `Date` at UTC midnight during ingest — see `FileSpec.dateFields` and `normalizeDateFields`. Both resolve input via `CANDIDATE_DATA_ROOTS`; pass `-DDATA_DIR=...` to override when the process CWD does not sit next to `generated/`.
 
 ## Architecture notes
 
