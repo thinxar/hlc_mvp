@@ -1,13 +1,31 @@
-import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { useRef } from "react";
 import { useCommonChartStyles } from "../ChartTheme";
 import type { IChartInput } from "../type";
+import { formatDate } from "utils/FormateDate";
 
 const MonthlyAcceptanceRateChart = (props: IChartInput) => {
-    const { title, xKey, yKey, subText } = props;
+    const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
     const clickFilter = useRef<{ departmentName: string }>(null);
+
+    const transformChartData = (data: any): any => {
+        const formatData = data?.map((item: any) => {
+            const total =
+                (item.approvedDocuments || 0) +
+                (item.pendingDocuments || 0) +
+                (item.rejectedDocuments || 0);
+
+            return {
+                calMonth: item.calMonth,
+                pendingDocuments: total ? Math.round((item.pendingDocuments / total) * 100) : 0,
+                rejectedDocuments: total ? Math.round((item.rejectedDocuments / total) * 100) : 0,
+                processedDocuments: total ? Math.round((item.processedDocuments / total) * 100) : 0
+            };
+        });
+
+        return formatData;
+    }
 
     const options: any = {
         // ...commonOptions,
@@ -92,7 +110,11 @@ const MonthlyAcceptanceRateChart = (props: IChartInput) => {
         },
         xaxis: {
             labels: {
-                rotate: -45
+                rotate: -45,
+                formatter: (value: string) => {
+                    const date = value;
+                    return formatDate(date, 'month')
+                }
             },
         },
         yaxis: {
@@ -111,16 +133,16 @@ const MonthlyAcceptanceRateChart = (props: IChartInput) => {
         }
     }
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
-    const endPointX = '/MonthlyAcceptanceRate.json'
+    // const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
+    // const endPointX = '/MonthlyAcceptanceRate.json'
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="area" storeFactory={AppStoreFactory}
-                endPoint={endPointX} filter={props.filter}
+            <PalmyraApexChart options={options} type="area"
+                endPoint={endPoint} filter={props.filter}
                 seriesOptions={[
                     { name: "Pending", type: 'area' },
-                    { name: "Approved", type: 'area' }
-                ]}
+                    { name: "Processed", type: 'area' }
+                ]} preProcess={(d): any => transformChartData(d)}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
         </div>

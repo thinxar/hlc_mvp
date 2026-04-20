@@ -1,11 +1,11 @@
-import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { useRef } from "react";
 import { useCommonChartStyles } from "../ChartTheme";
 import type { IChartInput } from "../type";
+import { formatDate } from "utils/FormateDate";
 
 const CurrentFinancialYearCaseChart = (props: IChartInput) => {
-    const { title, xKey, yKey, subText } = props;
+    const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
     const clickFilter = useRef<{ departmentName: string }>(null);
 
@@ -88,7 +88,11 @@ const CurrentFinancialYearCaseChart = (props: IChartInput) => {
         },
         xaxis: {
             labels: {
-                rotate: -45
+                rotate: -45,
+                formatter: (value: string) => {
+                    const date = value;
+                    return formatDate(date, 'month')
+                }
             },
         },
         colors: [
@@ -116,15 +120,15 @@ const CurrentFinancialYearCaseChart = (props: IChartInput) => {
         }
     }
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
-    const endPointX = '/FinancialYearCase.json'
+    // const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
+    // const endPointX = '/FinancialYearCase.json'
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="bar" storeFactory={AppStoreFactory}
-                endPoint={endPointX} filter={props.filter}
+            <PalmyraApexChart options={options} type="bar"
+                endPoint={endPoint} filter={props.filter}
                 seriesOptions={[
                     { name: "Pending" },
-                    { name: "Approved" },
+                    { name: "Processed" },
                     { name: "Rejected" }
                 ]}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}

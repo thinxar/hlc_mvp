@@ -1,12 +1,16 @@
-import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { useRef } from "react";
 import { useCommonChartStyles } from "../ChartTheme";
 import type { IChartInput } from "../type";
+import { formatDate } from "utils/FormateDate";
+import { useDisclosure } from "@mantine/hooks";
+import { Modal } from "@mantine/core";
+import SRDocumentModal, { MOCK_SR_LIST } from "../grid/SRDocumentSummaryModal";
 
 const MonthlyTrendCaseChart = (props: IChartInput) => {
-    const { title, xKey, yKey, subText ,filter} = props;
+    const { title, xKey, yKey, subText, filter, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
+    const [opened, { open, close }] = useDisclosure(false);
     const clickFilter = useRef<{ departmentName: string }>(null);
 
     const options: any = {
@@ -41,6 +45,7 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
                         const allSeries = chartContext?.w?.config.series;
                         const xValue = allSeries[0]?.data[dataPointIndex]?.x;
                         clickFilter.current = { departmentName: xValue };
+                        open()
                     }
                 }
             }
@@ -88,7 +93,11 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
         },
         xaxis: {
             labels: {
-                rotate: -45
+                rotate: -45,
+                formatter: (value: string) => {
+                    const date = value;
+                    return formatDate(date, 'month')
+                }
             },
         },
         colors: [
@@ -116,19 +125,30 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
         }
     }
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
-    const endPointX = '/MonthlyCaseTrend.json'
+    // const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
+    // const endPointX = '/MonthlyCaseTrend.json'
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="bar" storeFactory={AppStoreFactory}
-                endPoint={endPointX} filter={filter}
+            <PalmyraApexChart options={options} type="bar"
+                endPoint={endPoint} filter={filter}
                 seriesOptions={[
                     { name: "Pending" },
-                    { name: "Approved" },
+                    { name: "Processed" },
                     { name: "Rejected" }
                 ]}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
+
+            <Modal opened={opened} onClose={close} centered size={"lg"}
+                closeOnClickOutside={false} withCloseButton={false}
+                styles={{
+                    body: {
+                        padding: 0
+                    }
+                }}
+            >
+                <SRDocumentModal onClose={close} month="April 2024" srList={MOCK_SR_LIST} />
+            </Modal>
         </div>
     );
 

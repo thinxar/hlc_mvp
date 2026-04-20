@@ -15,6 +15,7 @@ interface ICaseCard {
     approved: number | string,
     rejected: number | string,
     pending: number | string,
+    todayProcessed: number | string
     todayCases?: number | string
 }
 
@@ -36,7 +37,7 @@ const CaseOverviewCard = (props: IOptions) => {
     useEffect(() => {
 
         const query = buildQueryParams(filter);
-        const endpoint = query ? `${endPoint}?${query}` : endPoint;
+        const endpoint = query ? `${endPoint}&${query}` : endPoint;
 
         useFormstore(endpoint, {}, '').get({}).then((d) => {
             if (d)
@@ -45,15 +46,16 @@ const CaseOverviewCard = (props: IOptions) => {
     }, [query])
 
     const cases: ICaseCard = {
-        total: data ? formatAmount(data[0].value, true) : 0,
-        approved: data ? formatAmount(data[1].value, true) : 0,
-        rejected: data ? formatAmount(data[2].value, true) : 0,
-        pending: data ? formatAmount(data[3].value, true) : 0
+        total: data ? formatAmount(data.totalDocuments, true) : 0,
+        approved: data ? formatAmount(data.approvedDocuments, true) : 0,
+        rejected: data ? formatAmount(data.rejectedDocuments, true) : 0,
+        pending: data ? formatAmount(data.pendingDocuments, true) : 0,
+        todayProcessed: data ? formatAmount(data.todayProcessedDocuments, true) : 0
     };
 
     const cards = [
         {
-            title: "Total cases",
+            title: "Total Documents",
             value: cases.total,
             icon: MdOutlineNumbers,
             gradient: "from-blue-400 via-blue-500 to-blue-600",
@@ -61,9 +63,17 @@ const CaseOverviewCard = (props: IOptions) => {
             textColor: "text-blue-700 dark:text-blue-400"
 
         },
+        // {
+        //     title: "Approved Documents",
+        //     value: cases.approved,
+        //     icon: CheckCircle,
+        //     gradient: "from-emerald-400 via-green-500 to-emerald-600",
+        //     iconBg: "bg-linear-to-br from-emerald-100 to-green-200 dark:from-emerald-100/10 dark:to-green-600/10",
+        //     textColor: "text-emerald-700 dark:text-emerald-400"
+        // },
         {
-            title: "Approved Cases",
-            value: cases.approved,
+            title: "Processed Documents",
+            value: Number(cases.approved) + Number(cases.rejected),
             icon: CheckCircle,
             gradient: "from-emerald-400 via-green-500 to-emerald-600",
             iconBg: "bg-linear-to-br from-emerald-100 to-green-200 dark:from-emerald-100/10 dark:to-green-600/10",
@@ -78,7 +88,7 @@ const CaseOverviewCard = (props: IOptions) => {
         //     textColor: "text-red-700 dark:text-red-400",
         // },
         {
-            title: "Pending Cases",
+            title: "Pending Documents",
             value: cases.pending,
             icon: Clock,
             gradient: "from-amber-400 via-orange-500 to-red-500",
@@ -86,8 +96,8 @@ const CaseOverviewCard = (props: IOptions) => {
             textColor: "text-orange-700 dark:text-orange-400",
         },
         {
-            title: "Today's Cases",
-            value: 0,
+            title: "Today's Progress",
+            value: cases.todayProcessed,
             icon: CalendarDays,
             gradient: "from-teal-400 via-cyan-500 to-blue-500",
             iconBg: "bg-linear-to-br from-teal-100 to-cyan-200 dark:from-teal-100/10 dark:to-cyan-200/10",

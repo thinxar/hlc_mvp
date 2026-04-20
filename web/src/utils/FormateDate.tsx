@@ -136,6 +136,126 @@ function formatAmount(input: any, prefix?: any) {
     }
 }
 
+type RangeType = "days" | "weeks" | "months" | "fy_current" | "fy_previous";
+
+export const customDate = new Date("2026-04-19");
+export const getDate = '2026-04-19'
+interface DateRange {
+    fromMonth: string;
+    toMonth: string;
+}
+
+export const getDateRange = (
+    value: number,
+    type: RangeType
+): DateRange => {
+    const toDate = new Date(customDate);
+    const fromDate = new Date(customDate);
+
+    switch (type) {
+        case "days":
+            fromDate.setDate(toDate.getDate() - (value - 1));
+            break;
+
+        case "weeks":
+            fromDate.setDate(toDate.getDate() - (value * 7 - 1));
+            break;
+
+        case "months":
+            fromDate.setMonth(toDate.getMonth() - value + 1);
+            break;
+
+        case "fy_current": {
+            const year = toDate.getFullYear();
+            const month = toDate.getMonth();
+
+            const startYear = month < 3 ? year - 1 : year;
+
+            fromDate.setFullYear(startYear, 3, 1); // Apr 1
+            toDate.setFullYear(startYear + 1, 2, 31); // Mar 31
+            break;
+        }
+
+        case "fy_previous": {
+            const year = toDate.getFullYear();
+            const month = toDate.getMonth();
+
+            const startYear = month < 3 ? year - 2 : year - 1;
+
+            fromDate.setFullYear(startYear, 3, 1);
+            toDate.setFullYear(startYear + 1, 2, 31);
+            break;
+        }
+
+        default:
+            throw new Error("Invalid range type");
+    }
+
+    const format = (d: Date) =>
+        d.toISOString().split("T")[0];
+
+    return {
+        fromMonth: format(fromDate),
+        toMonth: format(toDate),
+    };
+};
+
+
+type DateFormatType = "month" | "week" | "day" | "default";
+
+export const formatDate = (
+    dateInput: string | Date,
+    type: DateFormatType = "month",
+    locale: string = "en-US"
+): string => {
+    if (!dateInput) return "";
+
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) return "";
+
+    switch (type) {
+        case "month":
+            return date.toLocaleString(locale, {
+                month: "short",
+                year: "numeric"
+            });
+
+        case "week": {
+            const start = new Date(date);
+            const end = new Date(date);
+            end.setDate(start.getDate() + 6);
+
+            const startStr = start.toLocaleString(locale, {
+                day: "2-digit",
+                month: "short"
+            });
+
+            const endStr = end.toLocaleString(locale, {
+                day: "2-digit",
+                month: "short"
+            });
+
+            return `${startStr} - ${endStr}`;
+        }
+
+        case "day":
+            return date.toLocaleString(locale, {
+                day: "2-digit",
+                month: "short"
+            });
+
+        default:
+            return date.toLocaleString(locale, {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            });
+    }
+};
+
+
+
+
 
 export { formatDateTime, getDaysBetweenDates, getCounts, getFinancialYears }
 

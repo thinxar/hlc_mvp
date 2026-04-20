@@ -1,10 +1,9 @@
-import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
-import type { IChartInput } from "../type";
 import { useCommonChartStyles } from "../ChartTheme";
+import type { IChartInput } from "../type";
 
 const TodayCaseBreakdownChart = (props: IChartInput) => {
-    const { title, xKey, yKey, subText } = props;
+    const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
 
     const options: any = {
@@ -83,15 +82,15 @@ const TodayCaseBreakdownChart = (props: IChartInput) => {
         }
     }
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
-    const endPointX = '/TodayCaseBreakdown.json'
+    // const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
+    // const endPointX = '/TodayCaseBreakdown.json'
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="radar" storeFactory={AppStoreFactory}
-                endPoint={endPointX} filter={props.filter}
+            <PalmyraApexChart options={options} type="radar"
+                endPoint={endPoint} filter={props.filter}
                 seriesOptions={[
                     { name: "Pending" },
-                    { name: "Approved" },
+                    { name: "Processed" },
                     { name: "Rejected" }
                 ]}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}

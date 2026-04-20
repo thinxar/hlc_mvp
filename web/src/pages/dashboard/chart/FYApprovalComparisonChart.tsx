@@ -1,11 +1,11 @@
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { useRef } from "react";
-import type { IChartInput } from "../type";
-import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
+import { formatDate } from "utils/FormateDate";
 import { useCommonChartStyles } from "../ChartTheme";
+import type { IChartInput } from "../type";
 
 const FYApprovalComparisonChart = (props: IChartInput) => {
-    const { title, xKey, yKey, subText } = props;
+    const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
     const clickFilter = useRef<{ departmentName: string }>(null);
 
@@ -24,7 +24,21 @@ const FYApprovalComparisonChart = (props: IChartInput) => {
                         console.log(event.target.value)
                     }
                 }
-            }]
+            }],
+            xaxis: [
+                {
+                    x: "Mar 2026",
+                    borderColor: "#FF4560",
+                    strokeDashArray: 4,
+                    label: {
+                        text: "Start of Current FY",
+                        style: {
+                            color: "#fff",
+                            background: "#FF4560"
+                        }
+                    }
+                }
+            ]
         },
         chart: {
             height: 400,
@@ -100,7 +114,11 @@ const FYApprovalComparisonChart = (props: IChartInput) => {
             //     text: "Month"
             // },
             labels: {
-                rotate: -45
+                rotate: -45,
+                formatter: (value: string) => {
+                    const date = value;
+                    return formatDate(date, 'month')
+                }
             },
         },
         active: {
@@ -116,12 +134,14 @@ const FYApprovalComparisonChart = (props: IChartInput) => {
         },
     }
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
-    const endPointX = '/FYApprovalComparison.json'
+    // const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
+    // const endPointX = '/FYApprovalComparison.json'
+    console.log(props.filter);
+    
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="line" storeFactory={AppStoreFactory}
-                endPoint={endPointX} filter={props.filter}
+            <PalmyraApexChart options={options} type="line"
+                endPoint={endPoint} filter={props.filter}
                 height={props.height} width={'100%'} seriesOptions={[
                     { name: "Previous FY ", type: 'line' },
                     { name: "Current FY", type: 'line' }

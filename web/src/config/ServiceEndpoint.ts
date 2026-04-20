@@ -89,12 +89,12 @@ const ServiceEndpoint = {
                 division: '/rev/division',
                 branch: '/rev/branch'
             },
-            cart: {
-                summaryView: '/rev/overAll/document/summary'
-            },
             chart: {
                 doCodeSummary: '/rev/policy/doCode/summary',
                 docPendency: '/rev/policy/pendency/summary'
+            },
+            dashboard: {
+                documentSummaryApi: '/rev/overAll/document/summary'
             }
         },
         and: {

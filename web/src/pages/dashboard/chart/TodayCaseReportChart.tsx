@@ -1,11 +1,25 @@
-import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
-import type { IChartInput } from "../type";
 import { useCommonChartStyles } from "../ChartTheme";
+import type { IChartInput } from "../type";
 
 const TodayCaseReportChart = (props: IChartInput) => {
-    const { title, xKey, yKey, subText } = props;
+    const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
+
+    const transformSnapshots = (data: any): any => {
+        const results: any[] = [];
+        const currData = data.slice(-1);
+        const requiredKeys = ["pendingDocuments", "processedDocuments"];
+        const formatData = Object.entries(currData[0])
+            .filter(([key]) => requiredKeys.includes(key))
+            .map(([key, value]) => ({
+                name: key === "pendingDocuments" ? "Pending" : "Processed",
+                value: value || 0
+            }));
+
+        results.push(formatData);
+        return formatData;
+    }
 
     const options: any = {
         ...commonOptions,
@@ -85,12 +99,12 @@ const TodayCaseReportChart = (props: IChartInput) => {
         }
     }
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
-    const endPointX = '/TodayCaseReportChart.json'
+    // const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
+    // const endPointX = '/TodayCaseReportChart.json'
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="donut" storeFactory={AppStoreFactory}
-                endPoint={endPointX} filter={props.filter}
+            <PalmyraApexChart options={options} type="donut"
+                endPoint={endPoint} filter={props.filter} preProcess={(d): any => transformSnapshots(d)}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
         </div>
