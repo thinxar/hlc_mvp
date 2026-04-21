@@ -94,10 +94,12 @@ public class RevDashBoardController extends AbstractController {
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
 			@RequestParam(name = "toDate", required = false)
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+			@RequestParam(name = "date", required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
 			@RequestParam(name = "doCode", required = false) String doCode,
 			@RequestParam(name = "branchCode", required = false) String branchCode) {
 		return apiResponse(dashBoardService.getApproverBreakdown(
-				grain, fromDate, toDate, doCode, branchCode));
+				grain, fromDate, toDate, date, doCode, branchCode));
 	}
 
 }

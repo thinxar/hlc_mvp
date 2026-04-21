@@ -74,8 +74,9 @@ public class RevDashBoardService {
 	}
 
 	public ApproverBreakdownModel getApproverBreakdown(String grain,
-			LocalDate fromDate, LocalDate toDate, String doCode, String branchCode) {
-		String g = grain == null || grain.isBlank() ? "monthly" : grain.toLowerCase();
+			LocalDate fromDate, LocalDate toDate, LocalDate date,
+			String doCode, String branchCode) {
+		String g = grain == null || grain.isBlank() ? "daily" : grain.toLowerCase();
 
 		String collection;
 		String timeField;
@@ -97,7 +98,12 @@ public class RevDashBoardService {
 						"grain must be one of: daily, weekly, monthly");
 		}
 
-		if (fromDate.isAfter(toDate)) {
+		if (date != null) {
+			fromDate = date;
+			toDate = date;
+		}
+
+		if (fromDate != null && toDate != null && fromDate.isAfter(toDate)) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fromDate after toDate");
 		}
 

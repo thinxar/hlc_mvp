@@ -325,13 +325,20 @@ ends after the grain's snap rule (so e.g. `fromDate=2026-02-15` with
 §2.2 / §2.3 so those list endpoints stay lean — the per-approver
 breakdown is only fetched on demand when the UI drills in.
 
-| Param        | Type              | Required | Notes                                                                                                            |
-| ------------ | ----------------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
-| `grain`      | string            | no       | `daily` \| `weekly` \| `monthly`; defaults to `monthly`. Anything else → 400.                                     |
-| `fromDate`   | `LocalDate` (ISO) | no       | Start of the range (any day — snapped per grain). Defaults to the snapped bucket containing `LocalDate.now()`.    |
-| `toDate`     | `LocalDate` (ISO) | no       | End of the range, inclusive (snapped per grain). Defaults to the snapped bucket containing `LocalDate.now()`.     |
-| `doCode`     | string            | no       | exact match on `doCode`.                                                                                           |
-| `branchCode` | string            | no       | exact match on `branchCode`.                                                                                       |
+The time window accepts **either** a `fromDate` + `toDate` range
+**or** a single `date` shortcut for the common "just this one bucket"
+case. When `date` is supplied it wins: both bounds are forced to
+`date` and any `fromDate` / `toDate` values on the same request are
+ignored.
+
+| Param        | Type              | Required | Notes                                                                                                                                       |
+| ------------ | ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `grain`      | string            | no       | `daily` \| `weekly` \| `monthly`; defaults to `daily`. Anything else → 400.                                                                  |
+| `fromDate`   | `LocalDate` (ISO) | no       | Start of the range (any day — snapped per grain). Defaults to the snapped bucket containing `LocalDate.now()`. Ignored if `date` is present. |
+| `toDate`     | `LocalDate` (ISO) | no       | End of the range, inclusive (snapped per grain). Defaults to the snapped bucket containing `LocalDate.now()`. Ignored if `date` is present.  |
+| `date`       | `LocalDate` (ISO) | no       | Single-bucket shortcut — sets both `fromDate` and `toDate` to this day (snapped per grain). Takes precedence over `fromDate` / `toDate`.     |
+| `doCode`     | string            | no       | exact match on `doCode`.                                                                                                                     |
+| `branchCode` | string            | no       | exact match on `branchCode`.                                                                                                                 |
 
 Range resolution — the service snaps each bound independently to the
 grain's canonical bucket key before matching. Both bounds share one
@@ -434,7 +441,7 @@ HeadlineSummaryModel              getHeadlineSummary(
         String doCode, String branchCode);
 
 ApproverBreakdownModel            getApproverBreakdown(
-        String grain, LocalDate fromDate, LocalDate toDate,
+        String grain, LocalDate fromDate, LocalDate toDate, LocalDate date,
         String doCode, String branchCode);
 ```
 
@@ -952,13 +959,13 @@ GET /api/palmyra/rev/overAll/document/summary
     ?window=headline&fromMonth=2026-04-01&toMonth=2026-02-01
 # -> 400 "fromMonth after toMonth"
 
-# Approver breakdown — defaults to current monthly bucket (fromDate/toDate both = firstOfMonth(now))
+# Approver breakdown — defaults to current daily bucket (fromDate/toDate both = LocalDate.now())
 GET /api/palmyra/rev/overAll/document/summary?window=approverBreakdown
-# -> { "grain": "monthly", "fromBucket": "2026-04-01", "toBucket": "2026-04-01",
-#      "processedDocuments": 536,
+# -> { "grain": "daily", "fromBucket": "2026-04-21", "toBucket": "2026-04-21",
+#      "processedDocuments": 45,
 #      "perApprover": [
-#        { "approvedBy": "57988792", "approvedCount": 210, "rejectedCount": 11 },
-#        { "approvedBy": "61230015", "approvedCount": 302, "rejectedCount": 13 } ] }
+#        { "approvedBy": "57988792", "approvedCount": 24, "rejectedCount": 2 },
+#        { "approvedBy": "61230015", "approvedCount": 18, "rejectedCount": 1 } ] }
 
 # Approver breakdown — quarter-wide monthly range (Feb–Apr 2026)
 GET /api/palmyra/rev/overAll/document/summary
@@ -969,6 +976,14 @@ GET /api/palmyra/rev/overAll/document/summary
 GET /api/palmyra/rev/overAll/document/summary
     ?window=approverBreakdown&grain=daily
     &fromDate=2026-04-17&toDate=2026-04-17
+
+# Approver breakdown — single day via the `date` shortcut (equivalent to the above)
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverBreakdown&grain=daily&date=2026-04-17
+
+# Approver breakdown — one specific month via `date` (snapped to Apr 1 2026 by monthly grain)
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverBreakdown&grain=monthly&date=2026-04-15
 
 # Approver breakdown — last 8 weeks (weekly grain), scoped to one branch
 GET /api/palmyra/rev/overAll/document/summary
