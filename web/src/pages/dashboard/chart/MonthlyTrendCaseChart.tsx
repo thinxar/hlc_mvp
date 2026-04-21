@@ -11,8 +11,34 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText, filter, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
     const [opened, { open, close }] = useDisclosure(false);
-    const clickFilter = useRef<{ departmentName: string }>(null);
+    const clickFilter = useRef<{ startMonth: string, endMonth: string }>(null);
     const rawData = useRef<any[]>([]);
+
+
+    const clickedMonth: any = clickFilter.current?.startMonth;
+    const monthFormat = new Date(clickedMonth);
+    const monthWithYear = monthFormat.toLocaleDateString('en-US', {
+        month: 'long',
+        year: 'numeric'
+    });
+
+    const paramsOption = `fromDate=${clickFilter.current?.startMonth}&endDate=${clickFilter.current?.endMonth}`;
+
+    const getTargetDate = (inputDate: string, type: 'month' | 'week') => {
+        const date = new Date(inputDate);
+        if (isNaN(date.getTime())) return 'Invalid Date';
+
+        if (type === 'month') {
+            date.setMonth(date.getMonth() + 1, 0);
+        } else if (type === 'week') {
+            const dayOfWeek = date.getDay();
+            const diff = 6 - dayOfWeek;
+            date.setDate(date.getDate() + diff);
+        }
+
+        return date.toISOString().split('T')[0];
+    };
+
 
     const options: any = {
         // ...commonOptions,
@@ -44,9 +70,14 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
                     const dataPointIndex = config.dataPointIndex;
                     if (dataPointIndex != null) {
                         const allSeries = chartContext?.w?.config.series;
-                        const xValue = allSeries[0]?.data[dataPointIndex]?.x;
-                        clickFilter.current = { departmentName: xValue };
-                        open()
+                        const seriesName = config.config.series[config.seriesIndex].name;
+
+                        if (seriesName === 'Processed') {
+                            const startDate = allSeries[0]?.data[dataPointIndex]?.x;
+                            const endDate = getTargetDate(startDate, "month");
+                            clickFilter.current = { startMonth: startDate, endMonth: endDate };
+                            open();
+                        }
                     }
                 }
             }
@@ -151,6 +182,7 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
 
     // const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
     // const endPointX = '/MonthlyCaseTrend.json'
+
     return (
         <div id="chart">
             <PalmyraApexChart options={options} type="bar"
@@ -165,7 +197,7 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
 
-            <Modal opened={opened} onClose={close} centered size={"lg"}
+            <Modal opened={opened} onClose={close} centered size={"50%"}
                 closeOnClickOutside={false} withCloseButton={false}
                 styles={{
                     body: {
@@ -173,8 +205,7 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
                     }
                 }}
             >
-                <SRDocumentModal onClose={close} month="April 2024" type="monthly"
-                    params="" />
+                <SRDocumentModal onClose={close} month={monthWithYear} type="monthly" params={paramsOption} />
             </Modal>
         </div>
     );

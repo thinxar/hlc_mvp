@@ -2,12 +2,14 @@ import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { IChartInput } from '../../type';
 import { useCommonChartStyles } from "../../ChartTheme";
+import { useRef } from "react";
 
 const TopBranchAppRateChart = (props: IChartInput) => {
-    const { endPoint, title, xKey, yKey, filter,subText } = props;
-        const { commonOptions } = useCommonChartStyles();
-    
-    const colors = ['#f59e0b','#22c55e']
+    const { endPoint, title, xKey, yKey, filter, subText } = props;
+    const { commonOptions } = useCommonChartStyles();
+    const clickFilter = useRef<{ status: string }>(null);
+
+    const colors = ['#f59e0b', '#22c55e']
 
     const options: any = {
         plotOptions: {
@@ -24,6 +26,17 @@ const TopBranchAppRateChart = (props: IChartInput) => {
                 tools: {
                     download: true,
                 },
+            },
+            events: {
+                click: function (_event: any, chartContext: any, config: any) {
+                    const dataPointIndex = config.dataPointIndex;
+
+                    if (dataPointIndex != null) {
+                        const dataPointIndex = config.dataPointIndex;
+                        const label = chartContext?.w?.config.labels[dataPointIndex];
+                        clickFilter.current = label; 
+                    }
+                }
             },
             zoom: {
                 enabled: false

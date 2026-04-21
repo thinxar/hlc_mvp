@@ -117,6 +117,7 @@ import {
     XCircle
 } from "lucide-react";
 import { useFormstore } from "wire/StoreFactory";
+import SrTableFooter from "./SrTableFooter";
 
 function SummaryBar({ srList }: { srList: SRRecord[] }) {
     const totalSR = srList?.length;
@@ -198,8 +199,15 @@ export default function SRDocumentModal({
     const [search, setSearch] = useState("");
     const [data, setData] = useState<any>({})
 
+    const [apiTotalCount, setApiTotalCount] = useState<number | undefined>(0);
+    const [pageIndex, setPageIndex] = useState<number>(0);
+
+    const dataPerPage = 15;
+    const offset = pageIndex * dataPerPage;
+    const totalPagesCount = Math.ceil((apiTotalCount || 0) / (dataPerPage || 1));
+
     const documentSummaryApi = ServiceEndpoint.customView.rev.dashboard.documentSummaryApi
-    const endPoint = `${documentSummaryApi}?window=approverBreakdown&grain=${type}&${params}`
+    const endPoint = `${documentSummaryApi}?window=approverBreakdown&grain=${type}&${params}?_total=true&_offset=${offset}&_limit=${dataPerPage}`
 
     const srList: SRRecord[] = data?.perApprover?.map((item: any) => ({
         srNumber: item.approvedBy,
@@ -210,8 +218,9 @@ export default function SRDocumentModal({
     useEffect(() => {
         useFormstore(endPoint, {}, '').get({}).then((d: any) => {
             setData(d);
+            setApiTotalCount(d?.total)
         });
-    }, []);
+    }, [pageIndex]);
 
     useEffect(() => {
         setFilter("all");
@@ -319,7 +328,12 @@ export default function SRDocumentModal({
                                 <p className="text-sm text-gray-400 dark:text-gray-500">No documents match your filter</p>
                             </div>
                         ) : (
-                            <SRTable srList={filteredSR} />
+                            <>
+                                <div className="flex flex-col gap-2">
+                                    <SRTable srList={filteredSR} />
+                                    <SrTableFooter setPageIndex={setPageIndex} pageIndex={pageIndex} totalPagesCount={totalPagesCount} />
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>

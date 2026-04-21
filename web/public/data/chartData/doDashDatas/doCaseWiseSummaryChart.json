@@ -1,0 +1,40 @@
+{
+    "result": [
+        {
+            "name": "New Policy",
+            "approved": 40,
+            "rejected": 20,
+            "pending": 10
+        },
+        {
+            "name": "Renewal",
+            "approved": 55,
+            "rejected": 25,
+            "pending": 15
+        },
+        {
+            "name": "Claim",
+            "approved": 60,
+            "rejected": 30,
+            "pending": 20
+        },
+        {
+            "name": "Surrender",
+            "approved": 70,
+            "rejected": 35,
+            "pending": 18
+        },
+        {
+            "name": "Loan",
+            "approved": 65,
+            "rejected": 28,
+            "pending": 22
+        },
+        {
+            "name": "Maturity",
+            "approved": 75,
+            "rejected": 32,
+            "pending": 25
+        }
+    ]
+}
