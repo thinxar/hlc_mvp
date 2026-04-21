@@ -11,34 +11,16 @@ export interface SRDocumentModalProps {
     month: string;
     params: string
     type: 'monthly' | 'weekly' | 'daily'
-    // srList: SRRecord[];
 }
-
-// const d = {
-//     grain: "monthly",
-//     fromBucket: "2026-03-01",
-//     toBucket: "2026-03-31",
-//     processedDocuments: 49219,
-//     perApprover: [
-//         {
-//             approvedBy: "10040081",
-//             approvedCount: 12,
-//             rejectedCount: 0
-//         },
-//         {
-//             approvedBy: "10041317",
-//             approvedCount: 7,
-//             rejectedCount: 0
-//         },
-//     ]
-// }
-
 
 function SRTable({
     srList,
 }: {
     srList: SRRecord[];
 }) {
+
+    console.log(srList, 's');
+
     return (
         <div className="rounded-[14px] max-h-100 overflow-scroll border border-black/8 dark:border-white/[0.07]">
             <table className="w-full border-collapse text-[12px]">
@@ -67,19 +49,19 @@ function SRTable({
 
                 <tbody>
                     {srList?.map((sr: any) => {
-                        const approved = sr.approvedCount;
-                        const rejected = sr.rejectedCount;
+                        const approved = sr.approved;
+                        const rejected = sr.rejected;
                         const total = approved + rejected;
 
 
                         return (
                             <tr
-                                key={sr.srNumber}
+                                key={sr.approvedBy}
                                 className="border-b border-black/5 dark:border-white/4 last:border-none
                   hover:bg-blue-50/60 dark:hover:bg-white/3 transition-colors"
                             >
                                 <td className="px-3.5 py-2.5 font-semibold  text-xs tracking-tight text-blue-700 dark:text-[#4A9DFF] whitespace-nowrap">
-                                    {sr.srNumber}
+                                    {sr.approvedBy}
                                 </td>
 
                                 <td className="px-3.5 py-2.5 text-right ">
@@ -117,9 +99,9 @@ import {
     X,
     XCircle
 } from "lucide-react";
+import { formatAmount } from "utils/FormateDate";
 import { useFormstore } from "wire/StoreFactory";
 import SrTableFooter from "./SrTableFooter";
-import { formatAmount } from "utils/FormateDate";
 
 interface CardData {
     totalApprovers: number,
@@ -208,8 +190,7 @@ export default function SRDocumentModal({
     params,
     type
 }: SRDocumentModalProps) {
-    const [filter, setFilter] = useState<"all" | "approved" | "rejected">("all");
-    const [search, setSearch] = useState("");
+    const [filter, setFilter] = useState<any>({ srNumber: '' })
     const [data, setData] = useState<any>({})
     const [cardData, setCardData] = useState<any>({})
 
@@ -220,7 +201,7 @@ export default function SRDocumentModal({
 
     const documentSummaryApi = ServiceEndpoint.customView.rev.dashboard.documentSummaryApi
     const summaryEndPoint = `${documentSummaryApi}?window=approverSummary&grain=${type}&${params}`
-    const endPoint = `${documentSummaryApi}?window=approverBreakdown&grain=${type}&${params}&_total=true&_offset=${offset}&_limit=${dataPerPage}`
+    const endPoint = `${documentSummaryApi}?window=approverBreakdown&grain=${type}&${params}&srNumber=${filter.srNumber}&_total=true&_offset=${offset}&_limit=${dataPerPage}`
 
     const srList: SRRecord[] = data?.result?.map((item: any) => ({
         srNumber: item.approvedBy,
@@ -238,16 +219,27 @@ export default function SRDocumentModal({
         useFormstore(endPoint, {}, '').query({}).then((d: any) => {
             setData(d);
         });
-    }, [pageIndex]);
+    }, [pageIndex, filter]);
+    console.log(filter, 'fi');
 
     useEffect(() => {
-        setFilter("all");
+        // setFilter("all");
         // setSearch("");
     }, [srList]);
 
-    useEffect(() => {
-        setPageIndex(0);
-    }, [filter, search]);
+    // useEffect(() => {
+    //     setPageIndex(0);
+    // }, [filter, search]);
+
+    const handleSearch = (e: any) => {
+        const v = e.target.value
+        setFilter((prev: any) => ({
+            ...prev,
+            srNumber: v
+        }));
+        console.log(v, 'kl');
+
+    }
 
     const handleKey = useCallback(
         (e: KeyboardEvent) => {
@@ -261,18 +253,18 @@ export default function SRDocumentModal({
         return () => document.removeEventListener("keydown", handleKey);
     }, [handleKey]);
 
-    const filteredSR = srList?.filter((sr) => {
-        const matchFilter =
-            filter === "all" ||
-            (filter === "approved" && sr.approvedCount > 0) ||
-            (filter === "rejected" && sr.rejectedCount > 0);
+    // const filteredSR = srList?.filter((sr) => {
+    //     const matchFilter =
+    //         filter === "all" ||
+    //         (filter === "approved" && sr.approvedCount > 0) ||
+    //         (filter === "rejected" && sr.rejectedCount > 0);
 
-        const matchSearch =
-            search === "" ||
-            sr.srNumber.toLowerCase().includes(search.toLowerCase());
+    //     const matchSearch =
+    //         search === "" ||
+    //         sr.srNumber.toLowerCase().includes(search.toLowerCase());
 
-        return matchFilter && matchSearch;
-    });
+    //     return matchFilter && matchSearch;
+    // });
 
 
     const totalPagesCount = Math.ceil((data?.total || 0) / (dataPerPage || 1));
@@ -332,8 +324,8 @@ export default function SRDocumentModal({
                         <input
                             type="text"
                             placeholder="Search SR number..."
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            // value={search}
+                            onChange={(e) => handleSearch(e)}
                             className="
                 w-full pl-8 pr-3 py-1.5 text-[13px] rounded-lg
                 border border-gray-200 dark:border-gray-700
@@ -349,7 +341,7 @@ export default function SRDocumentModal({
 
                 <div className="flex flex-1 min-h-0 overflow-hidden">
                     <div className="flex-1 overflow-y-auto p-4 space-y-2 min-w-0">
-                        {filteredSR?.length === 0 ? (
+                        {data?.result?.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-16 gap-2">
                                 <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="text-gray-300 dark:text-gray-600">
                                     <circle cx="18" cy="18" r="17" stroke="currentColor" strokeWidth="1.5" />
@@ -360,7 +352,7 @@ export default function SRDocumentModal({
                         ) : (
                             <>
                                 <div className="flex flex-col gap-2">
-                                    <SRTable srList={filteredSR} />
+                                    <SRTable srList={data?.result} />
                                     <SrTableFooter setPageIndex={setPageIndex} pageIndex={pageIndex} totalPagesCount={totalPagesCount} />
                                 </div>
                             </>
