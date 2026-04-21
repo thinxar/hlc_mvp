@@ -35,7 +35,7 @@ const DoDashboardHeader = (props: IOptions) => {
                 <div className="pr-3">
                     <PalmyraForm>
                         <FieldGroupContainer columns={1}>
-                            <ServerLookup attribute="srno" placeholder="Deviation Name"
+                            <ServerLookup attribute="srno" placeholder="Division Name"
                                 queryOptions={{ endPoint: LookupEndPoint.division, queryAttribute: 'divisionName' }}
                                 onChange={handleFilterChange("srno", 'lookup')}
                                 lookupOptions={{ idAttribute: 'id', labelAttribute: 'divisionName' }} />

@@ -122,7 +122,7 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
                 <div className="flex items-center gap-1 bg-blue-100 p-1 px-1.5 rounded-lg">
                     <FaEye className="w-4 h-4 opacity-80 text-blue-700" />
                     <div className="text-xs flex gap-1">
-                        <span className="text-xs text-gray-600">Read</span>
+                        <span className="text-xs text-gray-600">Viewed</span>
                         <span className="text-xs font-semibold text-blue-700">{viewedDocs}</span>
                     </div>
                 </div>
@@ -130,7 +130,7 @@ const PolicyFileViewer = ({ data, policyId, type, selectedFile, setSelectedFile,
                 <div className="flex items-center gap-1 bg-yellow-100/90 p-1 px-1.5 rounded-lg">
                     <MdOutlinePendingActions className="w-4 h-4 opacity-80 text-yellow-600" />
                     <div className="text-xs flex gap-1">
-                        <span className="text-xs text-gray-600">Unread</span>
+                        <span className="text-xs text-gray-600">Not Viewed</span>
                         <span className="text-xs font-semibold text-yellow-700">{pendingDocs}</span>
                     </div>
                 </div>

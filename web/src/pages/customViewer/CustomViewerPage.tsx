@@ -3,7 +3,7 @@ import { IPageInput } from "templates/Types"
 import { PolicyListGrid } from "./PolicyListGrid"
 import { useSearchParams } from "react-router-dom";
 import { APPolicyViewPage } from "./pages/apPolicy/APPolicyViewPage";
-import { DoCodePolicyChart } from "./chart/DoCodePolicyChart";
+// import { DoCodePolicyChart } from "./chart/DoCodePolicyChart";
 import { DocumentPendencyChart } from "./chart/DocumentPendencyChart";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
 import PolicyPendencySummary from "./PolicyPendencySummary";
@@ -31,7 +31,7 @@ const CustomViewerPage = (props: IPageInput) => {
     }, []);
 
     const pendencyEndpoint = `${ServiceEndpoint.customView.rev.policyPendency}?${params.toString()}`;
-    const approvalSummaryApi = `${ServiceEndpoint.customView.rev.chart.doCodeSummary}?${params.toString()}`
+    // const approvalSummaryApi = `${ServiceEndpoint.customView.rev.chart.doCodeSummary}?${params.toString()}`
     const docPendencyApi = `${ServiceEndpoint.customView.rev.chart.docPendency}?${params.toString()}`
 
     const counts = getCounts(data);
@@ -51,11 +51,11 @@ const CustomViewerPage = (props: IPageInput) => {
                                 height={CHART_HEIGHT} subText="Pending revival summary"
                                 title="Pending Cases of Revival" xKey="name" yKey="value" />
                         </div>
-                        <div className="dash-cards">
+                        {/* <div className="dash-cards">
                             <DoCodePolicyChart endPoint={approvalSummaryApi}
                                 height={CHART_HEIGHT} subText="DO code wise summary"
                                 title="Revival Cases by DO Code" xKey="name" yKey="value" />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </Gutter >
