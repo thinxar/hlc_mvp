@@ -1,0 +1,286 @@
+mongodb:
+
+Revival - doctype
+
+db.rev_docType.insertMany([
+  {
+    _id: 1,
+    document: 'Revival',
+    description: 'Revival',
+    code: '101',
+    _class: 'com.palmyralabs.dms.revival.entity.RevDocumentTypeEntity'
+  }
+])
+
+ANANDA - doctype
+
+db.and_docType.insertMany([
+  {
+    _id: 1,
+    document: 'Proposal',
+    description: 'Proposal',
+    code: '101',
+    _class: 'com.palmyralabs.dms.ananda.entity.AndDocumentTypeEntity'
+  },
+  { _id: 2, document: 'POA', description: 'admin', code: '102' },
+  { _id: 3, document: 'POI', description: 'admin', code: '103' },
+  { _id: 4, document: 'Proposal', description: 'admin', code: '104' },
+  { _id: 5, document: 'Medical', description: 'admin', code: '105' },
+  { _id: 6, document: 'Others', description: 'admin', code: '106' },
+  {
+    _id: 7,
+    document: 'Proposal Form',
+    description: 'Proposal Form',
+    code: '107'
+  },
+  {
+    _id: 8,
+    document: 'KYC Documents',
+    description: 'KYC Documents',
+    code: '108'
+  },
+  {
+    _id: 9,
+    document: 'Proposal Enclosures',
+    description: 'Proposal Enclosures',
+    code: '109'
+  },
+  {
+    _id: 10,
+    document: 'Signature Page',
+    description: 'Signature Page',
+    code: '110'
+  },
+  {
+    _id: 11,
+    document: 'Proposal Review Slip',
+    description: 'Proposal Review Slip',
+    code: '111'
+  },
+  {
+    _id: 12,
+    document: 'Policy Bond',
+    description: 'Policy Bond',
+    code: '112'
+  },
+  {
+    _id: 13,
+    document: 'Surrender',
+    description: 'Surrender',
+    code: '113'
+  },
+  { _id: 14, document: 'NEFT', description: 'NEFT', code: '114' },
+  {
+    _id: 15,
+    document: 'Endorsements',
+    description: 'Endorsements',
+    code: '115'
+  },
+  {
+    _id: 16,
+    document: 'E Service',
+    description: 'E Service',
+    code: '116'
+  }
+])
+
+Policy Bazaar - doctype
+
+db.pbz_docType.insertMany([
+  { _id: 1, document: 'Policy', description: 'admin', code: '101' },
+  { _id: 2, document: 'POA', description: 'admin', code: '102' },
+  { _id: 3, document: 'POI', description: 'admin', code: '103' },
+  { _id: 4, document: 'Proposal', description: 'admin', code: '104' },
+  { _id: 5, document: 'Medical', description: 'admin', code: '105' },
+  { _id: 6, document: 'Others', description: 'admin', code: '106' },
+  {
+    _id: 7,
+    document: 'Proposal Form',
+    description: 'Proposal Form',
+    code: '107'
+  },
+  {
+    _id: 8,
+    document: 'KYC Documents',
+    description: 'KYC Documents',
+    code: '108'
+  },
+  {
+    _id: 9,
+    document: 'Proposal Enclosures',
+    description: 'Proposal Enclosures',
+    code: '109'
+  },
+  {
+    _id: 10,
+    document: 'Signature Page',
+    description: 'Signature Page',
+    code: '110'
+  },
+  {
+    _id: 11,
+    document: 'Proposal Review Slip',
+    description: 'Proposal Review Slip',
+    code: '111'
+  },
+  {
+    _id: 12,
+    document: 'Policy Bond',
+    description: 'Policy Bond',
+    code: '112'
+  },
+  {
+    _id: 13,
+    document: 'Surrender',
+    description: 'Surrender',
+    code: '113'
+  },
+  { _id: 14, document: 'NEFT', description: 'NEFT', code: '114' },
+  {
+    _id: 15,
+    document: 'Endorsements',
+    description: 'Endorsements',
+    code: '115'
+  },
+  {
+    _id: 16,
+    document: 'E Service',
+    description: 'E Service',
+    code: '116'
+  }
+])
+
+
+officeCode and srNo master:
+
+Revival-officeCode
+
+db.mst_rev_office_code.insertMany([
+  {
+    _id: 1,
+    code: '101',
+    name: '300',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.RevOfficeCodeEntity'
+  },
+  {
+    _id: 2,
+    code: '102',
+    name: '301',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.RevOfficeCodeEntity'
+  },
+  {
+    _id: 3,
+    code: '103',
+    name: '302',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.RevOfficeCodeEntity'
+  }
+])
+
+Revival-srNumber:
+
+db.mst_rev_srNo.insertMany([
+  {
+    _id: 1,
+    code: '101',
+    name: '9823880',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.RevSrNoEntity'
+  },
+  {
+    _id: 2,
+    code: '102',
+    name: '9823881',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.RevSrNoEntity'
+  },
+  {
+    _id: 3,
+    code: '103',
+    name: '9823882',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.RevSrNoEntity'
+  },
+  {
+    _id: 4,
+    code: '104',
+    name: '9823990',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.RevSrNoEntity'
+  },
+  {
+    _id: 5,
+    code: '105',
+    name: '9823991',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.RevSrNoEntity'
+  }
+])
+
+ANANDA:
+
+officeCode:
+
+ db.mst_and_office_code.insertMany([
+  {
+    _id: 1,
+    code: '101',
+    name: '300',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.AndOfficeCodeEntity'
+  },
+  {
+    _id: 2,
+    code: '102',
+    name: '301',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.AndOfficeCodeEntity'
+  },
+  {
+    _id: 3,
+    code: '103',
+    name: '302',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.AndOfficeCodeEntity'
+  }
+])
+
+policyBazaar
+
+officeCode
+
+db.mst_pbz_office_code.insertMany([
+  {
+    _id: 1,
+    code: '101',
+    name: '300',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.PbzOfficeCodeEntity'
+  },
+  {
+    _id: 2,
+    code: '102',
+    name: '301',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.PbzOfficeCodeEntity'
+  },
+  {
+    _id: 3,
+    code: '103',
+    name: '302',
+    description: '',
+    _class: 'com.palmyralabs.dms.jpa.entity.PbzOfficeCodeEntity'
+  }
+])
+
+
+
+
+
+
+
+
+
+
