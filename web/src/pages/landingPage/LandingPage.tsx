@@ -83,8 +83,6 @@ export default function LandingPage() {
     const [hovered, setHovered] = useState(null);
 
     const handleClick = (d: any) => {
-        console.log(d?.path + '?appname=' + d?.key);
-
         if (d?.key == 'REV') {
             navigate(d?.path);
         } else {

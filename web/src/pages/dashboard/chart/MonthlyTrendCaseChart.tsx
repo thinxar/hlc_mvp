@@ -1,11 +1,11 @@
+import { Modal } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { useRef } from "react";
-import { useCommonChartStyles } from "../ChartTheme";
-import type { IChartInput } from "../type";
 import { formatDate } from "utils/FormateDate";
-import { useDisclosure } from "@mantine/hooks";
-import { Modal } from "@mantine/core";
-import SRDocumentModal, { MOCK_SR_LIST } from "../grid/SRDocumentSummaryModal";
+import { useCommonChartStyles } from "../ChartTheme";
+import SRDocumentModal from "../grid/SRDocumentSummaryModal";
+import type { IChartInput } from "../type";
 
 const MonthlyTrendCaseChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText, filter, endPoint } = props;
@@ -173,7 +173,8 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
                     }
                 }}
             >
-                <SRDocumentModal onClose={close} month="April 2024" srList={MOCK_SR_LIST} />
+                <SRDocumentModal onClose={close} month="April 2024" type="monthly"
+                    params="" />
             </Modal>
         </div>
     );

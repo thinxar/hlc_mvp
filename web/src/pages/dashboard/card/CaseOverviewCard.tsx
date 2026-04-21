@@ -17,6 +17,7 @@ interface ICaseCard {
     pending: number | string,
     todayProcessed: number | string
     todayCases?: number | string
+    processedDocuments:number | string
 }
 
 const CaseOverviewCard = (props: IOptions) => {
@@ -50,7 +51,8 @@ const CaseOverviewCard = (props: IOptions) => {
         approved: data ? formatAmount(data.approvedDocuments, true) : 0,
         rejected: data ? formatAmount(data.rejectedDocuments, true) : 0,
         pending: data ? formatAmount(data.pendingDocuments, true) : 0,
-        todayProcessed: data ? formatAmount(data.todayProcessedDocuments, true) : 0
+        todayProcessed: data ? formatAmount(data.todayProcessed?.totalProcessed, true) : 0,
+        processedDocuments: data ? formatAmount(data.processedDocuments, true) : 0,
     };
 
     const cards = [
@@ -73,7 +75,7 @@ const CaseOverviewCard = (props: IOptions) => {
         // },
         {
             title: "Processed Documents",
-            value: Number(cases.approved) + Number(cases.rejected),
+            value: cases.processedDocuments,
             icon: CheckCircle,
             gradient: "from-emerald-400 via-green-500 to-emerald-600",
             iconBg: "bg-linear-to-br from-emerald-100 to-green-200 dark:from-emerald-100/10 dark:to-green-600/10",

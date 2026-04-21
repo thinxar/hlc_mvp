@@ -1,82 +1,38 @@
-import { useState, useEffect, useCallback } from "react";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-export interface SRDocument {
-    id: string;
-    title: string;
-    type: "PDF" | "DOCX" | "XLSX" | "IMG";
-    status: "approved" | "rejected";
-    uploadedBy: string;
-    date: string;
-    size: string;
-    pages?: number;
-    reason?: string;
-}
+import { useCallback, useEffect, useState } from "react";
 
 export interface SRRecord {
     srNumber: string;
-    requester: string;
-    department: string;
-    documents: SRDocument[];
+    approvedCount: number;
+    rejectedCount: number;
 }
 
 export interface SRDocumentModalProps {
     onClose: () => void;
     month: string;
-    srList: SRRecord[];
+    params: string
+    type: 'monthly' | 'weekly' | 'daily'
+    // srList: SRRecord[];
 }
 
-export const MOCK_SR_LIST: SRRecord[] = [
-    {
-        srNumber: "SR-2024040001",
-        requester: "Arjun Mehta",
-        department: "Finance",
-        documents: [
-            { id: "d1", title: "Q1 Budget Report.pdf", type: "PDF", status: "approved", uploadedBy: "Arjun Mehta", date: "04 Apr 2024", size: "2.4 MB", pages: 18 },
-            { id: "d2", title: "Invoice_March.xlsx", type: "XLSX", status: "approved", uploadedBy: "Arjun Mehta", date: "04 Apr 2024", size: "480 KB" },
-            { id: "d3", title: "Expense_Claim.pdf", type: "PDF", status: "rejected", uploadedBy: "Arjun Mehta", date: "05 Apr 2024", size: "1.1 MB", pages: 6, reason: "Missing authorisation signature" },
-        ],
-    },
-    {
-        srNumber: "SR-2024040002",
-        requester: "Priya Nair",
-        department: "Operations",
-        documents: [
-            { id: "d4", title: "Vendor_Contract_v2.docx", type: "DOCX", status: "approved", uploadedBy: "Priya Nair", date: "06 Apr 2024", size: "890 KB", pages: 32 },
-            { id: "d5", title: "SLA_Compliance.pdf", type: "PDF", status: "rejected", uploadedBy: "Priya Nair", date: "06 Apr 2024", size: "3.2 MB", pages: 45, reason: "Outdated template version" },
-        ],
-    },
-    {
-        srNumber: "SR-2024040003",
-        requester: "Karthik Rajan",
-        department: "IT",
-        documents: [
-            { id: "d6", title: "Server_Audit.pdf", type: "PDF", status: "approved", uploadedBy: "Karthik Rajan", date: "08 Apr 2024", size: "5.6 MB", pages: 72 },
-            { id: "d7", title: "Network_Diagram.img", type: "IMG", status: "approved", uploadedBy: "Karthik Rajan", date: "08 Apr 2024", size: "1.8 MB" },
-            { id: "d8", title: "Change_Request.docx", type: "DOCX", status: "rejected", uploadedBy: "Karthik Rajan", date: "09 Apr 2024", size: "320 KB", pages: 5, reason: "Incomplete risk assessment section" },
-            { id: "d9", title: "Patch_Notes.pdf", type: "PDF", status: "approved", uploadedBy: "Karthik Rajan", date: "10 Apr 2024", size: "740 KB", pages: 12 },
-        ],
-    },
-    {
-        srNumber: "SR-2024040004",
-        requester: "Divya Suresh",
-        department: "HR",
-        documents: [
-            { id: "d10", title: "Onboarding_Policy.pdf", type: "PDF", status: "approved", uploadedBy: "Divya Suresh", date: "10 Apr 2024", size: "1.2 MB", pages: 24 },
-            { id: "d11", title: "Employee_Form_April.docx", type: "DOCX", status: "rejected", uploadedBy: "Divya Suresh", date: "11 Apr 2024", size: "210 KB", pages: 3, reason: "Duplicate submission detected" },
-        ],
-    },
-    {
-        srNumber: "SR-2024040005",
-        requester: "Rahul Desai",
-        department: "Legal",
-        documents: [
-            { id: "d12", title: "NDA_Draft_v3.docx", type: "DOCX", status: "approved", uploadedBy: "Rahul Desai", date: "12 Apr 2024", size: "670 KB", pages: 8 },
-            { id: "d13", title: "Compliance_Report.pdf", type: "PDF", status: "approved", uploadedBy: "Rahul Desai", date: "12 Apr 2024", size: "4.1 MB", pages: 60 },
-        ],
-    },
-];
+// const d = {
+//     grain: "monthly",
+//     fromBucket: "2026-03-01",
+//     toBucket: "2026-03-31",
+//     processedDocuments: 49219,
+//     perApprover: [
+//         {
+//             approvedBy: "10040081",
+//             approvedCount: 12,
+//             rejectedCount: 0
+//         },
+//         {
+//             approvedBy: "10041317",
+//             approvedCount: 7,
+//             rejectedCount: 0
+//         },
+//     ]
+// }
+
 
 function SRTable({
     srList,
@@ -109,10 +65,11 @@ function SRTable({
                 </thead>
 
                 <tbody>
-                    {srList.map((sr) => {
-                        const approved = sr.documents.filter((d) => d.status === "approved").length;
-                        const rejected = sr.documents.filter((d) => d.status === "rejected").length;
-                        const total = sr.documents.length;
+                    {srList?.map((sr: any) => {
+                        const approved = sr.approvedCount;
+                        const rejected = sr.rejectedCount;
+                        const total = approved + rejected;
+
 
                         return (
                             <tr
@@ -151,20 +108,22 @@ function SRTable({
 }
 
 
+import { ServiceEndpoint } from "config/ServiceEndpoint";
 import {
+    CheckCircle2,
     FileText,
     Layers,
-    CheckCircle2,
-    XCircle,
-    X
+    X,
+    XCircle
 } from "lucide-react";
+import { useFormstore } from "wire/StoreFactory";
 
 function SummaryBar({ srList }: { srList: SRRecord[] }) {
-    const totalSR = srList.length;
-    const totalDocs = srList.flatMap((s) => s.documents).length;
-    const approved = srList.flatMap((s) => s.documents)
-        .filter((d) => d.status === "approved").length;
-    const rejected = totalDocs - approved;
+    const totalSR = srList?.length;
+
+    const approved = srList?.reduce((sum, a) => sum + a.approvedCount, 0);
+    const rejected = srList?.reduce((sum, a) => sum + a.rejectedCount, 0);
+    const totalDocs = approved + rejected;
 
     const stats = [
         {
@@ -232,10 +191,27 @@ function SummaryBar({ srList }: { srList: SRRecord[] }) {
 export default function SRDocumentModal({
     onClose,
     month,
-    srList,
+    params,
+    type
 }: SRDocumentModalProps) {
     const [filter, setFilter] = useState<"all" | "approved" | "rejected">("all");
     const [search, setSearch] = useState("");
+    const [data, setData] = useState<any>({})
+
+    const documentSummaryApi = ServiceEndpoint.customView.rev.dashboard.documentSummaryApi
+    const endPoint = `${documentSummaryApi}?window=approverBreakdown&grain=${type}&${params}`
+
+    const srList: SRRecord[] = data?.perApprover?.map((item: any) => ({
+        srNumber: item.approvedBy,
+        approvedCount: item.approvedCount,
+        rejectedCount: item.rejectedCount
+    }));
+
+    useEffect(() => {
+        useFormstore(endPoint, {}, '').get({}).then((d: any) => {
+            setData(d);
+        });
+    }, []);
 
     useEffect(() => {
         setFilter("all");
@@ -254,19 +230,19 @@ export default function SRDocumentModal({
         return () => document.removeEventListener("keydown", handleKey);
     }, [handleKey]);
 
-    const filteredSR = srList
-        .map((sr) => ({
-            ...sr,
-            documents: sr.documents.filter((d) => {
-                const matchFilter = filter === "all" || d.status === filter;
-                const matchSearch =
-                    search === "" ||
-                    d.title.toLowerCase().includes(search.toLowerCase()) ||
-                    sr.srNumber.toLowerCase().includes(search.toLowerCase());
-                return matchFilter && matchSearch;
-            }),
-        }))
-        .filter((sr) => sr.documents.length > 0);
+    const filteredSR = srList?.filter((sr) => {
+        const matchFilter =
+            filter === "all" ||
+            (filter === "approved" && sr.approvedCount > 0) ||
+            (filter === "rejected" && sr.rejectedCount > 0);
+
+        const matchSearch =
+            search === "" ||
+            sr.srNumber.toLowerCase().includes(search.toLowerCase());
+
+        return matchFilter && matchSearch;
+    });
+
 
     if (!open) return null;
 
@@ -300,9 +276,6 @@ export default function SRDocumentModal({
                         className="cursor-pointer w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-gray-700 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                     >
                         <X />
-                        {/* <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                            <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                        </svg> */}
                     </button>
                 </div>
 
@@ -337,7 +310,7 @@ export default function SRDocumentModal({
 
                 <div className="flex flex-1 min-h-0 overflow-hidden">
                     <div className="flex-1 overflow-y-auto p-4 space-y-2 min-w-0">
-                        {filteredSR.length === 0 ? (
+                        {filteredSR?.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-16 gap-2">
                                 <svg width="36" height="36" viewBox="0 0 36 36" fill="none" className="text-gray-300 dark:text-gray-600">
                                     <circle cx="18" cy="18" r="17" stroke="currentColor" strokeWidth="1.5" />

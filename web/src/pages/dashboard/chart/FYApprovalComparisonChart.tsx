@@ -136,8 +136,6 @@ const FYApprovalComparisonChart = (props: IChartInput) => {
 
     // const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
     // const endPointX = '/FYApprovalComparison.json'
-    console.log(props.filter);
-    
     return (
         <div id="chart">
             <PalmyraApexChart options={options} type="line"

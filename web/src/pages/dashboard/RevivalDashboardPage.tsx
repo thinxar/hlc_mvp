@@ -98,7 +98,7 @@ const RevivalDashboardPage = () => {
         <div className="dash-cards">
           <TatPerformanceChart endPoint={monthlyTatPerformance} filter={filter}
             height={CHART_HEIGHT} subText="Processing turnaround time distribution"
-            title="TAT Performance - Last 6 Months" xKey="calMonth"
+            title="Approval Performance - Last 6 Months" xKey="calMonth"
             yKey={[]} />
         </div>
       </div>
