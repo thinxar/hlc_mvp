@@ -2,12 +2,27 @@ import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { useRef } from "react";
 import { useCommonChartStyles } from "../ChartTheme";
 import type { IChartInput } from "../type";
-import { formatDate } from "utils/FormateDate";
+import { formatDate, getTargetDate } from "utils/FormateDate";
+import { useDisclosure } from "@mantine/hooks";
+import { Modal } from "@mantine/core";
+import SRDocumentModal from "../grid/SRDocumentSummaryModal";
 
 const CurrentFinancialYearCaseChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
-    const clickFilter = useRef<{ departmentName: string }>(null);
+    const [opened, { open, close }] = useDisclosure(false);
+    const rawData = useRef<any[]>([]);
+    const clickFilter = useRef<{ startDate: string, endDate: string }>(null);
+
+    const clickedMonth: any = clickFilter.current?.startDate;
+    const monthFormat = new Date(clickedMonth);
+    const monthWithYear = monthFormat.toLocaleDateString('en-US', {
+        month: 'long',
+        year: 'numeric'
+    });
+
+    const paramsOption = `fromDate=${clickFilter.current?.startDate}&toDate=${clickFilter.current?.endDate}`;
+
 
     const options: any = {
         // ...commonOptions,
@@ -39,8 +54,14 @@ const CurrentFinancialYearCaseChart = (props: IChartInput) => {
                     const dataPointIndex = config.dataPointIndex;
                     if (dataPointIndex != null) {
                         const allSeries = chartContext?.w?.config.series;
-                        const xValue = allSeries[0]?.data[dataPointIndex]?.x;
-                        clickFilter.current = { departmentName: xValue };
+                        const seriesName = config.config.series[config.seriesIndex].name;
+
+                        if (seriesName === 'Processed') {
+                            const startDate = allSeries[0]?.data[dataPointIndex]?.x;
+                            const endDate = getTargetDate(startDate, "month");
+                            clickFilter.current = { startDate: startDate, endDate: endDate };
+                            open();
+                        }
                     }
                 }
             }
@@ -64,7 +85,30 @@ const CurrentFinancialYearCaseChart = (props: IChartInput) => {
             enabled: true
         },
         tooltip: {
-            enabled: true
+            enabled: true,
+            custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
+                const seriesName = w.config.series[seriesIndex]?.name;
+                const value = series[seriesIndex][dataPointIndex];
+                const xVal = w.config.series[0]?.data[dataPointIndex]?.x;
+                const label = formatDate(xVal, 'month');
+
+                if (seriesName === 'Processed' && rawData.current[dataPointIndex]) {
+                    const row = rawData.current[dataPointIndex];
+                    const approved = row.approvedDocuments ?? 0;
+                    const rejected = row.rejectedDocuments ?? 0;
+                    return `<div style="padding:8px;font-size:12px">
+                        <b>${label}</b><br/>
+                        <span style="color:#22c55e">Processed: ${value}</span><br/>
+                        <span style="color:#16a34a">&nbsp;&nbsp;Approved: ${approved}</span><br/>
+                        <span style="color:#ef4444">&nbsp;&nbsp;Rejected: ${rejected}</span>
+                    </div>`;
+                }
+                const color = w.config.colors[seriesIndex] || '#333';
+                return `<div style="padding:8px;font-size:12px">
+                    <b>${label}</b><br/>
+                    <span style="color:${color}">${seriesName}: ${value}</span>
+                </div>`;
+            }
         },
         legend: {
             show: true,
@@ -126,6 +170,7 @@ const CurrentFinancialYearCaseChart = (props: IChartInput) => {
         <div id="chart">
             <PalmyraApexChart options={options} type="bar"
                 endPoint={endPoint} filter={props.filter}
+                preProcess={(d: any) => { rawData.current = d; return d; }}
                 seriesOptions={[
                     { name: "Pending" },
                     { name: "Processed" },
@@ -133,6 +178,16 @@ const CurrentFinancialYearCaseChart = (props: IChartInput) => {
                 ]}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
+            <Modal opened={opened} onClose={close} centered size={"lg"}
+                withCloseButton={false}
+                styles={{
+                    body: {
+                        padding: 0
+                    }
+                }}
+            >
+                <SRDocumentModal onClose={close} month={monthWithYear} type="monthly" params={paramsOption} />
+            </Modal>
         </div>
     );
 

@@ -2,13 +2,30 @@ import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { useRef } from "react";
 import { useCommonChartStyles } from "../ChartTheme";
 import type { IChartInput } from "../type";
-import { formatDate } from "utils/FormateDate";
+import { formatDate, getTargetDate } from "utils/FormateDate";
+import { Modal } from "@mantine/core";
+import SRDocumentModal from "../grid/SRDocumentSummaryModal";
+import { useDisclosure } from "@mantine/hooks";
 
 const WeeklyTrendCaseChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
-    const clickFilter = useRef<{ departmentName: string }>(null);
+    const [opened, { open, close }] = useDisclosure(false);
+    const clickFilter = useRef<{ startDate: string, endDate: string }>(null);
     const rawData = useRef<any[]>([]);
+
+    const clickedDate: any = clickFilter.current?.startDate;
+    const weekFormat = new Date(clickedDate);
+    const end = new Date(weekFormat);
+    end.setDate(weekFormat.getDate() + 6);
+
+    const opt: any = {
+        month: "short",
+        day: "2-digit"
+    };
+
+    const weekLabel = `${weekFormat.toLocaleDateString('en-US', opt)} - ${end.toLocaleDateString('en-US', opt)}`;
+    const paramsOption = `fromDate=${clickFilter.current?.startDate}&toDate=${clickFilter.current?.endDate}`;
 
     const options: any = {
         // ...commonOptions,
@@ -40,8 +57,15 @@ const WeeklyTrendCaseChart = (props: IChartInput) => {
                     const dataPointIndex = config.dataPointIndex;
                     if (dataPointIndex != null) {
                         const allSeries = chartContext?.w?.config.series;
-                        const xValue = allSeries[0]?.data[dataPointIndex]?.x;
-                        clickFilter.current = { departmentName: xValue };
+                        // const xValue = allSeries[0]?.data[dataPointIndex]?.x;
+                        const seriesName = config.config.series[config.seriesIndex].name;
+
+                        if (seriesName === 'Processed') {
+                            const startDate = allSeries[0]?.data[dataPointIndex]?.x;
+                            const endDate = getTargetDate(startDate, "week");
+                            clickFilter.current = { startDate: startDate, endDate: endDate };
+                            open();
+                        }
                     }
                 }
             }
@@ -159,6 +183,18 @@ const WeeklyTrendCaseChart = (props: IChartInput) => {
                 ]}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
+
+            <Modal opened={opened} onClose={close} centered size={"lg"}
+                withCloseButton={false}
+                styles={{
+                    body: {
+                        padding: 0
+                    }
+                }}
+            >
+                <SRDocumentModal onClose={close}
+                    month={weekLabel} type="weekly" params={paramsOption} />
+            </Modal>
         </div>
     );
 

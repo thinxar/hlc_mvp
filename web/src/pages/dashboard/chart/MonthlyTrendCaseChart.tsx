@@ -2,7 +2,7 @@ import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { useRef } from "react";
-import { formatDate } from "utils/FormateDate";
+import { formatDate, getTargetDate } from "utils/FormateDate";
 import { useCommonChartStyles } from "../ChartTheme";
 import SRDocumentModal from "../grid/SRDocumentSummaryModal";
 import type { IChartInput } from "../type";
@@ -14,7 +14,6 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
     const clickFilter = useRef<{ startMonth: string, endMonth: string }>(null);
     const rawData = useRef<any[]>([]);
 
-
     const clickedMonth: any = clickFilter.current?.startMonth;
     const monthFormat = new Date(clickedMonth);
     const monthWithYear = monthFormat.toLocaleDateString('en-US', {
@@ -22,23 +21,7 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
         year: 'numeric'
     });
 
-    const paramsOption = `fromDate=${clickFilter.current?.startMonth}&endDate=${clickFilter.current?.endMonth}`;
-
-    const getTargetDate = (inputDate: string, type: 'month' | 'week') => {
-        const date = new Date(inputDate);
-        if (isNaN(date.getTime())) return 'Invalid Date';
-
-        if (type === 'month') {
-            date.setMonth(date.getMonth() + 1, 0);
-        } else if (type === 'week') {
-            const dayOfWeek = date.getDay();
-            const diff = 6 - dayOfWeek;
-            date.setDate(date.getDate() + diff);
-        }
-
-        return date.toISOString().split('T')[0];
-    };
-
+    const paramsOption = `fromDate=${clickFilter.current?.startMonth}&toDate=${clickFilter.current?.endMonth}`;
 
     const options: any = {
         // ...commonOptions,

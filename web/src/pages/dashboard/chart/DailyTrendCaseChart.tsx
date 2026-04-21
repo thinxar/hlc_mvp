@@ -3,12 +3,23 @@ import { useRef } from "react";
 import { useCommonChartStyles } from "../ChartTheme";
 import type { IChartInput } from "../type";
 import { formatDate } from "utils/FormateDate";
+import { useDisclosure } from "@mantine/hooks";
+import { Modal } from "@mantine/core";
+import SRDocumentModal from "../grid/SRDocumentSummaryModal";
 
 const DailyTrendCaseChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
-    const clickFilter = useRef<{ departmentName: string }>(null);
+    const [opened, { open, close }] = useDisclosure(false);
+    const clickFilter: any = useRef<{ date: string }>(null);
     const rawData = useRef<any[]>([]);
+
+    const clickedDate = new Date(clickFilter?.current?.date)
+    const dayLabel = clickedDate?.toLocaleDateString('en-US', {
+        month: "short",
+        day: "2-digit"
+    });
+    const paramsOption = `date=${clickFilter?.current?.date}`;
 
     const options: any = {
         // ...commonOptions,
@@ -40,8 +51,13 @@ const DailyTrendCaseChart = (props: IChartInput) => {
                     const dataPointIndex = config.dataPointIndex;
                     if (dataPointIndex != null) {
                         const allSeries = chartContext?.w?.config.series;
+                        const seriesName = config.config.series[config.seriesIndex].name;
                         const xValue = allSeries[0]?.data[dataPointIndex]?.x;
-                        clickFilter.current = { departmentName: xValue };
+
+                        if (seriesName === 'Processed') {
+                            clickFilter.current = { date: xValue };
+                            open();
+                        }
                     }
                 }
             }
@@ -159,6 +175,18 @@ const DailyTrendCaseChart = (props: IChartInput) => {
                 ]}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
+
+            <Modal opened={opened} onClose={close} centered size={"lg"}
+                withCloseButton={false}
+                styles={{
+                    body: {
+                        padding: 0
+                    }
+                }}
+            >
+                <SRDocumentModal onClose={close}
+                    month={dayLabel} type="daily" params={paramsOption} />
+            </Modal>
         </div>
     );
 

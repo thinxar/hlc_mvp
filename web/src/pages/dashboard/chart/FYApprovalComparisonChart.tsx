@@ -4,10 +4,25 @@ import { formatDate } from "utils/FormateDate";
 import { useCommonChartStyles } from "../ChartTheme";
 import type { IChartInput } from "../type";
 
+const getPrevFYLastMonthStart = () => {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+    const fyYear = currentMonth < 3 ? currentYear - 1 : currentYear;
+
+    const date = new Date(fyYear, 2, 1)
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+
+    return `${yyyy}-${mm}-${dd}`;
+};
+
 const FYApprovalComparisonChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
     const clickFilter = useRef<{ departmentName: string }>(null);
+    const chartRef = useRef<any>(null)
 
     const options: any = {
         annotations: {
@@ -27,7 +42,7 @@ const FYApprovalComparisonChart = (props: IChartInput) => {
             }],
             xaxis: [
                 {
-                    x: "Mar 2026",
+                    x: getPrevFYLastMonthStart(),
                     borderColor: "#FF4560",
                     strokeDashArray: 4,
                     label: {
@@ -57,6 +72,8 @@ const FYApprovalComparisonChart = (props: IChartInput) => {
                     if (dataPointIndex != null) {
                         const allSeries = chartContext?.w?.config.series;
                         const xValue = allSeries[0]?.data[dataPointIndex]?.x;
+                        console.log(xValue);
+
                         clickFilter.current = { departmentName: xValue };
                     }
                 }
@@ -143,7 +160,7 @@ const FYApprovalComparisonChart = (props: IChartInput) => {
                 height={props.height} width={'100%'} seriesOptions={[
                     { name: "Previous FY ", type: 'line' },
                     { name: "Current FY", type: 'line' }
-                ]}
+                ]} ref={chartRef}
                 transformOptions={{
                     xKey: xKey, yKey: yKey, dataType: 'array',
                 }}

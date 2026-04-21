@@ -253,11 +253,24 @@ export const formatDate = (
     }
 };
 
+const getTargetDate = (inputDate: string, type: 'month' | 'week') => {
+    const date = new Date(inputDate);
+    if (isNaN(date.getTime())) return 'Invalid Date';
 
+    if (type === 'month') {
+        date.setMonth(date.getMonth() + 1, 0);
+    } else if (type === 'week') {
+        const dayOfWeek = date.getDay();
+        const diff = 6 - dayOfWeek;
+        date.setDate(date.getDate() + diff);
+    }
+
+    return date.toISOString().split('T')[0];
+};
 
 
 
 export { formatDateTime, getDaysBetweenDates, getCounts, getFinancialYears }
 
 
-export { FormateDate, formatRFCDate, handleKeyAction, formatAmount }
+export { FormateDate, formatRFCDate, handleKeyAction, formatAmount, getTargetDate }

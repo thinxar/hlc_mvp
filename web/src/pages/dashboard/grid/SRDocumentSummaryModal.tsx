@@ -19,14 +19,12 @@ function SRTable({
     srList: SRRecord[];
 }) {
 
-    console.log(srList, 's');
-
     return (
         <div className="rounded-[14px] max-h-100 overflow-scroll border border-black/8 dark:border-white/[0.07]">
             <table className="w-full border-collapse text-[12px]">
 
                 <thead>
-                    <tr className="bg-[#f7f8fa] dark:bg-white/3 border-b border-black/[0.07]
+                    <tr className="bg-[#f7f8fa] dark:bg-gray-800 border-b border-black/[0.07]
                      dark:border-white/7 sticky top-0">
                         {[
                             { label: "SR Number", dot: null, align: "text-left" },
@@ -36,7 +34,7 @@ function SRTable({
                         ].map(({ label, dot, align }) => (
                             <th
                                 key={label}
-                                className={`px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap text-gray-400 dark:text-white/30 ${align}`}
+                                className={`px-3.5 py-2.5 text-xs font-semibold whitespace-nowrap text-gray-400 dark:text-gray-400 ${align}`}
                             >
                                 <span className="inline-flex items-center gap-1.5">
                                     {dot && <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dot}`} />}
@@ -203,12 +201,6 @@ export default function SRDocumentModal({
     const summaryEndPoint = `${documentSummaryApi}?window=approverSummary&grain=${type}&${params}`
     const endPoint = `${documentSummaryApi}?window=approverBreakdown&grain=${type}&${params}&srNumber=${filter.srNumber}&_total=true&_offset=${offset}&_limit=${dataPerPage}`
 
-    const srList: SRRecord[] = data?.result?.map((item: any) => ({
-        srNumber: item.approvedBy,
-        approvedCount: item.approved,
-        rejectedCount: item.rejected
-    }));
-
     useEffect(() => {
         useFormstore(summaryEndPoint, {}, '').get({}).then((d: any) => {
             setCardData(d);
@@ -220,16 +212,6 @@ export default function SRDocumentModal({
             setData(d);
         });
     }, [pageIndex, filter]);
-    console.log(filter, 'fi');
-
-    useEffect(() => {
-        // setFilter("all");
-        // setSearch("");
-    }, [srList]);
-
-    // useEffect(() => {
-    //     setPageIndex(0);
-    // }, [filter, search]);
 
     const handleSearch = (e: any) => {
         const v = e.target.value
@@ -237,8 +219,6 @@ export default function SRDocumentModal({
             ...prev,
             srNumber: v
         }));
-        console.log(v, 'kl');
-
     }
 
     const handleKey = useCallback(
@@ -253,27 +233,7 @@ export default function SRDocumentModal({
         return () => document.removeEventListener("keydown", handleKey);
     }, [handleKey]);
 
-    // const filteredSR = srList?.filter((sr) => {
-    //     const matchFilter =
-    //         filter === "all" ||
-    //         (filter === "approved" && sr.approvedCount > 0) ||
-    //         (filter === "rejected" && sr.rejectedCount > 0);
-
-    //     const matchSearch =
-    //         search === "" ||
-    //         sr.srNumber.toLowerCase().includes(search.toLowerCase());
-
-    //     return matchFilter && matchSearch;
-    // });
-
-
     const totalPagesCount = Math.ceil((data?.total || 0) / (dataPerPage || 1));
-    // const totalPagesCount = Math.ceil((search ? filteredSR?.length : data?.total || 0) / (dataPerPage || 1));
-
-    // const paginatedSR = filteredSR?.slice(
-    //     pageIndex * dataPerPage,
-    //     (pageIndex + 1) * dataPerPage
-    // );
 
     if (!open) return null;
 
