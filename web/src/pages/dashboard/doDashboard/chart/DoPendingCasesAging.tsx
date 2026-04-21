@@ -112,7 +112,7 @@ const DoPendingCasesAging = (props: IChartInput) => {
         <div id="chart">
             <PalmyraApexChart options={options} type="radialBar"
                 endPoint={endPoint} filter={props.filter}
-                height={'470'} width={'100%'} storeFactory={AppStoreFactory}
+                height={props.height} width={'100%'} storeFactory={AppStoreFactory}
                 transformOptions={{ xKey: props.xKey, yKey: props.yKey, dataType: 'array' }} />
         </div>
     )

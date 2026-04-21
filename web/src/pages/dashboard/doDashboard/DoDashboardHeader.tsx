@@ -25,10 +25,10 @@ const DoDashboardHeader = (props: IOptions) => {
 
                     <div className="flex flex-col">
                         <span className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                            Analytic Dashboard
+                            Analytic Dashboard - Policy Revival
                         </span>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Real-time case overview
+                            Real-time document overview
                         </p>
                     </div>
                 </div>

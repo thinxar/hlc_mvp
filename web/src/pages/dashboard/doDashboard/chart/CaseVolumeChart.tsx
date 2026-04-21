@@ -1,6 +1,32 @@
 import Chart from "react-apexcharts";
+import { useCommonChartStyles } from "../../ChartTheme";
+import { IChartInput } from "../../type";
 
-const BubbleChart = () => {
+const COLORS = [
+    "#34D399", // green
+    "#60A5FA", // blue
+    "#F59E0B", // amber
+    "#F472B6", // pink
+    "#A78BFA", // violet
+    "#22D3EE", // cyan
+    "#FB7185", // rose
+    "#4ADE80", // light green
+    "#818CF8", // indigo
+    "#FBBF24"  // yellow
+];
+
+
+let colorIndex = 0;
+
+const getSoftColor = () => {
+    const color = COLORS[colorIndex % COLORS.length];
+    colorIndex++;
+    return color;
+};
+
+const BubbleChart = (props: IChartInput) => {
+    const { title, subText } = props;
+    const { commonOptions } = useCommonChartStyles();
 
     const generateBubbleData = (count = 20) => {
         const branches = [
@@ -24,18 +50,14 @@ const BubbleChart = () => {
                 name: branches[i],
                 x: pending,
                 y: approved,
-                z: Math.min(20, 40)
+                z: Math.min(20, 40),
+                fillColor: getSoftColor(),
+                // strokeColor: COLORS
             };
         });
     };
 
     const bubbleData = generateBubbleData(30);
-
-    const style = {
-        color: "gray",
-        fontFamily: 'Helvetica, Arial, sans-serif',
-        fontWeight: 600
-    }
 
     const series = [
         {
@@ -62,15 +84,36 @@ const BubbleChart = () => {
                 }
             }
         },
+        plotOptions: {
+            bubble: {
+                distributed: true
+            }
+        },
 
         dataLabels: {
             enabled: false
         },
-
+        title: {
+            text: title,
+            ...commonOptions.title
+        },
+        subtitle: {
+            text: subText ? subText : '',
+            align: 'left',
+            ...commonOptions.subtitle
+        },
+        stroke: {
+            width: 1
+        },
+        // markers: {
+        //     strokeColors: undefined 
+        // },
+        fill: {
+            opacity: 0.3
+        },
         xaxis: {
             title: {
-                text: "Pending Count",
-                style: style
+                text: "Pending Count"
             },
         },
 
@@ -97,8 +140,7 @@ const BubbleChart = () => {
 
     return (
         <div>
-            <span className="font-semibold">Branch Performance</span>
-            <Chart options={options} series={series} type="bubble" height={400} />
+            <Chart options={options} series={series} type="bubble" height={props.height} />
         </div>
     );
 };

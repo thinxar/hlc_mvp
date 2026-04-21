@@ -1,0 +1,24 @@
+{
+    "result": [
+        {
+            "branch": "MANDSAUR",
+            "pending": 95
+        },
+        {
+            "branch": "RAJNANDGAON",
+            "pending": 80
+        },
+        {
+            "branch": "UJJAIN III",
+            "pending": 78
+        },
+        {
+            "branch": "RATLAM III",
+            "pending": 75
+        },
+        {
+            "branch": "MANDSAUR II",
+            "pending": 73
+        }
+    ]
+}

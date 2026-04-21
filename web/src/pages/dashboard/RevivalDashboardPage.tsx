@@ -22,7 +22,7 @@ const RevivalDashboardPage = () => {
   const [filter, setFilter] = useState({ branchCode: '', doCode: '' });
 
   const { fromMonth, toMonth } = getDateRange(6, "months");
-  const { fromMonth: fromWeek, toMonth: toWeek } = getDateRange(7, "weeks");
+  const { fromMonth: fromWeek, toMonth: toWeek } = getDateRange(8, "weeks");
   const { fromMonth: fromDate, toMonth: toDate } = getDateRange(7, "days");
   const { fromMonth: fromPrevFY, toMonth: toPrevFY } = getDateRange(0, "fy_previous");
   const { fromMonth: fromCurrFY, toMonth: toCurrFY } = getDateRange(0, "fy_current");
@@ -33,7 +33,7 @@ const RevivalDashboardPage = () => {
 
   const documentCardApi = `${documentSummaryApi}?window=headline&fromMonth=${fromMonth}&toMonth=${toMonth}&date=${getDate}`;
   const lastSixMonthTrend = `${documentSummaryApi}?fromMonth=${fromMonth}&toMonth=${toMonth}`;
-  const lastSevenWeekTrend = `${documentSummaryApi}?window=weekly&fromWeek=${fromWeek}&toWeek=${toWeek}`;
+  const lastEightWeekTrend = `${documentSummaryApi}?window=weekly&fromWeek=${fromWeek}&toWeek=${toWeek}`;
   const lastSevenDaysTrend = `${documentSummaryApi}?window=daily&fromDate=${fromDate}&toDate=${toDate}`;
 
   const prevFYMonthTrend = `${documentSummaryApi}?fromMonth=${fromPrevFY}&toMonth=${toPrevFY}`;
@@ -61,28 +61,28 @@ const RevivalDashboardPage = () => {
         <div className="dash-cards">
           <MonthlyTrendCaseChart endPoint={lastSixMonthTrend} filter={filter}
             height={CHART_HEIGHT} subText="Submitted . Pending . Processed"
-            title="Monthly Trend - Last 6 Months" xKey="calMonth"
+            title="Document Process - Last 6 Months" xKey="calMonth"
             yKey={["submittedDocuments", "pendingDocuments", "processedDocuments"]} />
         </div>
         <div className="dash-cards">
           <MonthlyAcceptanceRateChart endPoint={lastSixMonthTrend} filter={filter}
             height={CHART_HEIGHT} subText="Monthly distribution of submitted, pending and processed documents"
-            title="Document Processing Rate(%) - Last 6 Months" xKey="calMonth"
+            title="Document Processing (%) - Last 6 Months" xKey="calMonth"
             yKey={["submittedDocuments", "pendingDocuments", "processedDocuments"]} />
         </div>
 
 
         <div className="dash-cards">
-          <WeeklyTrendCaseChart endPoint={lastSevenWeekTrend}
+          <WeeklyTrendCaseChart endPoint={lastEightWeekTrend}
             height={CHART_HEIGHT} subText="Submitted . Pending . Processed"
-            title="Weekly Trend - Last 7 Weeks" xKey="calWeek" filter={filter}
+            title="Document Process - Last 8 Weeks" xKey="calWeek" filter={filter}
             yKey={["submittedDocuments", "pendingDocuments", "processedDocuments"]} />
         </div>
 
         <div className="dash-cards">
           <DailyTrendCaseChart endPoint={lastSevenDaysTrend}
             height={CHART_HEIGHT} subText="Submitted . Pending . Processed"
-            title="Daily Trend - Last 7 Days" xKey="calDate" filter={filter}
+            title="Document Process - Last 7 Days" xKey="calDate" filter={filter}
             yKey={["submittedDocuments", "pendingDocuments", "processedDocuments"]} />
         </div>
       </div>

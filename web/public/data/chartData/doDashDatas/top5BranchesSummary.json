@@ -1,0 +1,24 @@
+{
+    "result": [
+        {
+            "branch": "INDORE DBO",
+            "processed": 90
+        },
+        {
+            "branch": "INDORE CBO-1",
+            "processed": 85
+        },
+        {
+            "branch": "UJJAIN I",
+            "processed": 70
+        },
+        {
+            "branch": "RATLAM I",
+            "processed": 75
+        },
+        {
+            "branch": "MANDSAUR",
+            "processed": 72
+        }
+    ]
+}

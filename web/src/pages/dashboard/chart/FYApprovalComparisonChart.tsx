@@ -72,7 +72,6 @@ const FYApprovalComparisonChart = (props: IChartInput) => {
                     if (dataPointIndex != null) {
                         const allSeries = chartContext?.w?.config.series;
                         const xValue = allSeries[0]?.data[dataPointIndex]?.x;
-                        console.log(xValue);
 
                         clickFilter.current = { departmentName: xValue };
                     }

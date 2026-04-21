@@ -1,28 +1,16 @@
 // import { useDisclosure } from '@mantine/hooks';
-import { PalmyraApexChart } from '@palmyralabs/rt-apexchart';
-import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { IChartInput } from '../../type';
 import { PalmyraStoreFactory } from '@palmyralabs/palmyra-wire';
+import { PalmyraApexChart } from '@palmyralabs/rt-apexchart';
 import { useCommonChartStyles } from '../../ChartTheme';
+import { IChartInput } from '../../type';
 
-dayjs.extend(customParseFormat);
-
-const DoBranchPerformanceChart = (props: IChartInput) => {
-    const { endPoint, title, xKey, yKey, filter, subText } = props;
+const TopBranchApprovalRateChart = (props: IChartInput) => {
+    const { title, xKey, yKey, filter, endPoint, subText, height } = props;
     const { commonOptions } = useCommonChartStyles();
-    const colors = ['#ff8c00', '#3B82F6'];
-
-    const style = {
-        color: "gray",
-        fontFamily: 'Helvetica, Arial, sans-serif',
-        fontWeight: 600
-    }
 
     const options: any = {
         chart: {
             type: 'bar',
-            stacked: true,
             toolbar: {
                 show: true,
                 tools: {
@@ -36,15 +24,16 @@ const DoBranchPerformanceChart = (props: IChartInput) => {
                 }
             },
             zoom: {
-                enabled: false
-            }
+                enabled: true
+            },
         },
         plotOptions: {
             bar: {
                 borderRadius: 2,
-                horizontal: false,
+                horizontal: true,
                 rangeBarOverlap: false,
                 columnWidth: '50%',
+                barHeight: '70%',
                 colors: {
                     ranges: [
                         {
@@ -59,13 +48,13 @@ const DoBranchPerformanceChart = (props: IChartInput) => {
         dataLabels: {
             enabled: true,
             formatter: function (val: number) {
-                return val === 0 ? '' : val;
+                return val === 0 ? '' : val + '%';
             }
         },
         stroke: {
             show: true,
             width: 1,
-            colors: colors
+            colors: ['#22c55e', '#f59e0b',]
         },
         title: {
             text: title,
@@ -76,10 +65,6 @@ const DoBranchPerformanceChart = (props: IChartInput) => {
             ...commonOptions.subtitle
         },
         xaxis: {
-            title: {
-                text: 'Branches',
-                style: style
-            },
             labels: {
                 rotate: -45,
                 style: {
@@ -88,12 +73,6 @@ const DoBranchPerformanceChart = (props: IChartInput) => {
                 trim: true,
                 hideOverlappingLabels: true
             }
-        },
-        yaxis: {
-            title: {
-                text: 'Count',
-                style: style
-            },
         },
         noData: {
             text: 'No Data Available',
@@ -130,22 +109,18 @@ const DoBranchPerformanceChart = (props: IChartInput) => {
                 right: 20
             }
         },
-        fill: {
-            opacity: 0.7
-        },
-        colors: colors
+        colors: ['#22c55e', '#f59e0b',]
     };
+
     const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' });
 
-    return <> <PalmyraApexChart options={options} type="bar" storeFactory={AppStoreFactory}
-        endPoint={endPoint} filter={filter} height={props.height} width={'100%'}
+    return <> <PalmyraApexChart options={options} type="bar"
+        endPoint={endPoint} filter={filter} height={height} width={'100%'} storeFactory={AppStoreFactory}
         seriesOptions={[
-            { name: 'Pending' },
-            { name: 'In-Progress' },
-            { name: 'Approved' }
+            { name: 'Processed' }
         ]}
         transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }} />
     </>
 };
 
-export { DoBranchPerformanceChart };
+export { TopBranchApprovalRateChart };

@@ -117,7 +117,7 @@ const TopBranchAppRateChart = (props: IChartInput) => {
         <div id="chart">
             <PalmyraApexChart
                 type="donut" options={options} endPoint={endPoint}
-                filter={filter} height={'400'} width={'100%'}
+                filter={filter} height={props.height} width={'100%'}
                 transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
                 storeFactory={AppStoreFactory}
             />
