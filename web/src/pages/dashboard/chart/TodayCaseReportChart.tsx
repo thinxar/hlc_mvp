@@ -7,17 +7,20 @@ const TodayCaseReportChart = (props: IChartInput) => {
     const { commonOptions } = useCommonChartStyles();
 
     const transformSnapshots = (data: any): any => {
-        const results: any[] = [];
         const currData = data.slice(-1);
-        const requiredKeys = ["pendingDocuments", "processedDocuments"];
+        const requiredKeys = ["submittedDocuments", "pendingDocuments", "processedDocuments"];
+        const order = ["Submitted", "Pending", "Processed"];
         const formatData = Object.entries(currData[0])
             .filter(([key]) => requiredKeys.includes(key))
             .map(([key, value]) => ({
-                name: key === "pendingDocuments" ? "Pending" : "Processed",
+                name: key === "pendingDocuments"
+                    ? "Pending"
+                    : key === "processedDocuments"
+                        ? "Processed"
+                        : "Submitted",
                 value: value || 0
-            }));
-
-        results.push(formatData);
+            }))
+            .sort((a, b) => order.indexOf(a.name) - order.indexOf(b.name));
         return formatData;
     }
 
@@ -39,7 +42,7 @@ const TodayCaseReportChart = (props: IChartInput) => {
             }]
         },
         colors: [
-            '#f59e0b', '#22c55e', '#ef4444'
+            '#3b82f6', '#f59e0b', '#22c55e', '#ef4444'
         ],
         legend: {
             show: true,

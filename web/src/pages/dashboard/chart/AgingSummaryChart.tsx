@@ -56,12 +56,12 @@ const AgingSummaryChart = (props: IChartInput) => {
             <PalmyraApexChart options={options} type="bar"
                 endPoint={endPoint} filter={props.filter}
                 seriesOptions={[
-                    { name: "0-5 days" },
+                    { name: "<5 days" },
                     { name: "6-10 days" },
                     { name: "11-20 days" },
                     { name: "21-30 days" },
                     { name: "31-45 days" },
-                    { name: "45+ days" }
+                    { name: ">45 days" }
                 ]}
                 height={props.height} width={'100%'}
                 transformOptions={{ xKey: "calMonth", yKey: BAND_KEYS, dataType: 'array' }}

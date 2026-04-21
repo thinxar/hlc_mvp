@@ -88,28 +88,40 @@ const MonthlyAcceptanceRateChart = (props: IChartInput) => {
         },
         tooltip: {
             enabled: true,
-            custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
-                const seriesName = w.config.series[seriesIndex]?.name;
-                const value = series[seriesIndex][dataPointIndex];
-                const xVal = w.config.series[0]?.data[dataPointIndex]?.x;
-                const label = formatDate(xVal, 'month');
+            shared: true,
+            intersect: false,
+            custom: function ({ series, dataPointIndex, w }: any) {
+                const label = formatDate(
+                    w.config.series[0]?.data[dataPointIndex]?.x,
+                    'month'
+                );
 
-                if (seriesName === 'Processed' && rawData.current[dataPointIndex]) {
-                    const row = rawData.current[dataPointIndex];
-                    const approved = row.approvedDocuments ?? 0;
-                    const rejected = row.rejectedDocuments ?? 0;
-                    return `<div style="padding:8px;font-size:12px">
-                        <b>${label}</b><br/>
-                        <span style="color:#22c55e">Processed: ${value}%</span><br/>
-                        <span style="color:#16a34a">&nbsp;&nbsp;Approved: ${approved}</span><br/>
-                        <span style="color:#ef4444">&nbsp;&nbsp;Rejected: ${rejected}</span>
-                    </div>`;
-                }
-                const color = w.config.colors[seriesIndex] || '#333';
-                return `<div style="padding:8px;font-size:12px">
-                    <b>${label}</b><br/>
-                    <span style="color:${color}">${seriesName}: ${value}%</span>
-                </div>`;
+                let content = `<div style="padding:8px;font-size:12px">
+            <b>${label}</b><br/>`;
+
+                w.config.series.forEach((s: any, i: number) => {
+                    const value = series[i][dataPointIndex];
+                    const color = w.config.colors[i] || '#333';
+
+                    if (s.name === 'Processed' && rawData.current[dataPointIndex]) {
+                        const row = rawData.current[dataPointIndex];
+                        const approved = row.approvedDocuments ?? 0;
+                        const rejected = row.rejectedDocuments ?? 0;
+
+                        content += `
+                    <span style="color:${color}">${s.name}: ${value}%</span><br/>
+                    <span style="color:#16a34a">&nbsp;&nbsp;Approved: ${approved}</span><br/>
+                    <span style="color:#ef4444">&nbsp;&nbsp;Rejected: ${rejected}</span><br/>
+                `;
+                    } else {
+                        content += `
+                    <span style="color:${color}">${s.name}: ${value}%</span><br/>
+                `;
+                    }
+                });
+
+                content += `</div>`;
+                return content;
             }
         },
         legend: {
@@ -118,7 +130,7 @@ const MonthlyAcceptanceRateChart = (props: IChartInput) => {
         },
         stroke: {
             show: true,
-            width: 1,
+            width: 2,
             ...commonOptions.colors
         },
         title: {

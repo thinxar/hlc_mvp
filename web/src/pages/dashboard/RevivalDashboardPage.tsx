@@ -27,8 +27,6 @@ const RevivalDashboardPage = () => {
   const { fromMonth: fromPrevFY, toMonth: toPrevFY } = getDateRange(0, "fy_previous");
   const { fromMonth: fromCurrFY, toMonth: toCurrFY } = getDateRange(0, "fy_current");
 
-  const endpoint = '/sdf';
-
   const revivalDashboardUrl = ServiceEndpoint.customView.rev.dashboard
 
   const documentSummaryApi = revivalDashboardUrl.documentSummaryApi
@@ -47,6 +45,7 @@ const RevivalDashboardPage = () => {
   const monthlyAgingSummary = `${agingSummaryApi}?fromMonth=${fromMonth}&toMonth=${toMonth}`;
   const monthlyTatPerformance = `${tatPerformanceApi}?fromMonth=${fromMonth}&toMonth=${toMonth}`;
 
+  const todayAgingSummary = `${agingSummaryApi}?window=daily&fromDate=${fromDate}&toDate=${toDate}`;
   const todayApprovalSummaryApi = `${documentSummaryApi}?window=todayApproval&date=${getDate}`
 
   return (
@@ -120,9 +119,9 @@ const RevivalDashboardPage = () => {
         </div>
 
         <div className="dash-cards">
-          <AgingAnalysisChart endPoint={endpoint}
-            filter={filter} height={CHART_HEIGHT} subText="Number of pending cases by days"
-            title="Ageing Analysis" xKey="name" yKey="value" />
+          <AgingAnalysisChart endPoint={todayAgingSummary}
+            filter={filter} height={CHART_HEIGHT} subText="Document count by ageing range"
+            title="Today's Approval Ageing Distribution" xKey="name" yKey="value" />
         </div>
       </div>
 

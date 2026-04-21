@@ -1,11 +1,37 @@
-import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
-import type { IChartInput } from "../type";
 import { useCommonChartStyles } from "../ChartTheme";
+import type { IChartInput } from "../type";
+
+const REQ_KEYS = [
+    "d0_5", "d6_10", "d11_20", "d21_30", "d31_45", "d45plus"
+];
+
+const LABEL_MAP: Record<string, string> = {
+    d0_5: "<5 days",
+    d6_10: "6–10 days",
+    d11_20: "11–20 days",
+    d21_30: "21–30 days",
+    d31_45: "31–45 days",
+    d45plus: ">45 days"
+};
 
 const AgingAnalysisChart = (props: IChartInput) => {
-    const { title, xKey, yKey, subText } = props;
+    const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
+
+    const transformData = (data: any): any => {
+        const currData = data.slice(-1);
+
+        const formatData = Object.entries(currData[0])
+            .filter(([key]) => REQ_KEYS.includes(key))
+            .map(([key, value]) => ({
+                name: LABEL_MAP[key] || key,
+                value: value || 0
+            }));
+
+        return formatData;
+    };
+
 
     const options: any = {
         ...commonOptions,
@@ -33,9 +59,7 @@ const AgingAnalysisChart = (props: IChartInput) => {
                 distributed: true
             }
         },
-        colors: [
-            '#22c55e', '#22c55e', '#f59e0b', '#f59e0b', '#ef4444', '#ef4444'
-        ],
+        colors: ['#22c55e', '#3b82f6', '#f59e0b', '#f97316', '#ef4444', '#7c3aed'],
         legend: {
             show: true,
             position: "top",
@@ -97,12 +121,15 @@ const AgingAnalysisChart = (props: IChartInput) => {
         }
     }
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
-    const endPointX = '/AgingAnalysis.json'
+    // const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData' });
+    // const endPointX = '/AgingAnalysis.json'
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="bar" storeFactory={AppStoreFactory}
-                endPoint={endPointX} filter={props.filter}
+            <PalmyraApexChart options={options} type="bar"
+                endPoint={endPoint} filter={props.filter} preProcess={(d): any => transformData(d)}
+                seriesOptions={[
+                    { name: "Approvals" }
+                ]}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
         </div>
