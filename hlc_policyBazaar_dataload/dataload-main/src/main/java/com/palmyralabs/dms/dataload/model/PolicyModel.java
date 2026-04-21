@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@PalmyraType("policy")
+@PalmyraType("proposal")
 public class PolicyModel {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private Integer id;

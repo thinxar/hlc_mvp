@@ -61,7 +61,7 @@ public class PalmyraDMSClient extends BaseRestClient {
 
 	public void uploadFile(Integer policyId, Integer docketTypeId, Path filePath) throws IOException {
 
-		String url = baseURL + "palmyra/pbv/policy/" + policyId + "/docketType/" + docketTypeId + "/file";
+		String url = baseURL + "palmyra/pbv/proposal/" + policyId + "/docketType/" + docketTypeId + "/file";
 
 		uploadFile(url, filePath);
 	}
