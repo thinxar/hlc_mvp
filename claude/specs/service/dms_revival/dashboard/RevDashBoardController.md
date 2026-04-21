@@ -36,6 +36,7 @@ Spring's `params` discriminator on `window`:
 | `getTodayApprovalSummary`          | `params = "window=todayApproval"`        |
 | `getHeadlineSummary`               | `params = "window=headline"`             |
 | `getApproverBreakdown`             | `params = "window=approverBreakdown"`    |
+| `getApproverSummary`               | `params = "window=approverSummary"`      |
 
 A request with no `window` param (or an unrecognized value) matches
 none of the six and returns 404.
@@ -339,6 +340,9 @@ ignored.
 | `date`       | `LocalDate` (ISO) | no       | Single-bucket shortcut — sets both `fromDate` and `toDate` to this day (snapped per grain). Takes precedence over `fromDate` / `toDate`.     |
 | `doCode`     | string            | no       | exact match on `doCode`.                                                                                                                     |
 | `branchCode` | string            | no       | exact match on `branchCode`.                                                                                                                 |
+| `_limit`     | int               | no       | Page size. Defaults to `15`. Pass `≤ 0` to disable the cap and return the full range starting at `_offset`.                                   |
+| `_offset`    | int               | no       | Zero-based index into the sorted approver list. Defaults to `-1`, which the service clamps up to `0` (start from the beginning).              |
+| `_total`     | boolean           | no       | When `true`, populates `total` with the full count of distinct approvers (pre-slice). Defaults to `false` (emits `0` to skip the extra cost). |
 
 Range resolution — the service snaps each bound independently to the
 grain's canonical bucket key before matching. Both bounds share one
@@ -357,43 +361,119 @@ endpoint had before the range parameters were introduced. If only one
 bound is supplied, the other defaults to the snapped bucket for
 today. `fromDate > toDate` (after snap) → 400.
 
-**Response element** — `ApproverBreakdownModel` (**single object, not
-a list** — the range is aggregated into one breakdown):
+**Response envelope** — `PaginatedResponse<PerApproverSummary>` (from
+`com.palmyralabs.dms.model.PaginatedResponse`). Returned directly — no
+`PalmyraResponse` wrap — so pagination is expressed natively through
+the standard envelope. Each `result` entry is a flat `PerApproverSummary`
+row; there is no nested per-bucket grouping or surrounding metadata
+block. The client already knows the request inputs (`grain`, range,
+scope), so they are not echoed on the response.
 
 ```json
 {
-  "grain":              "monthly",
-  "fromBucket":         "2026-02-01",
-  "toBucket":           "2026-04-01",
-  "processedDocuments": 1650,
-  "perApprover": [
-    { "approvedBy": "57988792", "approvedCount": 648, "rejectedCount": 32 },
-    { "approvedBy": "61230015", "approvedCount": 920, "rejectedCount": 50 }
-  ]
+  "result": [
+    { "approvedBy": "10029057", "approved": 2,  "rejected": 1, "processed": 3  },
+    { "approvedBy": "10040081", "approved": 7,  "rejected": 1, "processed": 8  },
+    { "approvedBy": "10041317", "approved": 15, "rejected": 0, "processed": 15 },
+    { "approvedBy": "10041807", "approved": 4,  "rejected": 1, "processed": 5  },
+    { "approvedBy": "10044863", "approved": 1,  "rejected": 0, "processed": 1  }
+  ],
+  "limit":  15,
+  "offset": -1,
+  "total":  123
 }
 ```
 
-* `grain` echoes the resolved grain (always lowercase) so the caller
-  sees what the service actually used.
-* `fromBucket` / `toBucket` are the snapped bounds actually applied to
-  the `$match`. Lets the client round-trip without re-computing.
-* `processedDocuments` is the scope-wide sum of the stored scalar
-  across every branch-bucket row in `[fromBucket, toBucket]` — no
-  `$unwind` needed.
-* `perApprover` is the per-approver breakdown aggregated across the
-  whole range and scope. One row per distinct `approvedBy`;
-  `approvedCount` = sum of DB `accepted`, `rejectedCount` = sum of DB
-  `rejected` (renamed at the API boundary). Sorted ascending by
-  `approvedBy`.
-* Invariant:
-  `sum(perApprover[].approvedCount) + sum(perApprover[].rejectedCount)
-  == processedDocuments`.
-* Empty range → `processedDocuments = 0` and `perApprover = []`;
-  never `null`.
+* `result[]` holds the per-approver rows aggregated across the whole
+  range and scope. One row per distinct `approvedBy`:
+  * `approved` — sum of DB `perApprover.accepted`.
+  * `rejected` — sum of DB `perApprover.rejected`.
+  * `processed` — `approved + rejected`, computed server-side in the
+    `$project` stage. This is the total documents actioned by that
+    approver over the range.
+* Sorted ascending by `approvedBy`, then sliced per `_offset` / `_limit`.
+* `limit` / `offset` echo the request params verbatim (including the
+  default `_offset=-1`; the service clamps `< 0` up to `0` before
+  slicing, so the default call returns the **first `_limit` rows** —
+  15 by default). Pass `_limit=0` to opt out of the cap and get the
+  full approver list.
+* `total` is the full pre-slice count of distinct approvers when
+  `_total=true`; `0` otherwise.
+* Empty range → `result = []`, `total = 0`; never `null`.
 * Unlike §2.1 / §2.2 / §2.3, the response is **not** broken down per
   bucket — if the UI needs per-bucket approver splits, call this
   endpoint once per bucket or use the ranged scalar endpoints together
   with bucket-specific approver calls.
+
+Pagination semantics — `_limit` is the only knob that can disable the
+cap. `_offset < 0` is normalised up to `0` and never "turns off"
+pagination on its own.
+
+| `_offset` (effective) | `_limit`   | Effect                                                                 |
+| --------------------- | ---------- | ---------------------------------------------------------------------- |
+| `< 0` → clamped to `0`| `> 0`      | Returns the first `_limit` rows — **the default behaviour** (15).       |
+| `≥ 0`                 | `> 0`      | Returns `result[ offset .. offset + limit )`; clamps at end (no error). |
+| `< 0` → clamped to `0`| `≤ 0`      | Returns the entire list (no cap). Use this to fetch everything.         |
+| `≥ 0`                 | `≤ 0`      | Returns `result[ offset .. end ]` (no cap applied).                     |
+
+`_offset` past the end of the array yields an empty `result` — not a
+400. Pagination is applied **in the service** after the Mongo
+aggregation returns the full sorted approver list, because the
+approver cardinality per query is bounded (dozens to low hundreds in
+practice) and the marginal cost of paging server-side in Mongo would
+not repay the extra round-trip complexity for the `_total` path.
+
+### 2.7 Approver summary over a date range
+
+`GET /rev/overAll/document/summary?window=approverSummary`
+
+Companion to §2.6 — returns the headline roll-up numbers for the
+approver pool over the same date range / scope, without the per-row
+breakdown. Intended for the dashboard tile that sits next to the
+approver table (how many people actioned how many documents across
+the range).
+
+Accepts the **same date parameters** as §2.6 (`grain`, `fromDate`,
+`toDate`, `date`, `doCode`, `branchCode`) with the same snap / default
+/ `date` precedence rules. No pagination params — the response is a
+single summary object.
+
+| Param        | Type              | Required | Notes                                                                                                                                       |
+| ------------ | ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `grain`      | string            | no       | `daily` \| `weekly` \| `monthly`; defaults to `daily`. Anything else → 400.                                                                  |
+| `fromDate`   | `LocalDate` (ISO) | no       | Start of the range. Defaults to the bucket containing `LocalDate.now()`. Ignored if `date` is present.                                       |
+| `toDate`     | `LocalDate` (ISO) | no       | End of the range, inclusive. Defaults to the bucket containing `LocalDate.now()`. Ignored if `date` is present.                              |
+| `date`       | `LocalDate` (ISO) | no       | Single-bucket shortcut — sets both bounds to this day. Takes precedence over `fromDate` / `toDate`.                                          |
+| `doCode`     | string            | no       | exact match on `doCode`.                                                                                                                     |
+| `branchCode` | string            | no       | exact match on `branchCode`.                                                                                                                 |
+
+**Response element** — `ApproverSummaryModel` (single object wrapped
+in `PalmyraResponse`):
+
+```json
+{
+  "totalApprovers":  123,
+  "totalDocuments":  35581,
+  "totalApproved":   33102,
+  "totalRejected":   2479
+}
+```
+
+* `totalApprovers` — count of **distinct** approvers (`perApprover.approvedBy`)
+  who actioned at least one document in the range / scope.
+* `totalApproved` — Σ of `perApprover.accepted` across the range.
+* `totalRejected` — Σ of `perApprover.rejected` across the range.
+* `totalDocuments` — `totalApproved + totalRejected` (total actioned
+  documents over the range).
+* All four fields are always emitted; empty range → every field `0`,
+  never `null`.
+* Invariant: `totalDocuments ==` the `processedDocuments` figure you
+  would get by summing the §2.6 breakdown rows' `processed` values.
+  They come from the same aggregation.
+
+Implementation reuses the §2.6 per-approver aggregation pipeline
+(§6.5) — the service folds the returned rows in Java to produce the
+four scalars, so there is no second round-trip to Mongo.
 
 ---
 
@@ -411,6 +491,7 @@ a list** — the range is aggregated into one breakdown):
 | `headline`: `fromMonth` (after snap to 1st) strictly after `toMonth`                        | `window=headline&fromMonth=2026-04-01&toMonth=2026-02-01` → `fromMonth after toMonth`|
 | `approverBreakdown`: unrecognized `grain`                                                   | `window=approverBreakdown&grain=hourly` → `grain must be one of: daily, weekly, monthly` |
 | `approverBreakdown`: `fromDate` (after grain snap) strictly after `toDate`                  | `window=approverBreakdown&grain=monthly&fromDate=2026-04-01&toDate=2026-02-01` → `fromDate after toDate` |
+| `approverSummary`: unrecognized `grain` / `fromDate > toDate`                               | Same rules as `approverBreakdown` (same service-side validation).                    |
 
 Interval cap semantics: `to.isAfter(from.plusMonths(N))` rejects.
 A range exactly N months wide is allowed.
@@ -440,7 +521,12 @@ HeadlineSummaryModel              getHeadlineSummary(
         LocalDate fromMonth, LocalDate toMonth, LocalDate date,
         String doCode, String branchCode);
 
-ApproverBreakdownModel            getApproverBreakdown(
+PaginatedResponse<PerApproverSummary> getApproverBreakdown(
+        String grain, LocalDate fromDate, LocalDate toDate, LocalDate date,
+        String doCode, String branchCode,
+        int limit, int offset, boolean includeTotal);
+
+ApproverSummaryModel              getApproverSummary(
         String grain, LocalDate fromDate, LocalDate toDate, LocalDate date,
         String doCode, String branchCode);
 ```
@@ -741,51 +827,35 @@ Part B's `totalProcessed` should equal `approved + rejected` to the
 integer. Treat a mismatch as a data-quality signal, not a bug in this
 endpoint.
 
-### 6.5 Approver breakdown pipelines (ranged)
+### 6.5 Approver breakdown pipeline (ranged)
 
-Runs against the grain-specific collection (daily / weekly / monthly)
-with `<timeField>` clamped to the snapped `[fromBucket, toBucket]`
-range. Two small aggregations — the scalar-total query is no-unwind,
-the approver query is the only place that unwinds.
-
-**Part A — ranged processed total** (no `$unwind`):
-
-```
-[
-  { $match: {
-      <timeField>: { $gte: <fromBucket>, $lte: <toBucket> },
-      doCode?, branchCode?
-  }},
-  { $group: {
-      _id: null,
-      processedDocuments: { $sum: "$processedDocuments" }
-  }},
-  { $project: { _id: 0, processedDocuments: 1 } }
-]
-```
-
-Single-doc result; service substitutes `0L` when empty.
-
-**Part B — per-approver breakdown over the range** (unwinds
-`perApprover`, groups by `approvedBy`):
+Single aggregation against the grain-specific collection (daily /
+weekly / monthly) with `<timeField>` clamped to the `[fromDate, toDate]`
+range. Unwinds `perApprover`, groups by `approvedBy`, emits one row
+per distinct approver. Pagination is applied **in the service** on the
+returned list — not pushed into Mongo — because approver cardinality
+per query is bounded (dozens to low hundreds) and the extra `$skip +
+$limit` plus the second `$count` round-trip for `_total=true` would
+not repay itself.
 
 ```
 [
   { $match: {
-      <timeField>: { $gte: <fromBucket>, $lte: <toBucket> },
+      <timeField>: { $gte: <fromDate>, $lte: <toDate> },
       doCode?, branchCode?
   }},
   { $unwind: { path: "$perApprover", preserveNullAndEmptyArrays: false } },
   { $group: {
       _id: "$perApprover.approvedBy",
-      approvedCount: { $sum: "$perApprover.accepted" },
-      rejectedCount: { $sum: "$perApprover.rejected" }
+      approved: { $sum: "$perApprover.accepted" },
+      rejected: { $sum: "$perApprover.rejected" }
   }},
   { $project: {
       _id: 0,
       approvedBy: "$_id",
-      approvedCount: 1,
-      rejectedCount: 1
+      approved: 1,
+      rejected: 1,
+      processed: { $add: ["$approved", "$rejected"] }
   }},
   { $sort: { approvedBy: 1 } }
 ]
@@ -793,14 +863,12 @@ Single-doc result; service substitutes `0L` when empty.
 
 `preserveNullAndEmptyArrays: false` is fine here — branch-buckets
 with no approver activity contribute nothing to the per-approver
-breakdown and their `processedDocuments` of 0 already doesn't move
-the Part A total.
+breakdown.
 
-**Invariant check**: by the per-doc invariant
-(`SUM(perApprover.accepted + perApprover.rejected) == processedDocuments`),
-`sum(perApprover[].approvedCount) + sum(perApprover[].rejectedCount)
-== processedDocuments` over the whole range. A mismatch is a
-data-quality signal, not a bug.
+After the pipeline returns, the service slices the list per `_offset`
+/ `_limit` (see §2.6 "Pagination semantics") and wraps it into
+`PaginatedResponse`. `total` is filled from `allApprovers.size()` when
+`_total=true`, else `0L`.
 
 ### 6.6 Bound normalization
 
@@ -959,13 +1027,42 @@ GET /api/palmyra/rev/overAll/document/summary
     ?window=headline&fromMonth=2026-04-01&toMonth=2026-02-01
 # -> 400 "fromMonth after toMonth"
 
-# Approver breakdown — defaults to current daily bucket (fromDate/toDate both = LocalDate.now())
+# Approver breakdown — defaults to current daily bucket, first 15 rows (_limit=15, _offset=-1 → clamped to 0)
 GET /api/palmyra/rev/overAll/document/summary?window=approverBreakdown
-# -> { "grain": "daily", "fromBucket": "2026-04-21", "toBucket": "2026-04-21",
-#      "processedDocuments": 45,
-#      "perApprover": [
-#        { "approvedBy": "57988792", "approvedCount": 24, "rejectedCount": 2 },
-#        { "approvedBy": "61230015", "approvedCount": 18, "rejectedCount": 1 } ] }
+# -> { "result": [ ...15 PerApproverSummary rows... ],
+#      "limit": 15, "offset": -1, "total": 0 }
+
+# Approver breakdown — fetch entire list (disable the cap)
+GET /api/palmyra/rev/overAll/document/summary?window=approverBreakdown&_limit=0
+
+# Approver summary — roll-up totals for the default daily bucket
+GET /api/palmyra/rev/overAll/document/summary?window=approverSummary
+# -> { "totalApprovers": 123, "totalDocuments": 35581,
+#      "totalApproved": 33102, "totalRejected": 2479 }
+
+# Approver summary — monthly range for one DO office
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverSummary&grain=monthly
+    &fromDate=2026-02-01&toDate=2026-04-01
+    &doCode=201
+
+# Approver summary — single specific day via `date`
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverSummary&grain=daily&date=2026-04-19
+
+# Approver breakdown — first page of approvers (size 10), with total count
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverBreakdown&grain=monthly
+    &fromDate=2026-02-01&toDate=2026-04-01
+    &_limit=10&_offset=0&_total=true
+# -> { "result": [ ...up to 10 PerApproverSummary rows... ],
+#      "limit": 10, "offset": 0, "total": 42 }
+
+# Approver breakdown — second page
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverBreakdown&grain=monthly
+    &fromDate=2026-02-01&toDate=2026-04-01
+    &_limit=10&_offset=10
 
 # Approver breakdown — quarter-wide monthly range (Feb–Apr 2026)
 GET /api/palmyra/rev/overAll/document/summary

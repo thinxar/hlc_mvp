@@ -8,6 +8,7 @@ import lombok.Setter;
 public class PerApproverSummary {
 
 	private String approvedBy;
-	private Long approvedCount;
-	private Long rejectedCount;
+	private Long approved;
+	private Long rejected;
+	private Long processed;
 }

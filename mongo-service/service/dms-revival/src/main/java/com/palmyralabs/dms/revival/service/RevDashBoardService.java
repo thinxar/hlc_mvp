@@ -20,7 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.palmyralabs.dms.revival.model.ApproverBreakdownModel;
+import com.palmyralabs.dms.model.PaginatedResponse;
+import com.palmyralabs.dms.revival.model.ApproverSummaryModel;
 import com.palmyralabs.dms.revival.model.DailyDocumentSummaryModel;
 import com.palmyralabs.dms.revival.model.HeadlineSummaryModel;
 import com.palmyralabs.dms.revival.model.MonthlyDocumentSummaryModel;
@@ -28,9 +29,7 @@ import com.palmyralabs.dms.revival.model.PerApproverSummary;
 import com.palmyralabs.dms.revival.model.TodayApprovalSummaryModel;
 import com.palmyralabs.dms.revival.model.WeeklyDocumentSummaryModel;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +72,54 @@ public class RevDashBoardService {
 				doCode, branchCode, fromDate, toDate, DailyDocumentSummaryModel.class);
 	}
 
-	public ApproverBreakdownModel getApproverBreakdown(String grain,
+	public PaginatedResponse<PerApproverSummary> getApproverBreakdown(String grain,
+			LocalDate fromDate, LocalDate toDate, LocalDate date,
+			String doCode, String branchCode,
+			int limit, int offset, boolean includeTotal) {
+		String g = grain == null || grain.isBlank() ? "daily" : grain.toLowerCase();
+
+		String collection;
+		String timeField;
+		switch (g) {
+			case "daily":
+				collection = DAILY_COLLECTION;
+				timeField = "calDate";
+				break;
+			case "weekly":
+				collection = WEEKLY_COLLECTION;
+				timeField = "calWeek";
+				break;
+			case "monthly":
+				collection = MONTHLY_COLLECTION;
+				timeField = "calMonth";
+				break;
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+						"grain must be one of: daily, weekly, monthly");
+		}
+
+		if (date != null) {
+			fromDate = date;
+			toDate = date;
+		}
+
+		if (fromDate != null && toDate != null && fromDate.isAfter(toDate)) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fromDate after toDate");
+		}
+
+		List<PerApproverSummary> allApprovers = aggregateRangedApprovers(collection, timeField,
+				fromDate, toDate, doCode, branchCode);
+
+		int fromIdx = Math.min(Math.max(0, offset), allApprovers.size());
+		int toIdx = limit <= 0 ? allApprovers.size()
+				: Math.min(fromIdx + limit, allApprovers.size());
+		List<PerApproverSummary> paged = new ArrayList<>(allApprovers.subList(fromIdx, toIdx));
+
+		long total = includeTotal ? allApprovers.size() : 0L;
+		return new PaginatedResponse<>(paged, limit, offset, total);
+	}
+
+	public ApproverSummaryModel getApproverSummary(String grain,
 			LocalDate fromDate, LocalDate toDate, LocalDate date,
 			String doCode, String branchCode) {
 		String g = grain == null || grain.isBlank() ? "daily" : grain.toLowerCase();
@@ -107,34 +153,22 @@ public class RevDashBoardService {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fromDate after toDate");
 		}
 
-		ApproverBreakdownModel out = new ApproverBreakdownModel();
-		out.setGrain(g);
-		out.setFromBucket(fromDate);
-		out.setToBucket(toDate);
-		out.setProcessedDocuments(aggregateRangedProcessed(collection, timeField,
-				fromDate, toDate, doCode, branchCode));
-		out.setPerApprover(aggregateRangedApprovers(collection, timeField,
-				fromDate, toDate, doCode, branchCode));
+		List<PerApproverSummary> approvers = aggregateRangedApprovers(collection, timeField,
+				fromDate, toDate, doCode, branchCode);
+
+		long totalApproved = 0L;
+		long totalRejected = 0L;
+		for (PerApproverSummary a : approvers) {
+			if (a.getApproved() != null) totalApproved += a.getApproved();
+			if (a.getRejected() != null) totalRejected += a.getRejected();
+		}
+
+		ApproverSummaryModel out = new ApproverSummaryModel();
+		out.setTotalApprovers((long) approvers.size());
+		out.setTotalApproved(totalApproved);
+		out.setTotalRejected(totalRejected);
+		out.setTotalDocuments(totalApproved + totalRejected);
 		return out;
-	}
-
-	private Long aggregateRangedProcessed(String collection, String timeField,
-			LocalDate from, LocalDate to, String doCode, String branchCode) {
-		MatchOperation match = Aggregation.match(
-				bucketMatch(timeField, doCode, branchCode, from, to));
-
-		GroupOperation group = Aggregation.group()
-				.sum("processedDocuments").as("processedDocuments");
-
-		ProjectionOperation project = Aggregation.project("processedDocuments").andExclude("_id");
-
-		Aggregation agg = Aggregation.newAggregation(match, group, project);
-		List<ProcessedSumRow> rows = mongoTemplate
-				.aggregate(agg, collection, ProcessedSumRow.class)
-				.getMappedResults();
-		if (rows.isEmpty()) return 0L;
-		Long v = rows.get(0).getProcessedDocuments();
-		return v != null ? v : 0L;
 	}
 
 	private List<PerApproverSummary> aggregateRangedApprovers(String collection, String timeField,
@@ -144,12 +178,13 @@ public class RevDashBoardService {
 		UnwindOperation unwind = Aggregation.unwind("perApprover");
 
 		GroupOperation group = Aggregation.group("perApprover.approvedBy")
-				.sum("perApprover.accepted").as("approvedCount")
-				.sum("perApprover.rejected").as("rejectedCount");
+				.sum("perApprover.accepted").as("approved")
+				.sum("perApprover.rejected").as("rejected");
 
 		ProjectionOperation project = Aggregation
-				.project("approvedCount", "rejectedCount")
+				.project("approved", "rejected")
 				.and("_id").as("approvedBy")
+				.andExpression("approved + rejected").as("processed")
 				.andExclude("_id");
 
 		SortOperation sort = Aggregation.sort(Sort.Direction.ASC, "approvedBy");
@@ -158,12 +193,6 @@ public class RevDashBoardService {
 		return mongoTemplate
 				.aggregate(agg, collection, PerApproverSummary.class)
 				.getMappedResults();
-	}
-
-	@Getter
-	@Setter
-	private static class ProcessedSumRow {
-		private Long processedDocuments;
 	}
 
 	public List<TodayApprovalSummaryModel> getTodayApprovalSummary(LocalDate date,
