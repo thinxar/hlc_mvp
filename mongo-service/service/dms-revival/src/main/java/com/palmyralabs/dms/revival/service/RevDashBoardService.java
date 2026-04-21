@@ -74,7 +74,7 @@ public class RevDashBoardService {
 
 	public PaginatedResponse<PerApproverSummary> getApproverBreakdown(String grain,
 			LocalDate fromDate, LocalDate toDate, LocalDate date,
-			String doCode, String branchCode,
+			String doCode, String branchCode, String srNumber,
 			int limit, int offset, boolean includeTotal) {
 		String g = grain == null || grain.isBlank() ? "daily" : grain.toLowerCase();
 
@@ -109,6 +109,17 @@ public class RevDashBoardService {
 
 		List<PerApproverSummary> allApprovers = aggregateRangedApprovers(collection, timeField,
 				fromDate, toDate, doCode, branchCode);
+
+		if (srNumber != null && !srNumber.isBlank()) {
+			String needle = srNumber.trim();
+			List<PerApproverSummary> filtered = new ArrayList<>(allApprovers.size());
+			for (PerApproverSummary a : allApprovers) {
+				if (a.getApprovedBy() != null && a.getApprovedBy().contains(needle)) {
+					filtered.add(a);
+				}
+			}
+			allApprovers = filtered;
+		}
 
 		int fromIdx = Math.min(Math.max(0, offset), allApprovers.size());
 		int toIdx = limit <= 0 ? allApprovers.size()

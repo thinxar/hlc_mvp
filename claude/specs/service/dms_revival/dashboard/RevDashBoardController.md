@@ -340,6 +340,7 @@ ignored.
 | `date`       | `LocalDate` (ISO) | no       | Single-bucket shortcut — sets both `fromDate` and `toDate` to this day (snapped per grain). Takes precedence over `fromDate` / `toDate`.     |
 | `doCode`     | string            | no       | exact match on `doCode`.                                                                                                                     |
 | `branchCode` | string            | no       | exact match on `branchCode`.                                                                                                                 |
+| `srNumber`   | string            | no       | Case-sensitive **substring** match on `approvedBy`. E.g. `srNumber=12` returns every approver whose ID contains the literal `"12"`. Applied **after** the Mongo aggregation and **before** pagination slicing, so `total` (when requested) reflects the filtered count. Blank / whitespace-only value is treated as "no filter." |
 | `_limit`     | int               | no       | Page size. Defaults to `15`. Pass `≤ 0` to disable the cap and return the full range starting at `_offset`.                                   |
 | `_offset`    | int               | no       | Zero-based index into the sorted approver list. Defaults to `-1`, which the service clamps up to `0` (start from the beginning).              |
 | `_total`     | boolean           | no       | When `true`, populates `total` with the full count of distinct approvers (pre-slice). Defaults to `false` (emits `0` to skip the extra cost). |
@@ -523,7 +524,7 @@ HeadlineSummaryModel              getHeadlineSummary(
 
 PaginatedResponse<PerApproverSummary> getApproverBreakdown(
         String grain, LocalDate fromDate, LocalDate toDate, LocalDate date,
-        String doCode, String branchCode,
+        String doCode, String branchCode, String srNumber,
         int limit, int offset, boolean includeTotal);
 
 ApproverSummaryModel              getApproverSummary(
@@ -1034,6 +1035,15 @@ GET /api/palmyra/rev/overAll/document/summary?window=approverBreakdown
 
 # Approver breakdown — fetch entire list (disable the cap)
 GET /api/palmyra/rev/overAll/document/summary?window=approverBreakdown&_limit=0
+
+# Approver breakdown — search approvers whose ID contains "12"
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=approverBreakdown&srNumber=12&_total=true
+# -> { "result": [
+#        { "approvedBy": "10029057", ... },       # contains "12"? no — skipped
+#        { "approvedBy": "10041317", ... },       # contains "13" — skipped (only "12" matches)
+#        { "approvedBy": "10412345", ... } ],     # contains "12" ✓ included
+#      "limit": 15, "offset": -1, "total": 42 }
 
 # Approver summary — roll-up totals for the default daily bucket
 GET /api/palmyra/rev/overAll/document/summary?window=approverSummary

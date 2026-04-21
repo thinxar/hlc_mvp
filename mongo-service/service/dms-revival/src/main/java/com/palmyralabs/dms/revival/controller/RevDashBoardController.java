@@ -100,11 +100,12 @@ public class RevDashBoardController extends AbstractController {
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
 			@RequestParam(name = "doCode", required = false) String doCode,
 			@RequestParam(name = "branchCode", required = false) String branchCode,
+			@RequestParam(name = "srNumber", required = false) String srNumber,
 			@RequestParam(name = "_limit", defaultValue = "15") int limit,
 			@RequestParam(name = "_offset", defaultValue = "-1") int offset,
 			@RequestParam(name = "_total", defaultValue = "false") boolean includeTotal) {
 		return dashBoardService.getApproverBreakdown(
-				grain, fromDate, toDate, date, doCode, branchCode, limit, offset, includeTotal);
+				grain, fromDate, toDate, date, doCode, branchCode, srNumber, limit, offset, includeTotal);
 	}
 
 	@GetMapping(path = SUMMARY_PATH, params = "window=approverSummary")
