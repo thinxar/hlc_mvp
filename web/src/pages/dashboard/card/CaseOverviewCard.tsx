@@ -1,6 +1,5 @@
-import { CalendarDays, CheckCircle, Clock } from 'lucide-react';
+import { CalendarDays, CheckCircle, Clock, FileText } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { MdOutlineNumbers } from 'react-icons/md';
 import { formatAmount } from 'utils/FormateDate';
 import { useFormstore } from 'wire/StoreFactory';
 
@@ -17,7 +16,7 @@ interface ICaseCard {
     pending: number | string,
     todayProcessed: number | string
     todayCases?: number | string
-    processedDocuments:number | string
+    processedDocuments: number | string
 }
 
 const CaseOverviewCard = (props: IOptions) => {
@@ -59,7 +58,7 @@ const CaseOverviewCard = (props: IOptions) => {
         {
             title: "Total Documents",
             value: cases.total,
-            icon: MdOutlineNumbers,
+            icon: FileText,
             gradient: "from-blue-400 via-blue-500 to-blue-600",
             iconBg: "bg-linear-to-br from-blue-100 to-blue-200 dark:from-blue-100/10 dark:to-blue-200/10",
             textColor: "text-blue-700 dark:text-blue-400"

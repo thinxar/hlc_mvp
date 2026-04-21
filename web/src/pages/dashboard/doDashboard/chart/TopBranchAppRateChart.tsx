@@ -34,7 +34,7 @@ const TopBranchAppRateChart = (props: IChartInput) => {
                     if (dataPointIndex != null) {
                         const dataPointIndex = config.dataPointIndex;
                         const label = chartContext?.w?.config.labels[dataPointIndex];
-                        clickFilter.current = label; 
+                        clickFilter.current = label;
                     }
                 }
             },
@@ -116,14 +116,8 @@ const TopBranchAppRateChart = (props: IChartInput) => {
     return (
         <div id="chart">
             <PalmyraApexChart
-                type="donut"
-                options={options}
-                endPoint={endPoint}
-                filter={filter}
-                // filter={filter}
-                // preProcess={PreProcessData}
-                height={'400'}
-                width={'100%'}
+                type="donut" options={options} endPoint={endPoint}
+                filter={filter} height={'400'} width={'100%'}
                 transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
                 storeFactory={AppStoreFactory}
             />

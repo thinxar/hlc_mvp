@@ -19,7 +19,7 @@ interface ICaseCard {
     approvedRate: number
 }
 
-const DoSummaryCard = (props: IOptions) => {
+const DoDocumentOverviewCard = (props: IOptions) => {
     const { title, endPoint, filter } = props;
     const [_data, setData] = useState<any>(null);
 
@@ -81,7 +81,7 @@ const DoSummaryCard = (props: IOptions) => {
             textColor: "text-orange-700 dark:text-orange-400",
         },
         {
-            title: "Avg docs / case",
+            title: "Today's Progress",
             value: cases.approvedRate,
             icon: Percent,
             gradient: "from-teal-400 via-cyan-500 to-blue-500",
@@ -91,7 +91,7 @@ const DoSummaryCard = (props: IOptions) => {
     ];
 
     return (
-        <div className="w-full mx-auto  pb-3 p-3">
+        <div className="w-full mx-auto mb-3">
             {title &&
                 <span className="text-xl font-semibold">{title}</span>}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4  2xl:grid-cols-4 gap-3 mt-2">
@@ -134,5 +134,5 @@ const DoSummaryCard = (props: IOptions) => {
     );
 };
 
-export { DoSummaryCard };
+export { DoDocumentOverviewCard };
 

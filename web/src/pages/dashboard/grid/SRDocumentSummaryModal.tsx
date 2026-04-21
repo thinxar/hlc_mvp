@@ -40,13 +40,14 @@ function SRTable({
     srList: SRRecord[];
 }) {
     return (
-        <div className="rounded-[14px] overflow-hidden border border-black/8 dark:border-white/[0.07]">
+        <div className="rounded-[14px] max-h-100 overflow-scroll border border-black/8 dark:border-white/[0.07]">
             <table className="w-full border-collapse text-[12px]">
 
                 <thead>
-                    <tr className="bg-[#f7f8fa] dark:bg-white/3 border-b border-black/[0.07] dark:border-white/[0.07]">
+                    <tr className="bg-[#f7f8fa] dark:bg-white/3 border-b border-black/[0.07]
+                     dark:border-white/7 sticky top-0">
                         {[
-                            { label: "SR number", dot: null, align: "text-left" },
+                            { label: "SR Number", dot: null, align: "text-left" },
                             { label: "Approved", dot: "bg-green-600 dark:bg-[#4CAF76]", align: "text-right" },
                             { label: "Rejected", dot: "bg-red-500 dark:bg-[#FF5A5A]", align: "text-right" },
                             { label: "Total", dot: "bg-blue-500 dark:bg-[#4A9DFF]", align: "text-right" }
@@ -81,20 +82,20 @@ function SRTable({
                                     {sr.srNumber}
                                 </td>
 
-                                <td className="px-3.5 py-2.5 text-right">
-                                    <div className="text-sm font-semibold dark:text-gray-300">
+                                <td className="px-3.5 py-2.5 text-right ">
+                                    <div className="text-sm font-semibold dark:text-gray-300 text-gray-600">
                                         {approved}
                                     </div>
                                 </td>
 
                                 <td className="px-3.5 py-2.5 text-right">
-                                    <div className="text-sm font-semibold dark:text-gray-300">
+                                    <div className="text-sm font-semibold dark:text-gray-300 text-gray-600 ">
                                         {rejected}
                                     </div>
                                 </td>
 
                                 <td className="px-3.5 py-2.5 text-right">
-                                    <div className="text-sm font-semibold dark:text-gray-300">
+                                    <div className="text-sm font-semibold dark:text-gray-300 text-gray-600">
                                         {total}
                                     </div>
                                 </td>
@@ -118,13 +119,25 @@ import {
 } from "lucide-react";
 import { useFormstore } from "wire/StoreFactory";
 import SrTableFooter from "./SrTableFooter";
+import { formatAmount } from "utils/FormateDate";
 
-function SummaryBar({ srList }: { srList: SRRecord[] }) {
-    const totalSR = srList?.length;
+interface CardData {
+    totalApprovers: number,
+    totalApproved: number,
+    totalRejected: number,
+    totalDocuments: number,
+}
 
-    const approved = srList?.reduce((sum, a) => sum + a.approvedCount, 0);
-    const rejected = srList?.reduce((sum, a) => sum + a.rejectedCount, 0);
-    const totalDocs = approved + rejected;
+interface ICardData {
+    data: CardData,
+}
+
+function SummaryBar({ data }: ICardData) {
+    const totalSR = formatAmount(data?.totalApprovers, true);
+
+    const approved = formatAmount(data?.totalApproved, true);
+    const rejected = formatAmount(data?.totalRejected, true);
+    const totalDocs = formatAmount(data?.totalDocuments, true);
 
     const stats = [
         {
@@ -198,34 +211,43 @@ export default function SRDocumentModal({
     const [filter, setFilter] = useState<"all" | "approved" | "rejected">("all");
     const [search, setSearch] = useState("");
     const [data, setData] = useState<any>({})
+    const [cardData, setCardData] = useState<any>({})
 
-    const [apiTotalCount, setApiTotalCount] = useState<number | undefined>(0);
     const [pageIndex, setPageIndex] = useState<number>(0);
 
     const dataPerPage = 15;
     const offset = pageIndex * dataPerPage;
-    const totalPagesCount = Math.ceil((apiTotalCount || 0) / (dataPerPage || 1));
 
     const documentSummaryApi = ServiceEndpoint.customView.rev.dashboard.documentSummaryApi
-    const endPoint = `${documentSummaryApi}?window=approverBreakdown&grain=${type}&${params}?_total=true&_offset=${offset}&_limit=${dataPerPage}`
+    const summaryEndPoint = `${documentSummaryApi}?window=approverSummary&grain=${type}&${params}`
+    const endPoint = `${documentSummaryApi}?window=approverBreakdown&grain=${type}&${params}&_total=true&_offset=${offset}&_limit=${dataPerPage}`
 
-    const srList: SRRecord[] = data?.perApprover?.map((item: any) => ({
+    const srList: SRRecord[] = data?.result?.map((item: any) => ({
         srNumber: item.approvedBy,
-        approvedCount: item.approvedCount,
-        rejectedCount: item.rejectedCount
+        approvedCount: item.approved,
+        rejectedCount: item.rejected
     }));
 
     useEffect(() => {
-        useFormstore(endPoint, {}, '').get({}).then((d: any) => {
+        useFormstore(summaryEndPoint, {}, '').get({}).then((d: any) => {
+            setCardData(d);
+        });
+    }, []);
+
+    useEffect(() => {
+        useFormstore(endPoint, {}, '').query({}).then((d: any) => {
             setData(d);
-            setApiTotalCount(d?.total)
         });
     }, [pageIndex]);
 
     useEffect(() => {
         setFilter("all");
-        setSearch("");
+        // setSearch("");
     }, [srList]);
+
+    useEffect(() => {
+        setPageIndex(0);
+    }, [filter, search]);
 
     const handleKey = useCallback(
         (e: KeyboardEvent) => {
@@ -252,6 +274,14 @@ export default function SRDocumentModal({
         return matchFilter && matchSearch;
     });
 
+
+    const totalPagesCount = Math.ceil((data?.total || 0) / (dataPerPage || 1));
+    // const totalPagesCount = Math.ceil((search ? filteredSR?.length : data?.total || 0) / (dataPerPage || 1));
+
+    // const paginatedSR = filteredSR?.slice(
+    //     pageIndex * dataPerPage,
+    //     (pageIndex + 1) * dataPerPage
+    // );
 
     if (!open) return null;
 
@@ -288,7 +318,7 @@ export default function SRDocumentModal({
                     </button>
                 </div>
 
-                <SummaryBar srList={srList} />
+                <SummaryBar data={cardData} />
 
                 <div className="flex items-center gap-3 px-5 py-3 border-b border-gray-200 dark:border-gray-700/60 shrink-0">
                     <div className="relative flex-1">

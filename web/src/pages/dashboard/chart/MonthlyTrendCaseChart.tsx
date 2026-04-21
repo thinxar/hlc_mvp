@@ -197,8 +197,8 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />
 
-            <Modal opened={opened} onClose={close} centered size={"50%"}
-                closeOnClickOutside={false} withCloseButton={false}
+            <Modal opened={opened} onClose={close} centered size={"lg"}
+                withCloseButton={false}
                 styles={{
                     body: {
                         padding: 0
