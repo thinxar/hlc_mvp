@@ -13,6 +13,13 @@ const DoDashboardHeader = (props: IOptions) => {
     const { setFilter } = props;
     const { handleFilterChange } = useFilterHandler(setFilter);
 
+    const onDivisionChange = (label: string, d?: any) => {
+        if (d) {
+            const cb = handleFilterChange("doCode", 'customLookup', 'doCode', '201');
+            cb(label, d);
+        }
+    }
+
     const LookupEndPoint = ServiceEndpoint.customView.rev.Lookup;
 
     return (
@@ -46,8 +53,9 @@ const DoDashboardHeader = (props: IOptions) => {
                             />
                             <ServerLookup attribute="doCode" placeholder="Division Name"
                                 queryOptions={{ endPoint: LookupEndPoint.division, queryAttribute: 'divisionName' }}
-                                onChange={handleFilterChange("doCode", 'customLookup', 'doCode', '201')}
-                                defaultValue={{ id: '', divisionName: 'Bhopal' }}
+
+                                onChange={onDivisionChange}
+                                defaultValue={{ id: '201', divisionName: 'Bhopal' }}
                                 leftSection={<Network size={20} className="text-gray-400" />}
                                 lookupOptions={{ idAttribute: 'id', labelAttribute: 'divisionName' }} />
                         </FieldGroupContainer>

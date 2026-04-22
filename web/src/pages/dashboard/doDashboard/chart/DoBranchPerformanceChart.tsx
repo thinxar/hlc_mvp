@@ -135,7 +135,7 @@ const DoBranchPerformanceChart = (props: IChartInput) => {
         colors: colors
     };
 
-    return <> <PalmyraApexChart options={options} type="bar"
+    return <> <PalmyraApexChart options={options} type="bar" key={JSON.stringify(props.filter)}
         endPoint={endPoint} filter={filter} height={props.height} width={'100%'}
         seriesOptions={[
             { name: 'Pending' }

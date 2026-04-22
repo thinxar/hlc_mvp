@@ -111,9 +111,7 @@ const TopBranchSummaryChart = (props: IChartInput) => {
         colors: ['#f59e0b', '#22c55e']
     };
 
-    // const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' });
-
-    return <> <PalmyraApexChart options={options} type="bar"
+    return <> <PalmyraApexChart options={options} type="bar" key={JSON.stringify(props.filter)}
         endPoint={endPoint} filter={filter} height={height} width={'100%'}
         seriesOptions={[
             { name: 'Pending' },

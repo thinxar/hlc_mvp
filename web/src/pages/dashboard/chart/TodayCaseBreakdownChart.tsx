@@ -99,7 +99,7 @@ const TodayCaseBreakdownChart = (props: IChartInput) => {
     // const endPointX = '/TodayCaseBreakdown.json'
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="radar"
+            <PalmyraApexChart options={options} type="radar" key={JSON.stringify(props.filter)}
                 endPoint={endPoint} filter={props.filter}
                 seriesOptions={[
                     { name: "Pending" },

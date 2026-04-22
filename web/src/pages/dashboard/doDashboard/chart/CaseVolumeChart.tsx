@@ -148,7 +148,7 @@ const BubbleChart = (props: IChartInput) => {
 
     return (
         <div>
-            <Chart options={options} series={series} type="bubble" height={props.height} />
+            <Chart options={options} series={series} type="bubble" height={props.height} key={JSON.stringify(props.filter)}/>
         </div>
     );
 };

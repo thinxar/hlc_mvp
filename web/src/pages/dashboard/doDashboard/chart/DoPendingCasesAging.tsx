@@ -142,7 +142,7 @@ const DoPendingCasesAging = (props: IChartInput) => {
                     { name: "21-30 days" },
                     { name: "31-45 days" },
                     { name: ">45 days" }
-                ]} preProcess={(d: any): any => transformData(d)}
+                ]} preProcess={(d: any): any => transformData(d)} key={JSON.stringify(props.filter)}
                 transformOptions={{ xKey: props.xKey, yKey: props.yKey, dataType: 'array' }} />
         </div>
     )

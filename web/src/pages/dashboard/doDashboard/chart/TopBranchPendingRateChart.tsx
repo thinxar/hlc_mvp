@@ -112,7 +112,7 @@ const TopBranchPendingRateChart = (props: IChartInput) => {
     };
 
 
-    return <> <PalmyraApexChart options={options} type="bar"
+    return <> <PalmyraApexChart options={options} type="bar" key={JSON.stringify(props.filter)}
         endPoint={endPoint} filter={filter} height={height} width={'100%'}
         seriesOptions={[
             { name: 'Pending' }
