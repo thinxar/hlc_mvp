@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.palmyralabs.dms.revival.model.BranchPerformanceModel;
+import com.palmyralabs.dms.revival.model.DoAgingBucketModel;
 import com.palmyralabs.dms.revival.service.DoDashboardService;
 import com.palmyralabs.palmyra.base.PalmyraResponse;
 import com.palmyralabs.palmyra.core.rest.controller.AbstractController;
@@ -55,5 +56,12 @@ public class DoDashboardController extends AbstractController {
 			@RequestParam(name = "count", defaultValue = "10") int count,
 			@RequestParam(name = "window", defaultValue = "1") int window) {
 		return apiResponse(doDashboardService.getBranchRatio(doCode, order, count, window));
+	}
+
+	@GetMapping(path = "/do/aging")
+	public PalmyraResponse<DoAgingBucketModel> getAgingBuckets(
+			@RequestParam(name = "doCode") String doCode,
+			@RequestParam(name = "window", defaultValue = "1") int window) {
+		return apiResponse(doDashboardService.getAgingBuckets(doCode, window));
 	}
 }

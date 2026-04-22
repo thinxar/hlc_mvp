@@ -18,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.palmyralabs.dms.revival.entity.MonthWiseReportEntity;
 import com.palmyralabs.dms.revival.model.BranchPerformanceModel;
+import com.palmyralabs.dms.revival.model.DoAgingBucketModel;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,6 +45,54 @@ public class DoDashboardService {
 	public List<BranchPerformanceModel> getBranchSubmitted(String doCode, String order,
 			int count, int window) {
 		return rankBranches(doCode, order, count, window, SUBMITTED_FIELD);
+	}
+
+	public DoAgingBucketModel getAgingBuckets(String doCode, int window) {
+		if (doCode == null || doCode.isBlank()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "doCode is required");
+		}
+		if (window <= 0) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "window must be positive");
+		}
+
+		LocalDate toMonth = LocalDate.now().withDayOfMonth(1);
+		LocalDate fromMonth = toMonth.minusMonths(window - 1L);
+
+		GroupOperation group = Aggregation.group("doCode")
+				.sum("pendingDocuments").as("pendingDocuments")
+				.sum("ageingSummary.d0_5").as("d0_5")
+				.sum("ageingSummary.d6_10").as("d6_10")
+				.sum("ageingSummary.d11_20").as("d11_20")
+				.sum("ageingSummary.d21_30").as("d21_30")
+				.sum("ageingSummary.d31_45").as("d31_45")
+				.sum("ageingSummary.d45plus").as("d45plus");
+
+		ProjectionOperation project = Aggregation
+				.project("pendingDocuments", "d0_5", "d6_10", "d11_20", "d21_30", "d31_45", "d45plus")
+				.and("_id").as("doCode")
+				.andExclude("_id");
+
+		Aggregation agg = Aggregation.newAggregation(
+				matchStage(doCode, fromMonth, toMonth), group, project);
+
+		List<DoAgingBucketModel> rows = mongoTemplate
+				.aggregate(agg, MonthWiseReportEntity.class, DoAgingBucketModel.class)
+				.getMappedResults();
+
+		return rows.isEmpty() ? zeroFilledBuckets(doCode) : rows.get(0);
+	}
+
+	private static DoAgingBucketModel zeroFilledBuckets(String doCode) {
+		DoAgingBucketModel empty = new DoAgingBucketModel();
+		empty.setDoCode(doCode);
+		empty.setPendingDocuments(0L);
+		empty.setD0_5(0L);
+		empty.setD6_10(0L);
+		empty.setD11_20(0L);
+		empty.setD21_30(0L);
+		empty.setD31_45(0L);
+		empty.setD45plus(0L);
+		return empty;
 	}
 
 	public List<BranchPerformanceModel> getBranchRatio(String doCode, String order,

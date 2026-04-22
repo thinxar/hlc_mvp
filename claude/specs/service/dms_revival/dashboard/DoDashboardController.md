@@ -1,11 +1,16 @@
 # DoDashboardController — Specification
 
 Dashboard endpoints for the **DO (Divisional Office) view** of the
-Revival feature. The four endpoints rank branches under a given DO
-over a rolling month window; they differ only in the metric used to
-compute the ranking — processed (work done), pending (backlog),
-submitted (intake), or ratio (processed share of processed+pending,
-expressed as a percentage).
+Revival feature.
+
+* Four **branch-ranking** endpoints rank branches under a given DO
+  over a rolling month window; they differ only in the metric used
+  to compute the ranking — processed (work done), pending (backlog),
+  submitted (intake), or ratio (processed share of processed+pending,
+  expressed as a percentage). See §2.
+* One **aging-bucket** endpoint rolls up the age distribution of
+  pending documents for the given DO across the same window into a
+  single summary card. See §3.
 
 **Module**: `mongo-service/service/dms-revival`
 **Controller**: `com.palmyralabs.dms.revival.controller.DoDashboardController`
@@ -24,18 +29,21 @@ Class-level mapping:
 Combined with the Jetty servlet context (`/api`) and the default
 prefix (`palmyra`), the endpoints live under `/api/palmyra/rev/do/…`.
 
-| Method                | HTTP verb | Path                    | Sort field           |
-| --------------------- | --------- | ----------------------- | -------------------- |
-| `getBranchProcessed`  | GET       | `/do/branch/processed`  | `processedDocuments` |
-| `getBranchPending`    | GET       | `/do/branch/pending`    | `pendingDocuments`   |
-| `getBranchSubmitted`  | GET       | `/do/branch/submitted`  | `submittedDocuments` |
-| `getBranchRatio`      | GET       | `/do/branch/ratio`      | `ratioPercent` (derived; Java-side sort) |
+| Method                | HTTP verb | Path                    | Purpose                                      |
+| --------------------- | --------- | ----------------------- | -------------------------------------------- |
+| `getBranchProcessed`  | GET       | `/do/branch/processed`  | Rank branches by `processedDocuments`        |
+| `getBranchPending`    | GET       | `/do/branch/pending`    | Rank branches by `pendingDocuments`          |
+| `getBranchSubmitted`  | GET       | `/do/branch/submitted`  | Rank branches by `submittedDocuments`        |
+| `getBranchRatio`      | GET       | `/do/branch/ratio`      | Rank branches by `ratioPercent` (derived)    |
+| `getAgingBuckets`     | GET       | `/do/aging`             | DO-level aging bucket rollup                 |
 
-All four endpoints share the same query parameters, response
-element type, validation rules, and `$match → $group → $project`
-stages. The first three push `$sort + $limit` into Mongo; the
-`/ratio` endpoint derives `ratioPercent` per row in Java after the
-group, sorts in Java, then slices to `count` (see §6).
+All four branch-ranking endpoints share the same query parameters,
+response element type, validation rules, and `$match → $group →
+$project` stages. The first three push `$sort + $limit` into Mongo;
+the `/ratio` endpoint derives `ratioPercent` per row in Java after
+the group, sorts in Java, then slices to `count` (see §7). The
+`/do/aging` endpoint groups by `doCode` into a single object and
+shares only the `$match` stage with the rankers (see §3 / §7.2).
 
 ---
 
@@ -162,9 +170,76 @@ should label the number as "pending-months" to avoid confusion.
 
 ---
 
-## 3. Validation — error responses (400 Bad Request)
+## 3. Aging-bucket rollup endpoint
 
-Applies to all four endpoints identically.
+`GET /rev/do/aging`
+
+Single-object summary: the age distribution of pending documents
+for the given DO across the last `window` month(s). Intended to
+back a DO-dashboard card that shows "how old is our backlog."
+
+### 3.1 Request shape
+
+| Param     | Type   | Required | Default | Notes                                                                          |
+| --------- | ------ | -------- | ------- | ------------------------------------------------------------------------------ |
+| `doCode`  | string | **yes**  | —       | Exact match on stored `doCode`. Blank / missing → 400.                         |
+| `window`  | int    | no       | `1`     | Positive integer. Number of months (inclusive of current) to aggregate over.   |
+
+Window semantics are identical to §2 — `toMonth =
+firstOfMonth(LocalDate.now())`, `fromMonth = toMonth.minusMonths(window - 1)`.
+
+### 3.2 Response shape
+
+Single `DoAgingBucketModel` object (wrapped in `PalmyraResponse`):
+
+```json
+{
+  "doCode":           "201",
+  "pendingDocuments": 388,
+  "d0_5":             120,
+  "d6_10":             80,
+  "d11_20":            60,
+  "d21_30":            50,
+  "d31_45":            40,
+  "d45plus":           38
+}
+```
+
+* `doCode` — echoed from the `_id` of the `$group` stage (the
+  aggregation groups by `doCode`, which degenerates to a single
+  row because the `$match` already narrows to one DO).
+* `pendingDocuments` — Σ `pendingDocuments` across every monthly
+  row for this DO in scope. Same snapshot-summing caveat as §2.6
+  (pending-months for `window > 1`).
+* `d0_5` / `d6_10` / `d11_20` / `d21_30` / `d31_45` / `d45plus` —
+  Σ of the corresponding `ageingSummary.d*` subfield on each
+  monthly row. These are documents-pending-for-N-days counts,
+  snapshotted at month-end, so the same pending-months caveat
+  applies when `window > 1`.
+* When the `$match` returns zero rows (e.g. DO has no activity in
+  the window), the service substitutes a zero-filled object with
+  the caller's `doCode` — the response never contains `null`
+  counts and never returns an empty body.
+
+### 3.3 Invariant
+
+By the source `active_cases_monthly_branchwise` contract,
+`pendingDocuments` on each monthly row equals the sum of the six
+`ageingSummary.d*` buckets for that same row. The aggregation
+preserves that invariant across the rollup:
+`pendingDocuments == d0_5 + d6_10 + d11_20 + d21_30 + d31_45 + d45plus`.
+Treat a drift as a data-quality signal, not an endpoint bug.
+
+---
+
+## 4. Validation — error responses (400 Bad Request)
+
+The branch-ranking endpoints (§2) share one validation set; the
+aging endpoint (§3) shares a subset (no `count` / `order`).
+
+### 4.1 Branch-ranking endpoints
+
+Applies to all four §2 endpoints identically.
 
 | Condition                            | Message                      |
 | ------------------------------------ | ---------------------------- |
@@ -177,9 +252,19 @@ non-`top` value silently falls back to `bottom` (ascending).
 Unparseable `count` / `window` integers produce Spring's standard
 `MethodArgumentTypeMismatchException` → 400.
 
+### 4.2 Aging-bucket endpoint
+
+| Condition             | Message                      |
+| --------------------- | ---------------------------- |
+| `doCode` null / blank | `doCode is required`         |
+| `window <= 0`         | `window must be positive`    |
+
+No `count` / `order` on this endpoint. Unparseable `window` → 400
+via Spring's type-mismatch.
+
 ---
 
-## 4. Service contract
+## 5. Service contract
 
 ```java
 List<BranchPerformanceModel> getBranchProcessed(
@@ -193,6 +278,8 @@ List<BranchPerformanceModel> getBranchSubmitted(
 
 List<BranchPerformanceModel> getBranchRatio(
         String doCode, String order, int count, int window);
+
+DoAgingBucketModel getAgingBuckets(String doCode, int window);
 ```
 
 The three direct-field methods delegate to a private
@@ -214,7 +301,7 @@ only the post-aggregation handling differs.
 `DoDashboardService` has a `MongoTemplate` injected via constructor
 (`@RequiredArgsConstructor`). Responsibilities of `rankBranches`:
 
-* Input validation per §3.
+* Input validation per §4.
 * Window resolution: `toMonth = firstOfMonth(LocalDate.now())`;
   `fromMonth = toMonth.minusMonths(window - 1)`.
 * Direction resolution: `"top".equalsIgnoreCase(order)` → `DESC`
@@ -228,9 +315,16 @@ only the post-aggregation handling differs.
   `computeRatioPercent(m)` — so `ratioPercent` is always present on
   the DTO regardless of which endpoint served the request.
 
+`getAgingBuckets` is a standalone method (no delegation to
+`rankBranches`): validates `doCode` / `window`, reuses the shared
+`matchStage(...)` builder, then runs its own `$group` on `doCode`
+summing `pendingDocuments` + the six `ageingSummary.d*` subfields.
+Zero-fills a `DoAgingBucketModel` (with `doCode` echoed) when the
+aggregation returns no rows.
+
 ---
 
-## 5. Data model
+## 6. Data model
 
 Reads the single collection:
 
@@ -238,10 +332,22 @@ Reads the single collection:
 | -------------------- | ----------------------------------- | ------------------------ | ----------------- |
 | Monthly active cases | `active_cases_monthly_branchwise`   | `MonthWiseReportEntity`  | `calMonth`        |
 
-`MonthWiseReportEntity` fields consumed here:
-`doCode`, `branchCode`, `branchName`, `calMonth`,
-`processedDocuments`, `pendingDocuments`, `submittedDocuments`.
-`perApprover[]` is unread but remains part of the stored document.
+Fields consumed here:
+
+* Modelled on `MonthWiseReportEntity`:
+  `doCode`, `branchCode`, `branchName`, `calMonth`,
+  `processedDocuments`, `pendingDocuments`, `submittedDocuments`.
+* **Not modelled on the entity but present in the stored documents
+  and read by §3 / §7.2 via dotted-path aggregation:**
+  `ageingSummary.d0_5`, `ageingSummary.d6_10`,
+  `ageingSummary.d11_20`, `ageingSummary.d21_30`,
+  `ageingSummary.d31_45`, `ageingSummary.d45plus`.
+  These live in the same monthly rows that
+  `AgingSummaryService.getMonthlyAgingSummary` already reads — they
+  are set during data load / aggregation and carry the pending-doc
+  age-band counts snapshotted at month-end.
+
+`perApprover[]` is unread here but remains part of the stored document.
 
 Shares the UTC-midnight `LocalDate ↔ Date` converter contract
 described in `RevDashBoardController.md` §5.2 / §7.1. `calMonth`
@@ -249,7 +355,7 @@ comparisons in the `$match` stage rely on that converter.
 
 ---
 
-## 6. Aggregation pipeline
+## 7. Aggregation pipeline
 
 Shared match/group/project across all four endpoints — no `$unwind`,
 all three sums computed in the same `$group`:
@@ -293,7 +399,7 @@ all three sums computed in the same `$group`:
   on every returned row) before the service returns, regardless of
   endpoint.
 
-### 6.1 Ratio endpoint — Java-side sort & slice
+### 7.1 Ratio endpoint — Java-side sort & slice
 
 `§2.4 /do/branch/ratio` runs the same match/group/project stages
 **without** the trailing `$sort + $limit`, then:
@@ -314,9 +420,51 @@ DO is bounded (dozens to low hundreds in practice), so fetching all
 groups and sorting in Java is cheaper to read and to maintain. If
 DO scale grows past that, revisit with a Mongo-side `$addFields`.
 
+### 7.2 Aging-bucket endpoint
+
+`§3 /do/aging` reuses the shared `matchStage()` but runs its own
+`$group` and `$project`:
+
+```
+[
+  { $match: {
+      doCode: <doCode>,
+      calMonth: { $gte: <fromMonth>, $lte: <toMonth> }
+  }},
+  { $group: {
+      _id:              "$doCode",
+      pendingDocuments: { $sum: "$pendingDocuments" },
+      d0_5:             { $sum: "$ageingSummary.d0_5" },
+      d6_10:            { $sum: "$ageingSummary.d6_10" },
+      d11_20:           { $sum: "$ageingSummary.d11_20" },
+      d21_30:           { $sum: "$ageingSummary.d21_30" },
+      d31_45:           { $sum: "$ageingSummary.d31_45" },
+      d45plus:          { $sum: "$ageingSummary.d45plus" }
+  }},
+  { $project: {
+      _id: 0,
+      doCode: "$_id",
+      pendingDocuments: 1,
+      d0_5: 1, d6_10: 1, d11_20: 1,
+      d21_30: 1, d31_45: 1, d45plus: 1
+  }}
+]
+```
+
+* Grouping by `$doCode` (rather than `null`) keeps the DO code on
+  the projected row without an extra stage — the `$match` already
+  clamps to one `doCode`, so the group collapses to a single doc.
+* The `ageingSummary.*` fields are nested under each
+  `MonthWiseReportEntity` row in the source collection but are not
+  modelled on the Java entity; the aggregation accesses them by
+  dotted path, same pattern used by `AgingSummaryService`.
+* No `$sort` / `$limit` — the single-row result is returned as-is.
+* Empty result → service substitutes a zero-filled
+  `DoAgingBucketModel` with `doCode` echoed from the caller.
+
 ---
 
-## 7. Example requests
+## 8. Example requests
 
 ```
 # Top 10 branches by processed for DO 201 this month
@@ -377,11 +525,30 @@ GET /api/palmyra/rev/do/branch/pending?order=top
 # Rejected: non-positive count
 GET /api/palmyra/rev/do/branch/processed?doCode=201&count=0
 # -> 400 "count must be positive"
+
+# Aging-bucket rollup for DO 201 this month (default window=1)
+GET /api/palmyra/rev/do/aging?doCode=201
+# -> { "doCode": "201", "pendingDocuments": 388,
+#      "d0_5": 120, "d6_10": 80, "d11_20": 60,
+#      "d21_30": 50, "d31_45": 40, "d45plus": 38 }
+
+# Aging-bucket rollup over the last 6 months
+GET /api/palmyra/rev/do/aging?doCode=201&window=6
+
+# Aging — DO with no activity in the window (zero-filled response)
+GET /api/palmyra/rev/do/aging?doCode=999
+# -> { "doCode": "999", "pendingDocuments": 0,
+#      "d0_5": 0, "d6_10": 0, "d11_20": 0,
+#      "d21_30": 0, "d31_45": 0, "d45plus": 0 }
+
+# Rejected: aging without doCode
+GET /api/palmyra/rev/do/aging?window=3
+# -> 400 (Spring: missing required request parameter 'doCode')
 ```
 
 ---
 
-## 8. Known caveats / open items
+## 9. Known caveats / open items
 
 1. **System-zone `LocalDate.now()`** — `toMonth` is derived from the
    JVM's local date. Same UTC-vs-system-zone caveat as
@@ -427,3 +594,17 @@ GET /api/palmyra/rev/do/branch/processed?doCode=201&count=0
    `ratioPercent=50.0`. The endpoint does not clamp on a minimum
    sample size; callers that want to de-noise the ranking should
    combine `/ratio` with `/processed` or `/submitted` on the client.
+8. **`ageingSummary.*` is accessed via dotted path, not entity
+   field** — the subfields are present in the stored monthly
+   documents but not modelled on `MonthWiseReportEntity`. A refactor
+   that retypes the entity to include `ageingSummary` would let
+   `/do/aging` swap the dotted-path `$sum` stages for
+   `sum("ageingSummary.d0_5")` via property access and also benefit
+   every reader of the collection, but it is out of scope for this
+   endpoint alone.
+9. **Aging buckets are pending-months under `window > 1`** — the
+   same snapshot-sum caveat as §2.6 / caveat 4 applies here. Each
+   `ageingSummary.d*` is an end-of-month headcount, so summing
+   over N months counts a long-pending doc N times in whichever
+   band it was still in at each month-end. `/do/aging` does not
+   normalize this; the UI should label the card accordingly.
