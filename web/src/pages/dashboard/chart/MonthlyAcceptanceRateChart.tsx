@@ -114,8 +114,9 @@ const MonthlyAcceptanceRateChart = (props: IChartInput) => {
                     <span style="color:#ef4444">&nbsp;&nbsp;Rejected: ${rejected}</span><br/>
                 `;
                     } else {
-                        content += `
-                    <span style="color:${color}">${s.name}: ${value}%</span><br/>
+                        content += `${value ?
+                            `<span style="color:${color}">${s.name}: ${value || 0}%</span><br/>`
+                            : ``}
                 `;
                     }
                 });
