@@ -1,6 +1,8 @@
 package com.palmyralabs.dms.revival.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
@@ -9,7 +11,6 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
-import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class DoDashboardService {
 
 	private static final String PROCESSED_FIELD = "processedDocuments";
 	private static final String PENDING_FIELD = "pendingDocuments";
-	private static final String COUNT_ALIAS = "count";
+	private static final String SUBMITTED_FIELD = "submittedDocuments";
 
 	private final MongoTemplate mongoTemplate;
 
@@ -40,8 +41,96 @@ public class DoDashboardService {
 		return rankBranches(doCode, order, count, window, PENDING_FIELD);
 	}
 
+	public List<BranchPerformanceModel> getBranchSubmitted(String doCode, String order,
+			int count, int window) {
+		return rankBranches(doCode, order, count, window, SUBMITTED_FIELD);
+	}
+
+	public List<BranchPerformanceModel> getBranchRatio(String doCode, String order,
+			int count, int window) {
+		validateParams(doCode, count, window);
+		Sort.Direction direction = directionOf(order);
+
+		LocalDate toMonth = LocalDate.now().withDayOfMonth(1);
+		LocalDate fromMonth = toMonth.minusMonths(window - 1L);
+
+		Aggregation agg = Aggregation.newAggregation(
+				matchStage(doCode, fromMonth, toMonth),
+				groupStage(),
+				projectStage());
+
+		List<BranchPerformanceModel> rows = new ArrayList<>(mongoTemplate
+				.aggregate(agg, MonthWiseReportEntity.class, BranchPerformanceModel.class)
+				.getMappedResults());
+
+		rows.forEach(m -> m.setRatioPercent(computeRatioPercent(m)));
+
+		Comparator<BranchPerformanceModel> cmp = Comparator.comparingDouble(
+				m -> m.getRatioPercent() == null ? 0.0 : m.getRatioPercent());
+		if (direction == Sort.Direction.DESC) {
+			cmp = cmp.reversed();
+		}
+		rows.sort(cmp);
+
+		return rows.size() > count ? new ArrayList<>(rows.subList(0, count)) : rows;
+	}
+
 	private List<BranchPerformanceModel> rankBranches(String doCode, String order,
-			int count, int window, String sumField) {
+			int count, int window, String sortField) {
+		validateParams(doCode, count, window);
+		Sort.Direction direction = directionOf(order);
+
+		LocalDate toMonth = LocalDate.now().withDayOfMonth(1);
+		LocalDate fromMonth = toMonth.minusMonths(window - 1L);
+
+		Aggregation agg = Aggregation.newAggregation(
+				matchStage(doCode, fromMonth, toMonth),
+				groupStage(),
+				projectStage(),
+				Aggregation.sort(direction, sortField),
+				Aggregation.limit(count));
+
+		List<BranchPerformanceModel> rows = mongoTemplate
+				.aggregate(agg, MonthWiseReportEntity.class, BranchPerformanceModel.class)
+				.getMappedResults();
+
+		rows.forEach(m -> m.setRatioPercent(computeRatioPercent(m)));
+		return rows;
+	}
+
+	private static MatchOperation matchStage(String doCode, LocalDate fromMonth, LocalDate toMonth) {
+		return Aggregation.match(new Criteria().andOperator(
+				Criteria.where("doCode").is(doCode),
+				Criteria.where("calMonth").gte(fromMonth).lte(toMonth)));
+	}
+
+	private static GroupOperation groupStage() {
+		return Aggregation.group("branchCode")
+				.first("branchName").as("branchName")
+				.sum(PROCESSED_FIELD).as(PROCESSED_FIELD)
+				.sum(PENDING_FIELD).as(PENDING_FIELD)
+				.sum(SUBMITTED_FIELD).as(SUBMITTED_FIELD);
+	}
+
+	private static ProjectionOperation projectStage() {
+		return Aggregation
+				.project("branchName", PROCESSED_FIELD, PENDING_FIELD, SUBMITTED_FIELD)
+				.and("_id").as("branchCode")
+				.andExclude("_id");
+	}
+
+	private static double computeRatioPercent(BranchPerformanceModel m) {
+		long processed = m.getProcessedDocuments() == null ? 0L : m.getProcessedDocuments();
+		long pending = m.getPendingDocuments() == null ? 0L : m.getPendingDocuments();
+		long total = processed + pending;
+		if (total == 0) {
+			return 0.0;
+		}
+		double raw = (processed * 100.0) / total;
+		return Math.round(raw * 100.0) / 100.0;
+	}
+
+	private static void validateParams(String doCode, int count, int window) {
 		if (doCode == null || doCode.isBlank()) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "doCode is required");
 		}
@@ -51,33 +140,9 @@ public class DoDashboardService {
 		if (window <= 0) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "window must be positive");
 		}
+	}
 
-		Sort.Direction direction = "top".equalsIgnoreCase(order)
-				? Sort.Direction.DESC : Sort.Direction.ASC;
-
-		LocalDate toMonth = LocalDate.now().withDayOfMonth(1);
-		LocalDate fromMonth = toMonth.minusMonths(window - 1L);
-
-		MatchOperation match = Aggregation.match(new Criteria().andOperator(
-				Criteria.where("doCode").is(doCode),
-				Criteria.where("calMonth").gte(fromMonth).lte(toMonth)));
-
-		GroupOperation group = Aggregation.group("branchCode")
-				.first("branchName").as("branchName")
-				.sum(sumField).as(COUNT_ALIAS);
-
-		ProjectionOperation project = Aggregation
-				.project("branchName", COUNT_ALIAS)
-				.and("_id").as("branchCode")
-				.andExclude("_id");
-
-		SortOperation sort = Aggregation.sort(direction, COUNT_ALIAS);
-
-		Aggregation agg = Aggregation.newAggregation(
-				match, group, project, sort, Aggregation.limit(count));
-
-		return mongoTemplate
-				.aggregate(agg, MonthWiseReportEntity.class, BranchPerformanceModel.class)
-				.getMappedResults();
+	private static Sort.Direction directionOf(String order) {
+		return "bottom".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
 	}
 }

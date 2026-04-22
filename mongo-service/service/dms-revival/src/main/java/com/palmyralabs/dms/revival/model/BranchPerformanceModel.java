@@ -9,5 +9,8 @@ public class BranchPerformanceModel {
 
 	private String branchCode;
 	private String branchName;
-	private Long count;
+	private Long processedDocuments;
+	private Long pendingDocuments;
+	private Long submittedDocuments;
+	private Double ratioPercent;
 }

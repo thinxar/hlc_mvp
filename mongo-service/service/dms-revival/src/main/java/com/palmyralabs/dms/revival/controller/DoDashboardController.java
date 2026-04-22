@@ -38,4 +38,22 @@ public class DoDashboardController extends AbstractController {
 			@RequestParam(name = "window", defaultValue = "1") int window) {
 		return apiResponse(doDashboardService.getBranchPending(doCode, order, count, window));
 	}
+
+	@GetMapping(path = "/do/branch/submitted")
+	public PalmyraResponse<List<BranchPerformanceModel>> getBranchSubmitted(
+			@RequestParam(name = "doCode") String doCode,
+			@RequestParam(name = "order", defaultValue = "top") String order,
+			@RequestParam(name = "count", defaultValue = "10") int count,
+			@RequestParam(name = "window", defaultValue = "1") int window) {
+		return apiResponse(doDashboardService.getBranchSubmitted(doCode, order, count, window));
+	}
+
+	@GetMapping(path = "/do/branch/ratio")
+	public PalmyraResponse<List<BranchPerformanceModel>> getBranchRatio(
+			@RequestParam(name = "doCode") String doCode,
+			@RequestParam(name = "order", defaultValue = "top") String order,
+			@RequestParam(name = "count", defaultValue = "10") int count,
+			@RequestParam(name = "window", defaultValue = "1") int window) {
+		return apiResponse(doDashboardService.getBranchRatio(doCode, order, count, window));
+	}
 }
