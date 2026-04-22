@@ -41,6 +41,7 @@ prefix (`palmyra`), the endpoints live under `/api/palmyra/rev/do/…`.
 | `getBranchProcessedRatio` | GET   | `/do/branch/processed/ratio` | Rank branches by processed-ratio (`processed / (processed + pending)`) |
 | `listBranches`        | GET       | `/do/branches`          | Table-view branch list (all three sums)      |
 | `listDivisionPerformance` | GET   | `/do/division/performance` | Per-month, per-division counts + pending / processed % |
+| `getDivisionOverview` | GET       | `/do/division/overview` | DO-level branch / case / document scorecard  |
 | `getAgingBuckets`     | GET       | `/do/aging`             | DO-level aging bucket rollup                 |
 
 The four branch-ranking endpoints share the same query parameters,
@@ -402,13 +403,82 @@ pair. A DO that owns branches in only one division produces
 
 ---
 
-## 5. Validation — error responses (400 Bad Request)
+## 5. Division-overview endpoint
+
+`GET /rev/do/division/overview`
+
+Single-object DO scorecard: branch count, case count, and the three
+document sums across the `window`. Intended to back the header card
+on the DO dashboard — five numbers, no time dimension.
+
+### 5.1 Request shape
+
+| Param     | Type   | Required | Default | Notes                                                                        |
+| --------- | ------ | -------- | ------- | ---------------------------------------------------------------------------- |
+| `doCode`  | string | **yes**  | —       | Exact match on stored `doCode`. Blank / missing → 400.                       |
+| `window`  | int    | no       | `1`     | Positive integer. Number of months (inclusive of current) to aggregate over. |
+
+Window semantics are identical to §2 — `toMonth =
+firstOfMonth(LocalDate.now())`, `fromMonth = toMonth.minusMonths(window - 1)`.
+The case-count time slice is widened to calendar-day bounds covering
+the same months: `fromDate = fromMonth`, `toDate = lastDayOfMonth(toMonth)`.
+That lines `totalCases` up with the `calMonth` buckets used for the
+three document sums.
+
+### 5.2 Response shape
+
+Single `DivisionOverviewModel` object (wrapped in `PalmyraResponse`):
+
+```json
+{
+  "totalBranches":      42,
+  "totalCases":         1834,
+  "submittedDocuments": 15820,
+  "processedDocuments": 13210,
+  "pendingDocuments":   2610
+}
+```
+
+* `totalBranches` — count of `BranchEntity` rows with the given
+  `doCode` (via `BranchRepository.countByDoCode`). Independent of
+  `window` — this is the DO's master-data footprint, not an activity
+  count.
+* `totalCases` — count of `CaseEntity` rows in the `all_cases`
+  collection where `doCode = <doCode>` and `requestDate` falls
+  inclusively inside `[fromDate, toDate]` (via
+  `CaseRepository.countByDoCodeAndRequestDateBetween`). Scales with
+  `window`.
+* `submittedDocuments` / `processedDocuments` / `pendingDocuments` —
+  Σ of the corresponding `MonthWiseReportEntity` scalar across every
+  monthly row in the same DO where `calMonth ∈ [fromMonth, toMonth]`.
+  Same snapshot-sum semantic as elsewhere: pending in particular is
+  pending-months for `window > 1` (see caveat 4).
+* All five fields are always emitted. When no data matches, every
+  number is `0` — the response is never an empty body.
+
+### 5.3 Data sources (one call per source)
+
+Because the five numbers come from three different collections the
+service does not try to stitch them into a single aggregation:
+
+| Field                                              | Source                             | Access path                                                                        |
+| -------------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------- |
+| `totalBranches`                                    | `branches`                         | `BranchRepository.countByDoCode(doCode)`                                           |
+| `totalCases`                                       | `all_cases`                        | `MongoTemplate.count(...)` on `CaseEntity` with inclusive `requestDate ∈ [fromDate, toDate]` |
+| `submittedDocuments` / `processedDocuments` / `pendingDocuments` | `active_cases_monthly_branchwise` | `MongoTemplate.aggregate(...)` via the internal `sumDocumentCounts` helper         |
+
+The aggregation for the three sums is a single `_id: null` `$group`:
+see §9.4.
+
+---
+
+## 6. Validation — error responses (400 Bad Request)
 
 The branch-ranking endpoints (§2.1–§2.4) share one validation set;
 the list endpoint (§2.5), division endpoint (§4), and aging endpoint
 (§3) each have narrower sets.
 
-### 5.1 Branch-ranking endpoints (§2.1–§2.4)
+### 6.1 Branch-ranking endpoints (§2.1–§2.4)
 
 Applies to `/processed`, `/pending`, `/submitted`,
 `/pending/ratio`, and `/processed/ratio` identically.
@@ -424,7 +494,7 @@ non-`top` value silently falls back to `bottom` (ascending).
 Unparseable `count` / `window` integers produce Spring's standard
 `MethodArgumentTypeMismatchException` → 400.
 
-### 5.2 Branch list endpoint (§2.5)
+### 6.2 Branch list endpoint (§2.5)
 
 | Condition                                    | Message                                                              |
 | -------------------------------------------- | -------------------------------------------------------------------- |
@@ -438,7 +508,7 @@ explicitly — the enumeration is narrow enough that a typo is more
 likely a client bug than a convenience. Blank / null `orderBy`
 falls back to the default `branchName`, not an error.
 
-### 5.3 Division-performance endpoint (§4)
+### 6.3 Division-performance endpoint (§4)
 
 | Condition             | Message                      |
 | --------------------- | ---------------------------- |
@@ -448,7 +518,10 @@ falls back to the default `branchName`, not an error.
 No `count` / `order` / `limit` / `orderBy` on this endpoint.
 Unparseable `window` → 400 via Spring's type-mismatch.
 
-### 5.4 Aging-bucket endpoint (§3)
+### 6.4 Aging-bucket endpoint (§3) / Division-overview endpoint (§5)
+
+(Both take the same two-field input — `doCode` + `window` — and
+validate identically.)
 
 | Condition             | Message                      |
 | --------------------- | ---------------------------- |
@@ -460,7 +533,7 @@ via Spring's type-mismatch.
 
 ---
 
-## 6. Service contract
+## 7. Service contract
 
 Branch-level endpoints — **`DoDashboardService`**:
 
@@ -539,6 +612,9 @@ DO-level rollup endpoints — **`DoSummaryService`**:
 List<DivisionPerformanceModel> listDivisionPerformance(
         String doCode, int window);
 
+DivisionOverviewModel getDivisionOverview(
+        String doCode, int window);
+
 DoAgingBucketModel getAgingBuckets(
         String doCode, int window);
 ```
@@ -564,7 +640,7 @@ echoed) when the aggregation returns no rows.
 
 ---
 
-## 7. Data model
+## 8. Data model
 
 Reads the single collection:
 
@@ -595,7 +671,7 @@ comparisons in the `$match` stage rely on that converter.
 
 ---
 
-## 8. Aggregation pipeline
+## 9. Aggregation pipeline
 
 Shared match/group/project across all five branch endpoints (§2.1–
 §2.5) — no `$unwind`, all three sums computed in the same `$group`:
@@ -649,7 +725,7 @@ Shared match/group/project across all five branch endpoints (§2.1–
   on every returned row) before the service returns, regardless of
   endpoint.
 
-### 8.1 Ratio endpoints — Java-side sort & slice
+### 9.1 Ratio endpoints — Java-side sort & slice
 
 `§2.4.1 /do/branch/pending/ratio` and `§2.4.2 /do/branch/processed/ratio`
 both run the same match/group/project stages **without** the
@@ -677,7 +753,7 @@ DO is bounded (dozens to low hundreds in practice), so fetching all
 groups and sorting in Java is cheaper to read and to maintain. If
 DO scale grows past that, revisit with a Mongo-side `$addFields`.
 
-### 8.2 Aging-bucket endpoint
+### 9.2 Aging-bucket endpoint
 
 `§3 /do/aging` reuses the shared `matchStage()` but runs its own
 `$group` and `$project`:
@@ -719,7 +795,7 @@ DO scale grows past that, revisit with a Mongo-side `$addFields`.
 * Empty result → service substitutes a zero-filled
   `DoAgingBucketModel` with `doCode` echoed from the caller.
 
-### 8.3 Division-performance endpoint
+### 9.3 Division-performance endpoint
 
 `§4 /do/division/performance` reuses `DoAggregationUtils.matchStage()`
 but runs a composite `(calMonth, divisionName)` group summing all
@@ -773,9 +849,59 @@ three document-count fields:
   percentage — only processed and pending make up the in-flight
   work whose completion we're measuring.
 
+### 9.4 Division-overview endpoint
+
+`§5 /do/division/overview` does **not** try to aggregate all five
+numbers in one call — the three sources are different collections
+and a server-side `$lookup` + union would add complexity for no
+payoff. Instead the service fires three independent reads:
+
+1. `branchRepository.countByDoCode(doCode)` →
+   `count({ doCode })` on the `branches` collection.
+2. `mongoTemplate.count(new Query(Criteria.where("doCode").is(doCode)
+     .and("requestDate").gte(fromDate).lte(toDate)), CaseEntity.class)` →
+   `count({ doCode, requestDate: { $gte: fromDate, $lte: toDate } })`
+   on the `all_cases` collection. Note: Spring Data's
+   `...Between` method keyword would expand to **exclusive** `$gt`/`$lt`
+   on Mongo, which silently drops cases on the window's boundary
+   dates — so the service sidesteps it with an explicit
+   `Criteria.gte(...).lte(...)` call. `CaseRepository` remains as an
+   empty `MongoRepository<CaseEntity, String>` placeholder for future
+   reads.
+3. `sumDocumentCounts(doCode, fromMonth, toMonth)` runs the
+   following aggregation on `active_cases_monthly_branchwise` and
+   returns a single `DocumentSums` row (zero-filled when empty):
+
+   ```
+   [
+     { $match: {
+         doCode: <doCode>,
+         calMonth: { $gte: <fromMonth>, $lte: <toMonth> }
+     }},
+     { $group: {
+         _id: null,
+         processedDocuments: { $sum: "$processedDocuments" },
+         pendingDocuments:   { $sum: "$pendingDocuments" },
+         submittedDocuments: { $sum: "$submittedDocuments" }
+     }},
+     { $project: {
+         _id: 0,
+         processedDocuments: 1,
+         pendingDocuments: 1,
+         submittedDocuments: 1
+     }}
+   ]
+   ```
+
+The three results are assembled into a `DivisionOverviewModel`
+before the service returns. The case time-slice (`fromDate` /
+`toDate`) deliberately uses **calendar-day bounds** that line up
+with the monthly buckets driving the three sums — so the two
+activity counts (cases vs. documents) refer to the same period.
+
 ---
 
-## 9. Example requests
+## 10. Example requests
 
 ```
 # Top 10 branches by processed for DO 201 this month
@@ -908,7 +1034,7 @@ GET /api/palmyra/rev/do/aging?window=3
 
 ---
 
-## 10. Known caveats / open items
+## 11. Known caveats / open items
 
 1. **System-zone `LocalDate.now()`** — `toMonth` is derived from the
    JVM's local date. Same UTC-vs-system-zone caveat as

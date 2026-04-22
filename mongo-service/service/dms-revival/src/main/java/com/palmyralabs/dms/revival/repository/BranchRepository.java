@@ -4,7 +4,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.palmyralabs.dms.revival.entity.BranchEntity;
 
-public interface BranchRepository extends MongoRepository<BranchEntity, Integer>{
-	
+public interface BranchRepository extends MongoRepository<BranchEntity, Integer> {
 
+	long countByDoCode(String doCode);
 }

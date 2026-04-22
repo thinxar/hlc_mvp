@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.palmyralabs.dms.revival.model.BranchPerformanceModel;
+import com.palmyralabs.dms.revival.model.DivisionOverviewModel;
 import com.palmyralabs.dms.revival.model.DivisionPerformanceModel;
 import com.palmyralabs.dms.revival.model.DoAgingBucketModel;
 import com.palmyralabs.dms.revival.service.DoDashboardService;
@@ -77,6 +78,13 @@ public class DoDashboardController extends AbstractController {
 			@RequestParam(name = "orderBy", defaultValue = "branchName") String orderBy,
 			@RequestParam(name = "window", defaultValue = "1") int window) {
 		return apiResponse(doDashboardService.listBranches(doCode, limit, orderBy, window));
+	}
+
+	@GetMapping(path = "/do/division/overview")
+	public PalmyraResponse<DivisionOverviewModel> getDivisionOverview(
+			@RequestParam(name = "doCode") String doCode,
+			@RequestParam(name = "window", defaultValue = "1") int window) {
+		return apiResponse(doSummaryService.getDivisionOverview(doCode, window));
 	}
 
 	@GetMapping(path = "/do/division/performance")

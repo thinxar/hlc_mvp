@@ -9,15 +9,22 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.palmyralabs.dms.revival.entity.CaseEntity;
 import com.palmyralabs.dms.revival.entity.MonthWiseReportEntity;
+import com.palmyralabs.dms.revival.model.DivisionOverviewModel;
 import com.palmyralabs.dms.revival.model.DivisionPerformanceModel;
 import com.palmyralabs.dms.revival.model.DoAgingBucketModel;
+import com.palmyralabs.dms.revival.repository.BranchRepository;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +35,71 @@ public class DoSummaryService {
 	private static final String SUBMITTED_FIELD = "submittedDocuments";
 
 	private final MongoTemplate mongoTemplate;
+	private final BranchRepository branchRepository;
+
+	public DivisionOverviewModel getDivisionOverview(String doCode, int window) {
+		if (doCode == null || doCode.isBlank()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "doCode is required");
+		}
+		if (window <= 0) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "window must be positive");
+		}
+
+		LocalDate toMonth = LocalDate.now().withDayOfMonth(1);
+		LocalDate fromMonth = toMonth.minusMonths(window - 1L);
+		LocalDate fromDate = fromMonth;
+		LocalDate toDate = toMonth.plusMonths(1).minusDays(1);
+
+		DocumentSums sums = sumDocumentCounts(doCode, fromMonth, toMonth);
+
+		DivisionOverviewModel out = new DivisionOverviewModel();
+		out.setTotalBranches(branchRepository.countByDoCode(doCode));
+		out.setTotalCases(mongoTemplate.count(
+				new Query(Criteria.where("doCode").is(doCode)
+						.and("requestDate").gte(fromDate).lte(toDate)),
+				CaseEntity.class));
+		out.setSubmittedDocuments(sums.getSubmittedDocuments());
+		out.setProcessedDocuments(sums.getProcessedDocuments());
+		out.setPendingDocuments(sums.getPendingDocuments());
+		return out;
+	}
+
+	private DocumentSums sumDocumentCounts(String doCode, LocalDate fromMonth, LocalDate toMonth) {
+		GroupOperation group = Aggregation.group()
+				.sum(PROCESSED_FIELD).as(PROCESSED_FIELD)
+				.sum(PENDING_FIELD).as(PENDING_FIELD)
+				.sum(SUBMITTED_FIELD).as(SUBMITTED_FIELD);
+
+		ProjectionOperation project = Aggregation
+				.project(PROCESSED_FIELD, PENDING_FIELD, SUBMITTED_FIELD)
+				.andExclude("_id");
+
+		Aggregation agg = Aggregation.newAggregation(
+				DoAggregationUtils.matchStage(doCode, fromMonth, toMonth), group, project);
+
+		List<DocumentSums> rows = mongoTemplate
+				.aggregate(agg, MonthWiseReportEntity.class, DocumentSums.class)
+				.getMappedResults();
+
+		return rows.isEmpty() ? new DocumentSums(0L, 0L, 0L) : rows.get(0);
+	}
+
+	@Getter
+	@Setter
+	static class DocumentSums {
+		private Long processedDocuments;
+		private Long pendingDocuments;
+		private Long submittedDocuments;
+
+		DocumentSums() {
+		}
+
+		DocumentSums(Long processed, Long pending, Long submitted) {
+			this.processedDocuments = processed;
+			this.pendingDocuments = pending;
+			this.submittedDocuments = submitted;
+		}
+	}
 
 	public List<DivisionPerformanceModel> listDivisionPerformance(String doCode, int window) {
 		if (doCode == null || doCode.isBlank()) {
