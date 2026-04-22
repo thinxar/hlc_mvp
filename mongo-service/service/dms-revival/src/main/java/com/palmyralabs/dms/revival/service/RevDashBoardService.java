@@ -55,14 +55,48 @@ public class RevDashBoardService {
 				doCode, branchCode, from, to, WeeklyDocumentSummaryModel.class);
 	}
 
-	public List<MonthlyDocumentSummaryModel> getMonthlyDocumentSummary(String doCode, String branchCode,
-			LocalDate fromMonth, LocalDate toMonth) {
+	public List<MonthlyDocumentSummaryModel> getMonthlyDocumentSummary(String zone, String doCode,
+			String branchCode, LocalDate fromMonth, LocalDate toMonth) {
 		LocalDate from = fromMonth == null ? null
 				: fromMonth.with(TemporalAdjusters.firstDayOfMonth());
 		LocalDate to = toMonth == null ? null
 				: toMonth.with(TemporalAdjusters.firstDayOfMonth());
-		return aggregateActiveCasesSummary(MONTHLY_COLLECTION, "calMonth",
-				doCode, branchCode, from, to, MonthlyDocumentSummaryModel.class);
+
+		List<Criteria> parts = new ArrayList<>();
+		if (zone != null && !zone.isBlank()) parts.add(Criteria.where("zone").is(zone));
+		if (doCode != null && !doCode.isBlank()) parts.add(Criteria.where("doCode").is(doCode));
+		if (branchCode != null && !branchCode.isBlank()) parts.add(Criteria.where("branchCode").is(branchCode));
+		if (from != null || to != null) {
+			Criteria c = Criteria.where("calMonth");
+			if (from != null) c.gte(from);
+			if (to != null) c.lte(to);
+			parts.add(c);
+		}
+		Criteria criteria = parts.isEmpty() ? new Criteria()
+				: new Criteria().andOperator(parts.toArray(new Criteria[0]));
+
+		MatchOperation match = Aggregation.match(criteria);
+
+		GroupOperation group = Aggregation.group("calMonth")
+				.first("zone").as("zone")
+				.sum("pendingDocuments").as("pendingDocuments")
+				.sum("submittedDocuments").as("submittedDocuments")
+				.sum("processedDocuments").as("processedDocuments")
+				.sum(AccumulatorOperators.Sum.sumOf("perApprover.accepted")).as("approvedDocuments")
+				.sum(AccumulatorOperators.Sum.sumOf("perApprover.rejected")).as("rejectedDocuments");
+
+		ProjectionOperation project = Aggregation
+				.project("zone", "pendingDocuments", "submittedDocuments", "processedDocuments",
+						"approvedDocuments", "rejectedDocuments")
+				.and("_id").as("calMonth")
+				.andExclude("_id");
+
+		SortOperation sort = Aggregation.sort(Sort.Direction.ASC, "calMonth");
+
+		Aggregation agg = Aggregation.newAggregation(match, group, project, sort);
+		return mongoTemplate
+				.aggregate(agg, MONTHLY_COLLECTION, MonthlyDocumentSummaryModel.class)
+				.getMappedResults();
 	}
 
 	public List<DailyDocumentSummaryModel> getDailyDocumentSummary(String doCode, String branchCode,
@@ -207,103 +241,60 @@ public class RevDashBoardService {
 	}
 
 	public List<TodayApprovalSummaryModel> getTodayApprovalSummary(LocalDate date,
-			String zone, String division, String branch) {
-		boolean hasZone = zone != null && !zone.isBlank();
-		boolean hasDivision = division != null && !division.isBlank();
-		boolean hasBranch = branch != null && !branch.isBlank();
-
-		if (hasDivision && !hasZone) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"division filter requires zone");
-		}
-		if (hasBranch && !(hasZone && hasDivision)) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-					"branch filter requires zone and division");
-		}
+			String doCode, String branchCode) {
+		boolean hasDoCode = doCode != null && !doCode.isBlank();
+		boolean hasBranchCode = branchCode != null && !branchCode.isBlank();
 
 		LocalDate queryDate = date != null ? date : LocalDate.now();
 
-		if (hasBranch) {
-			return aggregateTodayBySr(queryDate, zone, division, branch);
+		if (hasBranchCode) {
+			return aggregateTodayBySr(queryDate, branchCode);
 		}
-		if (hasDivision) {
-			return aggregateTodayByBranch(queryDate, zone, division);
+		if (hasDoCode) {
+			return aggregateTodayByBranch(queryDate, doCode);
 		}
-		if (hasZone) {
-			return aggregateTodayByDivision(queryDate, zone);
-		}
-		return aggregateTodayByZone(queryDate);
+		return aggregateTodayByDoCode(queryDate);
 	}
 
-	private List<TodayApprovalSummaryModel> aggregateTodayByZone(LocalDate date) {
-		MatchOperation match = Aggregation.match(Criteria.where("calDate").is(date));
+	private List<TodayApprovalSummaryModel> aggregateTodayByDoCode(LocalDate date) {
+		MatchOperation match = Aggregation.match(Criteria.where("calDate").gte(date).lte(date));
 
-		GroupOperation group = Aggregation.group("zone")
+		GroupOperation group = Aggregation.group("doCode")
 				.sum(AccumulatorOperators.Sum.sumOf("perApprover.accepted")).as("approvedDocuments")
 				.sum("pendingDocuments").as("pendingDocuments")
 				.sum(AccumulatorOperators.Sum.sumOf("perApprover.rejected")).as("rejectedDocuments");
 
 		ProjectionOperation project = Aggregation
 				.project("approvedDocuments", "pendingDocuments", "rejectedDocuments")
-				.and("_id").as("zone")
+				.and("_id").as("doCode")
 				.andExpression("approvedDocuments + rejectedDocuments").as("processedDocuments")
 				.andExclude("_id");
 
-		SortOperation sort = Aggregation.sort(Sort.Direction.ASC, "zone");
-
-		
-		Aggregation agg = Aggregation.newAggregation(match, group, project, sort);
-		List<TodayApprovalSummaryModel> rows = mongoTemplate
-				.aggregate(agg, DAILY_COLLECTION, TodayApprovalSummaryModel.class)
-				.getMappedResults();
-		rows.forEach(r -> r.setGroupBy("zone"));
-		return rows;
-	}
-
-	private List<TodayApprovalSummaryModel> aggregateTodayByDivision(LocalDate date, String zone) {
-		MatchOperation match = Aggregation.match(new Criteria().andOperator(
-				Criteria.where("calDate").is(date),
-				Criteria.where("zone").is(zone)));
-
-		GroupOperation group = Aggregation.group("divisionName")
-				.sum(AccumulatorOperators.Sum.sumOf("perApprover.accepted")).as("approvedDocuments")
-				.sum("pendingDocuments").as("pendingDocuments")
-				.sum(AccumulatorOperators.Sum.sumOf("perApprover.rejected")).as("rejectedDocuments");
-
-		ProjectionOperation project = Aggregation
-				.project("approvedDocuments", "pendingDocuments", "rejectedDocuments")
-				.and("_id").as("division")
-				.andExpression("approvedDocuments + rejectedDocuments").as("processedDocuments")
-				.andExclude("_id");
-
-		SortOperation sort = Aggregation.sort(Sort.Direction.ASC, "division");
+		SortOperation sort = Aggregation.sort(Sort.Direction.ASC, "doCode");
 
 		Aggregation agg = Aggregation.newAggregation(match, group, project, sort);
 		List<TodayApprovalSummaryModel> rows = mongoTemplate
 				.aggregate(agg, DAILY_COLLECTION, TodayApprovalSummaryModel.class)
 				.getMappedResults();
-		rows.forEach(r -> {
-			r.setGroupBy("division");
-			r.setZone(zone);
-		});
+		rows.forEach(r -> r.setGroupBy("doCode"));
 		return rows;
 	}
 
-	private List<TodayApprovalSummaryModel> aggregateTodayByBranch(LocalDate date,
-			String zone, String division) {
+	private List<TodayApprovalSummaryModel> aggregateTodayByBranch(LocalDate date, String doCode) {
 		MatchOperation match = Aggregation.match(new Criteria().andOperator(
-				Criteria.where("calDate").is(date),
-				Criteria.where("zone").is(zone),
-				Criteria.where("divisionName").is(division)));
+				Criteria.where("calDate").gte(date).lte(date),
+				Criteria.where("doCode").is(doCode)));
 
 		GroupOperation group = Aggregation.group("branchCode")
 				.first("branchName").as("branchName")
+				.first("doCode").as("doCode")
 				.sum(AccumulatorOperators.Sum.sumOf("perApprover.accepted")).as("approvedDocuments")
 				.sum("pendingDocuments").as("pendingDocuments")
 				.sum(AccumulatorOperators.Sum.sumOf("perApprover.rejected")).as("rejectedDocuments");
 
 		ProjectionOperation project = Aggregation
-				.project("approvedDocuments", "pendingDocuments", "rejectedDocuments", "branchName")
+				.project("approvedDocuments", "pendingDocuments", "rejectedDocuments",
+						"branchName", "doCode")
 				.and("_id").as("branchCode")
 				.andExpression("approvedDocuments + rejectedDocuments").as("processedDocuments")
 				.andExclude("_id");
@@ -314,31 +305,25 @@ public class RevDashBoardService {
 		List<TodayApprovalSummaryModel> rows = mongoTemplate
 				.aggregate(agg, DAILY_COLLECTION, TodayApprovalSummaryModel.class)
 				.getMappedResults();
-		rows.forEach(r -> {
-			r.setGroupBy("branch");
-			r.setZone(zone);
-			r.setDivision(division);
-		});
+		rows.forEach(r -> r.setGroupBy("branchCode"));
 		return rows;
 	}
 
-	private List<TodayApprovalSummaryModel> aggregateTodayBySr(LocalDate date,
-			String zone, String division, String branch) {
+	private List<TodayApprovalSummaryModel> aggregateTodayBySr(LocalDate date, String branchCode) {
 		MatchOperation match = Aggregation.match(new Criteria().andOperator(
-				Criteria.where("calDate").is(date),
-				Criteria.where("zone").is(zone),
-				Criteria.where("divisionName").is(division),
-				Criteria.where("branchCode").is(branch)));
+				Criteria.where("calDate").gte(date).lte(date),
+				Criteria.where("branchCode").is(branchCode)));
 
 		UnwindOperation unwind = Aggregation.unwind("perApprover");
 
 		GroupOperation group = Aggregation.group("perApprover.approvedBy")
 				.first("branchName").as("branchName")
+				.first("doCode").as("doCode")
 				.sum("perApprover.accepted").as("approvedDocuments")
 				.sum("perApprover.rejected").as("rejectedDocuments");
 
 		ProjectionOperation project = Aggregation
-				.project("approvedDocuments", "rejectedDocuments", "branchName")
+				.project("approvedDocuments", "rejectedDocuments", "branchName", "doCode")
 				.and("_id").as("approvedBy")
 				.andExpression("approvedDocuments + rejectedDocuments").as("processedDocuments")
 				.andExclude("_id");
@@ -351,9 +336,7 @@ public class RevDashBoardService {
 				.getMappedResults();
 		rows.forEach(r -> {
 			r.setGroupBy("sr");
-			r.setZone(zone);
-			r.setDivision(division);
-			r.setBranchCode(branch);
+			r.setBranchCode(branchCode);
 			r.setPendingDocuments(0L);
 		});
 		return rows;

@@ -8,8 +8,7 @@ import lombok.Setter;
 public class TodayApprovalSummaryModel {
 
 	private String groupBy;
-	private String zone;
-	private String division;
+	private String doCode;
 	private String branchCode;
 	private String branchName;
 	private String approvedBy;

@@ -92,6 +92,7 @@ type and query params differ.
 
 | Param        | Type              | Required | Notes                                                                          |
 | ------------ | ----------------- | -------- | ------------------------------------------------------------------------------ |
+| `zone`       | string            | no       | exact match on stored `zone`                                                    |
 | `doCode`     | string            | no       | exact match                                                                    |
 | `branchCode` | string            | no       | exact match                                                                    |
 | `fromMonth`  | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; snapped to the **first day of the month**                        |
@@ -102,6 +103,7 @@ type and query params differ.
 ```json
 {
   "calMonth":           "2026-04-01",
+  "zone":               "CZ",
   "processedDocuments": 536,
   "approvedDocuments":  512,
   "rejectedDocuments":   24,
@@ -112,6 +114,14 @@ type and query params differ.
 
 * `calMonth` is the first day of each calendar month
   (`YYYY-MM-01`).
+* `zone` is a filter that also appears in the response. When supplied
+  it narrows the `$match`; in both cases the field is populated by
+  `$first: "$zone"` in the `$group` stage — so with a filter the
+  value is that single filtered zone, and without a filter it is
+  whichever zone's branch happens to land first in the scan (arbitrary
+  but non-null). This endpoint does **not** group by zone — the
+  `$group` `_id` remains `calMonth` alone, so a month that spans
+  multiple zones still produces exactly one row.
 * `processedDocuments = approvedDocuments + rejectedDocuments` by the
   source invariant — served from the stored scalar, not recomputed.
 * `pendingDocuments` / `submittedDocuments` / `processedDocuments` are
@@ -162,7 +172,7 @@ type and query params differ.
   `approverBreakdown` (§2.6) with `grain=daily&date=<calDate>` for
   the per-approver split on a specific day.
 
-### 2.4 Today's approval summary (hierarchical drill-down)
+### 2.4 Today's approval summary (priority drill-down)
 
 `GET /rev/overAll/document/summary?window=todayApproval`
 
@@ -170,35 +180,44 @@ Aggregates `active_cases_branchwise` for a **single calendar day** —
 the day is supplied via the `date` param. If `date` is omitted the
 service falls back to `LocalDate.now()` (server's local date — same
 caveat as §9.2) so the out-of-the-box call still behaves as "today's
-approval." The grouping dimension is driven by the filter params: the
-response groups one level *below* the deepest filter supplied. Zero
-filters → zone breakdown; full filter triple → per-SR breakdown inside
-that branch.
+approval." The grouping dimension is chosen by **priority, not
+hierarchy**: whichever of `branchCode` / `doCode` is supplied — in
+that order of precedence — selects the drill level and is the **only**
+spatial filter applied. A less-specific filter on the same request is
+ignored once a more specific one is present. Zero filters → DO-code
+breakdown.
 
-| Param      | Type              | Required | Notes                                                                                 |
-| ---------- | ----------------- | -------- | ------------------------------------------------------------------------------------- |
-| `date`     | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; exact match on `calDate`; defaults to `LocalDate.now()` when omitted    |
-| `zone`     | string            | no       | exact match on stored `Zone`                                                          |
-| `division` | string            | no       | exact match on stored `divisionName`                                                  |
-| `branch`   | string            | no       | exact match on stored `branchCode`                                                    |
+| Param        | Type              | Required | Notes                                                                                     |
+| ------------ | ----------------- | -------- | ----------------------------------------------------------------------------------------- |
+| `date`       | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; exact match on `calDate`; defaults to `LocalDate.now()` when omitted        |
+| `doCode`     | string            | no       | exact match on stored `doCode`; applied only when `branchCode` is not set                 |
+| `branchCode` | string            | no       | exact match on stored `branchCode`; highest priority — wins over `doCode`                  |
 
-**Filter → group dimension** (deepest non-blank filter wins; filters
-below that level are ignored if supplied alone, see §3):
+**Filter priority → group dimension** (most-specific non-blank filter
+wins; the other on the same request is ignored):
 
-| Filters present                           | `groupBy` | Group field                     | Populated key fields in response |
-| ----------------------------------------- | --------- | ------------------------------- | -------------------------------- |
-| *(none)*                                  | `zone`    | `Zone`                          | `zone`                           |
-| `zone`                                    | `division`| `divisionName`                  | `zone`, `division`               |
-| `zone` + `division`                       | `branch`  | `branchCode` (+ `branchName`)   | `zone`, `division`, `branchCode`, `branchName` |
-| `zone` + `division` + `branch`            | `sr`      | `perApprover.approvedBy` ("SR") | `zone`, `division`, `branchCode`, `branchName`, `approvedBy` |
+| Highest-priority filter present | `groupBy`    | `$match` scope               | Group field                     | Populated key fields in response |
+| ------------------------------- | ------------ | ---------------------------- | ------------------------------- | -------------------------------- |
+| *(none)*                        | `doCode`     | `calDate` only               | `doCode`                        | `doCode`                         |
+| `doCode`                        | `branchCode` | `calDate`, `doCode`          | `branchCode` (+ `branchName`)   | `doCode`, `branchCode`, `branchName` |
+| `branchCode`                    | `sr`         | `calDate`, `branchCode`      | `perApprover.approvedBy` ("SR") | `doCode`, `branchCode`, `branchName`, `approvedBy` |
+
+At `branchCode` / `sr` levels, the `doCode` ancestor label in the
+response is carried from the matched branch documents themselves
+(via `$first` in `$group`), not echoed from the request — so it is
+always populated with the truth from the data, and `branchCode` can
+be supplied on its own.
+
+Zone-level rollup has been moved out of this endpoint. Use the
+monthly summary (§2.2) with its `zone` filter for zone-scoped
+aggregates.
 
 **Response element** — `TodayApprovalSummaryModel`:
 
 ```json
 {
-  "groupBy":            "zone",
-  "zone":               "NORTH",
-  "division":           null,
+  "groupBy":            "doCode",
+  "doCode":             "201",
   "branchCode":         null,
   "branchName":         null,
   "approvedBy":         null,
@@ -209,13 +228,15 @@ below that level are ignored if supplied alone, see §3):
 }
 ```
 
-* `groupBy` echoes the grouping dimension — one of `"zone"`,
-  `"division"`, `"branch"`, `"sr"` — so the frontend knows which drill
-  step it's rendering without having to reinterpret its own request.
-* Only the key fields relevant to the current level (plus any ancestor
-  filters) are populated; the rest are `null` and the JSON serializer
-  is expected to emit them (no `@JsonInclude(NON_NULL)`) so the shape
-  is uniform across levels.
+* `groupBy` echoes the grouping dimension — one of `"doCode"`,
+  `"branchCode"`, `"sr"` — so the frontend knows which drill step
+  it's rendering without having to reinterpret its own request.
+* The `doCode` ancestor field is **not** echoed from the request —
+  it comes from the matched branch documents via `$first` in `$group`,
+  so it stays correct even when the caller supplied only a
+  more-specific filter. Fields irrelevant to the current level are
+  `null` and the JSON serializer is expected to emit them
+  (no `@JsonInclude(NON_NULL)`) so the shape is uniform across levels.
 * `processedDocuments = approvedDocuments + rejectedDocuments`,
   computed server-side inside `$project` — same convention as the
   other three endpoints.
@@ -487,8 +508,7 @@ four scalars, so there is no second round-trip to Mongo.
 | Weekly interval > **6 months** (after Sunday normalization)                                 | `fromWeek=2025-10-01&toWeek=2026-05-01` → `weekly interval exceeds 6 months (…)`     |
 | Daily interval > **2 months**                                                               | `fromDate=2026-01-01&toDate=2026-04-20` → `daily interval exceeds 2 months (…)`      |
 | Monthly window has **no interval cap** — unbounded ranges are allowed                       | *(no 400 response — returns the full series)*                                        |
-| `todayApproval`: `division` supplied without `zone`                                         | `window=todayApproval&division=X` → `division filter requires zone`                  |
-| `todayApproval`: `branch` supplied without `zone` + `division`                              | `window=todayApproval&branch=010A` → `branch filter requires zone and division`      |
+| `todayApproval` has **no hierarchy validation** — `branchCode` and `doCode` are independently acceptable; the more specific one wins (§2.4) | *(no 400 response — filter priority applies silently)*                                |
 | `headline`: `fromMonth` (after snap to 1st) strictly after `toMonth`                        | `window=headline&fromMonth=2026-04-01&toMonth=2026-02-01` → `fromMonth after toMonth`|
 | `approverBreakdown`: unrecognized `grain`                                                   | `window=approverBreakdown&grain=hourly` → `grain must be one of: daily, weekly, monthly` |
 | `approverBreakdown`: `fromDate` (after grain snap) strictly after `toDate`                  | `window=approverBreakdown&grain=monthly&fromDate=2026-04-01&toDate=2026-02-01` → `fromDate after toDate` |
@@ -510,13 +530,13 @@ List<WeeklyDocumentSummaryModel>  getWeeklyDocumentSummary(
         String doCode, String branchCode, LocalDate fromWeek, LocalDate toWeek);
 
 List<MonthlyDocumentSummaryModel> getMonthlyDocumentSummary(
-        String doCode, String branchCode, LocalDate fromMonth, LocalDate toMonth);
+        String zone, String doCode, String branchCode, LocalDate fromMonth, LocalDate toMonth);
 
 List<DailyDocumentSummaryModel>   getDailyDocumentSummary(
         String doCode, String branchCode, LocalDate fromDate, LocalDate toDate);
 
 List<TodayApprovalSummaryModel>   getTodayApprovalSummary(
-        LocalDate date, String zone, String division, String branch);
+        LocalDate date, String doCode, String branchCode);
 
 HeadlineSummaryModel              getHeadlineSummary(
         LocalDate fromMonth, LocalDate toMonth, LocalDate date,
@@ -539,10 +559,10 @@ for:
 * **Date fallback** — if `date == null`, substitute `LocalDate.now()`
   before building the `$match` so the aggregation always has a
   concrete day.
-* **Hierarchy validation** (§3) — it rejects `division` without
-  `zone` or `branch` without `zone`+`division` with
-  `ResponseStatusException(HttpStatus.BAD_REQUEST, …)` before building
-  the aggregation.
+* **Filter priority** (§2.4) — most-specific non-blank filter
+  (`branchCode` → `doCode`) selects both the `$match` clause and the
+  drill level. A less-specific filter supplied alongside is silently
+  ignored; no hierarchy validation is performed.
 
 `getHeadlineSummary` is responsible for:
 
@@ -612,20 +632,22 @@ inside `DailyBranchWiseReportEntity`.
 All three summary endpoints are implemented as **Mongo aggregation
 pipelines** — no in-JVM summation. Groups happen server-side.
 
-### 6.1 Daily / Weekly / Monthly pipeline (shared, via
-`aggregateActiveCasesSummary(collection, timeField, …)`)
+### 6.1 Daily / Weekly / Monthly pipeline
 
-Single aggregation, no `$unwind` — the stored `pendingDocuments` /
-`submittedDocuments` / `processedDocuments` are branch-day scalars
-that can be summed directly, and the approved / rejected totals use
-the nested `$sum` trick against `perApprover[]` without flattening
-the array:
+Daily and weekly share `aggregateActiveCasesSummary(collection,
+timeField, …)`. Monthly uses the same shape but inlines its own
+`$match` builder because it accepts an extra `zone` filter clause
+that the shared helper does not. All three produce the same output
+schema and group by `<timeField>` alone — no fan-out on zone or any
+other dimension:
 
 ```
 [
-  { $match: { doCode?, branchCode?, <timeField>: { $gte?, $lte? } } },
+  { $match: { zone? /* monthly only */, doCode?, branchCode?,
+              <timeField>: { $gte?, $lte? } } },
   { $group: {
       _id: "$<timeField>",
+      zone: { $first: "$zone" },   // monthly only
       pendingDocuments:   { $sum: "$pendingDocuments" },
       submittedDocuments: { $sum: "$submittedDocuments" },
       processedDocuments: { $sum: "$processedDocuments" },
@@ -635,12 +657,19 @@ the array:
   { $project: {
       _id: 0,
       <timeField>: "$_id",
+      zone: 1,                     // monthly only
       pendingDocuments: 1, submittedDocuments: 1, processedDocuments: 1,
       approvedDocuments: 1, rejectedDocuments: 1
   }},
   { $sort: { <timeField>: 1 } }
 ]
 ```
+
+Monthly's `zone` is carried via `$first` inside the `$group` stage —
+it is **not** part of the group key, so the row count per month stays
+one. With a `zone` filter, every matched branch has the same zone and
+`$first` is deterministic; without a filter, `$first` picks an
+arbitrary zone per month (documented as such in §2.2).
 
 The nested `$sum` trick: inner `$sum: "$perApprover.accepted"`
 returns the per-document sum of the approver array's `accepted`
@@ -668,62 +697,66 @@ present (each optional):
 `doCode` / `branchCode` use `.is(...)` (exact match), not regex —
 codes are unique IDs, no case/space variance to accommodate.
 
-### 6.3 Today's approval pipeline (drill-down)
+### 6.3 Today's approval pipeline (priority drill-down)
 
 Source: `active_cases_branchwise`. Shared `$match` always clamps to
-the single day `calDate = <date>` — the caller-supplied `date` param,
-or `LocalDate.now()` when that param is null — and applies whichever
-ancestor filters are present. The grouping stage differs per level;
+the single day `calDate` in `[<date>, <date>]` (range form is used
+so Spring Data's `LocalDate ↔ Date` converter fires reliably — see
+§7.1) — the caller-supplied `date` param, or `LocalDate.now()` when
+that param is null — plus **at most one** spatial clause chosen by
+priority (§2.4): `branchCode` if `branchCode` is set, else `doCode`
+if `doCode` is set, else none. The grouping stage differs per level;
 the per-level shape is:
 
-**Zone level (default, no drill-down filter):**
+**DO-code level (no drill-down filter):**
 
 ```
 [
-  { $match: { calDate: <date> } },
+  { $match: { calDate: { $gte: <date>, $lte: <date> } } },
   { $group: {
-      _id: "$Zone",
+      _id: "$doCode",
       approvedDocuments: { $sum: { $sum: "$perApprover.accepted" } },
       pendingDocuments:  { $sum: "$pendingDocuments" },
       rejectedDocuments: { $sum: { $sum: "$perApprover.rejected" } }
   }},
   { $project: {
-      _id: 0, groupBy: "zone", zone: "$_id",
+      _id: 0, groupBy: "doCode", doCode: "$_id",
       approvedDocuments: 1, pendingDocuments: 1, rejectedDocuments: 1,
       processedDocuments: { $add: ["$approvedDocuments", "$rejectedDocuments"] }
   }},
-  { $sort: { zone: 1 } }
+  { $sort: { doCode: 1 } }
 ]
 ```
 
-**Division level (`zone` supplied):** same shape; `$match` adds
-`Zone: <zone>`; `$group _id` is `$divisionName`; projected as
-`{ groupBy: "division", zone: <zone>, division: "$_id", … }`.
+**Branch level (`doCode` supplied, no `branchCode`):** `$match` adds
+`doCode: <doCode>`; `$group _id` is `$branchCode`; ancestor `doCode`
+and `branchName` are carried via `$first`; projected as
+`{ groupBy: "branchCode", doCode, branchCode: "$_id", branchName, … }`.
 
-**Branch level (`zone` + `division` supplied):** `$match` adds both;
-`$group _id` is a compound `{ branchCode: "$branchCode",
-branchName: "$branchName" }` so the name comes out alongside the code;
-projected as `{ groupBy: "branch", zone, division,
-branchCode: "$_id.branchCode", branchName: "$_id.branchName", … }`.
-
-**SR level (`zone` + `division` + `branch` all supplied):** requires
-an `$unwind` on `perApprover` before grouping:
+**SR level (`branchCode` supplied; `doCode` is ignored if also
+present):** requires an `$unwind` on `perApprover` before grouping.
+`$match` adds `branchCode: <branchCode>` **only** — the branch code is
+unique so ancestors are not needed to disambiguate:
 
 ```
 [
-  { $match: { calDate: <date>, zone: <zone>,
-              divisionName: <division>, branchCode: <branch> } },
+  { $match: {
+      calDate: { $gte: <date>, $lte: <date> },
+      branchCode: <branchCode>
+  }},
   { $unwind: { path: "$perApprover", preserveNullAndEmptyArrays: false } },
   { $group: {
       _id: "$perApprover.approvedBy",
+      branchName: { $first: "$branchName" },
+      doCode:     { $first: "$doCode" },
       approvedDocuments: { $sum: "$perApprover.accepted" },
       rejectedDocuments: { $sum: "$perApprover.rejected" }
   }},
   { $project: {
       _id: 0, groupBy: "sr",
-      zone: <zone-literal>, division: <division-literal>,
-      branchCode: <branch-literal>,
-      branchName: <resolved separately or projected from a preceding $lookup>,
+      doCode: 1,
+      branchCode: <branchCode-literal>,
+      branchName: 1,
       approvedBy: "$_id",
       approvedDocuments: 1,
       pendingDocuments: { $literal: 0 },
@@ -744,13 +777,14 @@ Notes:
   Outer `$sum` of `"$perApprover.accepted"` is **not** nested here
   because `$unwind` already flattened the array — accepted/rejected
   are scalars at this point.
-* `branchName` at SR level is either carried through the pipeline
-  from the un-grouped document (using `$first` in the `$group`) or
-  set as a literal from a preceding cheap `findOne` — either is fine,
-  keep whichever matches the service style.
-* Zone/division/branch literal values echoed into projection come
-  from the request filter, not from the aggregated document, because
-  after grouping on `approvedBy` those ancestor fields are gone.
+* `branchName` and `doCode` at the branch / SR levels are carried
+  through the pipeline via `$first` in the `$group` stage — **not**
+  echoed from the request — so those fields stay accurate even when
+  the caller supplies only the highest-priority filter. The
+  `branchCode` at SR level is the one exception: it is echoed from
+  the request because the `$group` collapses on `approvedBy`, losing
+  the field; since the SR-level `$match` pinned `branchCode` to a
+  single value, echoing it is equivalent to `$first`.
 
 ### 6.4 Headline pipelines (six-month totals + one-day processed)
 
@@ -959,6 +993,17 @@ GET /api/palmyra/rev/overAll/document/summary
     &fromMonth=2025-07-15&toMonth=2026-03-20
 # -> treated as fromMonth=2025-07-01, toMonth=2026-03-01
 
+# Monthly scoped to one zone — returns one row per month with
+# zone echoed from the filter into each row
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=monthly
+    &zone=CZ
+    &fromMonth=2025-11-01&toMonth=2026-04-01
+
+# Monthly without zone filter — one row per calMonth, rolled up
+# across all zones; response `zone` field is null
+GET /api/palmyra/rev/overAll/document/summary?window=monthly
+
 # Daily, 2-month window exactly (allowed)
 GET /api/palmyra/rev/overAll/document/summary
     ?window=daily
@@ -970,30 +1015,25 @@ GET /api/palmyra/rev/overAll/document/summary
     &fromDate=2026-01-01&toDate=2026-04-20
 # -> 400 "daily interval exceeds 2 months (from=2026-01-01, to=2026-04-20)"
 
-# Today's approval — default zone breakdown (date defaults to today)
+# Today's approval — default DO-code breakdown (date defaults to today)
 GET /api/palmyra/rev/overAll/document/summary?window=todayApproval
 
 # Same, but for a specific historical day
 GET /api/palmyra/rev/overAll/document/summary
     ?window=todayApproval&date=2026-04-15
 
-# Drill: divisions inside one zone, for a given day
+# Drill: branches inside one DO office
 GET /api/palmyra/rev/overAll/document/summary
-    ?window=todayApproval&date=2026-04-15&zone=NORTH
-
-# Drill: branches inside one division
-GET /api/palmyra/rev/overAll/document/summary
-    ?window=todayApproval&date=2026-04-15&zone=NORTH&division=DELHI
+    ?window=todayApproval&date=2026-04-15&doCode=201
 
 # Drill: SR / approver breakdown inside one branch
 GET /api/palmyra/rev/overAll/document/summary
-    ?window=todayApproval&date=2026-04-15
-    &zone=NORTH&division=DELHI&branch=010A
+    ?window=todayApproval&date=2026-04-15&branchCode=010A
 
-# Rejected: branch filter without its ancestors
+# branchCode alone is fine — no ancestors required. doCode in the
+# response is carried from the matched branch documents.
 GET /api/palmyra/rev/overAll/document/summary
-    ?window=todayApproval&branch=010A
-# -> 400 "branch filter requires zone and division"
+    ?window=todayApproval&branchCode=010A
 
 # Headline scorecard — all defaults (last 6 months + today, all branches)
 GET /api/palmyra/rev/overAll/document/summary?window=headline

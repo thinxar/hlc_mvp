@@ -10,6 +10,7 @@ import lombok.Setter;
 public class MonthlyDocumentSummaryModel {
 
 	private LocalDate calMonth;
+	private String zone;
 	private Long processedDocuments;
 	private Long approvedDocuments;
 	private Long rejectedDocuments;
