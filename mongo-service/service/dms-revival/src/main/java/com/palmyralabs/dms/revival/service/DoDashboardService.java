@@ -4,21 +4,20 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.ToDoubleFunction;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
-import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.palmyralabs.dms.revival.entity.MonthWiseReportEntity;
 import com.palmyralabs.dms.revival.model.BranchPerformanceModel;
-import com.palmyralabs.dms.revival.model.DoAgingBucketModel;
 
 import lombok.RequiredArgsConstructor;
 
@@ -47,56 +46,79 @@ public class DoDashboardService {
 		return rankBranches(doCode, order, count, window, SUBMITTED_FIELD);
 	}
 
-	public DoAgingBucketModel getAgingBuckets(String doCode, int window) {
+	public List<BranchPerformanceModel> listBranches(String doCode, int limit,
+			String orderBy, int window) {
 		if (doCode == null || doCode.isBlank()) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "doCode is required");
+		}
+		if (limit != -1 && limit <= 0) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+					"limit must be -1 (no cap) or a positive integer");
 		}
 		if (window <= 0) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "window must be positive");
 		}
 
+		String sortField;
+		Sort.Direction direction;
+		String key = (orderBy == null || orderBy.isBlank()) ? "branchName" : orderBy;
+		switch (key) {
+			case "branchName":
+				sortField = "branchName";
+				direction = Sort.Direction.ASC;
+				break;
+			case "processed":
+				sortField = PROCESSED_FIELD;
+				direction = Sort.Direction.DESC;
+				break;
+			case "submitted":
+				sortField = SUBMITTED_FIELD;
+				direction = Sort.Direction.DESC;
+				break;
+			case "pending":
+				sortField = PENDING_FIELD;
+				direction = Sort.Direction.DESC;
+				break;
+			default:
+				throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+						"orderBy must be one of: branchName, processed, submitted, pending");
+		}
+
 		LocalDate toMonth = LocalDate.now().withDayOfMonth(1);
 		LocalDate fromMonth = toMonth.minusMonths(window - 1L);
 
-		GroupOperation group = Aggregation.group("doCode")
-				.sum("pendingDocuments").as("pendingDocuments")
-				.sum("ageingSummary.d0_5").as("d0_5")
-				.sum("ageingSummary.d6_10").as("d6_10")
-				.sum("ageingSummary.d11_20").as("d11_20")
-				.sum("ageingSummary.d21_30").as("d21_30")
-				.sum("ageingSummary.d31_45").as("d31_45")
-				.sum("ageingSummary.d45plus").as("d45plus");
+		List<AggregationOperation> stages = new ArrayList<>();
+		stages.add(DoAggregationUtils.matchStage(doCode, fromMonth, toMonth));
+		stages.add(groupStage());
+		stages.add(projectStage());
+		stages.add(Aggregation.sort(direction, sortField));
+		if (limit > 0) {
+			stages.add(Aggregation.limit(limit));
+		}
 
-		ProjectionOperation project = Aggregation
-				.project("pendingDocuments", "d0_5", "d6_10", "d11_20", "d21_30", "d31_45", "d45plus")
-				.and("_id").as("doCode")
-				.andExclude("_id");
-
-		Aggregation agg = Aggregation.newAggregation(
-				matchStage(doCode, fromMonth, toMonth), group, project);
-
-		List<DoAgingBucketModel> rows = mongoTemplate
-				.aggregate(agg, MonthWiseReportEntity.class, DoAgingBucketModel.class)
+		List<BranchPerformanceModel> rows = mongoTemplate
+				.aggregate(Aggregation.newAggregation(stages),
+						MonthWiseReportEntity.class, BranchPerformanceModel.class)
 				.getMappedResults();
 
-		return rows.isEmpty() ? zeroFilledBuckets(doCode) : rows.get(0);
+		rows.forEach(m -> m.setRatioPercent(computeProcessedRatioPercent(m)));
+		return rows;
 	}
 
-	private static DoAgingBucketModel zeroFilledBuckets(String doCode) {
-		DoAgingBucketModel empty = new DoAgingBucketModel();
-		empty.setDoCode(doCode);
-		empty.setPendingDocuments(0L);
-		empty.setD0_5(0L);
-		empty.setD6_10(0L);
-		empty.setD11_20(0L);
-		empty.setD21_30(0L);
-		empty.setD31_45(0L);
-		empty.setD45plus(0L);
-		return empty;
-	}
-
-	public List<BranchPerformanceModel> getBranchRatio(String doCode, String order,
+	public List<BranchPerformanceModel> getBranchPendingRatio(String doCode, String order,
 			int count, int window) {
+		return rankBranchesByRatio(doCode, order, count, window,
+				DoDashboardService::computePendingRatioPercent);
+	}
+
+	public List<BranchPerformanceModel> getBranchProcessedRatio(String doCode, String order,
+			int count, int window) {
+		return rankBranchesByRatio(doCode, order, count, window,
+				DoDashboardService::computeProcessedRatioPercent);
+	}
+
+	private List<BranchPerformanceModel> rankBranchesByRatio(String doCode, String order,
+			int count, int window, ToDoubleFunction<BranchPerformanceModel> ratioFn) {
 		validateParams(doCode, count, window);
 		Sort.Direction direction = directionOf(order);
 
@@ -104,7 +126,7 @@ public class DoDashboardService {
 		LocalDate fromMonth = toMonth.minusMonths(window - 1L);
 
 		Aggregation agg = Aggregation.newAggregation(
-				matchStage(doCode, fromMonth, toMonth),
+				DoAggregationUtils.matchStage(doCode, fromMonth, toMonth),
 				groupStage(),
 				projectStage());
 
@@ -112,7 +134,7 @@ public class DoDashboardService {
 				.aggregate(agg, MonthWiseReportEntity.class, BranchPerformanceModel.class)
 				.getMappedResults());
 
-		rows.forEach(m -> m.setRatioPercent(computeRatioPercent(m)));
+		rows.forEach(m -> m.setRatioPercent(ratioFn.applyAsDouble(m)));
 
 		Comparator<BranchPerformanceModel> cmp = Comparator.comparingDouble(
 				m -> m.getRatioPercent() == null ? 0.0 : m.getRatioPercent());
@@ -133,7 +155,7 @@ public class DoDashboardService {
 		LocalDate fromMonth = toMonth.minusMonths(window - 1L);
 
 		Aggregation agg = Aggregation.newAggregation(
-				matchStage(doCode, fromMonth, toMonth),
+				DoAggregationUtils.matchStage(doCode, fromMonth, toMonth),
 				groupStage(),
 				projectStage(),
 				Aggregation.sort(direction, sortField),
@@ -143,14 +165,8 @@ public class DoDashboardService {
 				.aggregate(agg, MonthWiseReportEntity.class, BranchPerformanceModel.class)
 				.getMappedResults();
 
-		rows.forEach(m -> m.setRatioPercent(computeRatioPercent(m)));
+		rows.forEach(m -> m.setRatioPercent(computeProcessedRatioPercent(m)));
 		return rows;
-	}
-
-	private static MatchOperation matchStage(String doCode, LocalDate fromMonth, LocalDate toMonth) {
-		return Aggregation.match(new Criteria().andOperator(
-				Criteria.where("doCode").is(doCode),
-				Criteria.where("calMonth").gte(fromMonth).lte(toMonth)));
 	}
 
 	private static GroupOperation groupStage() {
@@ -168,15 +184,18 @@ public class DoDashboardService {
 				.andExclude("_id");
 	}
 
-	private static double computeRatioPercent(BranchPerformanceModel m) {
+	private static double computeProcessedRatioPercent(BranchPerformanceModel m) {
 		long processed = m.getProcessedDocuments() == null ? 0L : m.getProcessedDocuments();
 		long pending = m.getPendingDocuments() == null ? 0L : m.getPendingDocuments();
 		long total = processed + pending;
-		if (total == 0) {
-			return 0.0;
-		}
-		double raw = (processed * 100.0) / total;
-		return Math.round(raw * 100.0) / 100.0;
+		return total == 0 ? 0.0 : DoAggregationUtils.round2(processed * 100.0 / total);
+	}
+
+	private static double computePendingRatioPercent(BranchPerformanceModel m) {
+		long processed = m.getProcessedDocuments() == null ? 0L : m.getProcessedDocuments();
+		long pending = m.getPendingDocuments() == null ? 0L : m.getPendingDocuments();
+		long total = processed + pending;
+		return total == 0 ? 0.0 : DoAggregationUtils.round2(pending * 100.0 / total);
 	}
 
 	private static void validateParams(String doCode, int count, int window) {

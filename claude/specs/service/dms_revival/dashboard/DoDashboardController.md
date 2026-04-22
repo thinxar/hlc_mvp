@@ -14,7 +14,10 @@ Revival feature.
 
 **Module**: `mongo-service/service/dms-revival`
 **Controller**: `com.palmyralabs.dms.revival.controller.DoDashboardController`
-**Service**: `com.palmyralabs.dms.revival.service.DoDashboardService`
+**Services**:
+* `com.palmyralabs.dms.revival.service.DoDashboardService` — branch-level endpoints (§2).
+* `com.palmyralabs.dms.revival.service.DoSummaryService` — DO-level rollups (§3 aging, §4 division performance).
+* `com.palmyralabs.dms.revival.service.DoAggregationUtils` (package-private) — shared `matchStage` / `round2` helpers used by both services.
 
 ---
 
@@ -34,16 +37,23 @@ prefix (`palmyra`), the endpoints live under `/api/palmyra/rev/do/…`.
 | `getBranchProcessed`  | GET       | `/do/branch/processed`  | Rank branches by `processedDocuments`        |
 | `getBranchPending`    | GET       | `/do/branch/pending`    | Rank branches by `pendingDocuments`          |
 | `getBranchSubmitted`  | GET       | `/do/branch/submitted`  | Rank branches by `submittedDocuments`        |
-| `getBranchRatio`      | GET       | `/do/branch/ratio`      | Rank branches by `ratioPercent` (derived)    |
+| `getBranchPendingRatio`   | GET   | `/do/branch/pending/ratio`   | Rank branches by pending-ratio (`pending / (processed + pending)`) |
+| `getBranchProcessedRatio` | GET   | `/do/branch/processed/ratio` | Rank branches by processed-ratio (`processed / (processed + pending)`) |
+| `listBranches`        | GET       | `/do/branches`          | Table-view branch list (all three sums)      |
+| `listDivisionPerformance` | GET   | `/do/division/performance` | Per-month, per-division counts + pending / processed % |
 | `getAgingBuckets`     | GET       | `/do/aging`             | DO-level aging bucket rollup                 |
 
-All four branch-ranking endpoints share the same query parameters,
+The four branch-ranking endpoints share the same query parameters,
 response element type, validation rules, and `$match → $group →
 $project` stages. The first three push `$sort + $limit` into Mongo;
-the `/ratio` endpoint derives `ratioPercent` per row in Java after
-the group, sorts in Java, then slices to `count` (see §7). The
-`/do/aging` endpoint groups by `doCode` into a single object and
-shares only the `$match` stage with the rankers (see §3 / §7.2).
+the two `/ratio` endpoints derive `ratioPercent` per row in Java after
+the group, sorts in Java, then slices to `count` (see §8). The
+`/do/branches` list endpoint (§2.5) reuses the same match/group/project
+helpers but takes a column-name `orderBy` with smart default
+direction and a `limit` with a `-1` "off" sentinel, instead of the
+`order` / `count` shape shared by the rankers. `/do/aging` groups
+by `doCode` into a single object and shares only the `$match`
+stage with the rankers (see §3 / §8.2).
 
 ---
 
@@ -73,32 +83,108 @@ Returns up to `count` branches under `doCode`, ranked by total
 `submittedDocuments` across the same window. Intended for the DO
 tile that surfaces the highest-intake (or lowest-intake) branches.
 
-### 2.4 Branch ratio ranking (by completion rate)
+### 2.4 Branch ratio rankings
 
-`GET /rev/do/branch/ratio`
+Two sibling endpoints, one per ratio formula. Both share the same
+request shape, pipeline, and response shape as the other ranking
+endpoints (§2.6 / §2.7) — they differ only in which formula feeds
+the shared `ratioPercent` field.
+
+#### 2.4.1 `GET /rev/do/branch/pending/ratio`
 
 Returns up to `count` branches under `doCode`, ranked by their
-**completion ratio** — the share of processed + pending that is
-already processed — expressed as a percentage in the range
-`[0.0, 100.0]`. The per-branch ratio is computed on the aggregated
-sums after the `$group` stage:
+**pending ratio** — the share of processed + pending that is
+still outstanding — expressed as a percentage in the range
+`[0.0, 100.0]`. Computed on the aggregated sums after `$group`:
+
+```
+ratioPercent = 100 * sum(pendingDocuments) /
+               ( sum(processedDocuments) + sum(pendingDocuments) )
+```
+
+Intended for the DO tile that surfaces branches with the highest
+(or lowest) backlog share across the window.
+
+#### 2.4.2 `GET /rev/do/branch/processed/ratio`
+
+Returns up to `count` branches under `doCode`, ranked by their
+**processed ratio** (completion rate) — the share of processed +
+pending that is already cleared — expressed as a percentage in the
+range `[0.0, 100.0]`. Computed on the same aggregated sums:
 
 ```
 ratioPercent = 100 * sum(processedDocuments) /
                ( sum(processedDocuments) + sum(pendingDocuments) )
 ```
 
-When both sums are zero the ratio is defined as `0.0` (not
-`NaN` / error); a branch with only submitted-but-not-yet-pending
-rows will therefore sort alongside genuinely inactive branches.
+Intended for the DO tile that surfaces branches with the highest
+(or lowest) completion rate across the window.
 
-Intended for the DO tile that surfaces the branches that have
-cleared (or failed to clear) the largest share of their in-flight
-work across the window. `submittedDocuments` does **not** feed the
-ratio — it is surfaced on every row for context but has no effect
-on ranking.
+#### 2.4.3 Common behaviour
 
-### 2.5 Shared request shape
+* Both endpoints always return `ratioPercent` in `[0.0, 100.0]`,
+  rounded to two decimal places. On any branch-row the two formulas
+  are complements: `pendingRatio + processedRatio = 100` (except
+  when both source sums are zero — then both are defined as `0.0`,
+  not `NaN`; a branch with only submitted-but-not-yet-pending rows
+  therefore sorts alongside genuinely inactive branches on both
+  endpoints).
+* Reused DTO field: `BranchPerformanceModel.ratioPercent` is
+  populated by every branch endpoint (§2.1–§2.5), but its meaning
+  depends on which endpoint served the row — pending ratio on
+  §2.4.1, processed ratio on §2.4.2 and §2.1–§2.3 / §2.5. Keeping
+  one field name on the DTO is a deliberate trade-off (no model
+  churn, one consistent JSON shape) in exchange for the endpoint-
+  dependent semantic.
+* `submittedDocuments` does **not** feed either ratio — it is
+  surfaced on every row for context but has no effect on ranking.
+
+### 2.5 Branch list (table view)
+
+`GET /rev/do/branches`
+
+Returns every branch under `doCode` that has activity in the
+window, with the three document-count sums. Intended to back the
+DO dashboard's **branches table** — sortable columns, optional row
+cap — rather than a top-N card. Unlike §2.1–2.4 this endpoint has
+its own request shape (column-name `orderBy`, `limit` with an
+"off" sentinel) rather than the `order`/`count` shape shared by
+the ranking endpoints.
+
+Request shape:
+
+| Param     | Type   | Required | Default       | Notes                                                                                                       |
+| --------- | ------ | -------- | ------------- | ----------------------------------------------------------------------------------------------------------- |
+| `doCode`  | string | **yes**  | —             | Exact match on stored `doCode`. Blank / missing → 400.                                                      |
+| `limit`   | int    | no       | `15`          | Positive integer → row cap (`$limit`). `-1` → no cap, return every branch in scope. Any other value → 400. |
+| `orderBy` | string | no       | `branchName`  | One of `branchName`, `processed`, `submitted`, `pending`. Anything else → 400.                              |
+| `window`  | int    | no       | `1`           | Positive integer. Number of months (inclusive of current) to aggregate over.                                |
+
+Window semantics are identical to §2 — `toMonth =
+firstOfMonth(LocalDate.now())`, `fromMonth = toMonth.minusMonths(window - 1)`.
+
+Sort direction is fixed by `orderBy`; there is no separate
+direction param. The mapping is chosen to match the intuitive "click
+a column to see the leaders" UX:
+
+| `orderBy`    | Mongo field           | Direction                |
+| ------------ | --------------------- | ------------------------ |
+| `branchName` | `branchName`          | ASC (A → Z)              |
+| `processed`  | `processedDocuments`  | DESC (most-processed first) |
+| `submitted`  | `submittedDocuments`  | DESC (highest-intake first) |
+| `pending`    | `pendingDocuments`    | DESC (largest-backlog first) |
+
+A branch with no rows in the window does not appear in the result
+(the `$group` skips it). Same caveat as the ranking endpoints.
+
+Response element — shares the `BranchPerformanceModel` shape
+described in §2.7 verbatim (including the computed `ratioPercent`
+bonus field — callers can ignore it).
+
+### 2.6 Shared request shape
+
+Applies to the four ranking endpoints (§2.1–§2.4). The list
+endpoint §2.5 has its own request shape; see that section.
 
 | Param     | Type   | Required | Default | Notes                                                                             |
 | --------- | ------ | -------- | ------- | --------------------------------------------------------------------------------- |
@@ -112,7 +198,7 @@ the month (`toMonth`) and sets `fromMonth = toMonth.minusMonths(window - 1)`.
 So `window=1` queries the current month only; `window=3` queries the
 current month plus the previous two.
 
-### 2.6 Shared response shape
+### 2.7 Shared response shape
 
 **Response element** — `BranchPerformanceModel` (wrapped in
 `PalmyraResponse<List<…>>`):
@@ -141,24 +227,35 @@ current month plus the previous two.
   **two decimal places** via `Math.round(raw * 100) / 100.0` (e.g.
   `74.5454…` → `74.55`). Range `[0.0, 100.0]`; `0.0` when both
   source sums are zero (never `NaN`). Always emitted, not just on
-  `/do/branch/ratio`.
-* All four derived fields are emitted on every endpoint — the
-  single aggregation computes all three sums regardless of which
-  field drives the sort, and the ratio is a trivial post-process
-  on top of them. Callers only pay the extra bytes, not an extra
-  round-trip.
-* Which field is the sort key is fixed by the endpoint:
-  `processedDocuments` for §2.1, `pendingDocuments` for §2.2,
-  `submittedDocuments` for §2.3, `ratioPercent` for §2.4.
-  List is sliced to the top `count` rows after that sort runs per
-  `order` (`bottom` → *smallest* first; `top` → *largest* first).
-  For `/processed`, `bottom` surfaces the worst performers and `top`
-  the best; for `/pending`, `bottom` surfaces the smallest backlogs
-  and `top` the biggest; for `/ratio`, `top` surfaces the branches
-  that cleared the largest share of in-flight work.
+  the `/do/branch/*/ratio` endpoints.
+* All four derived fields are emitted on every branch endpoint —
+  §2.1–§2.5 — the single aggregation computes all three sums
+  regardless of which field drives the sort, and the ratio is a
+  trivial post-process on top of them. Callers only pay the extra
+  bytes, not an extra round-trip.
+* Which field is the sort key and in which direction depends on
+  the endpoint:
+  * §2.1 `/processed` — sorted on `processedDocuments`, direction
+    per `order` (`top`→DESC, `bottom`→ASC).
+  * §2.2 `/pending` — sorted on `pendingDocuments`, direction
+    per `order`.
+  * §2.3 `/submitted` — sorted on `submittedDocuments`, direction
+    per `order`.
+  * §2.4.1 `/pending/ratio` — sorted on `ratioPercent` (= pending
+    share), direction per `order`.
+  * §2.4.2 `/processed/ratio` — sorted on `ratioPercent` (= processed
+    share), direction per `order`.
+  * §2.5 `/branches` — sorted on whichever column `orderBy`
+    names; direction is fixed per column (ASC for `branchName`,
+    DESC for the three numeric columns). No `order` param.
+  List is sliced per `count` (§2.1–§2.4) or `limit` (§2.5) after
+  the sort runs. For the ranking endpoints, `bottom` surfaces the
+  worst performers / smallest backlogs / lowest ratios; `top`
+  surfaces the best / biggest / highest. For §2.5, `limit=-1`
+  disables the slice entirely.
 * Ties on the sort field are not broken explicitly — Mongo's
   natural ordering applies for the three direct-field endpoints;
-  the Java sort on `/ratio` is stable (`List.sort`), so the
+  the Java sort on the two `/ratio` endpoints is stable (`List.sort`), so the
   pre-sort order (driven by `$group` output) breaks ties.
 
 **Pending-sum caveat** — `pendingDocuments` on a monthly row is the
@@ -209,7 +306,7 @@ Single `DoAgingBucketModel` object (wrapped in `PalmyraResponse`):
   aggregation groups by `doCode`, which degenerates to a single
   row because the `$match` already narrows to one DO).
 * `pendingDocuments` — Σ `pendingDocuments` across every monthly
-  row for this DO in scope. Same snapshot-summing caveat as §2.6
+  row for this DO in scope. Same snapshot-summing caveat as §2.7
   (pending-months for `window > 1`).
 * `d0_5` / `d6_10` / `d11_20` / `d21_30` / `d31_45` / `d45plus` —
   Σ of the corresponding `ageingSummary.d*` subfield on each
@@ -232,14 +329,89 @@ Treat a drift as a data-quality signal, not an endpoint bug.
 
 ---
 
-## 4. Validation — error responses (400 Bad Request)
+## 4. Division-performance endpoint
 
-The branch-ranking endpoints (§2) share one validation set; the
-aging endpoint (§3) shares a subset (no `count` / `order`).
+`GET /rev/do/division/performance`
 
-### 4.1 Branch-ranking endpoints
+Per-month, per-division rollup of the three document-count sums
+(processed / pending / submitted) plus the two derived percentages
+for the given DO across the `window`. Intended to back a DO
+dashboard card that shows each division's throughput and completion
+ratio month-by-month.
 
-Applies to all four §2 endpoints identically.
+### 4.1 Request shape
+
+| Param     | Type   | Required | Default | Notes                                                                        |
+| --------- | ------ | -------- | ------- | ---------------------------------------------------------------------------- |
+| `doCode`  | string | **yes**  | —       | Exact match on stored `doCode`. Blank / missing → 400.                       |
+| `window`  | int    | no       | `1`     | Positive integer. Number of months (inclusive of current) to aggregate over. |
+
+Window semantics are identical to §2 — `toMonth =
+firstOfMonth(LocalDate.now())`, `fromMonth = toMonth.minusMonths(window - 1)`.
+
+### 4.2 Response shape
+
+List of `DivisionPerformanceModel` (wrapped in `PalmyraResponse`):
+
+```json
+[
+  {
+    "calMonth":            "2026-04-01",
+    "doCode":              "201",
+    "divisionName":        "BHOPAL",
+    "processedDocuments":  536,
+    "pendingDocuments":    246,
+    "submittedDocuments":  594,
+    "pendingPercentage":   31.45,
+    "processedPercentage": 68.55
+  },
+  ...
+]
+```
+
+* `calMonth` — bucket key, first day of the month.
+* `doCode` — echoed from the `$match` filter via `$first` on the
+  group.
+* `divisionName` — the group key alongside `calMonth`; every
+  division under the DO that had activity in that month produces
+  one row.
+* `processedDocuments` — Σ `processedDocuments` across every
+  monthly row for this `(calMonth, divisionName)` pair.
+* `pendingDocuments` — Σ `pendingDocuments` across the same rows.
+* `submittedDocuments` — Σ `submittedDocuments` across the same
+  rows. Emitted for context; it does **not** feed either of the
+  two percentages (those are derived from processed + pending
+  only).
+* `pendingPercentage` — `100 * Σpending / (Σprocessed + Σpending)`,
+  rounded to 2 decimals. `0.0` when both sums are zero.
+* `processedPercentage` — `100 * Σprocessed / (Σprocessed + Σpending)`,
+  rounded to 2 decimals. `0.0` when both sums are zero. Complement
+  of `pendingPercentage` (`pending% + processed% = 100` except in
+  the zero-sum edge case where both are 0).
+* Sorted by `calMonth` ASC, then `divisionName` ASC.
+
+### 4.3 Grouping rationale
+
+Literal "group by calMonth" alone would either omit `divisionName`
+or populate it via `$first` — meaningless when the DO spans
+multiple divisions. The composite key `(calMonth, divisionName)`
+keeps `divisionName` deterministic: one row per `(month, division)`
+pair. A DO that owns branches in only one division produces
+`window` rows; a DO that spans N divisions produces up to
+`window × N` rows.
+
+---
+
+## 5. Validation — error responses (400 Bad Request)
+
+The branch-ranking endpoints (§2.1–§2.4) share one validation set;
+the list endpoint (§2.5), division endpoint (§4), and aging endpoint
+(§3) each have narrower sets.
+
+### 5.1 Branch-ranking endpoints (§2.1–§2.4)
+
+Applies to `/processed`, `/pending`, `/submitted`,
+`/pending/ratio`, and `/processed/ratio` identically.
 
 | Condition                            | Message                      |
 | ------------------------------------ | ---------------------------- |
@@ -252,7 +424,31 @@ non-`top` value silently falls back to `bottom` (ascending).
 Unparseable `count` / `window` integers produce Spring's standard
 `MethodArgumentTypeMismatchException` → 400.
 
-### 4.2 Aging-bucket endpoint
+### 5.2 Branch list endpoint (§2.5)
+
+| Condition                                    | Message                                                              |
+| -------------------------------------------- | -------------------------------------------------------------------- |
+| `doCode` null / blank                        | `doCode is required`                                                 |
+| `limit` is `0` or less than `-1`             | `limit must be -1 (no cap) or a positive integer`                    |
+| `window <= 0`                                | `window must be positive`                                            |
+| `orderBy` not one of the four allowed values | `orderBy must be one of: branchName, processed, submitted, pending`  |
+
+Unlike §5.1's silent `order` fallback, `orderBy` here is validated
+explicitly — the enumeration is narrow enough that a typo is more
+likely a client bug than a convenience. Blank / null `orderBy`
+falls back to the default `branchName`, not an error.
+
+### 5.3 Division-performance endpoint (§4)
+
+| Condition             | Message                      |
+| --------------------- | ---------------------------- |
+| `doCode` null / blank | `doCode is required`         |
+| `window <= 0`         | `window must be positive`    |
+
+No `count` / `order` / `limit` / `orderBy` on this endpoint.
+Unparseable `window` → 400 via Spring's type-mismatch.
+
+### 5.4 Aging-bucket endpoint (§3)
 
 | Condition             | Message                      |
 | --------------------- | ---------------------------- |
@@ -264,7 +460,9 @@ via Spring's type-mismatch.
 
 ---
 
-## 5. Service contract
+## 6. Service contract
+
+Branch-level endpoints — **`DoDashboardService`**:
 
 ```java
 List<BranchPerformanceModel> getBranchProcessed(
@@ -276,10 +474,14 @@ List<BranchPerformanceModel> getBranchPending(
 List<BranchPerformanceModel> getBranchSubmitted(
         String doCode, String order, int count, int window);
 
-List<BranchPerformanceModel> getBranchRatio(
+List<BranchPerformanceModel> getBranchPendingRatio(
         String doCode, String order, int count, int window);
 
-DoAgingBucketModel getAgingBuckets(String doCode, int window);
+List<BranchPerformanceModel> getBranchProcessedRatio(
+        String doCode, String order, int count, int window);
+
+List<BranchPerformanceModel> listBranches(
+        String doCode, int limit, String orderBy, int window);
 ```
 
 The three direct-field methods delegate to a private
@@ -289,19 +491,25 @@ that pushes `$sort + $limit` into Mongo. `sortField` is one of
 the method does not accept arbitrary fields — the public API surface
 is the four named methods.
 
-`getBranchRatio` takes a different path: it runs the same
-`$match → $group → $project` stages but **without** `$sort + $limit`,
-populates `ratioPercent` on every row in Java via the shared
-`computeRatioPercent(m)` helper, sorts the list by that field
-according to `order`, and then slices to `count`. All four methods
-route through shared `matchStage` / `groupStage` / `projectStage`
-builders so the Mongo query is identical bar the trailing stages;
-only the post-aggregation handling differs.
+`getBranchPendingRatio` and `getBranchProcessedRatio` both delegate
+to a private `rankBranchesByRatio(doCode, order, count, window, ratioFn)`
+helper, parameterised by a `ToDoubleFunction<BranchPerformanceModel>`
+that produces the per-row ratio. The helper runs the same
+`$match → $group → $project` stages as the direct-field endpoints but
+**without** `$sort + $limit`, fills `ratioPercent` on every row by
+calling the supplied `ratioFn`, sorts the list in Java by that field
+according to `order`, and then slices to `count`. The two public
+methods pass `computePendingRatioPercent` (§2.4.1) and
+`computeProcessedRatioPercent` (§2.4.2) respectively. All five branch
+methods route through the shared `DoAggregationUtils.matchStage`
+plus this service's private `groupStage` / `projectStage` builders
+so the Mongo query is identical bar the trailing stages; only the
+post-aggregation handling differs.
 
 `DoDashboardService` has a `MongoTemplate` injected via constructor
 (`@RequiredArgsConstructor`). Responsibilities of `rankBranches`:
 
-* Input validation per §4.
+* Input validation per §5.1.
 * Window resolution: `toMonth = firstOfMonth(LocalDate.now())`;
   `fromMonth = toMonth.minusMonths(window - 1)`.
 * Direction resolution: `"top".equalsIgnoreCase(order)` → `DESC`
@@ -311,20 +519,52 @@ only the post-aggregation handling differs.
   BranchPerformanceModel.class)`, summing all three metric fields.
   The three direct-field paths sort on `sortField` and `$limit` in
   Mongo; the ratio path sorts and slices in Java.
-* Populate `ratioPercent` on every returned row via
-  `computeRatioPercent(m)` — so `ratioPercent` is always present on
-  the DTO regardless of which endpoint served the request.
+* Populate `ratioPercent` on every returned row —
+  `computeProcessedRatioPercent(m)` on §2.1 / §2.2 / §2.3 / §2.4.2 / §2.5
+  (completion ratio) or `computePendingRatioPercent(m)` on §2.4.1
+  (pending ratio).
 
-`getAgingBuckets` is a standalone method (no delegation to
-`rankBranches`): validates `doCode` / `window`, reuses the shared
-`matchStage(...)` builder, then runs its own `$group` on `doCode`
-summing `pendingDocuments` + the six `ageingSummary.d*` subfields.
-Zero-fills a `DoAgingBucketModel` (with `doCode` echoed) when the
-aggregation returns no rows.
+`listBranches` is a standalone method (no delegation to
+`rankBranches`): validates `doCode` / `limit` / `window`, maps the
+column-name `orderBy` to a Mongo `sortField` + fixed direction per
+the §2.5 table, then runs the shared
+`matchStage → groupStage → projectStage → $sort` pipeline, followed
+by `$limit` only when `limit > 0`. Returned rows are passed through
+`computeProcessedRatioPercent(m)` for DTO consistency with the ranking
+endpoints.
+
+DO-level rollup endpoints — **`DoSummaryService`**:
+
+```java
+List<DivisionPerformanceModel> listDivisionPerformance(
+        String doCode, int window);
+
+DoAgingBucketModel getAgingBuckets(
+        String doCode, int window);
+```
+
+Extracted into a sibling service so that the branch-level code stays
+focused on per-branch ranking and the summary rollups don't pile
+additional aggregation shapes onto one class. Both services share
+the `DoAggregationUtils.matchStage` / `DoAggregationUtils.round2`
+helpers (package-private utility); each owns its own `$group` and
+`$project` builders because the shape is endpoint-specific.
+
+`listDivisionPerformance` validates `doCode` / `window`, groups on
+composite `(calMonth, divisionName)`, sums processed + pending, and
+computes the two percentage fields in Java via
+`populateDivisionPercentages` (rounded to 2 decimals via
+`DoAggregationUtils.round2`). See §4 / §8.3.
+
+`getAgingBuckets` validates `doCode` / `window`, reuses
+`DoAggregationUtils.matchStage`, then runs its own `$group` on
+`doCode` summing `pendingDocuments` + the six `ageingSummary.d*`
+subfields. Zero-fills a `DoAgingBucketModel` (with `doCode`
+echoed) when the aggregation returns no rows.
 
 ---
 
-## 6. Data model
+## 7. Data model
 
 Reads the single collection:
 
@@ -338,7 +578,7 @@ Fields consumed here:
   `doCode`, `branchCode`, `branchName`, `calMonth`,
   `processedDocuments`, `pendingDocuments`, `submittedDocuments`.
 * **Not modelled on the entity but present in the stored documents
-  and read by §3 / §7.2 via dotted-path aggregation:**
+  and read by §3 / §8.2 via dotted-path aggregation:**
   `ageingSummary.d0_5`, `ageingSummary.d6_10`,
   `ageingSummary.d11_20`, `ageingSummary.d21_30`,
   `ageingSummary.d31_45`, `ageingSummary.d45plus`.
@@ -355,10 +595,10 @@ comparisons in the `$match` stage rely on that converter.
 
 ---
 
-## 7. Aggregation pipeline
+## 8. Aggregation pipeline
 
-Shared match/group/project across all four endpoints — no `$unwind`,
-all three sums computed in the same `$group`:
+Shared match/group/project across all five branch endpoints (§2.1–
+§2.5) — no `$unwind`, all three sums computed in the same `$group`:
 
 ```
 [
@@ -381,33 +621,50 @@ all three sums computed in the same `$group`:
       pendingDocuments: 1,
       submittedDocuments: 1
   }},
-  // §2.1 / §2.2 / §2.3 only — not present for §2.4:
+  // §2.1 / §2.2 / §2.3 / §2.5 — not present for §2.4:
   { $sort:  { <sortField>: <1 | -1> } },
-  { $limit: <count> }
+  // §2.1 / §2.2 / §2.3 / §2.4 — omitted on §2.5 when limit = -1:
+  { $limit: <cap> }
 ]
 ```
 
-* `<sortField>` = `processedDocuments` for §2.1,
-  `pendingDocuments` for §2.2, `submittedDocuments` for §2.3.
-* `<1 | -1>` = `-1` for `order=top` (default), `1` for `order=bottom`.
+* `<sortField>` — per endpoint:
+  * §2.1 → `processedDocuments`
+  * §2.2 → `pendingDocuments`
+  * §2.3 → `submittedDocuments`
+  * §2.5 → whichever column `orderBy` names (`branchName`,
+    `processedDocuments`, `submittedDocuments`, `pendingDocuments`)
+* `<1 | -1>`:
+  * §2.1–§2.3 — `-1` for `order=top` (default), `1` for `order=bottom`.
+  * §2.5 — fixed by `orderBy`: `1` for `branchName`, `-1` for the
+    three numeric columns. No `order` param.
+* `<cap>` — `count` on §2.1–§2.3, `limit` on §2.5. §2.5 drops the
+  `$limit` stage entirely when `limit == -1`.
 * Sort-then-limit ordering is deliberate for the direct-field
   endpoints — Mongo can use the accumulator output directly; no
   additional index is required on the input collection since the
   `$match` stage already bounds the working set to a single DO
   across ≤ `window` months.
-* `ratioPercent` is always added in Java (`computeRatioPercent(row)`
+* `ratioPercent` is always added in Java (`computeProcessedRatioPercent(row)`
   on every returned row) before the service returns, regardless of
   endpoint.
 
-### 7.1 Ratio endpoint — Java-side sort & slice
+### 8.1 Ratio endpoints — Java-side sort & slice
 
-`§2.4 /do/branch/ratio` runs the same match/group/project stages
-**without** the trailing `$sort + $limit`, then:
+`§2.4.1 /do/branch/pending/ratio` and `§2.4.2 /do/branch/processed/ratio`
+both run the same match/group/project stages **without** the
+trailing `$sort + $limit`, then route through a private
+`rankBranchesByRatio` helper parameterised by a
+`ToDoubleFunction<BranchPerformanceModel>`:
 
-1. Maps each row via `computeRatioPercent(m)` to fill
-   `ratioPercent` where
-   `ratioPercent = total == 0 ? 0.0 : 100.0 * processed / total`
-   rounded to two decimal places, and `total = processed + pending`.
+1. Fills `ratioPercent` on each row by applying the supplied
+   ratio function:
+   * `§2.4.1` → `computePendingRatioPercent`
+     (`100 * pending / total`, `0.0` when `total == 0`).
+   * `§2.4.2` → `computeProcessedRatioPercent`
+     (`100 * processed / total`, `0.0` when `total == 0`).
+   Both round to two decimal places, with
+   `total = processed + pending`.
 2. Sorts the list in Java using
    `Comparator.comparingDouble(BranchPerformanceModel::getRatioPercent)`,
    reversed for `order=top`.
@@ -420,7 +677,7 @@ DO is bounded (dozens to low hundreds in practice), so fetching all
 groups and sorting in Java is cheaper to read and to maintain. If
 DO scale grows past that, revisit with a Mongo-side `$addFields`.
 
-### 7.2 Aging-bucket endpoint
+### 8.2 Aging-bucket endpoint
 
 `§3 /do/aging` reuses the shared `matchStage()` but runs its own
 `$group` and `$project`:
@@ -462,9 +719,63 @@ DO scale grows past that, revisit with a Mongo-side `$addFields`.
 * Empty result → service substitutes a zero-filled
   `DoAgingBucketModel` with `doCode` echoed from the caller.
 
+### 8.3 Division-performance endpoint
+
+`§4 /do/division/performance` reuses `DoAggregationUtils.matchStage()`
+but runs a composite `(calMonth, divisionName)` group summing all
+three document-count fields:
+
+```
+[
+  { $match: {
+      doCode: <doCode>,
+      calMonth: { $gte: <fromMonth>, $lte: <toMonth> }
+  }},
+  { $group: {
+      _id: { calMonth: "$calMonth", divisionName: "$divisionName" },
+      doCode:             { $first: "$doCode" },
+      processedDocuments: { $sum:   "$processedDocuments" },
+      pendingDocuments:   { $sum:   "$pendingDocuments" },
+      submittedDocuments: { $sum:   "$submittedDocuments" }
+  }},
+  { $project: {
+      _id: 0,
+      doCode: 1,
+      calMonth:     "$_id.calMonth",
+      divisionName: "$_id.divisionName",
+      processedDocuments: 1,
+      pendingDocuments: 1,
+      submittedDocuments: 1
+  }},
+  { $sort: { calMonth: 1, divisionName: 1 } }
+]
+```
+
+* Composite `_id` is the full grouping key so both `calMonth` and
+  `divisionName` survive the group; `doCode` is carried via `$first`
+  (the `$match` clamps it to one value, so `$first` is deterministic).
+* No `$limit` — per-month-per-division cardinality is bounded by
+  `window × divisions-under-DO`, typically a handful of rows.
+* All three document-count sums are emitted on every row (via the
+  DTO's now-public fields).
+* Percentages are computed in Java after the aggregation via
+  `populateDivisionPercentages`:
+  ```
+  total = processed + pending          // submitted is not used here
+  if total == 0:
+      pendingPercentage   = 0.0
+      processedPercentage = 0.0
+  else:
+      pendingPercentage   = round2(100 * pending   / total)
+      processedPercentage = round2(100 * processed / total)
+  ```
+  `submittedDocuments` deliberately does **not** feed either
+  percentage — only processed and pending make up the in-flight
+  work whose completion we're measuring.
+
 ---
 
-## 8. Example requests
+## 9. Example requests
 
 ```
 # Top 10 branches by processed for DO 201 this month
@@ -501,19 +812,31 @@ GET /api/palmyra/rev/do/branch/submitted
 GET /api/palmyra/rev/do/branch/submitted
     ?doCode=201&order=bottom&count=5&window=3
 
-# Top 10 branches by completion ratio for DO 201 this month
-GET /api/palmyra/rev/do/branch/ratio
+# Top 10 branches by pending ratio for DO 201 this month
+GET /api/palmyra/rev/do/branch/pending/ratio
     ?doCode=201&order=top
-# -> [ { ..., "ratioPercent": 98.72 },
+# -> [ { ..., "ratioPercent": 98.72 },   # highest backlog share first
 #      { ..., "ratioPercent": 94.23 }, ... ]
 
-# Bottom 5 branches by completion ratio over the last 3 months
-GET /api/palmyra/rev/do/branch/ratio
+# Bottom 5 branches by pending ratio over the last 3 months
+GET /api/palmyra/rev/do/branch/pending/ratio
     ?doCode=201&order=bottom&count=5&window=3
 # -> [ { ..., "ratioPercent":  0.0 },
 #      { ..., "ratioPercent": 12.34 }, ... ]
 # Note: branches with zero processed+pending appear at ratio 0.0,
 # not as a separate "no activity" marker.
+
+# Top 10 branches by processed ratio (completion rate) for DO 201 this month
+GET /api/palmyra/rev/do/branch/processed/ratio
+    ?doCode=201&order=top
+# -> [ { ..., "ratioPercent": 98.72 },   # highest completion first
+#      { ..., "ratioPercent": 94.23 }, ... ]
+
+# Bottom 5 branches by completion rate over the last 3 months
+GET /api/palmyra/rev/do/branch/processed/ratio
+    ?doCode=201&order=bottom&count=5&window=3
+# -> [ { ..., "ratioPercent":  0.0 },
+#      { ..., "ratioPercent": 12.34 }, ... ]
 
 # Defaults — top 10 by processed, current month, for DO 247
 GET /api/palmyra/rev/do/branch/processed?doCode=247
@@ -525,6 +848,43 @@ GET /api/palmyra/rev/do/branch/pending?order=top
 # Rejected: non-positive count
 GET /api/palmyra/rev/do/branch/processed?doCode=201&count=0
 # -> 400 "count must be positive"
+
+# Branch list (table view) — defaults: first 15 rows, alphabetical by branchName, current month
+GET /api/palmyra/rev/do/branches?doCode=201
+
+# Branch list — every branch in scope, no cap, last 6 months
+GET /api/palmyra/rev/do/branches?doCode=201&limit=-1&window=6
+
+# Branch list — top 20 by pending this month
+GET /api/palmyra/rev/do/branches
+    ?doCode=201&orderBy=pending&limit=20
+
+# Branch list — top 25 by processed over the last 3 months
+GET /api/palmyra/rev/do/branches
+    ?doCode=201&orderBy=processed&limit=25&window=3
+
+# Rejected: unknown orderBy value
+GET /api/palmyra/rev/do/branches?doCode=201&orderBy=revenue
+# -> 400 "orderBy must be one of: branchName, processed, submitted, pending"
+
+# Rejected: limit=0 (use -1 to disable the cap)
+GET /api/palmyra/rev/do/branches?doCode=201&limit=0
+# -> 400 "limit must be -1 (no cap) or a positive integer"
+
+# Division performance — current month for DO 201
+GET /api/palmyra/rev/do/division/performance?doCode=201
+# -> [ { "calMonth": "2026-04-01", "doCode": "201",
+#        "divisionName": "BHOPAL",
+#        "processedDocuments": 536,
+#        "pendingDocuments":   246,
+#        "submittedDocuments": 594,
+#        "pendingPercentage":   31.45,
+#        "processedPercentage": 68.55 } ]
+
+# Division performance — last 3 months, multi-division DO
+GET /api/palmyra/rev/do/division/performance?doCode=201&window=3
+# -> list of up to 3 × N rows, sorted by calMonth ASC, divisionName ASC,
+#    one per (month, division-with-activity) pair
 
 # Aging-bucket rollup for DO 201 this month (default window=1)
 GET /api/palmyra/rev/do/aging?doCode=201
@@ -548,7 +908,7 @@ GET /api/palmyra/rev/do/aging?window=3
 
 ---
 
-## 9. Known caveats / open items
+## 10. Known caveats / open items
 
 1. **System-zone `LocalDate.now()`** — `toMonth` is derived from the
    JVM's local date. Same UTC-vs-system-zone caveat as
@@ -557,44 +917,54 @@ GET /api/palmyra/rev/do/aging?window=3
    still worth a `ZoneId` injection if strict determinism is needed.
 2. **Ordering is on the aggregated sum only** — a branch with no
    rows in the window simply does not appear in the result (it
-   isn't grouped as a "zero" row), regardless of `order`. This
-   bites hardest on `order=bottom`, where callers may expect to see
-   the zero-activity branches surfaced first. Callers that need an
-   explicit zero row for every branch under the DO must `$lookup`
-   from the branch master instead.
+   isn't grouped as a "zero" row), regardless of `order` (§2.1–§2.4)
+   or `orderBy` (§2.5). This bites hardest on `order=bottom` and on
+   §2.5's `orderBy=branchName` / `limit=-1` combinations, where
+   callers may expect an A-to-Z roster of *every* branch under the
+   DO including the inactive ones. Callers that need an explicit
+   zero row for every branch under the DO must `$lookup` from the
+   branch master instead.
 3. **No `branchCode` filter** — unlike `RevDashBoardController`,
    these endpoints are intentionally DO-wide; the only scope knob
    is `doCode`. If a per-branch drill-down is needed, use
    `RevDashBoardController`'s monthly summary with `branchCode`.
-4. **Pending is a snapshot metric** — see §2.6. For `window=1` the
+4. **Pending is a snapshot metric** — see §2.7. For `window=1` the
    sum collapses to a single end-of-month snapshot; for `window>1`
    the number is a pending-months aggregate, not a distinct doc
    count. The `/pending` endpoint does not normalize this for the
    caller.
-5. **All four endpoints share the same match/group/project** — the
+5. **`/do/branches` with `limit=-1` fans out to all DO branches** —
+   unlike the ranking endpoints' bounded-`count` behaviour, the
+   list endpoint with `limit=-1` returns every branch with activity
+   in the window. Fine at current DO cardinality (dozens to low
+   hundreds), but any caller that reaches for `-1` should be aware
+   the payload size grows linearly with branch count.
+6. **All four ranking endpoints share the same match/group/project** — the
    pipeline always computes all three sums. Adding a new direct-
    field sort key (e.g. `approvedDocuments` if the response is
    extended) is a one-line change to `rankBranches`; adding another
    derived-metric ranking (anything computed from the sums, like
-   the ratio) just needs a new public method that slots into the
-   `/ratio` shape — shared `matchStage()` / `groupStage()` /
-   `projectStage()` helpers keep the Mongo query one source of
-   truth.
-6. **`/ratio` fans out to all DO branches before slicing** — unlike
-   `/processed`, `/pending`, `/submitted`, the ratio endpoint does
-   not push `$limit` into Mongo, so its working set size scales
-   with the branch count under the DO rather than with `count`.
-   Fine at current cardinality (dozens to low hundreds); if DOs
-   ever grow to many thousands of branches, move the ratio into a
-   Mongo `$addFields` with `$cond` to restore the sort-then-limit
-   optimization.
-7. **`ratioPercent` can be misleading for tiny samples** — a branch
+   either ratio) just needs a new public method that calls
+   `rankBranchesByRatio` with a new `ToDoubleFunction` — shared
+   `matchStage()` / `groupStage()` / `projectStage()` helpers keep
+   the Mongo query one source of truth. The pending/processed ratio
+   split (§2.4.1 / §2.4.2) uses exactly this extension point.
+7. **The two `/ratio` endpoints fan out to all DO branches before
+   slicing** — unlike `/processed`, `/pending`, `/submitted`,
+   neither ratio endpoint pushes `$limit` into Mongo, so their
+   working-set size scales with the branch count under the DO
+   rather than with `count`. Fine at current cardinality (dozens to
+   low hundreds); if DOs ever grow to many thousands of branches,
+   move the ratio into a Mongo `$addFields` with `$cond` to restore
+   the sort-then-limit optimization.
+8. **`ratioPercent` can be misleading for tiny samples** — a branch
    with one processed and zero pending reports `ratioPercent=100.0`
    just as confidently as a branch with 10 000 / 10 000 reports
-   `ratioPercent=50.0`. The endpoint does not clamp on a minimum
+   `ratioPercent=50.0`. Neither ratio endpoint clamps on a minimum
    sample size; callers that want to de-noise the ranking should
-   combine `/ratio` with `/processed` or `/submitted` on the client.
-8. **`ageingSummary.*` is accessed via dotted path, not entity
+   combine either ratio with `/processed` or `/submitted` on the
+   client.
+9. **`ageingSummary.*` is accessed via dotted path, not entity
    field** — the subfields are present in the stored monthly
    documents but not modelled on `MonthWiseReportEntity`. A refactor
    that retypes the entity to include `ageingSummary` would let
@@ -602,9 +972,9 @@ GET /api/palmyra/rev/do/aging?window=3
    `sum("ageingSummary.d0_5")` via property access and also benefit
    every reader of the collection, but it is out of scope for this
    endpoint alone.
-9. **Aging buckets are pending-months under `window > 1`** — the
-   same snapshot-sum caveat as §2.6 / caveat 4 applies here. Each
-   `ageingSummary.d*` is an end-of-month headcount, so summing
-   over N months counts a long-pending doc N times in whichever
-   band it was still in at each month-end. `/do/aging` does not
-   normalize this; the UI should label the card accordingly.
+10. **Aging buckets are pending-months under `window > 1`** — the
+    same snapshot-sum caveat as §2.7 / caveat 4 applies here. Each
+    `ageingSummary.d*` is an end-of-month headcount, so summing
+    over N months counts a long-pending doc N times in whichever
+    band it was still in at each month-end. `/do/aging` does not
+    normalize this; the UI should label the card accordingly.

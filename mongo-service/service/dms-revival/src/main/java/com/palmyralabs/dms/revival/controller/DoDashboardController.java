@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.palmyralabs.dms.revival.model.BranchPerformanceModel;
+import com.palmyralabs.dms.revival.model.DivisionPerformanceModel;
 import com.palmyralabs.dms.revival.model.DoAgingBucketModel;
 import com.palmyralabs.dms.revival.service.DoDashboardService;
+import com.palmyralabs.dms.revival.service.DoSummaryService;
 import com.palmyralabs.palmyra.base.PalmyraResponse;
 import com.palmyralabs.palmyra.core.rest.controller.AbstractController;
 
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class DoDashboardController extends AbstractController {
 
 	private final DoDashboardService doDashboardService;
+	private final DoSummaryService doSummaryService;
 
 	@GetMapping(path = "/do/branch/processed")
 	public PalmyraResponse<List<BranchPerformanceModel>> getBranchProcessed(
@@ -49,19 +52,44 @@ public class DoDashboardController extends AbstractController {
 		return apiResponse(doDashboardService.getBranchSubmitted(doCode, order, count, window));
 	}
 
-	@GetMapping(path = "/do/branch/ratio")
-	public PalmyraResponse<List<BranchPerformanceModel>> getBranchRatio(
+	@GetMapping(path = "/do/branch/pending/ratio")
+	public PalmyraResponse<List<BranchPerformanceModel>> getBranchPendingRatio(
 			@RequestParam(name = "doCode") String doCode,
 			@RequestParam(name = "order", defaultValue = "top") String order,
 			@RequestParam(name = "count", defaultValue = "10") int count,
 			@RequestParam(name = "window", defaultValue = "1") int window) {
-		return apiResponse(doDashboardService.getBranchRatio(doCode, order, count, window));
+		return apiResponse(doDashboardService.getBranchPendingRatio(doCode, order, count, window));
+	}
+
+	@GetMapping(path = "/do/branch/processed/ratio")
+	public PalmyraResponse<List<BranchPerformanceModel>> getBranchProcessedRatio(
+			@RequestParam(name = "doCode") String doCode,
+			@RequestParam(name = "order", defaultValue = "top") String order,
+			@RequestParam(name = "count", defaultValue = "10") int count,
+			@RequestParam(name = "window", defaultValue = "1") int window) {
+		return apiResponse(doDashboardService.getBranchProcessedRatio(doCode, order, count, window));
+	}
+
+	@GetMapping(path = "/do/branches")
+	public PalmyraResponse<List<BranchPerformanceModel>> listBranches(
+			@RequestParam(name = "doCode") String doCode,
+			@RequestParam(name = "limit", defaultValue = "15") int limit,
+			@RequestParam(name = "orderBy", defaultValue = "branchName") String orderBy,
+			@RequestParam(name = "window", defaultValue = "1") int window) {
+		return apiResponse(doDashboardService.listBranches(doCode, limit, orderBy, window));
+	}
+
+	@GetMapping(path = "/do/division/performance")
+	public PalmyraResponse<List<DivisionPerformanceModel>> listDivisionPerformance(
+			@RequestParam(name = "doCode") String doCode,
+			@RequestParam(name = "window", defaultValue = "1") int window) {
+		return apiResponse(doSummaryService.listDivisionPerformance(doCode, window));
 	}
 
 	@GetMapping(path = "/do/aging")
 	public PalmyraResponse<DoAgingBucketModel> getAgingBuckets(
 			@RequestParam(name = "doCode") String doCode,
 			@RequestParam(name = "window", defaultValue = "1") int window) {
-		return apiResponse(doDashboardService.getAgingBuckets(doCode, window));
+		return apiResponse(doSummaryService.getAgingBuckets(doCode, window));
 	}
 }
