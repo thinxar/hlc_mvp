@@ -8,7 +8,7 @@ import SRDocumentModal from "../grid/SRDocumentSummaryModal";
 import { useDisclosure } from "@mantine/hooks";
 
 const WeeklyTrendCaseChart = (props: IChartInput) => {
-    const { title, xKey, yKey, subText, endPoint } = props;
+    const { title, xKey, yKey, subText, endPoint, filter } = props;
     const { commonOptions } = useCommonChartStyles();
     const [opened, { open, close }] = useDisclosure(false);
     const clickFilter = useRef<{ startDate: string, endDate: string }>(null);
@@ -25,7 +25,12 @@ const WeeklyTrendCaseChart = (props: IChartInput) => {
     };
 
     const weekLabel = `${weekFormat.toLocaleDateString('en-US', opt)} - ${end.toLocaleDateString('en-US', opt)}`;
-    const paramsOption = `fromDate=${clickFilter.current?.startDate}&toDate=${clickFilter.current?.endDate}`;
+    // const paramsOption = `fromDate=${clickFilter.current?.startDate}&toDate=${clickFilter.current?.endDate}`;
+
+    const paramsOption =
+        `fromDate=${clickFilter.current?.startDate}&toDate=${clickFilter.current?.endDate}` +
+        (filter.doCode ? `&doCode=${filter.doCode}` : "") +
+        (filter.branchCode ? `&branchCode=${filter.branchCode}` : "");
 
     const options: any = {
         // ...commonOptions,

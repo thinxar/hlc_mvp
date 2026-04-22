@@ -21,7 +21,10 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
         year: 'numeric'
     });
 
-    const paramsOption = `fromDate=${clickFilter.current?.startMonth}&toDate=${clickFilter.current?.endMonth}`;
+    const paramsOption =
+        `fromDate=${clickFilter.current?.startMonth}&toDate=${clickFilter.current?.endMonth}` +
+        (filter.doCode ? `&doCode=${filter.doCode}` : "") +
+        (filter.branchCode ? `&branchCode=${filter.branchCode}` : "");
 
     const options: any = {
         // ...commonOptions,
@@ -188,7 +191,8 @@ const MonthlyTrendCaseChart = (props: IChartInput) => {
                     }
                 }}
             >
-                <SRDocumentModal onClose={close} month={monthWithYear} type="monthly" params={paramsOption} />
+                <SRDocumentModal onClose={close} month={monthWithYear} type="monthly"
+                    params={paramsOption} />
             </Modal>
         </div>
     );

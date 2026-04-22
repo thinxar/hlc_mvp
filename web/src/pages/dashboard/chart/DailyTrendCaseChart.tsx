@@ -8,7 +8,7 @@ import { Modal } from "@mantine/core";
 import SRDocumentModal from "../grid/SRDocumentSummaryModal";
 
 const DailyTrendCaseChart = (props: IChartInput) => {
-    const { title, xKey, yKey, subText, endPoint } = props;
+    const { title, xKey, yKey, subText, endPoint, filter } = props;
     const { commonOptions } = useCommonChartStyles();
     const [opened, { open, close }] = useDisclosure(false);
     const clickFilter: any = useRef<{ date: string }>(null);
@@ -19,7 +19,13 @@ const DailyTrendCaseChart = (props: IChartInput) => {
         month: "short",
         day: "2-digit"
     });
-    const paramsOption = `date=${clickFilter?.current?.date}`;
+
+    // const paramsOption = `date=${clickFilter?.current?.date}`;
+
+    const paramsOption =
+        `date=${clickFilter?.current?.date}` +
+        (filter.doCode ? `&doCode=${filter.doCode}` : "") +
+        (filter.branchCode ? `&branchCode=${filter.branchCode}` : "");
 
     const options: any = {
         // ...commonOptions,
