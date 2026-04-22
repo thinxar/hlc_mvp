@@ -448,7 +448,7 @@ public class RevDashBoardService {
 		ProjectionOperation project = Aggregation
 				.project("pendingDocuments", "submittedDocuments", "processedDocuments",
 						"approvedDocuments", "rejectedDocuments")
-				.andExpression("pendingDocuments + submittedDocuments + processedDocuments")
+				.andExpression("pendingDocuments + processedDocuments")
 				.as("totalDocuments")
 				.andExclude("_id");
 

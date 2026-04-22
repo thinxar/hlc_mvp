@@ -270,7 +270,7 @@ a list**):
 
 ```json
 {
-  "totalDocuments":      1234,
+  "totalDocuments":       784,
   "pendingDocuments":     230,
   "submittedDocuments":   450,
   "processedDocuments":   554,
@@ -288,7 +288,7 @@ Field definitions — six-month block:
 
 | Field                | Formula                                                             | Notes                                                                                                                                        |
 | -------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `totalDocuments`     | Σ (`pendingDocuments + submittedDocuments + processedDocuments`)    | Aggregate "work touched" over the window. The three sub-categories overlap semantically (a doc submitted and processed in the same month contributes to both); this field is deliberately a pure sum, not a distinct count. |
+| `totalDocuments`     | Σ (`pendingDocuments + processedDocuments`)                         | Aggregate "work in scope" over the window — end-of-period backlog plus documents actioned in-period. `submittedDocuments` is deliberately **not** added: a submitted doc either becomes processed in the same month (already counted in `processedDocuments`) or carries over as pending (already counted in `pendingDocuments`), so adding submitted would double-count. |
 | `pendingDocuments`   | Σ `pendingDocuments`                                                | Pending-**months** metric: each monthly row holds the backlog at month-end, so summing across N months multiplies a long-pending item by N. Document this on the UI tile.                                                      |
 | `submittedDocuments` | Σ `submittedDocuments`                                              | Straight sum of uploads per calMonth.                                                                                                        |
 | `processedDocuments` | Σ `processedDocuments`                                              | Straight sum of actioned per calMonth. Equal to `approvedDocuments + rejectedDocuments` by the per-doc invariant (§6.4 / data-model spec).   |
@@ -785,7 +785,6 @@ and defaulted independently per §2.5); the `date` request param does
       approvedDocuments: 1, rejectedDocuments: 1,
       totalDocuments: { $add: [
           "$pendingDocuments",
-          "$submittedDocuments",
           "$processedDocuments"
       ]}
   }}
@@ -998,7 +997,7 @@ GET /api/palmyra/rev/overAll/document/summary
 
 # Headline scorecard — all defaults (last 6 months + today, all branches)
 GET /api/palmyra/rev/overAll/document/summary?window=headline
-# -> { "totalDocuments": 1234, "pendingDocuments": 230,
+# -> { "totalDocuments": 784, "pendingDocuments": 230,
 #      "submittedDocuments": 450, "processedDocuments": 554,
 #      "approvedDocuments": 480, "rejectedDocuments": 74,
 #      "todayProcessed": {
