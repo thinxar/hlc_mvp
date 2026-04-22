@@ -37,6 +37,7 @@ Spring's `params` discriminator on `window`:
 | `getHeadlineSummary`               | `params = "window=headline"`             |
 | `getApproverBreakdown`             | `params = "window=approverBreakdown"`    |
 | `getApproverSummary`               | `params = "window=approverSummary"`      |
+| `getMonthlyZoneSummary`            | `params = "window=monthlyZone"`          |
 
 A request with no `window` param (or an unrecognized value) matches
 none of the six and returns 404.
@@ -92,7 +93,6 @@ type and query params differ.
 
 | Param        | Type              | Required | Notes                                                                          |
 | ------------ | ----------------- | -------- | ------------------------------------------------------------------------------ |
-| `zone`       | string            | no       | exact match on stored `zone`                                                    |
 | `doCode`     | string            | no       | exact match                                                                    |
 | `branchCode` | string            | no       | exact match                                                                    |
 | `fromMonth`  | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; snapped to the **first day of the month**                        |
@@ -103,7 +103,6 @@ type and query params differ.
 ```json
 {
   "calMonth":           "2026-04-01",
-  "zone":               "CZ",
   "processedDocuments": 536,
   "approvedDocuments":  512,
   "rejectedDocuments":   24,
@@ -114,14 +113,6 @@ type and query params differ.
 
 * `calMonth` is the first day of each calendar month
   (`YYYY-MM-01`).
-* `zone` is a filter that also appears in the response. When supplied
-  it narrows the `$match`; in both cases the field is populated by
-  `$first: "$zone"` in the `$group` stage — so with a filter the
-  value is that single filtered zone, and without a filter it is
-  whichever zone's branch happens to land first in the scan (arbitrary
-  but non-null). This endpoint does **not** group by zone — the
-  `$group` `_id` remains `calMonth` alone, so a month that spans
-  multiple zones still produces exactly one row.
 * `processedDocuments = approvedDocuments + rejectedDocuments` by the
   source invariant — served from the stored scalar, not recomputed.
 * `pendingDocuments` / `submittedDocuments` / `processedDocuments` are
@@ -136,6 +127,8 @@ type and query params differ.
 * **Per-approver breakdown is not included here.** Call
   `approverBreakdown` (§2.6) with `grain=monthly&date=<any day in the
   month>` to retrieve the per-approver split for a specific month.
+* **Per-zone breakdown is a separate endpoint** — see §2.8
+  (`window=monthlyZone`).
 
 ### 2.3 Daily active-cases summary
 
@@ -497,6 +490,71 @@ Implementation reuses the §2.6 per-approver aggregation pipeline
 (§6.5) — the service folds the returned rows in Java to produce the
 four scalars, so there is no second round-trip to Mongo.
 
+### 2.8 Monthly summary grouped by zone
+
+`GET /rev/overAll/document/summary?window=monthlyZone`
+
+Per-(calMonth, zone) roll-up sourced from the **daily** collection
+(`active_cases_branchwise`). `calMonth` is derived on the fly by
+truncating each document's `calDate` to month granularity
+(`$dateTrunc`). Each zone gets its own row within each month.
+
+| Param        | Type              | Required | Notes                                                                          |
+| ------------ | ----------------- | -------- | ------------------------------------------------------------------------------ |
+| `zone`       | string            | no       | exact match on stored `zone`; when supplied, the response is narrowed to that single zone's per-month series |
+| `doCode`     | string            | no       | exact match on stored `doCode`                                                  |
+| `branchCode` | string            | no       | exact match on stored `branchCode`                                              |
+| `fromDate`   | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; snapped to the **first day of the month** before matching         |
+| `toDate`     | `LocalDate` (ISO) | no       | `yyyy-MM-dd`; snapped to the **last day of the month** (inclusive) before matching |
+
+**Response element** — `MonthlyZoneDocumentSummaryModel`:
+
+```json
+{
+  "fromBucket":         "2026-04-01",
+  "toBucket":           "2026-04-30",
+  "zone":               "CZ",
+  "processedDocuments": 84,
+  "approvedDocuments":  80,
+  "rejectedDocuments":   4,
+  "pendingDocuments":   31,
+  "submittedDocuments": 92
+}
+```
+
+* `fromBucket` is the first day of the calendar month —
+  `$dateTrunc(calDate, "month")` computed server-side in the
+  aggregation. `toBucket` is the last day of the same calendar
+  month, derived in Java as
+  `fromBucket.with(TemporalAdjusters.lastDayOfMonth())` after the
+  Mongo results are mapped. Together they give the inclusive
+  `[fromBucket, toBucket]` interval that defines the bucket.
+* `zone` is the LIC zone.
+* The aggregation groups by the compound `(calMonth, zone)` where
+  `calMonth` is the bucket start — each row is one zone's totals
+  within one month. A 6-month window over ~6 zones yields up to ~36
+  rows; filtering by `zone` collapses it back to the per-month series
+  for the selected zone.
+* **Semantic note — pendingDocuments.** Because the daily collection
+  stores `pendingDocuments` as the open backlog *as of each calDate*,
+  summing across a month yields "pending-days," not end-of-month
+  backlog. A document pending for 14 days contributes 14 to
+  `pendingDocuments`. Intentional — this endpoint measures backlog
+  *pressure* over the month, not a point-in-time snapshot. Use §2.2
+  if you need the month-end backlog figure from
+  `active_cases_monthly_branchwise`.
+* `submittedDocuments` / `processedDocuments` sum the stored daily
+  scalars — these are flows (per-day additions / actions), so the
+  monthly sum is the true month's throughput.
+* `processedDocuments = approvedDocuments + rejectedDocuments` by
+  the per-day invariant (§5.3 / data model).
+* `approvedDocuments` / `rejectedDocuments` use the nested `$sum`
+  trick against `perApprover[]` (§6.1).
+* List sorted ascending by `fromBucket`, then `zone`.
+* No max-interval cap — the underlying window is bounded by the
+  daily collection's `[REF_DATE-13, REF_DATE]` retention, so wide
+  ranges naturally clip themselves.
+
 ---
 
 ## 3. Validation — error responses (400 Bad Request)
@@ -530,7 +588,11 @@ List<WeeklyDocumentSummaryModel>  getWeeklyDocumentSummary(
         String doCode, String branchCode, LocalDate fromWeek, LocalDate toWeek);
 
 List<MonthlyDocumentSummaryModel> getMonthlyDocumentSummary(
-        String zone, String doCode, String branchCode, LocalDate fromMonth, LocalDate toMonth);
+        String doCode, String branchCode, LocalDate fromMonth, LocalDate toMonth);
+
+List<MonthlyZoneDocumentSummaryModel> getMonthlyZoneSummary(
+        String zone, String doCode, String branchCode,
+        LocalDate fromDate, LocalDate toDate);
 
 List<DailyDocumentSummaryModel>   getDailyDocumentSummary(
         String doCode, String branchCode, LocalDate fromDate, LocalDate toDate);
@@ -632,22 +694,20 @@ inside `DailyBranchWiseReportEntity`.
 All three summary endpoints are implemented as **Mongo aggregation
 pipelines** — no in-JVM summation. Groups happen server-side.
 
-### 6.1 Daily / Weekly / Monthly pipeline
+### 6.1 Daily / Weekly / Monthly pipeline (shared, via
+`aggregateActiveCasesSummary(collection, timeField, …)`)
 
-Daily and weekly share `aggregateActiveCasesSummary(collection,
-timeField, …)`. Monthly uses the same shape but inlines its own
-`$match` builder because it accepts an extra `zone` filter clause
-that the shared helper does not. All three produce the same output
-schema and group by `<timeField>` alone — no fan-out on zone or any
-other dimension:
+Single aggregation, no `$unwind` — the stored `pendingDocuments` /
+`submittedDocuments` / `processedDocuments` are branch-day scalars
+that can be summed directly, and the approved / rejected totals use
+the nested `$sum` trick against `perApprover[]` without flattening
+the array:
 
 ```
 [
-  { $match: { zone? /* monthly only */, doCode?, branchCode?,
-              <timeField>: { $gte?, $lte? } } },
+  { $match: { doCode?, branchCode?, <timeField>: { $gte?, $lte? } } },
   { $group: {
       _id: "$<timeField>",
-      zone: { $first: "$zone" },   // monthly only
       pendingDocuments:   { $sum: "$pendingDocuments" },
       submittedDocuments: { $sum: "$submittedDocuments" },
       processedDocuments: { $sum: "$processedDocuments" },
@@ -657,7 +717,6 @@ other dimension:
   { $project: {
       _id: 0,
       <timeField>: "$_id",
-      zone: 1,                     // monthly only
       pendingDocuments: 1, submittedDocuments: 1, processedDocuments: 1,
       approvedDocuments: 1, rejectedDocuments: 1
   }},
@@ -665,11 +724,8 @@ other dimension:
 ]
 ```
 
-Monthly's `zone` is carried via `$first` inside the `$group` stage —
-it is **not** part of the group key, so the row count per month stays
-one. With a `zone` filter, every matched branch has the same zone and
-`$first` is deterministic; without a filter, `$first` picks an
-arbitrary zone per month (documented as such in §2.2).
+The per-zone monthly breakdown uses a separate pipeline — see §6.7
+(`getMonthlyZoneSummary`).
 
 The nested `$sum` trick: inner `$sum: "$perApprover.accepted"`
 returns the per-document sum of the approver array's `accepted`
@@ -910,12 +966,67 @@ After the pipeline returns, the service slices the list per `_offset`
 | ------------------ | ------------------------------------------------------------------ |
 | Weekly             | `with(previousOrSame(SUNDAY))` on both from/to                     |
 | Monthly            | `with(firstDayOfMonth())` on both from/to                          |
+| Monthly-by-zone    | `with(firstDayOfMonth())` on `fromDate`, `with(lastDayOfMonth())` on `toDate` — match clamps whole calendar months in the daily collection |
 | Daily              | None (stored values are day-granular)                              |
 | Headline           | `withDayOfMonth(1)` on `fromMonth`/`toMonth`; `date` unchanged     |
 | Approver breakdown | Same rule applied to both `fromDate` and `toDate` — `daily`: as-is; `weekly`: `previousOrSame(SUNDAY)`; `monthly`: `withDayOfMonth(1)` |
 
 Normalization is done in the service, before the interval-cap check
 (when one applies) and before the Criteria is built.
+
+### 6.7 Monthly-by-zone pipeline
+
+Source: `active_cases_branchwise` (daily). `calMonth` is **derived**
+via `$addFields` → `$dateTrunc(calDate, "month")` so no pre-materialized
+monthly field is needed. Compound `$group` key `(calMonth, zone)` so
+each zone gets its own row within each month. Filters (`zone` /
+`doCode` / `branchCode` / `calDate` range) layer into `$match`.
+
+```
+[
+  { $match: {
+      zone?, doCode?, branchCode?,
+      calDate: { $gte: <fromDate>, $lte: <toDate> }
+  }},
+  { $addFields: {
+      calMonth: { $dateTrunc: { date: "$calDate", unit: "month" } }
+  }},
+  { $group: {
+      _id: { calMonth: "$calMonth", zone: "$zone" },
+      pendingDocuments:   { $sum: "$pendingDocuments" },
+      submittedDocuments: { $sum: "$submittedDocuments" },
+      processedDocuments: { $sum: "$processedDocuments" },
+      approvedDocuments:  { $sum: { $sum: "$perApprover.accepted" } },
+      rejectedDocuments:  { $sum: { $sum: "$perApprover.rejected" } }
+  }},
+  { $project: {
+      _id: 0,
+      fromBucket: "$_id.calMonth",
+      zone:       "$_id.zone",
+      pendingDocuments: 1, submittedDocuments: 1, processedDocuments: 1,
+      approvedDocuments: 1, rejectedDocuments: 1
+  }},
+  { $sort: { fromBucket: 1, zone: 1 } }
+]
+```
+
+After the aggregation returns, the service computes
+`toBucket = fromBucket.with(TemporalAdjusters.lastDayOfMonth())`
+in Java and sets it on each row — the pipeline itself does not emit
+`toBucket`.
+
+Normalization: `fromDate` is snapped to the first day of its month
+and `toDate` to the last day of its month, so the `$match` always
+covers whole calendar months end to end. With a `zone` filter the
+output is a per-month series for that single zone; without it the
+output fans out to one row per `(fromBucket, zone)` pair observed
+in the data.
+
+**Data semantics.** Because the daily collection's `pendingDocuments`
+is an AS-OF count per day, the grouped `pendingDocuments` for a
+`(calMonth, zone)` bucket is *pending-days*, not end-of-month
+backlog. Flows (`submittedDocuments`, `processedDocuments`, approver
+counts) aggregate cleanly. See §2.8 for the user-facing wording.
 
 ---
 
@@ -993,16 +1104,22 @@ GET /api/palmyra/rev/overAll/document/summary
     &fromMonth=2025-07-15&toMonth=2026-03-20
 # -> treated as fromMonth=2025-07-01, toMonth=2026-03-01
 
-# Monthly scoped to one zone — returns one row per month with
-# zone echoed from the filter into each row
+# Monthly-by-zone — per-(calMonth, zone) breakdown for a range
 GET /api/palmyra/rev/overAll/document/summary
-    ?window=monthly
-    &zone=CZ
-    &fromMonth=2025-11-01&toMonth=2026-04-01
+    ?window=monthlyZone
+    &fromDate=2025-11-01&toDate=2026-04-01
 
-# Monthly without zone filter — one row per calMonth, rolled up
-# across all zones; response `zone` field is null
-GET /api/palmyra/rev/overAll/document/summary?window=monthly
+# Monthly-by-zone scoped to one zone — collapses to per-month series
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=monthlyZone
+    &zone=CZ
+    &fromDate=2025-11-01&toDate=2026-04-01
+
+# Monthly-by-zone scoped to one DO office
+GET /api/palmyra/rev/overAll/document/summary
+    ?window=monthlyZone
+    &doCode=201
+    &fromDate=2026-01-01&toDate=2026-04-01
 
 # Daily, 2-month window exactly (allowed)
 GET /api/palmyra/rev/overAll/document/summary

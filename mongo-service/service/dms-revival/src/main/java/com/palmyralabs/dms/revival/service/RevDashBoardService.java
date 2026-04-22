@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.AccumulatorOperators;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
@@ -25,6 +26,7 @@ import com.palmyralabs.dms.revival.model.ApproverSummaryModel;
 import com.palmyralabs.dms.revival.model.DailyDocumentSummaryModel;
 import com.palmyralabs.dms.revival.model.HeadlineSummaryModel;
 import com.palmyralabs.dms.revival.model.MonthlyDocumentSummaryModel;
+import com.palmyralabs.dms.revival.model.MonthlyZoneDocumentSummaryModel;
 import com.palmyralabs.dms.revival.model.PerApproverSummary;
 import com.palmyralabs.dms.revival.model.TodayApprovalSummaryModel;
 import com.palmyralabs.dms.revival.model.WeeklyDocumentSummaryModel;
@@ -55,19 +57,29 @@ public class RevDashBoardService {
 				doCode, branchCode, from, to, WeeklyDocumentSummaryModel.class);
 	}
 
-	public List<MonthlyDocumentSummaryModel> getMonthlyDocumentSummary(String zone, String doCode,
-			String branchCode, LocalDate fromMonth, LocalDate toMonth) {
+	public List<MonthlyDocumentSummaryModel> getMonthlyDocumentSummary(String doCode, String branchCode,
+			LocalDate fromMonth, LocalDate toMonth) {
 		LocalDate from = fromMonth == null ? null
 				: fromMonth.with(TemporalAdjusters.firstDayOfMonth());
 		LocalDate to = toMonth == null ? null
 				: toMonth.with(TemporalAdjusters.firstDayOfMonth());
+		return aggregateActiveCasesSummary(MONTHLY_COLLECTION, "calMonth",
+				doCode, branchCode, from, to, MonthlyDocumentSummaryModel.class);
+	}
+
+	public List<MonthlyZoneDocumentSummaryModel> getMonthlyZoneSummary(String zone, String doCode,
+			String branchCode, LocalDate fromDate, LocalDate toDate) {
+		LocalDate from = fromDate == null ? null
+				: fromDate.with(TemporalAdjusters.firstDayOfMonth());
+		LocalDate to = toDate == null ? null
+				: toDate.with(TemporalAdjusters.lastDayOfMonth());
 
 		List<Criteria> parts = new ArrayList<>();
 		if (zone != null && !zone.isBlank()) parts.add(Criteria.where("zone").is(zone));
 		if (doCode != null && !doCode.isBlank()) parts.add(Criteria.where("doCode").is(doCode));
 		if (branchCode != null && !branchCode.isBlank()) parts.add(Criteria.where("branchCode").is(branchCode));
 		if (from != null || to != null) {
-			Criteria c = Criteria.where("calMonth");
+			Criteria c = Criteria.where("calDate");
 			if (from != null) c.gte(from);
 			if (to != null) c.lte(to);
 			parts.add(c);
@@ -77,8 +89,11 @@ public class RevDashBoardService {
 
 		MatchOperation match = Aggregation.match(criteria);
 
-		GroupOperation group = Aggregation.group("calMonth")
-				.first("zone").as("zone")
+		AggregationOperation addMonth = ctx -> new org.bson.Document("$addFields",
+				new org.bson.Document("calMonth", new org.bson.Document("$dateTrunc",
+						new org.bson.Document("date", "$calDate").append("unit", "month"))));
+
+		GroupOperation group = Aggregation.group("calMonth", "zone")
 				.sum("pendingDocuments").as("pendingDocuments")
 				.sum("submittedDocuments").as("submittedDocuments")
 				.sum("processedDocuments").as("processedDocuments")
@@ -86,17 +101,24 @@ public class RevDashBoardService {
 				.sum(AccumulatorOperators.Sum.sumOf("perApprover.rejected")).as("rejectedDocuments");
 
 		ProjectionOperation project = Aggregation
-				.project("zone", "pendingDocuments", "submittedDocuments", "processedDocuments",
+				.project("pendingDocuments", "submittedDocuments", "processedDocuments",
 						"approvedDocuments", "rejectedDocuments")
-				.and("_id").as("calMonth")
+				.and("_id.calMonth").as("fromBucket")
+				.and("_id.zone").as("zone")
 				.andExclude("_id");
 
-		SortOperation sort = Aggregation.sort(Sort.Direction.ASC, "calMonth");
+		SortOperation sort = Aggregation.sort(Sort.by(Sort.Direction.ASC, "fromBucket", "zone"));
 
-		Aggregation agg = Aggregation.newAggregation(match, group, project, sort);
-		return mongoTemplate
-				.aggregate(agg, MONTHLY_COLLECTION, MonthlyDocumentSummaryModel.class)
+		Aggregation agg = Aggregation.newAggregation(match, addMonth, group, project, sort);
+		List<MonthlyZoneDocumentSummaryModel> rows = mongoTemplate
+				.aggregate(agg, DAILY_COLLECTION, MonthlyZoneDocumentSummaryModel.class)
 				.getMappedResults();
+		rows.forEach(r -> {
+			if (r.getFromBucket() != null) {
+				r.setToBucket(r.getFromBucket().with(TemporalAdjusters.lastDayOfMonth()));
+			}
+		});
+		return rows;
 	}
 
 	public List<DailyDocumentSummaryModel> getDailyDocumentSummary(String doCode, String branchCode,

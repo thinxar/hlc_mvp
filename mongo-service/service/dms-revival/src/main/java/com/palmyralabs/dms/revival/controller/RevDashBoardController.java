@@ -14,6 +14,7 @@ import com.palmyralabs.dms.revival.model.ApproverSummaryModel;
 import com.palmyralabs.dms.revival.model.DailyDocumentSummaryModel;
 import com.palmyralabs.dms.revival.model.HeadlineSummaryModel;
 import com.palmyralabs.dms.revival.model.MonthlyDocumentSummaryModel;
+import com.palmyralabs.dms.revival.model.MonthlyZoneDocumentSummaryModel;
 import com.palmyralabs.dms.revival.model.PerApproverSummary;
 import com.palmyralabs.dms.revival.model.TodayApprovalSummaryModel;
 import com.palmyralabs.dms.revival.model.WeeklyDocumentSummaryModel;
@@ -45,14 +46,25 @@ public class RevDashBoardController extends AbstractController {
 
 	@GetMapping(path = SUMMARY_PATH)
 	public PalmyraResponse<List<MonthlyDocumentSummaryModel>> getMonthlyDocumentSummary(
-			@RequestParam(name = "zone", required = false) String zone,
 			@RequestParam(name = "doCode", required = false) String doCode,
 			@RequestParam(name = "branchCode", required = false) String branchCode,
 			@RequestParam(name = "fromMonth", required = false)
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromMonth,
 			@RequestParam(name = "toMonth", required = false)
 			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toMonth) {
-		return apiResponse(dashBoardService.getMonthlyDocumentSummary(zone, doCode, branchCode, fromMonth, toMonth));
+		return apiResponse(dashBoardService.getMonthlyDocumentSummary(doCode, branchCode, fromMonth, toMonth));
+	}
+
+	@GetMapping(path = SUMMARY_PATH, params = "window=monthlyZone")
+	public PalmyraResponse<List<MonthlyZoneDocumentSummaryModel>> getMonthlyZoneSummary(
+			@RequestParam(name = "zone", required = false) String zone,
+			@RequestParam(name = "doCode", required = false) String doCode,
+			@RequestParam(name = "branchCode", required = false) String branchCode,
+			@RequestParam(name = "fromDate", required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+			@RequestParam(name = "toDate", required = false)
+			@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+		return apiResponse(dashBoardService.getMonthlyZoneSummary(zone, doCode, branchCode, fromDate, toDate));
 	}
 
 	@GetMapping(path = SUMMARY_PATH, params = "window=daily")

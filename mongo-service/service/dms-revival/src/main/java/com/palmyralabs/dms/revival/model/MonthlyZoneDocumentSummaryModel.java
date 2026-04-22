@@ -7,9 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class MonthlyDocumentSummaryModel {
+public class MonthlyZoneDocumentSummaryModel {
 
-	private LocalDate calMonth;
+	private LocalDate fromBucket;
+	private LocalDate toBucket;
+	private String zone;
 	private Long processedDocuments;
 	private Long approvedDocuments;
 	private Long rejectedDocuments;
