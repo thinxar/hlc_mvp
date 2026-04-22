@@ -1,8 +1,8 @@
-import { FieldGroupContainer, PalmyraForm } from "@palmyralabs/rt-forms"
+import { FieldGroupContainer, PalmyraForm } from "@palmyralabs/rt-forms";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
-import { LayoutDashboard } from "lucide-react";
+import { Calendar, LayoutDashboard, Network } from "lucide-react";
 import { useFilterHandler } from "src/hook/useFilterHandler";
-import { Select, ServerLookup } from "templates/mantineForm"
+import { Select, ServerLookup } from "templates/mantineForm";
 
 interface IOptions {
     setFilter: (filter: any) => void;
@@ -36,6 +36,7 @@ const DoDashboardHeader = (props: IOptions) => {
                     <PalmyraForm>
                         <FieldGroupContainer columns={2}>
                             <Select attribute="window" onChange={handleFilterChange("window", 'select')}
+                                leftSection={<Calendar size={20} className="text-gray-400" />}
                                 placeholder="Select Time Range" options={{
                                     '1': "Last 1 Month",
                                     '3': "Last 3 Months",
@@ -47,6 +48,7 @@ const DoDashboardHeader = (props: IOptions) => {
                                 queryOptions={{ endPoint: LookupEndPoint.division, queryAttribute: 'divisionName' }}
                                 onChange={handleFilterChange("doCode", 'customLookup', 'doCode', '201')}
                                 defaultValue={{ id: '', divisionName: 'Bhopal' }}
+                                leftSection={<Network size={20} className="text-gray-400" />}
                                 lookupOptions={{ idAttribute: 'id', labelAttribute: 'divisionName' }} />
                         </FieldGroupContainer>
                     </PalmyraForm>
@@ -56,5 +58,5 @@ const DoDashboardHeader = (props: IOptions) => {
     )
 }
 
-export { DoDashboardHeader }
+export { DoDashboardHeader };
 

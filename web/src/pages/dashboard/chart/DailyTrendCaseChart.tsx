@@ -58,7 +58,8 @@ const DailyTrendCaseChart = (props: IChartInput) => {
                     if (dataPointIndex != null) {
                         const allSeries = chartContext?.w?.config.series;
                         const seriesName = config.config.series[config.seriesIndex].name;
-                        const xValue = allSeries[0]?.data[dataPointIndex]?.x;
+                        const processedSeries = allSeries.find((s: any) => s.name === "Processed");
+                        const xValue = processedSeries?.data[dataPointIndex]?.x;
 
                         if (seriesName === 'Processed') {
                             clickFilter.current = { date: xValue };

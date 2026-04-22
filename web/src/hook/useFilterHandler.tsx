@@ -7,10 +7,21 @@ export const useFilterHandler = <T extends Record<string, any>>(
     setFilter: React.Dispatch<React.SetStateAction<T>>
 ) => {
     const updateFilter = (key: keyof T, value: string) => {
-        setFilter((prev) => ({
-            ...prev,
-            [key]: value,
-        }));
+        // setFilter((prev) => ({
+        //     ...prev,
+        //     [key]: value,
+        // }));
+
+        setFilter((prev) => {
+            if (prev[key] === value) {
+                return prev;
+            }
+
+            return {
+                ...prev,
+                [key]: value,
+            };
+        });
     };
 
     const handleFilterChange =
@@ -27,7 +38,7 @@ export const useFilterHandler = <T extends Record<string, any>>(
                 } else if (type === 'select') {
                     value = a || '';
                     value = value ? value : ''
-                } else if (type === 'customLookup') {
+                } else if (type === 'customLookup') { 
                     value = customKey ? b?.[customKey] || defaultValue || '' : '';
                 }
                 else {

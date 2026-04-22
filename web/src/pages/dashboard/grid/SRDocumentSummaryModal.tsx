@@ -219,6 +219,7 @@ export default function SRDocumentModal({
             ...prev,
             srNumber: v
         }));
+        setPageIndex(0)
     }
 
     const handleKey = useCallback(

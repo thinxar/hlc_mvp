@@ -32,7 +32,6 @@ const BubbleChart = (props: IChartInput) => {
 
     const [data, setData] = useState<any>([]);
 
-
     const buildQueryParams = (filter: any) => {
         const params = new URLSearchParams();
 
@@ -59,7 +58,7 @@ const BubbleChart = (props: IChartInput) => {
 
     const generateBubbleData = (data: any[]) => {
         return data?.map((item) => ({
-            name: item.divisionName,
+            name: item.branchName,
             x: item.pendingDocuments,
             y: item.processedDocuments,
             z: item.submittedDocuments,
@@ -86,7 +85,6 @@ const BubbleChart = (props: IChartInput) => {
                 tools: {
                     download: true,
                     selection: false,
-
                     zoomin: false,
                     zoomout: false,
                     pan: false,

@@ -66,7 +66,8 @@ const WeeklyTrendCaseChart = (props: IChartInput) => {
                         const seriesName = config.config.series[config.seriesIndex].name;
 
                         if (seriesName === 'Processed') {
-                            const startDate = allSeries[0]?.data[dataPointIndex]?.x;
+                            const processedSeries = allSeries.find((s: any) => s.name === "Processed");
+                            const startDate = processedSeries?.data[dataPointIndex]?.x;
                             const endDate = getTargetDate(startDate, "week");
                             clickFilter.current = { startDate: startDate, endDate: endDate };
                             open();

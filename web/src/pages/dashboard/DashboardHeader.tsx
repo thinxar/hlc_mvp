@@ -1,6 +1,6 @@
 import { FieldGroupContainer, PalmyraForm } from "@palmyralabs/rt-forms";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
-import { LayoutDashboard } from "lucide-react";
+import { GitBranch, LayoutDashboard, Network } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useFilterHandler } from "src/hook/useFilterHandler";
 import { ServerLookup } from "templates/mantineForm";
@@ -53,10 +53,12 @@ const DashboardHeader = (props: IOptions) => {
                             <ServerLookup attribute="doCode" placeholder="Select Division" ref={divisionRef}
                                 queryOptions={{ endPoint: divisionEndPoint, queryAttribute: 'divisionName' }}
                                 onChange={handleFilterChange("doCode", 'customLookup', 'doCode')}
+                                leftSection={<Network size={20} className="text-gray-400" />}
                                 lookupOptions={{ idAttribute: 'id', labelAttribute: 'divisionName' }} />
                             <ServerLookup attribute="branch" placeholder="Select Branch" ref={branchRef} disabled={!filter?.doCode}
                                 queryOptions={{ endPoint: branchEndPoint, queryAttribute: 'branchName' }}
                                 onChange={handleFilterChange("branchCode", 'customLookup', 'branchCode')}
+                                leftSection={<GitBranch size={20} className="text-gray-400" />}
                                 lookupOptions={{ idAttribute: 'id', labelAttribute: 'branchName' }} />
                         </FieldGroupContainer>
                     </PalmyraForm>
