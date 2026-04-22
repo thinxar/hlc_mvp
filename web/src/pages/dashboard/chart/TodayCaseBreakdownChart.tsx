@@ -50,6 +50,18 @@ const TodayCaseBreakdownChart = (props: IChartInput) => {
             ...commonOptions.subtitle
         },
         chart: {
+            toolbar: {
+                show: true,
+                tools: {
+                    download: true,
+                    selection: false,
+                    zoom: false,
+                    zoomin: false,
+                    zoomout: false,
+                    pan: false,
+                    reset: false
+                }
+            },
             events: {
                 dataPointSelection: function (_event: any, _chartContext: any, config: any) {
                     const dataPointIndex = config.dataPointIndex;
@@ -61,6 +73,7 @@ const TodayCaseBreakdownChart = (props: IChartInput) => {
                 }
             }
         },
+        zoom: false,
         states: {
             active: {
                 filter: {

@@ -22,6 +22,7 @@ const RevivalDashboardPage = () => {
   const { fromMonth, toMonth } = getDateRange(6, "months");
   const { fromMonth: fromWeek, toMonth: toWeek } = getDateRange(8, "weeks");
   const { fromMonth: fromDate, toMonth: toDate } = getDateRange(7, "days");
+  const { fromMonth: from1Date, toMonth: to1Date } = getDateRange(1, "currMonth");
   const { fromMonth: fromPrevFY, toMonth: _toPrevFY } = getDateRange(0, "fy_previous");
   const { fromMonth: _fromCurrFY, toMonth: toCurrFY } = getDateRange(0, "fy_current");
 
@@ -44,7 +45,7 @@ const RevivalDashboardPage = () => {
   const monthlyTatPerformance = `${tatPerformanceApi}?fromMonth=${fromMonth}&toMonth=${toMonth}`;
 
   const todayAgingSummary = `${agingSummaryApi}?window=daily&fromDate=${fromDate}&toDate=${toDate}`;
-  const todayApprovalSummaryApi = `${documentSummaryApi}?window=todayApproval&date=${getDate}`
+  const monthlyApprovalSummaryApi = `${documentSummaryApi}?window=monthlyZone&fromDate=${from1Date}&toDate=${to1Date}`
 
   return (
     <div className="p-4 bg-slate-50 dark:bg-gray-900">
@@ -111,9 +112,9 @@ const RevivalDashboardPage = () => {
         </div>
 
         <div className="dash-cards">
-          <TodayCaseBreakdownChart endPoint={todayApprovalSummaryApi}
+          <TodayCaseBreakdownChart endPoint={monthlyApprovalSummaryApi}
             filter={filter} height={CHART_HEIGHT} subText="Zone level document status"
-            title="Today's - Approval Summary" xKey="zone"
+            title="Monthly - Approval Summary" xKey="zone"
             yKey={["pendingDocuments", "processedDocuments"]} />
         </div>
 

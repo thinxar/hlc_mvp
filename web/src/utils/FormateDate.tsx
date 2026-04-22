@@ -136,7 +136,7 @@ function formatAmount(input: any, prefix?: any) {
     }
 }
 
-type RangeType = "days" | "weeks" | "months" | "fy_current" | "fy_previous";
+type RangeType = "days" | "weeks" | "months" | "fy_current" | "fy_previous" | "currMonth";
 
 export const customDate = new Date("2026-04-19");
 export const getDate = '2026-04-19'
@@ -164,6 +164,15 @@ export const getDateRange = (
         case "months":
             fromDate.setMonth(toDate.getMonth() - value + 1);
             break;
+
+        case "currMonth": {
+            const year = toDate.getFullYear();
+            const month = toDate.getMonth();
+
+            fromDate.setFullYear(year, month - (value - 1), 1);
+            break;
+        }
+
 
         case "fy_current": {
             const year = toDate.getFullYear();
