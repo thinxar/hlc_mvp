@@ -18,11 +18,77 @@ const getPrevFYLastMonthStart = () => {
     return `${yyyy}-${mm}-${dd}`;
 };
 
+const getFY = (dateStr: string) => {
+    const d = new Date(dateStr);
+    const year = d.getFullYear();
+    const month = d.getMonth();
+
+    return month < 3 ? year - 1 : year;
+};
+
+
 const FYApprovalComparisonChart = (props: IChartInput) => {
     const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
     const clickFilter = useRef<{ departmentName: string }>(null);
     const chartRef = useRef<any>(null)
+
+    const transformFYData = (data: any[]) => {
+        const currentFY = getFY(new Date().toISOString());
+        const prevFY = currentFY - 1;
+
+        const map = new Map();
+
+        data.forEach((item) => {
+            const fy = getFY(item.calMonth);
+
+            // normalize month (ignore year → compare Apr, May…)
+            const monthKey = new Date(item.calMonth).getMonth();
+
+            if (!map.has(monthKey)) {
+                map.set(monthKey, {
+                    calMonth: item.calMonth,
+
+                    previousFYProcessedDocuments: 0,
+                    currentFYProcessedDocuments: 0,
+
+                    previousFYApprovedDocuments: 0,
+                    currentFYApprovedDocuments: 0,
+
+                    previousFYPendingDocuments: 0,
+                    currentFYPendingDocuments: 0,
+
+                    previousFYRejectedDocuments: 0,
+                    currentFYRejectedDocuments: 0,
+
+                    previousFYSubmittedDocuments: 0,
+                    currentFYSubmittedDocuments: 0
+                });
+            }
+
+            const obj = map.get(monthKey);
+
+            if (fy === prevFY) {
+                obj.previousFYProcessedDocuments = item.processedDocuments;
+                obj.previousFYApprovedDocuments = item.approvedDocuments;
+                obj.previousFYPendingDocuments = item.pendingDocuments;
+                obj.previousFYRejectedDocuments = item.rejectedDocuments;
+                obj.previousFYSubmittedDocuments = item.submittedDocuments;
+            }
+
+            if (fy === currentFY) {
+                obj.currentFYProcessedDocuments = item.processedDocuments;
+                obj.currentFYApprovedDocuments = item.approvedDocuments;
+                obj.currentFYPendingDocuments = item.pendingDocuments;
+                obj.currentFYRejectedDocuments = item.rejectedDocuments;
+                obj.currentFYSubmittedDocuments = item.submittedDocuments;
+            }
+        });
+
+        const result = Array.from(map.values());
+        return result;
+    };
+
 
     const options: any = {
         annotations: {
@@ -107,9 +173,9 @@ const FYApprovalComparisonChart = (props: IChartInput) => {
 
         stroke: {
             show: true,
-            width: [3, 3, 2],
+            width: [3, 3, 3, 3],
             curve: "smooth",
-            dashArray: [4, 0, 2],
+            dashArray: [4, 4, 0, 0]
         },
         title: {
             text: title,
@@ -133,18 +199,27 @@ const FYApprovalComparisonChart = (props: IChartInput) => {
                 rotate: -45,
                 formatter: (value: string) => {
                     const date = value;
-                    return formatDate(date, 'month')
+                    return formatDate(date, 'monthOnly')
                 }
             },
         },
         active: {
             allowMultipleDataPointsSelection: true,
         },
+        // colors: [
+        //     "#e98f22",
+        //     "#40bd8b",
+        //     "#4480ef"
+        // ],
         colors: [
-            "#a3a29f",
-            "#40bd8b",
-            "#4480ef"
+            "#f59e0b",
+            "#16a34a",
+            "#fb923c",
+            "#16a34a",
+            "#22c55e",
+
         ],
+
         fill: {
             opacity: 0.8
         },
@@ -157,9 +232,12 @@ const FYApprovalComparisonChart = (props: IChartInput) => {
             <PalmyraApexChart options={options} type="line"
                 endPoint={endPoint} filter={props.filter}
                 height={props.height} width={'100%'} seriesOptions={[
-                    { name: "Previous FY ", type: 'line' },
-                    { name: "Current FY", type: 'line' }
+                    { name: "Previous - Pending ", type: 'line' },
+                    { name: "Previous - Processed", type: 'line' },
+                    { name: "Current - Pending ", type: 'line' },
+                    { name: "Current - Processed", type: 'line' }
                 ]} ref={chartRef}
+                preProcess={(d: any): any => transformFYData(d)}
                 transformOptions={{
                     xKey: xKey, yKey: yKey, dataType: 'array',
                 }}

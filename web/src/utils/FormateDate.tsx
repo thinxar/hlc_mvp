@@ -201,7 +201,7 @@ export const getDateRange = (
 };
 
 
-type DateFormatType = "month" | "week" | "day" | "default";
+type DateFormatType = "month" | "week" | "day" | "default" | "monthOnly";
 
 export const formatDate = (
     dateInput: string | Date,
@@ -219,6 +219,9 @@ export const formatDate = (
                 month: "short",
                 year: "numeric"
             });
+
+        case "monthOnly":
+            return date.toLocaleString(locale, { month: "short" });
 
         case "week": {
             const start = new Date(date);

@@ -4,6 +4,7 @@ import { FaCodeBranch } from 'react-icons/fa';
 import { IoDocumentTextOutline } from 'react-icons/io5';
 import { PiBriefcase } from 'react-icons/pi';
 import { useFormstore } from 'wire/StoreFactory';
+import { formatAmount } from 'utils/FormateDate';
 
 interface IOptions {
     title?: string
@@ -11,17 +12,9 @@ interface IOptions {
     filter?: any
 }
 
-interface ICaseCard {
-    total: number
-    approved: number,
-    rejected: number,
-    pending: number,
-    approvedRate: number
-}
-
 const DoDocumentOverviewCard = (props: IOptions) => {
     const { title, endPoint, filter } = props;
-    const [_data, setData] = useState<any>(null);
+    const [data, setData] = useState<any>(null);
 
     const buildQueryParams = (filter: any) => {
         const params = new URLSearchParams();
@@ -42,22 +35,16 @@ const DoDocumentOverviewCard = (props: IOptions) => {
         const endpoint = query ? `${endPoint}?${query}` : endPoint;
         useFormstore(endpoint, {}, '').get({}).then((d) => {
             if (d)
-                setData(d[0])
+                setData(d)
         })
     }, [query])
 
-    const cases: ICaseCard = {
-        total: 300,
-        approved: 55,
-        rejected: 90,
-        pending: 89,
-        approvedRate: 18
-    };
+    const approvalRate = data?.processedDocuments / data?.submittedDocuments * 100
 
     const cards = [
         {
             title: "Total Branches",
-            value: cases.total,
+            value: formatAmount(data?.totalBranches, true),
             icon: FaCodeBranch,
             gradient: "from-blue-400 via-blue-500 to-blue-600",
             iconBg: "bg-linear-to-br from-blue-100 to-blue-200 dark:from-blue-100/10 dark:to-blue-200/10",
@@ -65,24 +52,24 @@ const DoDocumentOverviewCard = (props: IOptions) => {
 
         },
         {
-            title: "Total Case",
-            value: cases.approved,
-            icon: PiBriefcase,
-            gradient: "from-emerald-400 via-green-500 to-emerald-600",
-            iconBg: "bg-linear-to-br from-emerald-100 to-green-200 dark:from-emerald-100/10 dark:to-green-600/10",
-            textColor: "text-emerald-700 dark:text-emerald-400"
-        },
-        {
             title: "Total Document",
-            value: cases.pending,
+            value: formatAmount(data?.submittedDocuments, true),
             icon: IoDocumentTextOutline,
             gradient: "from-amber-400 via-orange-500 to-red-500",
             iconBg: "bg-linear-to-br from-amber-100 to-orange-200 dark:from-amber-100/10 dark:to-orange-200/10",
             textColor: "text-orange-700 dark:text-orange-400",
         },
         {
-            title: "Today's Progress",
-            value: cases.approvedRate,
+            title: "Total Processed",
+            value: formatAmount(data?.processedDocuments, true),
+            icon: PiBriefcase,
+            gradient: "from-emerald-400 via-green-500 to-emerald-600",
+            iconBg: "bg-linear-to-br from-emerald-100 to-green-200 dark:from-emerald-100/10 dark:to-green-600/10",
+            textColor: "text-emerald-700 dark:text-emerald-400"
+        },
+        {
+            title: "Processed Rate(%)",
+            value: Math.round(approvalRate),
             icon: Percent,
             gradient: "from-teal-400 via-cyan-500 to-blue-500",
             iconBg: "bg-linear-to-br from-teal-100 to-cyan-200 dark:from-teal-100/10 dark:to-cyan-200/10",

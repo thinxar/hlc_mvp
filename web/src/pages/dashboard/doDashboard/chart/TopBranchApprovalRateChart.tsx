@@ -1,5 +1,4 @@
 // import { useDisclosure } from '@mantine/hooks';
-import { PalmyraStoreFactory } from '@palmyralabs/palmyra-wire';
 import { PalmyraApexChart } from '@palmyralabs/rt-apexchart';
 import { useCommonChartStyles } from '../../ChartTheme';
 import { IChartInput } from '../../type';
@@ -112,10 +111,10 @@ const TopBranchApprovalRateChart = (props: IChartInput) => {
         colors: ['#22c55e', '#f59e0b',]
     };
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' });
+    // const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' });
 
     return <> <PalmyraApexChart options={options} type="bar"
-        endPoint={endPoint} filter={filter} height={height} width={'100%'} storeFactory={AppStoreFactory}
+        endPoint={endPoint} filter={filter} height={height} width={'100%'}
         seriesOptions={[
             { name: 'Processed' }
         ]}
@@ -124,3 +123,4 @@ const TopBranchApprovalRateChart = (props: IChartInput) => {
 };
 
 export { TopBranchApprovalRateChart };
+

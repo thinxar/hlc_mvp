@@ -2,7 +2,7 @@ import { FieldGroupContainer, PalmyraForm } from "@palmyralabs/rt-forms"
 import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { LayoutDashboard } from "lucide-react";
 import { useFilterHandler } from "src/hook/useFilterHandler";
-import { ServerLookup } from "templates/mantineForm"
+import { Select, ServerLookup } from "templates/mantineForm"
 
 interface IOptions {
     setFilter: (filter: any) => void;
@@ -25,7 +25,7 @@ const DoDashboardHeader = (props: IOptions) => {
 
                     <div className="flex flex-col">
                         <span className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                            Analytic Dashboard - Policy Revival
+                            DO Dashboard - Policy Revival
                         </span>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                             Real-time document overview
@@ -34,10 +34,19 @@ const DoDashboardHeader = (props: IOptions) => {
                 </div>
                 <div className="pr-3">
                     <PalmyraForm>
-                        <FieldGroupContainer columns={1}>
-                            <ServerLookup attribute="srno" placeholder="Division Name"
+                        <FieldGroupContainer columns={2}>
+                            <Select attribute="window" onChange={handleFilterChange("window", 'select')}
+                                placeholder="Select Time Range" options={{
+                                    '1': "Last 1 Month",
+                                    '3': "Last 3 Months",
+                                    '6': "Last 6 Months",
+                                    "12": "Last 12 Months"
+                                }} defaultValue={'6'} clearable={false} allowDeselect={false}
+                            />
+                            <ServerLookup attribute="doCode" placeholder="Division Name"
                                 queryOptions={{ endPoint: LookupEndPoint.division, queryAttribute: 'divisionName' }}
-                                onChange={handleFilterChange("srno", 'lookup')}
+                                onChange={handleFilterChange("doCode", 'customLookup', 'doCode', '201')}
+                                defaultValue={{ id: '', divisionName: 'Bhopal' }}
                                 lookupOptions={{ idAttribute: 'id', labelAttribute: 'divisionName' }} />
                         </FieldGroupContainer>
                     </PalmyraForm>

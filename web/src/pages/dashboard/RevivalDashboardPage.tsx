@@ -1,31 +1,29 @@
 import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { useState } from "react";
-import { getDate, getDateRange, getFinancialYears } from "utils/FormateDate";
+import { getDate, getDateRange } from "utils/FormateDate";
 import { CaseOverviewCard } from "./card/CaseOverviewCard";
 import { AgingAnalysisChart } from "./chart/AgingAnalysisChart";
-import { CurrentFinancialYearCaseChart } from "./chart/CurrentFinancialYearCaseChart";
+import { AgingSummaryChart } from "./chart/AgingSummaryChart";
 import { DailyTrendCaseChart } from "./chart/DailyTrendCaseChart";
 import { FYApprovalComparisonChart } from "./chart/FYApprovalComparisonChart";
 import { MonthlyAcceptanceRateChart } from "./chart/MonthlyAcceptanceRateChart";
 import { MonthlyTrendCaseChart } from "./chart/MonthlyTrendCaseChart";
-import { PreFinancialYearCaseChart } from "./chart/PreFinancialYearCaseChart";
+import { TatPerformanceChart } from "./chart/TatPerformanceChart";
 import { TodayCaseBreakdownChart } from "./chart/TodayCaseBreakdownChart";
 import { TodayCaseReportChart } from "./chart/TodayCaseReportChart";
 import { WeeklyTrendCaseChart } from "./chart/WeeklyTrendCaseChart";
-import { AgingSummaryChart } from "./chart/AgingSummaryChart";
-import { TatPerformanceChart } from "./chart/TatPerformanceChart";
 import { DashboardHeader } from "./DashboardHeader";
 
 const CHART_HEIGHT = '450';
 const RevivalDashboardPage = () => {
-  const { currentFY, previousFY } = getFinancialYears();
+  // const { currentFY, previousFY } = getFinancialYears();
   const [filter, setFilter] = useState({ branchCode: '', doCode: '' });
 
   const { fromMonth, toMonth } = getDateRange(6, "months");
   const { fromMonth: fromWeek, toMonth: toWeek } = getDateRange(8, "weeks");
   const { fromMonth: fromDate, toMonth: toDate } = getDateRange(7, "days");
-  const { fromMonth: fromPrevFY, toMonth: toPrevFY } = getDateRange(0, "fy_previous");
-  const { fromMonth: fromCurrFY, toMonth: toCurrFY } = getDateRange(0, "fy_current");
+  const { fromMonth: fromPrevFY, toMonth: _toPrevFY } = getDateRange(0, "fy_previous");
+  const { fromMonth: _fromCurrFY, toMonth: toCurrFY } = getDateRange(0, "fy_current");
 
   const revivalDashboardUrl = ServiceEndpoint.customView.rev.dashboard
 
@@ -36,8 +34,8 @@ const RevivalDashboardPage = () => {
   const lastEightWeekTrend = `${documentSummaryApi}?window=weekly&fromWeek=${fromWeek}&toWeek=${toWeek}`;
   const lastSevenDaysTrend = `${documentSummaryApi}?window=daily&fromDate=${fromDate}&toDate=${toDate}`;
 
-  const prevFYMonthTrend = `${documentSummaryApi}?fromMonth=${fromPrevFY}&toMonth=${toPrevFY}`;
-  const currFYMonthTrend = `${documentSummaryApi}?fromMonth=${fromCurrFY}&toMonth=${toCurrFY}`;
+  // const prevFYMonthTrend = `${documentSummaryApi}?fromMonth=${fromPrevFY}&toMonth=${toPrevFY}`;
+  // const currFYMonthTrend = `${documentSummaryApi}?fromMonth=${fromCurrFY}&toMonth=${toCurrFY}`;
   const comparativeFYApi = `${documentSummaryApi}?fromMonth=${fromPrevFY}&toMonth=${toCurrFY}`;
 
   const agingSummaryApi = revivalDashboardUrl.agingSummaryApi;
@@ -50,7 +48,8 @@ const RevivalDashboardPage = () => {
 
   return (
     <div className="p-4 bg-slate-50 dark:bg-gray-900">
-      <div className="bg-white dark:bg-gray-800/50 rounded-xl shadow mb-3 py-1">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow mb-3 py-1
+      sticky top-0 z-50">
         <DashboardHeader setFilter={setFilter} filter={filter} />
       </div>
 
@@ -126,7 +125,7 @@ const RevivalDashboardPage = () => {
       </div>
 
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 mt-3">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-3 mt-3">
         <div className="dash-cards">
           <PreFinancialYearCaseChart endPoint={prevFYMonthTrend}
             height={CHART_HEIGHT} subText="Pending . Processed" filter={filter}
@@ -140,14 +139,23 @@ const RevivalDashboardPage = () => {
             title={`Current Financial Year (${currentFY})`} xKey="calMonth"
             yKey={["pendingDocuments", "processedDocuments"]} />
         </div>
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 gap-3 mt-3">
         <div className="dash-cards">
           <FYApprovalComparisonChart endPoint={comparativeFYApi}
             subText="Pending vs Processed — Previous FY vs Current FY"
             filter={filter} height={CHART_HEIGHT} title="Document Summary (Comparative Analysis)"
-            xKey="calMonth" yKey={["pendingDocuments", "processedDocuments"]} />
+            xKey="calMonth"
+            //  yKey={["pendingDocuments", "processedDocuments"]}
+            yKey={[
+              "previousFYPendingDocuments",
+              "previousFYProcessedDocuments",
+              "currentFYPendingDocuments",
+              "currentFYProcessedDocuments"
+            ]
+            }
+          />
         </div>
       </div>
 

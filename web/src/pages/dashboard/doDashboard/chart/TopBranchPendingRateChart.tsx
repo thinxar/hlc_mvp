@@ -1,5 +1,4 @@
 // import { useDisclosure } from '@mantine/hooks';
-import { PalmyraStoreFactory } from '@palmyralabs/palmyra-wire';
 import { PalmyraApexChart } from '@palmyralabs/rt-apexchart';
 import { useCommonChartStyles } from '../../ChartTheme';
 import { IChartInput } from '../../type';
@@ -112,15 +111,15 @@ const TopBranchPendingRateChart = (props: IChartInput) => {
         colors: ['#f59e0b', '#22c55e']
     };
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' });
 
     return <> <PalmyraApexChart options={options} type="bar"
-        endPoint={endPoint} filter={filter} height={height} width={'100%'} storeFactory={AppStoreFactory}
+        endPoint={endPoint} filter={filter} height={height} width={'100%'}
         seriesOptions={[
-            { name: 'Processed' }
+            { name: 'Pending' }
         ]}
         transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }} />
     </>
 };
 
 export { TopBranchPendingRateChart };
+

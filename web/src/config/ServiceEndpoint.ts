@@ -97,6 +97,16 @@ const ServiceEndpoint = {
                 documentSummaryApi: '/rev/overAll/document/summary',
                 agingSummaryApi: '/rev/overAll/agingSummary',
                 tatPerformanceApi: '/rev/overAll/tatPerformance'
+            },
+            doDashboard: {
+                branchOverviewApi: '/rev/do/division/overview',
+                processedDocApprovalApi: '/rev/do/branch/processed',
+                pendingDocApprovalApi: '/rev/do/branch/pending',
+                processedRatioApi: '/rev/do/branch/processed/ratio',
+                pendingRatioApi: '/rev/do/branch/pending/ratio',
+                divisionBranchesApi: '/rev/do/branches',
+                divisionPerformanceApi: '/rev/do/division/performance',
+                ageingApi:'/rev/do/aging'
             }
         },
         and: {

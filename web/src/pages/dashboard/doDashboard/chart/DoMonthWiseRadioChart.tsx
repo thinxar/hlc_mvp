@@ -1,13 +1,14 @@
-import { PalmyraStoreFactory } from "@palmyralabs/palmyra-wire";
 import { PalmyraApexChart } from "@palmyralabs/rt-apexchart";
 import { useRef } from "react";
-import { IChartInput } from "../../type";
+import { formatDate } from "utils/FormateDate";
 import { useCommonChartStyles } from "../../ChartTheme";
-const DoMonthWiseRadioChart = (props: IChartInput) => {
+import { IChartInput } from "../../type";
 
-    const { title, xKey, yKey, subText } = props;
+const DoMonthWiseRadioChart = (props: IChartInput) => {
+    const { title, xKey, yKey, subText, endPoint } = props;
     const { commonOptions } = useCommonChartStyles();
     const clickFilter = useRef<{ departmentName: string }>(null);
+    const cardRef = useRef<any>(null);
 
     const style = {
         color: "gray",
@@ -97,7 +98,11 @@ const DoMonthWiseRadioChart = (props: IChartInput) => {
         },
         xaxis: {
             labels: {
-                rotate: -45
+                rotate: -45,
+                formatter: (value: string) => {
+                    const date = value;
+                    return formatDate(date, 'month')
+                }
             },
             title: {
                 text: 'Months',
@@ -115,7 +120,7 @@ const DoMonthWiseRadioChart = (props: IChartInput) => {
                 style: style
             },
         },
-        colors: ['#f59e0b', '#22c55e', '#3b82f6'],
+        colors: ['#f59e0b', '#22c55e', '#3b82f6',],
         active: {
             allowMultipleDataPointsSelection: true,
         },
@@ -124,15 +129,13 @@ const DoMonthWiseRadioChart = (props: IChartInput) => {
         }
     }
 
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' });
-    const endPointX = '/doMonthlyApproveRation.json'
     return (
         <div id="chart">
-            <PalmyraApexChart options={options} type="area" storeFactory={AppStoreFactory}
-                endPoint={endPointX} filter={props.filter}
+            <PalmyraApexChart options={options} type="area" key={JSON.stringify(props.filter)}
+                endPoint={endPoint} filter={props.filter} ref={cardRef}
                 seriesOptions={[
                     { name: "Pending", type: 'area' },
-                    { name: "Approved", type: 'area' }
+                    { name: "Processed", type: 'area' }
                 ]}
                 height={props.height} width={'100%'} transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }}
             />

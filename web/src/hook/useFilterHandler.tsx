@@ -14,7 +14,7 @@ export const useFilterHandler = <T extends Record<string, any>>(
     };
 
     const handleFilterChange =
-        (key: keyof T, type: FilterType, customKey?: string) =>
+        (key: keyof T, type: FilterType, customKey?: string, defaultValue?: string) =>
             (a: any, b?: any) => {
                 let value = '';
 
@@ -28,7 +28,7 @@ export const useFilterHandler = <T extends Record<string, any>>(
                     value = a || '';
                     value = value ? value : ''
                 } else if (type === 'customLookup') {
-                    value = customKey ? b?.[customKey] || '' : '';
+                    value = customKey ? b?.[customKey] || defaultValue || '' : '';
                 }
                 else {
                     value = b?.id || '';

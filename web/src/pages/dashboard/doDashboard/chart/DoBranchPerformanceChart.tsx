@@ -2,9 +2,8 @@
 import { PalmyraApexChart } from '@palmyralabs/rt-apexchart';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { IChartInput } from '../../type';
-import { PalmyraStoreFactory } from '@palmyralabs/palmyra-wire';
 import { useCommonChartStyles } from '../../ChartTheme';
+import { IChartInput } from '../../type';
 
 dayjs.extend(customParseFormat);
 
@@ -135,17 +134,15 @@ const DoBranchPerformanceChart = (props: IChartInput) => {
         },
         colors: colors
     };
-    const AppStoreFactory = new PalmyraStoreFactory({ baseUrl: '/data/chartData/doDashDatas' });
 
-    return <> <PalmyraApexChart options={options} type="bar" storeFactory={AppStoreFactory}
+    return <> <PalmyraApexChart options={options} type="bar"
         endPoint={endPoint} filter={filter} height={props.height} width={'100%'}
         seriesOptions={[
-            { name: 'Pending' },
-            { name: 'In-Progress' },
-            { name: 'Approved' }
+            { name: 'Pending' }
         ]}
         transformOptions={{ xKey: xKey, yKey: yKey, dataType: 'array' }} />
     </>
 };
 
 export { DoBranchPerformanceChart };
+

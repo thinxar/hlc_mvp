@@ -1,6 +1,8 @@
 import Chart from "react-apexcharts";
 import { useCommonChartStyles } from "../../ChartTheme";
 import { IChartInput } from "../../type";
+import { useEffect, useMemo, useState } from "react";
+import { useFormstore } from "wire/StoreFactory";
 
 const COLORS = [
     "#34D399", // green
@@ -25,39 +27,47 @@ const getSoftColor = () => {
 };
 
 const BubbleChart = (props: IChartInput) => {
-    const { title, subText } = props;
+    const { title, subText, endPoint, filter } = props;
     const { commonOptions } = useCommonChartStyles();
 
-    const generateBubbleData = (count = 20) => {
-        const branches = [
-            "BHOPAL CBO-3", "BHOPAL CBO (CAB)", "SHAJAPUR", "BIAORA", "BHOPAL CBO-1",
-            "ITARSI", "BHOPAL CBO-2", "SEHORE", "VIDISHA", "HARDA",
-            "Karur", "Cuddalore", "Kanchipuram", "Thanjavur", "Nagapattinam",
-            "HOSHANGABAD", "UMARIA", "BETUL", "PANNA", "ITARSI",
-            "Perambalur", "RAISEN", "BHOPAL (BHEL) CBO", "BAIRAGARH",
-            "BARELI", "BHOPAL CBO-4", "GANJ BASODA", "SHUJALPUR", "PIPARIYA",
-            "BETUL", "PATHAKHEDA", "TIKAMGARH", "PANNA", "SATNA-II",
-            "SHAHDOL", "AMBIKAPUR", "UMARIA", "CHIRIMIRI", "SHAHDOL (CAB)"
-        ];
+    const [data, setData] = useState<any>([]);
 
-        const size = Math.min(count, 40);
 
-        return Array.from({ length: size }, (_, i) => {
-            const pending = Math.floor(Math.random() * 100) + 20;
-            const approved = Math.floor(Math.random() * pending);
+    const buildQueryParams = (filter: any) => {
+        const params = new URLSearchParams();
 
-            return {
-                name: branches[i],
-                x: pending,
-                y: approved,
-                z: Math.min(20, 40),
-                fillColor: getSoftColor(),
-                // strokeColor: COLORS
-            };
+        Object.entries?.(filter)?.forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== '') {
+                params.append(key, String(value));
+            }
         });
+
+        return params.toString();
     };
 
-    const bubbleData = generateBubbleData(30);
+    const query = useMemo(() => buildQueryParams(filter), [filter]);
+
+    useEffect(() => {
+
+        const query = buildQueryParams(filter);
+        const endpoint = query ? `${endPoint}?${query}` : endPoint;
+        useFormstore(endpoint, {}, '').get({}).then((d) => {
+            if (d)
+                setData(d)
+        })
+    }, [query])
+
+    const generateBubbleData = (data: any[]) => {
+        return data?.map((item) => ({
+            name: item.divisionName,
+            x: item.pendingDocuments,
+            y: item.processedDocuments,
+            z: item.submittedDocuments,
+            fillColor: getSoftColor(),
+        }));
+    };
+
+    const bubbleData = generateBubbleData(data);
 
     const series = [
         {
