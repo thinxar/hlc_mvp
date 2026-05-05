@@ -5,9 +5,10 @@ import { filterItem } from './FieldSelectorErrorMsg';
 
 interface IOptions {
     filterData: filterItem
+    source?: string
 }
 const IFrameDocRenderer = (props: IOptions) => {
-    const { filterData } = props;
+    const { filterData, source } = props;
     const [searchParams] = useSearchParams();
     const [proposalNo, setProposalNo] = useState<any>('')
 
@@ -15,8 +16,12 @@ const IFrameDocRenderer = (props: IOptions) => {
         officecode: searchParams.get("officecode") || filterData?.officeCode,
         appname: searchParams.get("appname") || "",
         year: searchParams.get("year") ?? new Date(filterData?.year).getFullYear().toString(),
-        propno: proposalNo || filterData?.propno
+        propno: proposalNo || filterData?.propno,
+        filterData: JSON.stringify(filterData)
     });
+
+    const baseSrc = '/app/iframe/customViewer/';
+    const src = source ? baseSrc + source : baseSrc + 'ap/policyView';
 
     useEffect(() => {
         const sub = topic.subscribe('proposalNo', (_t: string, data: string) => {
@@ -33,8 +38,8 @@ const IFrameDocRenderer = (props: IOptions) => {
     return (
         <div className='border-2 border-blue-500/40 rounded'>
             <iframe
-                src={`/app/iframe/customViewer/ap/policyView?${params.toString()}`}
-                style={{ width: "100%", height: "calc(100vh - 175px)", border: "none" }}
+                src={`${src}?${params.toString()}`}
+                style={{ width: "100%", height: source ? 'calc(100vh - 135px)' : "calc(100vh - 175px)", border: "none" }}
             />
         </div>
     )

@@ -106,7 +106,7 @@ const ServiceEndpoint = {
                 pendingRatioApi: '/rev/do/branch/pending/ratio',
                 divisionBranchesApi: '/rev/do/branches',
                 divisionPerformanceApi: '/rev/do/division/performance',
-                ageingApi:'/rev/do/aging'
+                ageingApi: '/rev/do/aging'
             }
         },
         and: {
@@ -128,6 +128,11 @@ const ServiceEndpoint = {
                 officeCode: '/masterdata/pbv/officeCode',
                 proposalNo: '/pbv/proposal/lookup',
             }
+        },
+        neft: {
+            policyDetailApi:'/neft/policy',
+            fileByPolicyIdApi: '/neft/policy/{policyId}/file',
+            getFileApi: '/neft/policy/{policyId}/file/{fileId}/download'
         }
     }
 }

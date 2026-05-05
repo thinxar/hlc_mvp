@@ -4,9 +4,10 @@ import { useSearchParams } from "react-router-dom";
 
 interface IOptions {
     proposalNo?: string
+    type?: "rev" | "neft"
 }
 const PolicyNotFound = (props: IOptions) => {
-    const { proposalNo } = props;
+    const { proposalNo, type } = props;
     const [searchParams] = useSearchParams();
     const appName = searchParams.get("appname");
 
@@ -53,7 +54,7 @@ const PolicyNotFound = (props: IOptions) => {
                             <div className="h-1 w-20 bg-indigo-600 mx-auto rounded-full mb-6"></div>
                             <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-sm mx-auto">
                                 {proposalNo
-                                    ? `No documents found for proposal number ${proposalNo}.`
+                                    ? `No documents found for ${type === 'neft' ? 'policy' : 'proposal'} number "${proposalNo}".`
                                     : "Click a proposal number to view. Associated documents will display below."
                                 }
                             </p>

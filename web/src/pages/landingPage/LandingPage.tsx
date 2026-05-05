@@ -75,6 +75,18 @@ const appData = [
         isHighlight: true,
         key: "DODASH",
     },
+    {
+        id: 7,
+        title: "NEFT Document View",
+        path: '/app/customViewer/neftDocument',
+        description: "View and manage NEFT-related documents with detailed insights and tracking.",
+        icon: MdDashboard,
+        accent: "bg-blue-500 text-white hover:bg-yellow-400 hover:text-blue-900 transition",
+        btnAccent: "bg-white text-gray-600 border border-gray-200 group-hover:bg-yellow-400 group-hover:text-blue-900 transition",
+        glow: "shadow-blue-900/30",
+        isHighlight: true,
+        key: "NEFT",
+    }
 ];
 
 
@@ -116,7 +128,7 @@ export default function LandingPage() {
                 </h1>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 w-full max-w-6xl z-10">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-5 w-full max-w-6xl z-10">
                 {appData.map((mod: any) => (
                     <div
                         key={mod.id}

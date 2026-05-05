@@ -2,6 +2,8 @@ import { Outlet } from "react-router-dom";
 import PageNotFoundX from "src/common/pages/PageNotFoundX";
 import { CustomViewerPage } from "src/pages/customViewer/CustomViewerPage";
 import { APDocumentView } from "src/pages/customViewer/pages/apPolicy/APDocumentView";
+import { NeftDocumentView } from "src/pages/customViewer/pages/neftDoc/NeftDocumentView";
+import { NeftDocumentViewPage } from "src/pages/customViewer/pages/neftDoc/NeftDocumentViewPage";
 import PolicySubmissionPage from "src/pages/customViewer/pages/PolicySubmissionPage";
 import { CustomViewerViewPage } from "src/pages/customViewer/view/CustomViewerViewPage";
 import RevivalDODashboardPage from "src/pages/dashboard/doDashboard/RevivalDODashboardPage";
@@ -64,6 +66,10 @@ export const appRoutes = [
             {
                 path: 'doDashboard',
                 element: <RevivalDODashboardPage />,
+            },
+            {
+                path: 'neftDocument',
+                element: <NeftDocumentViewPage />,
             }
         ]
     }
@@ -87,6 +93,10 @@ export const iframeRoutes = [
             {
                 path: 'ap/policyView',
                 element: <APDocumentView />,
+            },
+             {
+                path: 'neft/docView',
+                element: <NeftDocumentView />,
             },
         ]
     }
