@@ -108,6 +108,7 @@ public class SyncFileServiceImpl {
 				log.error("Error while checking zero length file", t);
 			}
 			processResponse(key, response, listener);
+		} catch (IllegalStateException ise) {
 		} catch (RuntimeException re) {
 //			cleanupFile(key);
 			listener.onFailure(re);
