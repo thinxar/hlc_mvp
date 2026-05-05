@@ -7,13 +7,7 @@ group = 'com.palmyralabs.dms'
 
 
 application {
-    mainClass = 'com.palmyralabs.dms.AppMain'
-
-    applicationDefaultJvmArgs = [
-        '--add-opens=java.base/java.time=ALL-UNNAMED',
-        '--add-opens=java.base/java.lang=ALL-UNNAMED',
-        '--add-opens=java.base/java.util=ALL-UNNAMED'
-    ]
+    mainClass = 'com.palmyralabs.dms.dataload.DataLoadMain'
 
     startScripts {
         classpath += files('conf')
@@ -27,27 +21,16 @@ application {
     }
 }
 
-dependencies {	
-    implementation deps.springboot.web
-    //implementation deps.springboot.jpa
-    implementation deps.spring.core
-    implementation deps.spring.web
-    implementation deps.springboot.security
-    implementation deps.jackson.jsr310
+dependencies {
+    implementation deps.spring.core  
+    implementation deps.apache.http.client  
+    implementation ("ch.qos.logback:logback-classic:1.5.11")
+    
 
-    //implementation deps.jdbc.postgresql
 
-    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.11'
-    implementation 'com.github.jsqlparser:jsqlparser:5.3'
-   	implementation project(':dms-jpa')
-   	implementation project(':dms-admin')
-   	implementation project(':dms-policy')
-    implementation project(":dms-filemgmt")
-    implementation project(':dms-masterdata')
-    implementation project(':dms-revival')
-    implementation project(':dms-policyBazaar')
-    implementation project(':dms-ananda')
-    implementation project(':dms-neft')
+	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv:2.20.0")
+	implementation("org.apache.tika:tika-core:3.2.2")
+	implementation("org.apache.tika:tika-parsers-standard-package:3.2.2")
 }
 
 configurations {
