@@ -31,7 +31,7 @@ const NeftPolicySearch = (props: IOptions) => {
     }
 
     return (
-        <div className="bg-linear-to-br bColor relative overflow-hidden">
+        <div className="bg-linear-to-br bColor relative">
             <div className="relative z-10 p-2">
                 <NeftSearchBar onSearch={handleSearch}
                     onClear={handleClear} compact={true} />
