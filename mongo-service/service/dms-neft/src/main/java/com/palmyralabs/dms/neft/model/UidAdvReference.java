@@ -7,12 +7,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class NeftPolicyModel {
-	
-	private Integer id;
+public class UidAdvReference {
 
-	private Long policyNumber;
-
-	private List<UidAdvReference> uidAdvreference;
+	private Integer uid;
 	
+	private List<Long> advReferenceNumbers;
 }

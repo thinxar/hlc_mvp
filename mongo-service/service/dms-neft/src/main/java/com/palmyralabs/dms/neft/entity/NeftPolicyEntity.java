@@ -1,11 +1,11 @@
 package com.palmyralabs.dms.neft.entity;
 
-
 import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.palmyralabs.dms.base.annotation.AutoIncrementId;
+import com.palmyralabs.dms.neft.model.UidAdvReference;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,9 +20,6 @@ public class NeftPolicyEntity {
 
 	private Long policyNumber;
 
-	private List<Integer> uid;
-	
-	private List<Long> advReferenceNumber;
-	
-	
+	private List<UidAdvReference> uidAdvreference;
+
 }
