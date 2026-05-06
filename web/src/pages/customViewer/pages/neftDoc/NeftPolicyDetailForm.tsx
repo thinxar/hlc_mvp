@@ -16,8 +16,8 @@ interface PolicySidebarProps {
 }
 
 export default function NeftPolicyDetailForm({ policy }: PolicySidebarProps) {
-    const totalUIDs = policy.uidAdvreference.length;
-    const totalAdvRefs = policy.uidAdvreference.reduce((sum, item) => sum + item.advReferenceNumbers.length, 0);
+    // const totalUIDs = policy.uidAdvreference.length;
+    // const totalAdvRefs = policy.uidAdvreference.reduce((sum, item) => sum + item.advReferenceNumbers.length, 0);
 
     return (
         <aside className="flex flex-col bg-gray-50 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shrink-0">
@@ -37,7 +37,7 @@ export default function NeftPolicyDetailForm({ policy }: PolicySidebarProps) {
                     </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
 
                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full 
     bg-indigo-50 dark:bg-indigo-900/30 
@@ -61,7 +61,7 @@ export default function NeftPolicyDetailForm({ policy }: PolicySidebarProps) {
                         </span>
                     </div>
 
-                </div>
+                </div> */}
             </div>
 
             <div className="px-3.5 pb-0">
