@@ -53,9 +53,12 @@ const PolicyNotFound = (props: IOptions) => {
                             </div>
                             <div className="h-1 w-20 bg-indigo-600 mx-auto rounded-full mb-6"></div>
                             <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-sm mx-auto">
-                                {proposalNo
-                                    ? `No documents found for ${type === 'neft' ? 'policy' : 'proposal'} number "${proposalNo}".`
-                                    : "Click a proposal number to view. Associated documents will display below."
+                                {
+                                    proposalNo
+                                        ? type === 'neft'
+                                            ? `No policy found for the provided number "${proposalNo}".`
+                                            : `No documents found for the proposal number "${proposalNo}".`
+                                        : "Click a proposal number to view. Associated documents will display below."
                                 }
                             </p>
                         </div>

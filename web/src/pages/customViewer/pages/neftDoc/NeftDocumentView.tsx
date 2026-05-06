@@ -137,6 +137,7 @@ const NeftDocumentView = () => {
                 return;
             }
             setPolicyId(id);
+            setPolicyData(d[0]);
             fetchFiles(id);
         }).catch(handleError);
     }, [filterData?.policy]);
@@ -165,7 +166,6 @@ const NeftDocumentView = () => {
     }
 
     const hasPolicyData = policyData && Object.keys(policyData).length > 0;
-
     return (
         <>
             {hasPolicyData ? (
