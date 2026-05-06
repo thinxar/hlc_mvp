@@ -71,11 +71,11 @@ export default function NeftPolicyDetailForm({ policy }: PolicySidebarProps) {
                         <table className="w-full text-xs border-collapse">
                             <thead className="sticky top-0 z-10">
                                 <tr className="bg-gray-100 dark:bg-gray-800">
-                                    <th className="text-left px-2.5 py-1.5 font-medium text-gray-500 dark:text-gray-400 border-r border-b border-gray-200 dark:border-gray-700 w-20">
-                                        UID
-                                    </th>
                                     <th className="text-left px-2.5 py-1.5 font-medium text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
                                         ADV Reference Number
+                                    </th>
+                                    <th className="text-left px-2.5 py-1.5 font-medium text-gray-500 dark:text-gray-400 border-r border-b border-gray-200 dark:border-gray-700 w-20">
+                                        4-Digit
                                     </th>
                                 </tr>
                             </thead>
@@ -86,16 +86,8 @@ export default function NeftPolicyDetailForm({ policy }: PolicySidebarProps) {
                                             key={`${i}-${j}`}
                                             className="border-t border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800/50 hover:bg-blue-50/50 dark:hover:bg-blue-950/20 transition-colors"
                                         >
-                                            {j === 0 && (
-                                                <td
-                                                    rowSpan={item.advReferenceNumbers.length}
-                                                    className="px-2.5 py-1.5 border-r border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 align-middle"
-                                                >
-                                                    {item.uid}
-                                                </td>
-                                            )}
 
-                                            <td className="px-2.5 py-1.5">
+                                            <td className="px-2.5 py-1.5 border-r border-gray-200 dark:border-gray-700">
                                                 <div className="flex items-center gap-1.5 min-w-0">
                                                     <span className=" text-gray-700 dark:text-gray-300 truncate flex-1">
                                                         {ref}
@@ -111,6 +103,17 @@ export default function NeftPolicyDetailForm({ policy }: PolicySidebarProps) {
                                                     </button>
                                                 </div>
                                             </td>
+
+                                            {j === 0 && (
+                                                <td
+                                                    rowSpan={item.advReferenceNumbers.length}
+                                                    className="px-2.5 py-1.5  text-gray-700 dark:text-gray-300 align-middle"
+                                                >
+                                                    {item.uid}
+                                                </td>
+                                            )}
+
+
                                         </tr>
                                     ))
                                 )}
