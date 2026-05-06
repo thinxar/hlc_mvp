@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
 import com.palmyralabs.dms.dataload.client.PalmyraDMSClient;
+import com.palmyralabs.dms.dataload.service.PolicyCsvGenerator;
 import com.palmyralabs.dms.dataload.service.PolicyFileUploader;
 import com.palmyralabs.dms.dataload.service.PolicyNumberStrategy;
 import com.palmyralabs.dms.dataload.service.PolicyUploader;
@@ -30,14 +31,22 @@ public class DataLoader implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		try {
+			Path baseFolder = Paths.get(uploadConfig.getPolicyFolder());
+
+			String masterCsv = uploadConfig.getMasterCsv();
+			if (masterCsv != null && !masterCsv.trim().isEmpty()) {
+				new PolicyCsvGenerator().generate(Paths.get(masterCsv), baseFolder);
+			} else {
+				log.info("masterCsv not configured - skipping policy CSV generation");
+			}
+
 			PalmyraDMSClient client = new PalmyraDMSClient(uploadConfig.getUrl(), "palmyra/neft/");
 			client.login(uploadConfig.getUsername(), uploadConfig.getPassword());
-			Path baseFolder = Paths.get(uploadConfig.getPolicyFolder());
 
 			PolicyUploader loader = new PolicyUploader(baseFolder, client);
 			PooledExecutor executor = new PooledExecutor(uploadConfig.getParallel());
-			
-			PolicyFileUploader fileUploader = new PolicyFileUploader(baseFolder, loader, strategy, executor);			
+
+			PolicyFileUploader fileUploader = new PolicyFileUploader(baseFolder, loader, strategy, executor);
 			FolderUtil.processPolicy(baseFolder, fileUploader);
 			executor.awaitCompletion();
 		} catch (ClientException ce) {

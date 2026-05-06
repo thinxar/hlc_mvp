@@ -5,16 +5,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.palmyralabs.dms.dataload.model.PolicyModel;
+import com.palmyralabs.dms.dataload.model.UidAdvReference;
 
 @Service
 public class PolicyReader {
@@ -69,26 +69,41 @@ public class PolicyReader {
 
 	private PolicyModel extractPolicy(Map<String, String> record) {
 
-		String policyNumber = record.get("Policy Number");
-		String uid = record.get("UID");
-		String advrefrenceNumber = record.get("ADV Reference Number");
-		
-		List<Integer> uids = Arrays.stream(uid.split("\\|"))
-                .map(String::trim) 
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
-		
-		List<Long> advreferenceNumbers = Arrays.stream(advrefrenceNumber.split("\\|"))
-                .map(String::trim) 
-                .map(Long::parseLong)
-                .collect(Collectors.toList());
+	    String policyNumber = record.get("Policy Number");
+	    String uidStr       = record.get("UID");
+	    String advRefStr    = record.get("ADV Reference Number");
+	    PolicyModel model = new PolicyModel();
+	    model.setPolicyNumber(Integer.parseInt(policyNumber.trim()));
 
-		PolicyModel model = new PolicyModel();
+	    List<UidAdvReference> mappings = new ArrayList<>();
+	    boolean hasUids    = uidStr    != null && !uidStr.trim().isEmpty();
+	    boolean hasAdvRefs = advRefStr != null && !advRefStr.trim().isEmpty();
+	    if (hasUids && hasAdvRefs) {
+	        String[] uidArr      = uidStr.trim().split("\\|");
+	        String[] advGroupArr = advRefStr.trim().split("\\|");
+	        if (uidArr.length != advGroupArr.length) {
+	            throw new RuntimeException(
+	                "UID and ADV Reference group count mismatch for policy " + policyNumber
+	                + " (uids=" + uidArr.length + ", advGroups=" + advGroupArr.length + ")");
+	        }
+	        for (int i = 0; i < uidArr.length; i++) {
+	            UidAdvReference ref = new UidAdvReference();
+	            ref.setUid(Integer.parseInt(uidArr[i].trim()));
 
-		model.setPolicyNumber(Integer.parseInt(policyNumber));
-		model.setUid(uids);
-		model.setAdvReferenceNumber(advreferenceNumbers);
-		return model;
+	            String[] advNumbers = advGroupArr[i].split(":");
+	            List<Long> advList = new ArrayList<>(advNumbers.length);
+	            for (String adv : advNumbers) {
+	                advList.add(Long.parseLong(adv.trim()));
+	            }
+	            ref.setAdvReferenceNumbers(advList);
+	            mappings.add(ref);
+	        }
+	    } else if (hasUids ^ hasAdvRefs) {
+	        throw new RuntimeException(
+	            "Policy " + policyNumber + " has UID but no ADV Reference Number (or vice versa)");
+	    }
+	    model.setUidAdvreference(mappings);
+	    return model;
 	}
 
 }

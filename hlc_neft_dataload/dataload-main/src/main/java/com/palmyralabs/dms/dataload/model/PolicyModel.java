@@ -17,8 +17,6 @@ public class PolicyModel {
 
 	private Integer policyNumber;
 
-	private List<Integer> uid;
-	
-	private List<Long> advReferenceNumber;
+	private List<UidAdvReference> uidAdvreference;
 
 }
