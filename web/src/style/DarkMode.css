@@ -175,7 +175,8 @@ body[theme='dark'] {
         fill: rgba(var(--default-bgcolor-rgb), 0.5) !important;
     }
 
-    .mantine-DatePickerInput-day {
+    .mantine-DatePickerInput-day,
+    .mantine-YearPickerInput-yearsListControl {
         color: white;
     }
 
@@ -183,7 +184,8 @@ body[theme='dark'] {
         color: rgba(var(--default-bgcolor-rgb), 0.7);
     }
 
-    .mantine-DatePickerInput-monthsListControl:hover {
+    .mantine-DatePickerInput-monthsListControl:hover,
+    .mantine-YearPickerInput-yearsListControl:hover {
         background-color: rgba(var(--default-bgcolor-rgb), 0.15);
         color: rgba(var(--default-bgcolor-rgb), 0.95);
     }
@@ -193,7 +195,8 @@ body[theme='dark'] {
     }
 
     .mantine-DatePickerInput-calendarHeaderControl:hover,
-    .mantine-DatePickerInput-calendarHeaderLevel:hover {
+    .mantine-DatePickerInput-calendarHeaderLevel:hover,
+    .mantine-YearPickerInput-calendarHeaderControl:hover {
         color: rgba(var(--default-bgcolor-rgb), 0.95);
         background-color: rgba(var(--default-bgcolor-rgb), 0.15);
     }
