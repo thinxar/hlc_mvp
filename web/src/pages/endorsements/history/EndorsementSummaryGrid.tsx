@@ -1,7 +1,7 @@
 import { Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { ColumnDefinition, IPageQueryable } from "@palmyralabs/rt-forms";
-import { PalmyraGrid } from "@palmyralabs/rt-forms-mantine"
+import { ColumnDefinition, IPalmyraGrid } from "@palmyralabs/rt-forms";
+import { PalmyraGrid } from "@palmyralabs/rt-forms-mantine";
 import { StringFormat } from "@palmyralabs/ts-utils";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
 import { useRef, useState } from "react";
@@ -27,7 +27,7 @@ interface IOptions {
 }
 const EndorsementSummaryGrid = (props: IOptions) => {
     const { data, setSelectedFile, id, fildata } = props;
-    const gridRef = useRef<IPageQueryable>(null);
+    const gridRef = useRef<IPalmyraGrid>(null) as React.RefObject<IPalmyraGrid>;
     const [rData, setrData] = useState<any>()
     const [opened, { open, close }] = useDisclosure(false);
     const [stampdata, setStampdata] = useState<any>()
@@ -99,4 +99,4 @@ const EndorsementSummaryGrid = (props: IOptions) => {
     )
 }
 
-export { EndorsementSummaryGrid }
+export { EndorsementSummaryGrid };

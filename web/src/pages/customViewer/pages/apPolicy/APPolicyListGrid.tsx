@@ -1,4 +1,4 @@
-import { type ColumnDefinition, type IPageQueryable } from "@palmyralabs/rt-forms";
+import { IPalmyraGrid, type ColumnDefinition } from "@palmyralabs/rt-forms";
 import { PalmyraGrid } from "@palmyralabs/rt-forms-mantine";
 import { topic } from "@palmyralabs/ts-utils";
 import { ServiceEndpoint } from "config/ServiceEndpoint";
@@ -13,7 +13,7 @@ interface IOptions extends IPageInput {
 
 const APPolicyListGrid = (props: IOptions) => {
     const { type } = props
-    const gridRef = useRef<IPageQueryable>(null);
+    const gridRef = useRef<IPalmyraGrid>(null) as React.RefObject<IPalmyraGrid>;
     const [searchParams] = useSearchParams();
 
     const params = new URLSearchParams({
