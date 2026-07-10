@@ -4,7 +4,6 @@ package com.palmyralabs.dms.masterdata.handler;
 import org.springframework.stereotype.Component;
 
 import com.palmyralabs.dms.masterdata.model.DocumentTypeModel;
-import com.palmyralabs.palmyra.base.FilterCriteria;
 import com.palmyralabs.palmyra.base.annotations.CrudMapping;
 import com.palmyralabs.palmyra.base.annotations.Permission;
 import com.palmyralabs.palmyra.handlers.HandlerContext;

@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.palmyralabs.dms.base.exception.InvaidInputException;
+import com.palmyralabs.dms.base.exception.InvalidInputException;
 import com.palmyralabs.dms.handler.PolicyFileUploadListener;
 import com.palmyralabs.dms.jpa.entity.DocumentTypeEntity;
 import com.palmyralabs.dms.jpa.entity.PolicyEntity;
@@ -66,7 +66,7 @@ public class PolicyFileService {
 				log.info("Upload successful: File '{}' uploaded to '{}'", fileName, folder);
 			} catch (Exception e) {
 				log.error("S3 upload failed for file '{}': {}", fileName, e.getMessage(), e);
-				throw new InvaidInputException("INV400", "File Upload To S3 failed for " + e.getMessage());
+				throw new InvalidInputException("INV400", "File Upload To S3 failed for " + e.getMessage());
 			}
 			savePolicyFile(fileName, file, policyId, objectUrl, docketTypeId);
 			return "completed";
@@ -97,7 +97,7 @@ public class PolicyFileService {
 
 		if (optPolicyFile.isPresent()) {
 			if (!isEndorsement) {
-				throw new InvaidInputException("INV400", "File Already Exists");
+				throw new InvalidInputException("INV400", "File Already Exists");
 			}
 
 			String originalFileName = fileName;
@@ -123,7 +123,7 @@ public class PolicyFileService {
 
 	private DocumentTypeEntity getDocketType(Integer id) {
 		return docTypeRepository.findById(id)
-				.orElseThrow(() -> new InvaidInputException("INV001", "docketType not found"));
+				.orElseThrow(() -> new InvalidInputException("INV001", "docketType not found"));
 	}
 
 }

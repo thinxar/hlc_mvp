@@ -33,11 +33,7 @@ public class SecurityConfig {
 
 		http.csrf(t -> {
 			t.disable();
-		}).authorizeHttpRequests(
-				(requests) -> requests
-				        .requestMatchers("/auth/login","/palmyra/public/**", "/palmyra/public/citizen/**")
-						.permitAll()
-						.anyRequest().authenticated());
+		}).authorizeHttpRequests((requests) -> requests.anyRequest().permitAll());
 		http.exceptionHandling((r) -> {
 			r.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
 		});

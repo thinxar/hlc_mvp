@@ -1,0 +1,210 @@
+##############################################################################
+# 2) POSTGRES  (INSERT INTO ... VALUES)
+##############################################################################
+
+-- ---- mst_document_type  (from mst_document_type, 16 rows) ----
+INSERT INTO mst_document_type (id, document, description, code, created_by) VALUES
+  (1, 'Policy', 'admin', '101', 'admin'),
+  (2, 'POA', 'admin', '102', 'admin'),
+  (3, 'POI', 'admin', '103', 'admin'),
+  (4, 'Proposal', 'admin', '104', 'admin'),
+  (5, 'Medical', 'admin', '105', 'admin'),
+  (6, 'Others', 'admin', '106', 'admin'),
+  (7, 'Proposal Form', 'Proposal Form', '107', 'admin'),
+  (8, 'KYC Documents', 'KYC Documents', '108', 'admin'),
+  (9, 'Proposal Enclosures', 'Proposal Enclosures', '109', 'admin'),
+  (10, 'Signature Page', 'Signature Page', '110', 'admin'),
+  (11, 'Proposal Review Slip', 'Proposal Review Slip', '111', 'admin'),
+  (12, 'Policy Bond', 'Policy Bond', '112', 'admin'),
+  (13, 'Surrender', 'Surrender', '113', 'admin'),
+  (14, 'NEFT', 'NEFT', '114', 'admin'),
+  (15, 'Endorsements', 'Endorsements', '115', 'admin'),
+  (16, 'E Service', 'E Service', '116', 'admin');
+
+-- ---- mst_endorsement_type  (from mst_endorsement_type, 8 rows) ----
+INSERT INTO mst_endorsement_type (id, name, code, description, created_by) VALUES
+  (1, 'Alteration', 'Alteration', NULL, 'admin'),
+  (2, 'Any Other', 'Any Other', NULL, 'admin'),
+  (3, 'Assignment', 'Assignment', NULL, 'admin'),
+  (4, 'Claims', 'Claims', NULL, 'admin'),
+  (5, 'Loan', 'Loan', NULL, 'admin'),
+  (6, 'Nomination', 'Nomination', NULL, 'admin'),
+  (7, 'Revival', 'Revival', NULL, 'admin'),
+  (8, 'Surrender', 'Surrender', NULL, 'admin');
+
+-- ---- mst_endorsement_sub_type  (from mst_endorsement_subtype, 78 rows) ----
+INSERT INTO mst_endorsement_sub_type (id, endorsement_type, name, code, description, created_by) VALUES
+  (1, 1, '3543-SA Reduction', '3543-SA Reduction', NULL, 'admin'),
+  (2, 1, '3544-Reduction in SA-Cash option', '3544-Reduction in SA-Cash option', NULL, 'admin'),
+  (3, 1, '3546-Alter prm mode,DOC(age entry unaltered)', '3546-Alter prm mode,DOC(age entry unaltered)', NULL, 'admin'),
+  (4, 1, '3551-Waive mly charge prm bank order,sss,SF', '3551-Waive mly charge prm bank order,sss,SF', NULL, 'admin'),
+  (5, 1, '3552-Waive mly charge prm bank order,sss,SF(alt to mly)', '3552-Waive mly charge prm bank order,sss,SF(alt to mly)', NULL, 'admin'),
+  (6, 1, '3553-Alteration DOC(age at entry is altered)', '3553-Alteration DOC(age at entry is altered)', NULL, 'admin'),
+  (7, 1, '3554-Splitting up policy', '3554-Splitting up policy', NULL, 'admin'),
+  (8, 1, '3555-Removal of extra prm', '3555-Removal of extra prm', NULL, 'admin'),
+  (9, 1, '3559-Cancellation Extra prm(military,aviation etc)', '3559-Cancellation Extra prm(military,aviation etc)', NULL, 'admin'),
+  (10, 1, '3560-Cancellation Extra prm(other occupations)', '3560-Cancellation Extra prm(other occupations)', NULL, 'admin'),
+  (11, 1, '3561-Altered into With profit plan', '3561-Altered into With profit plan', NULL, 'admin'),
+  (12, 1, '3562-Name alteration', '3562-Name alteration', NULL, 'admin'),
+  (13, 1, '3567-Payment of claim amt in shape of life Annuity', '3567-Payment of claim amt in shape of life Annuity', NULL, 'admin'),
+  (14, 1, '3568-Payment of claim amount', '3568-Payment of claim amount', NULL, 'admin'),
+  (15, 1, '3579-Converting the policy into Endowment', '3579-Converting the policy into Endowment', NULL, 'admin'),
+  (16, 1, '3711-Age altered but premium unaltered', '3711-Age altered but premium unaltered', NULL, 'admin'),
+  (17, 1, '3728-Age altered premium altered', '3728-Age altered premium altered', NULL, 'admin'),
+  (18, 1, '3729-Age altered,policy date back,premium unaltered', '3729-Age altered,policy date back,premium unaltered', NULL, 'admin'),
+  (19, 1, '3730-Age altered,premium altered(triple benefit)', '3730-Age altered,premium altered(triple benefit)', NULL, 'admin'),
+  (20, 1, '3731-Age alt,pol dateback,prm unaltered(triple benefit)', '3731-Age alt,pol dateback,prm unaltered(triple benefit)', NULL, 'admin'),
+  (21, 1, '3732-Age altered,prm altered(multi purpose)', '3732-Age altered,prm altered(multi purpose)', NULL, 'admin'),
+  (22, 1, '3733-Age alt,pol dateback,prm unaltered(multi purpose)', '3733-Age alt,pol dateback,prm unaltered(multi purpose)', NULL, 'admin'),
+  (23, 1, '3734-Age altered,prm altered(joint life)', '3734-Age altered,prm altered(joint life)', NULL, 'admin'),
+  (24, 1, '3735-Age alt,pol backdate,prm unaltered(joint life)', '3735-Age alt,pol backdate,prm unaltered(joint life)', NULL, 'admin'),
+  (25, 1, '3736-Age altered,prm unaltered of one LA(joint life)', '3736-Age altered,prm unaltered of one LA(joint life)', NULL, 'admin'),
+  (26, 1, '3773(Revised)-To pay extra premium for DAB', '3773(Revised)-To pay extra premium for DAB', NULL, 'admin'),
+  (27, 1, '3774(Revised)-To pay extra premium for DAB', '3774(Revised)-To pay extra premium for DAB', NULL, 'admin'),
+  (28, 1, '3775(Revised)-To pay extra premium for DAB', '3775(Revised)-To pay extra premium for DAB', NULL, 'admin'),
+  (29, 1, '3896-Alteartion CDA Policy', '3896-Alteartion CDA Policy', NULL, 'admin'),
+  (30, 1, '3897-Alteartion Other than CDA Policy', '3897-Alteartion Other than CDA Policy', NULL, 'admin'),
+  (31, 1, '5042-Waive of future premuim', '5042-Waive of future premuim', NULL, 'admin'),
+  (32, 1, '5043-Premium ceased upto deferred period', '5043-Premium ceased upto deferred period', NULL, 'admin'),
+  (33, 1, '5185-Endowment Assurance to Multi purpose plan', '5185-Endowment Assurance to Multi purpose plan', NULL, 'admin'),
+  (34, 1, '5245-MWP-corres-to-FN-5244', '5245-MWP-corres-to-FN-5244', NULL, 'admin'),
+  (35, 1, '5247-MWP-corres-to-FN-5246', '5247-MWP-corres-to-FN-5246', NULL, 'admin'),
+  (36, 1, '5249-MWP-corres-to-FN-5248', '5249-MWP-corres-to-FN-5248', NULL, 'admin'),
+  (37, 1, '5253-MWP-corres-to-FN-5252', '5253-MWP-corres-to-FN-5252', NULL, 'admin'),
+  (38, 1, '5254-MWP-Alteration', '5254-MWP-Alteration', NULL, 'admin'),
+  (39, 1, '5258-MWP-corres-to-FN-5256', '5258-MWP-corres-to-FN-5256', NULL, 'admin'),
+  (40, 1, '5259-MWP-Issuing a fresh policy', '5259-MWP-Issuing a fresh policy', NULL, 'admin'),
+  (41, 1, 'Foreign Policy', 'Foreign Policy', NULL, 'admin'),
+  (42, 2, 'Other Endorsement', 'Other Endorsement', NULL, 'admin'),
+  (43, 3, '5250-Assignment in  MWP Act', '5250-Assignment in  MWP Act', NULL, 'admin'),
+  (44, 3, 'Registration of Assignment', 'Registration of Assignment', NULL, 'admin'),
+  (45, 4, '5042(C)-Jeevan ANURAG plan 168', '5042(C)-Jeevan ANURAG plan 168', NULL, 'admin'),
+  (46, 4, '5042(JC)-Jeevan chaya plan 103', '5042(JC)-Jeevan chaya plan 103', NULL, 'admin'),
+  (47, 4, '5042-A-Full SA payable plan 90', '5042-A-Full SA payable plan 90', NULL, 'admin'),
+  (48, 4, '5042-B-Full SA payable plan 90', '5042-B-Full SA payable plan 90', NULL, 'admin'),
+  (49, 4, '5042-Full SA payable policy in force plan 19,20,90', '5042-Full SA payable policy in force plan 19,20,90', NULL, 'admin'),
+  (50, 4, '5043-PWB is admitted', '5043-PWB is admitted', NULL, 'admin'),
+  (51, 4, '5146-Endorsement DAB(joint life)', '5146-Endorsement DAB(joint life)', NULL, 'admin'),
+  (52, 4, 'Maturity Jeevan Dhara', 'Maturity Jeevan Dhara', NULL, 'admin'),
+  (53, 4, 'Maturity Jeevan Suraksha', 'Maturity Jeevan Suraksha', NULL, 'admin'),
+  (54, 4, 'Plan 111-Free insurance cover paid after maturity', 'Plan 111-Free insurance cover paid after maturity', NULL, 'admin'),
+  (55, 4, 'Plan 149-Free insurance cover after payment of Survival Benefit', 'Plan 149-Free insurance cover after payment of Survival Benefit', NULL, 'admin'),
+  (56, 4, 'Plan 150-Free insurance cover paid after maturity', 'Plan 150-Free insurance cover paid after maturity', NULL, 'admin'),
+  (57, 4, 'Plan 179-Free insurance cover paid after maturity', 'Plan 179-Free insurance cover paid after maturity', NULL, 'admin'),
+  (58, 4, 'Plan 801-Free insurance cover paid after maturity', 'Plan 801-Free insurance cover paid after maturity', NULL, 'admin'),
+  (59, 4, 'Survival Benefit-Less than Rs 60000', 'Survival Benefit-Less than Rs 60000', NULL, 'admin'),
+  (60, 4, 'Survival Benefit-More than Rs 60000', 'Survival Benefit-More than Rs 60000', NULL, 'admin'),
+  (61, 5, '5197-Loan Payment-Terms and Conditions of Loan', '5197-Loan Payment-Terms and Conditions of Loan', NULL, 'admin'),
+  (62, 5, '5200-Endorsement on Loan receipt', '5200-Endorsement on Loan receipt', NULL, 'admin'),
+  (63, 5, '5208-Full Loan Repayment by cash-cheque', '5208-Full Loan Repayment by cash-cheque', NULL, 'admin'),
+  (64, 5, '5213-Repayment of Loan by Claim', '5213-Repayment of Loan by Claim', NULL, 'admin'),
+  (65, 5, 'Foreclosure of Policy', 'Foreclosure of Policy', NULL, 'admin'),
+  (66, 5, 'Re-instatement of foreclosed policy', 'Re-instatement of foreclosed policy', NULL, 'admin'),
+  (67, 6, 'Registration of Nomination', 'Registration of Nomination', NULL, 'admin'),
+  (68, 7, '5058-A-Special Revival policies issued prior to 1-1-1979', '5058-A-Special Revival policies issued prior to 1-1-1979', NULL, 'admin'),
+  (69, 7, '5058-Special revival no change rate of interest', '5058-Special revival no change rate of interest', NULL, 'admin'),
+  (70, 7, '5059-Amt of prm after special revival', '5059-Amt of prm after special revival', NULL, 'admin'),
+  (71, 7, '5184-Installement Revival', '5184-Installement Revival', NULL, 'admin'),
+  (72, 7, '5241L-LIC New Endorsement Plus', '5241L-LIC New Endorsement Plus', NULL, 'admin'),
+  (73, 7, '5241N-Non-Linked Products or Riders', '5241N-Non-Linked Products or Riders', NULL, 'admin'),
+  (74, 8, '5093-Policy In force', '5093-Policy In force', NULL, 'admin'),
+  (75, 8, '5094-Policy already reduced paid', '5094-Policy already reduced paid', NULL, 'admin'),
+  (76, 8, '5095-Policy already fully paid', '5095-Policy already fully paid', NULL, 'admin'),
+  (77, 8, '5216-Reinstatement of surrendered policy', '5216-Reinstatement of surrendered policy', NULL, 'admin'),
+  (78, 8, 'Surrender of ULIP policy within locking period', 'Surrender of ULIP policy within locking period', NULL, 'admin');
+
+-- ---- mst_fixed_stamp  (from mst_fixed_stamp, 14 rows) ----
+INSERT INTO mst_fixed_stamp (id, name, code, description, created_by) VALUES
+  (1, 'Age admission at later stage', 'stm35050', NULL, 'admin'),
+  (2, 'Duplicate policy issued', 'stm35051', NULL, 'admin'),
+  (3, 'Death claim', 'stm35052', NULL, 'admin'),
+  (4, 'Maturity', 'stm35053', NULL, 'admin'),
+  (5, 'Surrender of policy', 'stm35054', NULL, 'admin'),
+  (6, 'Transferred', 'stm35055', NULL, 'admin'),
+  (7, 'Policy Number Modified', 'stm35056', NULL, 'admin'),
+  (8, 'Legal Notice Received', 'stm35057', NULL, 'admin'),
+  (9, 'Other endorsement', 'stm35058', NULL, 'admin'),
+  (10, 'Death claim intimated', 'stm35059', NULL, 'admin'),
+  (11, 'Policy master corrected', 'stm35060', NULL, 'admin'),
+  (12, 'Agency Code modified', 'stm35061', NULL, 'admin'),
+  (13, 'Image invalid', 'stm35062', NULL, 'admin'),
+  (14, 'Policy docket destruction', 'stm35064', NULL, 'admin');
+
+-- ---- and_office_code  (from mst_and_office_code, 3 rows) ----
+INSERT INTO and_office_code (id, code, name, description) VALUES
+  (1, '101', '300', ''),
+  (2, '102', '301', ''),
+  (3, '103', '302', '');
+
+-- ---- pbz_office_code  (from mst_pbz_office_code, 3 rows) ----
+INSERT INTO pbz_office_code (id, code, name, description) VALUES
+  (1, '101', '300', ''),
+  (2, '102', '301', ''),
+  (3, '103', '302', '');
+
+-- ---- rev_office_code  (from mst_rev_office_code, 3 rows) ----
+INSERT INTO rev_office_code (id, code, name, description) VALUES
+  (1, '101', '300', ''),
+  (2, '102', '301', ''),
+  (3, '103', '302', '');
+
+-- ---- rev_sr_no  (from mst_rev_srNo, 5 rows) ----
+INSERT INTO rev_sr_no (id, code, name, description) VALUES
+  (1, '101', '9823880', ''),
+  (2, '102', '9823881', ''),
+  (3, '103', '9823882', ''),
+  (4, '104', '9823990', ''),
+  (5, '105', '9823991', '');
+
+-- ---- and_doc_type  (from and_docType, 16 rows) ----
+INSERT INTO and_doc_type (id, document, description, code) VALUES
+  (1, 'Proposal', 'Proposal', '101'),
+  (2, 'POA', 'admin', '102'),
+  (3, 'POI', 'admin', '103'),
+  (4, 'Proposal', 'admin', '104'),
+  (5, 'Medical', 'admin', '105'),
+  (6, 'Others', 'admin', '106'),
+  (7, 'Proposal Form', 'Proposal Form', '107'),
+  (8, 'KYC Documents', 'KYC Documents', '108'),
+  (9, 'Proposal Enclosures', 'Proposal Enclosures', '109'),
+  (10, 'Signature Page', 'Signature Page', '110'),
+  (11, 'Proposal Review Slip', 'Proposal Review Slip', '111'),
+  (12, 'Policy Bond', 'Policy Bond', '112'),
+  (13, 'Surrender', 'Surrender', '113'),
+  (14, 'NEFT', 'NEFT', '114'),
+  (15, 'Endorsements', 'Endorsements', '115'),
+  (16, 'E Service', 'E Service', '116');
+
+-- ---- pbz_doc_type  (from pbz_docType, 16 rows) ----
+INSERT INTO pbz_doc_type (id, document, description, code) VALUES
+  (1, 'Policy', 'admin', '101'),
+  (2, 'POA', 'admin', '102'),
+  (3, 'POI', 'admin', '103'),
+  (4, 'Proposal', 'admin', '104'),
+  (5, 'Medical', 'admin', '105'),
+  (6, 'Others', 'admin', '106'),
+  (7, 'Proposal Form', 'Proposal Form', '107'),
+  (8, 'KYC Documents', 'KYC Documents', '108'),
+  (9, 'Proposal Enclosures', 'Proposal Enclosures', '109'),
+  (10, 'Signature Page', 'Signature Page', '110'),
+  (11, 'Proposal Review Slip', 'Proposal Review Slip', '111'),
+  (12, 'Policy Bond', 'Policy Bond', '112'),
+  (13, 'Surrender', 'Surrender', '113'),
+  (14, 'NEFT', 'NEFT', '114'),
+  (15, 'Endorsements', 'Endorsements', '115'),
+  (16, 'E Service', 'E Service', '116');
+
+-- ---- rev_doc_type  (from rev_docType, 1 rows) ----
+INSERT INTO rev_doc_type (id, document, description, code) VALUES
+  (1, 'Revival', 'Revival', '101');
+
+-- ---- neft_doc_type  (from neft_docType, 4 rows) ----
+INSERT INTO neft_doc_type (id, document, description, code) VALUES
+  (1, 'Photograph', 'Photograph', '101'),
+  (2, 'NEFT', 'NEFT', '102'),
+  (3, 'Signature', 'Signature', '103'),
+  (4, 'others', 'others', '104');
+
+-- ---- xpm_user  (from xpm_user, 1 rows) ----
+INSERT INTO xpm_user (id, display_name, login_name, email, gender, dob, first_name, last_name, user_type, phone_number, flat_no, street, city, state, address, display_page, random, salt, active, created_by) VALUES
+  (1, 'Admin', 'admin@gmail.com', 'admin@gmail.com', 'M', '2023-09-04', 'Admin', 'Admin', 1, '9874839383', '0/001', 'West Street', 'Chennai', '33', NULL, 'Administration', '', 'ad', 1, 'admin');

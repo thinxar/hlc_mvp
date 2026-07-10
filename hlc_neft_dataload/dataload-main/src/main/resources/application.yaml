@@ -1,11 +1,11 @@
 
 app:
  upload:
-   url: "http://localhost:7070/api/"
+   url: "http://localhost:8080/api/"
    username: "admin@gmail.com"
    password: "ad"
-   policyFolder: "D:\\hlc\\advrefno-data-30042026\\advrefno-data-30042026"
-   masterCsv: "D:\\hlc\\adv_reference_number.csv"
+   policyFolder: "D:\\hlc\\policy_dataload\\neft"
+   masterCsv: "D:\\hlc\\policy_dataload\\neft\\adv_reference_number.csv"
    parallel: 1
    start: 10
    end: 110

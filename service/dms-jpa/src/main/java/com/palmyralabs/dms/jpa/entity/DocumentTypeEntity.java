@@ -17,7 +17,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "mst_document_type")
 @EntityListeners(AuditListener.class)
-public class DocumentTypeEntity {
+public class DocumentTypeEntity{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

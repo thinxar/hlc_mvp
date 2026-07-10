@@ -1,0 +1,223 @@
+##############################################################################
+# 1) MONGODB  (mongosh / db.<collection>.insertMany)
+##############################################################################
+
+// ---- mst_document_type  (16 docs) ----
+db.mst_document_type.insertMany([
+  { _id: 1, document: "Policy", description: "admin", code: "101" },
+  { _id: 2, document: "POA", description: "admin", code: "102" },
+  { _id: 3, document: "POI", description: "admin", code: "103" },
+  { _id: 4, document: "Proposal", description: "admin", code: "104" },
+  { _id: 5, document: "Medical", description: "admin", code: "105" },
+  { _id: 6, document: "Others", description: "admin", code: "106" },
+  { _id: 7, document: "Proposal Form", description: "Proposal Form", code: "107" },
+  { _id: 8, document: "KYC Documents", description: "KYC Documents", code: "108" },
+  { _id: 9, document: "Proposal Enclosures", description: "Proposal Enclosures", code: "109" },
+  { _id: 10, document: "Signature Page", description: "Signature Page", code: "110" },
+  { _id: 11, document: "Proposal Review Slip", description: "Proposal Review Slip", code: "111" },
+  { _id: 12, document: "Policy Bond", description: "Policy Bond", code: "112" },
+  { _id: 13, document: "Surrender", description: "Surrender", code: "113" },
+  { _id: 14, document: "NEFT", description: "NEFT", code: "114" },
+  { _id: 15, document: "Endorsements", description: "Endorsements", code: "115" },
+  { _id: 16, document: "E Service", description: "E Service", code: "116" }
+]);
+
+// ---- mst_endorsement_type  (8 docs) ----
+db.mst_endorsement_type.insertMany([
+  { _id: 1, code: "Alteration", name: "Alteration", description: null },
+  { _id: 2, code: "Any Other", name: "Any Other", description: null },
+  { _id: 3, code: "Assignment", name: "Assignment", description: null },
+  { _id: 4, code: "Claims", name: "Claims", description: null },
+  { _id: 5, code: "Loan", name: "Loan", description: null },
+  { _id: 6, code: "Nomination", name: "Nomination", description: null },
+  { _id: 7, code: "Revival", name: "Revival", description: null },
+  { _id: 8, code: "Surrender", name: "Surrender", description: null }
+]);
+
+// ---- mst_endorsement_subtype  (78 docs) ----
+db.mst_endorsement_subtype.insertMany([
+  { _id: 1, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3543-SA Reduction", code: "3543-SA Reduction", description: null },
+  { _id: 2, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3544-Reduction in SA-Cash option", code: "3544-Reduction in SA-Cash option", description: null },
+  { _id: 3, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3546-Alter prm mode,DOC(age entry unaltered)", code: "3546-Alter prm mode,DOC(age entry unaltered)", description: null },
+  { _id: 4, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3551-Waive mly charge prm bank order,sss,SF", code: "3551-Waive mly charge prm bank order,sss,SF", description: null },
+  { _id: 5, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3552-Waive mly charge prm bank order,sss,SF(alt to mly)", code: "3552-Waive mly charge prm bank order,sss,SF(alt to mly)", description: null },
+  { _id: 6, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3553-Alteration DOC(age at entry is altered)", code: "3553-Alteration DOC(age at entry is altered)", description: null },
+  { _id: 7, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3554-Splitting up policy", code: "3554-Splitting up policy", description: null },
+  { _id: 8, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3555-Removal of extra prm", code: "3555-Removal of extra prm", description: null },
+  { _id: 9, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3559-Cancellation Extra prm(military,aviation etc)", code: "3559-Cancellation Extra prm(military,aviation etc)", description: null },
+  { _id: 10, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3560-Cancellation Extra prm(other occupations)", code: "3560-Cancellation Extra prm(other occupations)", description: null },
+  { _id: 11, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3561-Altered into With profit plan", code: "3561-Altered into With profit plan", description: null },
+  { _id: 12, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3562-Name alteration", code: "3562-Name alteration", description: null },
+  { _id: 13, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3567-Payment of claim amt in shape of life Annuity", code: "3567-Payment of claim amt in shape of life Annuity", description: null },
+  { _id: 14, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3568-Payment of claim amount", code: "3568-Payment of claim amount", description: null },
+  { _id: 15, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3579-Converting the policy into Endowment", code: "3579-Converting the policy into Endowment", description: null },
+  { _id: 16, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3711-Age altered but premium unaltered", code: "3711-Age altered but premium unaltered", description: null },
+  { _id: 17, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3728-Age altered premium altered", code: "3728-Age altered premium altered", description: null },
+  { _id: 18, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3729-Age altered,policy date back,premium unaltered", code: "3729-Age altered,policy date back,premium unaltered", description: null },
+  { _id: 19, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3730-Age altered,premium altered(triple benefit)", code: "3730-Age altered,premium altered(triple benefit)", description: null },
+  { _id: 20, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3731-Age alt,pol dateback,prm unaltered(triple benefit)", code: "3731-Age alt,pol dateback,prm unaltered(triple benefit)", description: null },
+  { _id: 21, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3732-Age altered,prm altered(multi purpose)", code: "3732-Age altered,prm altered(multi purpose)", description: null },
+  { _id: 22, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3733-Age alt,pol dateback,prm unaltered(multi purpose)", code: "3733-Age alt,pol dateback,prm unaltered(multi purpose)", description: null },
+  { _id: 23, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3734-Age altered,prm altered(joint life)", code: "3734-Age altered,prm altered(joint life)", description: null },
+  { _id: 24, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3735-Age alt,pol backdate,prm unaltered(joint life)", code: "3735-Age alt,pol backdate,prm unaltered(joint life)", description: null },
+  { _id: 25, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3736-Age altered,prm unaltered of one LA(joint life)", code: "3736-Age altered,prm unaltered of one LA(joint life)", description: null },
+  { _id: 26, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3773(Revised)-To pay extra premium for DAB", code: "3773(Revised)-To pay extra premium for DAB", description: null },
+  { _id: 27, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3774(Revised)-To pay extra premium for DAB", code: "3774(Revised)-To pay extra premium for DAB", description: null },
+  { _id: 28, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3775(Revised)-To pay extra premium for DAB", code: "3775(Revised)-To pay extra premium for DAB", description: null },
+  { _id: 29, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3896-Alteartion CDA Policy", code: "3896-Alteartion CDA Policy", description: null },
+  { _id: 30, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "3897-Alteartion Other than CDA Policy", code: "3897-Alteartion Other than CDA Policy", description: null },
+  { _id: 31, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "5042-Waive of future premuim", code: "5042-Waive of future premuim", description: null },
+  { _id: 32, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "5043-Premium ceased upto deferred period", code: "5043-Premium ceased upto deferred period", description: null },
+  { _id: 33, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "5185-Endowment Assurance to Multi purpose plan", code: "5185-Endowment Assurance to Multi purpose plan", description: null },
+  { _id: 34, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "5245-MWP-corres-to-FN-5244", code: "5245-MWP-corres-to-FN-5244", description: null },
+  { _id: 35, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "5247-MWP-corres-to-FN-5246", code: "5247-MWP-corres-to-FN-5246", description: null },
+  { _id: 36, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "5249-MWP-corres-to-FN-5248", code: "5249-MWP-corres-to-FN-5248", description: null },
+  { _id: 37, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "5253-MWP-corres-to-FN-5252", code: "5253-MWP-corres-to-FN-5252", description: null },
+  { _id: 38, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "5254-MWP-Alteration", code: "5254-MWP-Alteration", description: null },
+  { _id: 39, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "5258-MWP-corres-to-FN-5256", code: "5258-MWP-corres-to-FN-5256", description: null },
+  { _id: 40, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "5259-MWP-Issuing a fresh policy", code: "5259-MWP-Issuing a fresh policy", description: null },
+  { _id: 41, endorsementType: { _id: 1, code: "Alteration", name: "Alteration" }, name: "Foreign Policy", code: "Foreign Policy", description: null },
+  { _id: 42, endorsementType: { _id: 2, code: "Any Other", name: "Any Other" }, name: "Other Endorsement", code: "Other Endorsement", description: null },
+  { _id: 43, endorsementType: { _id: 3, code: "Assignment", name: "Assignment" }, name: "5250-Assignment in  MWP Act", code: "5250-Assignment in  MWP Act", description: null },
+  { _id: 44, endorsementType: { _id: 3, code: "Assignment", name: "Assignment" }, name: "Registration of Assignment", code: "Registration of Assignment", description: null },
+  { _id: 45, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "5042(C)-Jeevan ANURAG plan 168", code: "5042(C)-Jeevan ANURAG plan 168", description: null },
+  { _id: 46, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "5042(JC)-Jeevan chaya plan 103", code: "5042(JC)-Jeevan chaya plan 103", description: null },
+  { _id: 47, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "5042-A-Full SA payable plan 90", code: "5042-A-Full SA payable plan 90", description: null },
+  { _id: 48, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "5042-B-Full SA payable plan 90", code: "5042-B-Full SA payable plan 90", description: null },
+  { _id: 49, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "5042-Full SA payable policy in force plan 19,20,90", code: "5042-Full SA payable policy in force plan 19,20,90", description: null },
+  { _id: 50, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "5043-PWB is admitted", code: "5043-PWB is admitted", description: null },
+  { _id: 51, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "5146-Endorsement DAB(joint life)", code: "5146-Endorsement DAB(joint life)", description: null },
+  { _id: 52, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "Maturity Jeevan Dhara", code: "Maturity Jeevan Dhara", description: null },
+  { _id: 53, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "Maturity Jeevan Suraksha", code: "Maturity Jeevan Suraksha", description: null },
+  { _id: 54, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "Plan 111-Free insurance cover paid after maturity", code: "Plan 111-Free insurance cover paid after maturity", description: null },
+  { _id: 55, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "Plan 149-Free insurance cover after payment of Survival Benefit", code: "Plan 149-Free insurance cover after payment of Survival Benefit", description: null },
+  { _id: 56, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "Plan 150-Free insurance cover paid after maturity", code: "Plan 150-Free insurance cover paid after maturity", description: null },
+  { _id: 57, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "Plan 179-Free insurance cover paid after maturity", code: "Plan 179-Free insurance cover paid after maturity", description: null },
+  { _id: 58, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "Plan 801-Free insurance cover paid after maturity", code: "Plan 801-Free insurance cover paid after maturity", description: null },
+  { _id: 59, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "Survival Benefit-Less than Rs 60000", code: "Survival Benefit-Less than Rs 60000", description: null },
+  { _id: 60, endorsementType: { _id: 4, code: "Claims", name: "Claims" }, name: "Survival Benefit-More than Rs 60000", code: "Survival Benefit-More than Rs 60000", description: null },
+  { _id: 61, endorsementType: { _id: 5, code: "Loan", name: "Loan" }, name: "5197-Loan Payment-Terms and Conditions of Loan", code: "5197-Loan Payment-Terms and Conditions of Loan", description: null },
+  { _id: 62, endorsementType: { _id: 5, code: "Loan", name: "Loan" }, name: "5200-Endorsement on Loan receipt", code: "5200-Endorsement on Loan receipt", description: null },
+  { _id: 63, endorsementType: { _id: 5, code: "Loan", name: "Loan" }, name: "5208-Full Loan Repayment by cash-cheque", code: "5208-Full Loan Repayment by cash-cheque", description: null },
+  { _id: 64, endorsementType: { _id: 5, code: "Loan", name: "Loan" }, name: "5213-Repayment of Loan by Claim", code: "5213-Repayment of Loan by Claim", description: null },
+  { _id: 65, endorsementType: { _id: 5, code: "Loan", name: "Loan" }, name: "Foreclosure of Policy", code: "Foreclosure of Policy", description: null },
+  { _id: 66, endorsementType: { _id: 5, code: "Loan", name: "Loan" }, name: "Re-instatement of foreclosed policy", code: "Re-instatement of foreclosed policy", description: null },
+  { _id: 67, endorsementType: { _id: 6, code: "Nomination", name: "Nomination" }, name: "Registration of Nomination", code: "Registration of Nomination", description: null },
+  { _id: 68, endorsementType: { _id: 7, code: "Revival", name: "Revival" }, name: "5058-A-Special Revival policies issued prior to 1-1-1979", code: "5058-A-Special Revival policies issued prior to 1-1-1979", description: null },
+  { _id: 69, endorsementType: { _id: 7, code: "Revival", name: "Revival" }, name: "5058-Special revival no change rate of interest", code: "5058-Special revival no change rate of interest", description: null },
+  { _id: 70, endorsementType: { _id: 7, code: "Revival", name: "Revival" }, name: "5059-Amt of prm after special revival", code: "5059-Amt of prm after special revival", description: null },
+  { _id: 71, endorsementType: { _id: 7, code: "Revival", name: "Revival" }, name: "5184-Installement Revival", code: "5184-Installement Revival", description: null },
+  { _id: 72, endorsementType: { _id: 7, code: "Revival", name: "Revival" }, name: "5241L-LIC New Endorsement Plus", code: "5241L-LIC New Endorsement Plus", description: null },
+  { _id: 73, endorsementType: { _id: 7, code: "Revival", name: "Revival" }, name: "5241N-Non-Linked Products or Riders", code: "5241N-Non-Linked Products or Riders", description: null },
+  { _id: 74, endorsementType: { _id: 8, code: "Surrender", name: "Surrender" }, name: "5093-Policy In force", code: "5093-Policy In force", description: null },
+  { _id: 75, endorsementType: { _id: 8, code: "Surrender", name: "Surrender" }, name: "5094-Policy already reduced paid", code: "5094-Policy already reduced paid", description: null },
+  { _id: 76, endorsementType: { _id: 8, code: "Surrender", name: "Surrender" }, name: "5095-Policy already fully paid", code: "5095-Policy already fully paid", description: null },
+  { _id: 77, endorsementType: { _id: 8, code: "Surrender", name: "Surrender" }, name: "5216-Reinstatement of surrendered policy", code: "5216-Reinstatement of surrendered policy", description: null },
+  { _id: 78, endorsementType: { _id: 8, code: "Surrender", name: "Surrender" }, name: "Surrender of ULIP policy within locking period", code: "Surrender of ULIP policy within locking period", description: null }
+]);
+
+// ---- mst_fixed_stamp  (14 docs) ----
+db.mst_fixed_stamp.insertMany([
+  { _id: 1, name: "Age admission at later stage", code: "stm35050", description: null },
+  { _id: 2, name: "Duplicate policy issued", code: "stm35051", description: null },
+  { _id: 3, name: "Death claim", code: "stm35052", description: null },
+  { _id: 4, name: "Maturity", code: "stm35053", description: null },
+  { _id: 5, name: "Surrender of policy", code: "stm35054", description: null },
+  { _id: 6, name: "Transferred", code: "stm35055", description: null },
+  { _id: 7, name: "Policy Number Modified", code: "stm35056", description: null },
+  { _id: 8, name: "Legal Notice Received", code: "stm35057", description: null },
+  { _id: 9, name: "Other endorsement", code: "stm35058", description: null },
+  { _id: 10, name: "Death claim intimated", code: "stm35059", description: null },
+  { _id: 11, name: "Policy master corrected", code: "stm35060", description: null },
+  { _id: 12, name: "Agency Code modified", code: "stm35061", description: null },
+  { _id: 13, name: "Image invalid", code: "stm35062", description: null },
+  { _id: 14, name: "Policy docket destruction", code: "stm35064", description: null }
+]);
+
+// ---- mst_and_office_code  (3 docs) ----
+db.mst_and_office_code.insertMany([
+  { _id: 1, code: "101", name: "300", description: "" },
+  { _id: 2, code: "102", name: "301", description: "" },
+  { _id: 3, code: "103", name: "302", description: "" }
+]);
+
+// ---- mst_pbz_office_code  (3 docs) ----
+db.mst_pbz_office_code.insertMany([
+  { _id: 1, code: "101", name: "300", description: "" },
+  { _id: 2, code: "102", name: "301", description: "" },
+  { _id: 3, code: "103", name: "302", description: "" }
+]);
+
+// ---- mst_rev_office_code  (3 docs) ----
+db.mst_rev_office_code.insertMany([
+  { _id: 1, code: "101", name: "300", description: "" },
+  { _id: 2, code: "102", name: "301", description: "" },
+  { _id: 3, code: "103", name: "302", description: "" }
+]);
+
+// ---- mst_rev_srNo  (5 docs) ----
+db.mst_rev_srNo.insertMany([
+  { _id: 1, code: "101", name: "9823880", description: "" },
+  { _id: 2, code: "102", name: "9823881", description: "" },
+  { _id: 3, code: "103", name: "9823882", description: "" },
+  { _id: 4, code: "104", name: "9823990", description: "" },
+  { _id: 5, code: "105", name: "9823991", description: "" }
+]);
+
+// ---- and_docType  (16 docs) ----
+db.and_docType.insertMany([
+  { _id: 1, document: "Proposal", description: "Proposal", code: "101" },
+  { _id: 2, document: "POA", description: "admin", code: "102" },
+  { _id: 3, document: "POI", description: "admin", code: "103" },
+  { _id: 4, document: "Proposal", description: "admin", code: "104" },
+  { _id: 5, document: "Medical", description: "admin", code: "105" },
+  { _id: 6, document: "Others", description: "admin", code: "106" },
+  { _id: 7, document: "Proposal Form", description: "Proposal Form", code: "107" },
+  { _id: 8, document: "KYC Documents", description: "KYC Documents", code: "108" },
+  { _id: 9, document: "Proposal Enclosures", description: "Proposal Enclosures", code: "109" },
+  { _id: 10, document: "Signature Page", description: "Signature Page", code: "110" },
+  { _id: 11, document: "Proposal Review Slip", description: "Proposal Review Slip", code: "111" },
+  { _id: 12, document: "Policy Bond", description: "Policy Bond", code: "112" },
+  { _id: 13, document: "Surrender", description: "Surrender", code: "113" },
+  { _id: 14, document: "NEFT", description: "NEFT", code: "114" },
+  { _id: 15, document: "Endorsements", description: "Endorsements", code: "115" },
+  { _id: 16, document: "E Service", description: "E Service", code: "116" }
+]);
+
+// ---- pbz_docType  (16 docs) ----
+db.pbz_docType.insertMany([
+  { _id: 1, document: "Policy", description: "admin", code: "101" },
+  { _id: 2, document: "POA", description: "admin", code: "102" },
+  { _id: 3, document: "POI", description: "admin", code: "103" },
+  { _id: 4, document: "Proposal", description: "admin", code: "104" },
+  { _id: 5, document: "Medical", description: "admin", code: "105" },
+  { _id: 6, document: "Others", description: "admin", code: "106" },
+  { _id: 7, document: "Proposal Form", description: "Proposal Form", code: "107" },
+  { _id: 8, document: "KYC Documents", description: "KYC Documents", code: "108" },
+  { _id: 9, document: "Proposal Enclosures", description: "Proposal Enclosures", code: "109" },
+  { _id: 10, document: "Signature Page", description: "Signature Page", code: "110" },
+  { _id: 11, document: "Proposal Review Slip", description: "Proposal Review Slip", code: "111" },
+  { _id: 12, document: "Policy Bond", description: "Policy Bond", code: "112" },
+  { _id: 13, document: "Surrender", description: "Surrender", code: "113" },
+  { _id: 14, document: "NEFT", description: "NEFT", code: "114" },
+  { _id: 15, document: "Endorsements", description: "Endorsements", code: "115" },
+  { _id: 16, document: "E Service", description: "E Service", code: "116" }
+]);
+
+// ---- rev_docType  (1 docs) ----
+db.rev_docType.insertMany([
+  { _id: 1, document: "Revival", description: "Revival", code: "101" }
+]);
+
+// ---- neft_docType  (4 docs) ----
+db.neft_docType.insertMany([
+  { _id: 1, document: "Photograph", description: "Photograph", code: "101" },
+  { _id: 2, document: "NEFT", description: "NEFT", code: "102" },
+  { _id: 3, document: "Signature", description: "Signature", code: "103" },
+  { _id: 4, document: "others", description: "others", code: "104" }
+]);
+
+// ---- xpm_user  (1 docs) ----
+db.xpm_user.insertMany([
+  { _id: 1, displayName: "Admin", loginName: "admin@gmail.com", email: "admin@gmail.com", gender: "M", dob: ISODate("2023-09-04T00:00:00.000Z"), firstName: "Admin", lastName: "Admin", userType: 1, phoneNumber: "9874839383", flatNo: "0/001", street: "West Street", city: "Chennai", state: "33", address: null, displayPage: "Administration", random: "", salt: "ad", active: 1 }
+]);

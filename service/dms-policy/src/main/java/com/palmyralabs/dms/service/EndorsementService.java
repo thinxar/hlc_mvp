@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.palmyralabs.dms.base.exception.InvaidInputException;
+import com.palmyralabs.dms.base.exception.InvalidInputException;
 import com.palmyralabs.dms.jpa.entity.DocumentTypeEntity;
 import com.palmyralabs.dms.jpa.repository.DocumentTypeRepository;
 import com.palmyralabs.dms.model.EndorsementRequest;
@@ -36,7 +36,7 @@ public class EndorsementService {
 	public String createEndorsement(EndorsementRequest request, Integer policyId, String code) throws IOException {
 		String endorsementSubtype = request.getEndorsementSubType();
 		if (endorsementSubtype == null || endorsementSubtype.isEmpty()) {
-			throw new InvaidInputException("INV012", "endorsementSubType is empty");
+			throw new InvalidInputException("INV012", "endorsementSubType is empty");
 		}
 		String fileName = endorsementSubtype + inputExtension;
 		String startDir = System.getProperty("user.dir");
@@ -117,7 +117,7 @@ public class EndorsementService {
 
 	private DocumentTypeEntity getDocumentTypeEntity(String code) {
 		return docketTypeRepo.findByCode(code)
-				.orElseThrow(() -> new InvaidInputException("INV001", "docketType not found"));
+				.orElseThrow(() -> new InvalidInputException("INV001", "docketType not found"));
 	}
 
 }

@@ -1,10 +1,10 @@
 
 app:
  upload:
-   url: "http://localhost:7070/api/"
+   url: "http://localhost:8080/api/"
    username: "admin@gmail.com"
    password: "ad"
-   policyFolder: "D:\\palmyra\\dataload"
+   policyFolder: "D:\\hlc\\policy_dataload\\policy_demo_data"
    parallel: 1
    start: 10
    end: 110

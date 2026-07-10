@@ -37,6 +37,11 @@ dependencies {
    	implementation project(':dms-admin')
    	implementation project(':dms-policy')
     implementation project(":dms-filemgmt")
+     implementation project(':dms-masterdata')
+    implementation project(':dms-revival')
+    implementation project(':dms-policyBazaar')
+    implementation project(':dms-ananda')
+    implementation project(':dms-neft')
 }
 
 configurations {
