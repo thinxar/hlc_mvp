@@ -1,5 +1,6 @@
 package com.palmyralabs.dms.revival.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +15,6 @@ import lombok.RequiredArgsConstructor;
 public class RevPolicyPendencyChartService {
 
 	public List<ResponseModel> getPendency(String soCode, String srNo) {
-		throw new UnsupportedOperationException("dms-revival dashboard pending Postgres migration");
+		 return Collections.emptyList(); 
 	}
 }
