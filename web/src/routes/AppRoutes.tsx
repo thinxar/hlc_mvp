@@ -4,6 +4,7 @@ import { CustomViewerPage } from "src/pages/customViewer/CustomViewerPage";
 import { APDocumentView } from "src/pages/customViewer/pages/apPolicy/APDocumentView";
 import { NeftDocumentView } from "src/pages/customViewer/pages/neftDoc/NeftDocumentView";
 import { NeftDocumentViewPage } from "src/pages/customViewer/pages/neftDoc/NeftDocumentViewPage";
+import { PolicyDocumentView } from "src/pages/customViewer/pages/policyDoc/PolicyDocumentView";
 import PolicySubmissionPage from "src/pages/customViewer/pages/PolicySubmissionPage";
 import { CustomViewerViewPage } from "src/pages/customViewer/view/CustomViewerViewPage";
 import RevivalDODashboardPage from "src/pages/dashboard/doDashboard/RevivalDODashboardPage";
@@ -70,7 +71,11 @@ export const appRoutes = [
             {
                 path: 'neftDocument',
                 element: <NeftDocumentViewPage />,
-            }
+            },
+            //  {
+            //     path: 'policyDocument',
+            //     element: <PolicyDocumentViewPage />,
+            // }
         ]
     }
 ]
@@ -98,6 +103,10 @@ export const iframeRoutes = [
                 path: 'neft/docView',
                 element: <NeftDocumentView />,
             },
+            {
+                path: 'policy/docView',
+                element: <PolicyDocumentView />,
+            }
         ]
     }
 ]

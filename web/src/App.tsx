@@ -16,6 +16,7 @@ import './themes/colorDef.css';
 import { IFrameLayout } from './common/layout/IFrameLayout';
 import { useContext, useEffect } from 'react';
 import { ThemeContext } from 'wire/ThemeProvider';
+import { PolicyDocumentViewPage } from './pages/customViewer/pages/policyDoc/PolicyDocumentViewPage';
 
 function App() {
   const { isDarkMode } = useContext(ThemeContext);
@@ -36,6 +37,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/landing" replace={true} />} />
           <Route path="/landing" element={<LandingPage />} />
+           <Route path="/app/iframe/customViewer/policyDocument" element={<PolicyDocumentViewPage />} />
           <Route path='/login' element={<LoginPage />} />
 
           {/* <Route path='app/CustomViewer/NG' element={<CustomViewerPage pageName="customViewer" />} />

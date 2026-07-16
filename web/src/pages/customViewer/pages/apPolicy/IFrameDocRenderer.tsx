@@ -39,7 +39,16 @@ const IFrameDocRenderer = (props: IOptions) => {
         <div className='border-2 border-blue-500/40 rounded'>
             <iframe
                 src={`${src}?${params.toString()}`}
-                style={{ width: "100%", height: source ? 'calc(100vh - 135px)' : "calc(100vh - 175px)", border: "none" }}
+                style={{
+                    width: "100%",
+                    height:
+                        source === "policy/docView"
+                            ? "calc(100vh - 1px)"
+                            : source
+                                ? "calc(100vh - 135px)"
+                                : "calc(100vh - 175px)",
+                    border: "none",
+                }}
             />
         </div>
     )
