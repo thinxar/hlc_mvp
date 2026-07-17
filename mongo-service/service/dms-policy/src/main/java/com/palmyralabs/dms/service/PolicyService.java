@@ -71,6 +71,35 @@ public class PolicyService {
 		return policyModels;
 	}
 
+	public PolicyModel editPolicy(Integer policyId, PolicyModel model) {
+		Optional<PolicyEntity> dbPolicyOpt = policyRepository.findById(policyId);
+		if (dbPolicyOpt.isEmpty()) {
+			throw new InvalidInputException("INV001", "policy record not found");
+		}
+
+		PolicyEntity policyEntity = dbPolicyOpt.get();
+
+		policyEntity.setPolicyNumber(model.getPolicyNumber());
+		policyEntity.setCustomerId(model.getCustomerId());
+		policyEntity.setCustomerName(model.getCustomerName());
+		policyEntity.setCustomerDob(model.getCustomerDob());
+		policyEntity.setDoc(model.getDoc());
+		policyEntity.setDivisionCode(model.getDivisionCode());
+		policyEntity.setBranchCode(model.getBranchCode());
+		policyEntity.setBatchNumber(model.getBatchNumber());
+		policyEntity.setBoxNumber(model.getBoxNumber());
+		policyEntity.setRmsStatus(model.getRmsStatus());
+		policyEntity.setUploadLabel(model.getUploadLabel());
+		policyEntity.setField1(model.getField1());
+		policyEntity.setField2(model.getField2());
+		policyEntity.setField3(model.getField3());
+		policyEntity.setMobileNumber(model.getMobileNumber());
+		policyEntity.setPolicyStatus(model.getPolicyStatus());
+
+		PolicyEntity savedPolicyEntity = policyRepository.save(policyEntity);
+		return modelMapper.toPolicyModel(savedPolicyEntity);
+	}
+
 	public PolicyModel getById(Integer policyId) {
 		Optional<PolicyEntity> policyEntity = policyRepository.findById(policyId);
 		if (policyEntity.isEmpty()) {

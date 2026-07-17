@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,5 +38,11 @@ public class PolicyController extends AbstractController {
 	@GetMapping("/policy/{id}")
 	public PalmyraResponse<PolicyModel> getById(@PathVariable("id") Integer policyId) {
 		return apiResponse(policyService.getById(policyId));
+	}
+
+	@PutMapping("/policy/{id}")
+	public PalmyraResponse<PolicyModel> editPolicy(@PathVariable("id") Integer policyId,
+			@RequestBody PolicyModel request) {
+		return apiResponse(policyService.editPolicy(policyId, request));
 	}
 }
