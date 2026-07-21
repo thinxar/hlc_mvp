@@ -1,10 +1,24 @@
 import { CiCalendar, CiHardDrive } from 'react-icons/ci';
+import { FaFileWord, FaFileExcel, FaFileCsv } from 'react-icons/fa6';
 import { formatDateTime } from 'utils/FormateDate';
 import Html from '../../../../../public/images/html.png';
 import Image from '../../../../../public/images/image.png';
 import Pdf from '../../../../../public/images/pdf.png';
 import Text from '../../../../../public/images/text.png';
 import Tiff from '../../../../../public/images/tiff.png';
+
+/** Doc/Excel/CSV get dedicated react-icons, matched by MIME type or extension. */
+const getOfficeIcon = (type: string, name: string) => {
+    const t = (type || '').toLowerCase();
+    const ext = name?.includes('.') ? name.split('.').pop()!.toLowerCase() : '';
+    if (ext === 'doc' || ext === 'docx' || t.includes('word') || t === 'application/msword')
+        return <FaFileWord className="w-7 h-7 text-blue-600" />;
+    if (ext === 'xls' || ext === 'xlsx' || t.includes('spreadsheet') || t.includes('excel'))
+        return <FaFileExcel className="w-7 h-7 text-green-600" />;
+    if (ext === 'csv' || t === 'text/csv')
+        return <FaFileCsv className="w-7 h-7 text-teal-600" />;
+    return null;
+};
 
 interface FileProps {
     file: any
@@ -22,7 +36,9 @@ const NeftFileItemList = ({ file, isSelected, onClick }: FileProps) => {
         'text/plain': { src: Text, className: 'w-9 h-9' },
     };
 
-    const getFileType = (type: string) => {
+    const getFileType = (type: string, name: string) => {
+        const officeIcon = getOfficeIcon(type, name);
+        if (officeIcon) return officeIcon;
         const { src, className } = iconMap[type] || { src: Image, className: 'w-7 h-7' };
         return <img src={src} className={className} />;
     };
@@ -53,7 +69,7 @@ const NeftFileItemList = ({ file, isSelected, onClick }: FileProps) => {
                     </div>
                 </div>
                 <div className={`p-1 rounded-lg bg-white/10`}>
-                    {getFileType(file.pdfFiles?.fileType)}
+                    {getFileType(file.pdfFiles?.fileType, file.pdfFiles?.fileName)}
                 </div>
             </div>
         </div>

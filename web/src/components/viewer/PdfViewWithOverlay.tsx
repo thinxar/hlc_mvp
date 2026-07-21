@@ -166,7 +166,7 @@ export const PDFViewerWithOverlay = (
           <button onClick={() => setZoom((z) => z + 0.1)} title="Zoom in" className="cursor-pointer">
             <AiOutlineZoomIn fontSize={20} />
           </button>
-          <button onClick={() => setRotation((r) => (r + 90) % 360)} title="Rotate" className="cursor-pointer">
+          <button onClick={() => setRotation((r) => r + 90)} title="Rotate" className="cursor-pointer">
             <MdRotateRight fontSize={20} />
           </button>
           <button

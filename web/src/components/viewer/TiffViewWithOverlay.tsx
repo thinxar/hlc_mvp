@@ -343,7 +343,7 @@ export const TIFFViewer = ({
           <span className="text-xl">|</span>
 
           <div
-            onClick={() => setRotation((r) => (r + 90) % 360)}
+            onClick={() => setRotation((r) => r + 90)}
             title="Rotate"
             className="py-1 rounded hover:bg-gray-300 cursor-pointer"
           >

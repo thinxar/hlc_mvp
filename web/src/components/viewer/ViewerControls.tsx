@@ -14,7 +14,7 @@ export const useViewerTransform = (initialScale = 1) => {
 
     const zoomIn = () => setScale((s) => Math.min(+(s + 0.15).toFixed(2), 4));
     const zoomOut = () => setScale((s) => Math.max(+(s - 0.15).toFixed(2), 0.25));
-    const rotate = () => setRotation((r) => (r + 90) % 360);
+    const rotate = () => setRotation((r) => r + 90);
     const reset = () => {
         setScale(initialScale);
         setRotation(0);
