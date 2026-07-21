@@ -44,24 +44,39 @@ const PolicyHeaderSection = (props: IOptions) => {
     }, [])
   
     const stampDisable = (id == null || isNaN(Number(id)));
+
+    // Stamps only apply to PDF / TIFF. Hide the stamp category button for
+    // DOC, DOCX, XLS, XLSX, CSV and image files.
+    const ext = (file?.fileName || '').includes('.')
+        ? (file?.fileName || '').split('.').pop().toLowerCase()
+        : '';
+    const fType = (file?.fileType || '').toLowerCase();
+    const hiddenExts = ['doc', 'docx', 'xls', 'xlsx', 'csv', 'jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+    const isImageFile = fType.startsWith('image/') && !fType.includes('tiff');
+    const isOfficeFile =
+        fType.includes('word') || fType.includes('excel') || fType.includes('spreadsheet') ||
+        fType === 'application/msword' || fType === 'text/csv';
+    const hideStampButton = hiddenExts.includes(ext) || isImageFile || isOfficeFile;
+
     return (
         <div>
             <div className="relative p-1 flex justify-between items-center border-b border-indigo-100">
                 <div>
                 </div>
                 <div className='flex items-center gap-4 p-1'>
+                    {!hideStampButton && (
                     <Tooltip label='Stamp Category'>
                         <span><Menu shadow="md" width={200}>
                             <Menu.Target>
                                 {/* <button disabled={stampDisable}
-                                    className='cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-linear-to-r 
-                                    pr-bgcolor text-white font-semibold rounded-lg shadow-md hover:shadow-lg 
+                                    className='cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-linear-to-r
+                                    pr-bgcolor text-white font-semibold rounded-lg shadow-md hover:shadow-lg
                                    transform hover:scale-101 transition-all duration-200 ease-out'
                                 >
                                     <LiaStampSolid fontSize={26} /></button> */}
                                 <button
                                     disabled={stampDisable}
-                                    className={`px-2 py-1.5 flex items-center gap-2 font-semibold rounded-lg shadow-md 
+                                    className={`px-2 py-1.5 flex items-center gap-2 font-semibold rounded-lg shadow-md
                                          transition-all duration-200 ease-out
                                       ${stampDisable
                                             ? "bg-gray-300 text-gray-500 cursor-not-allowed"
@@ -88,6 +103,7 @@ const PolicyHeaderSection = (props: IOptions) => {
                             </Menu.Dropdown>
                         </Menu></span>
                     </Tooltip>
+                    )}
                     <button
                         className='cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-linear-to-r pr-bgcolor text-white font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:scale-101 transition-all duration-200 ease-out'
                         onClick={secondHandlers.open}>
