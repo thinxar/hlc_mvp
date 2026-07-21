@@ -2,9 +2,43 @@
     color: #111827;
 }
 
+/* Make the scrollbars (esp. the horizontal one) clearly visible and easy to
+   grab with a mouse. */
+.office-scroll {
+    scrollbar-width: auto;
+    scrollbar-color: #6b7280 #e5e7eb;
+}
+.office-scroll::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+.office-scroll::-webkit-scrollbar-track {
+    background: #e5e7eb;
+    border-radius: 8px;
+}
+.office-scroll::-webkit-scrollbar-thumb {
+    background: #6b7280;
+    border-radius: 8px;
+    border: 3px solid #e5e7eb;
+}
+.office-scroll::-webkit-scrollbar-thumb:hover {
+    background: #374151;
+}
+/* Always reserve/show the horizontal bar for spreadsheet content. */
+.office-scroll-x {
+    overflow-x: scroll;
+}
+.office-scroll-x::-webkit-scrollbar:horizontal {
+    height: 16px;
+}
+
 .office-viewer table {
     border-collapse: collapse;
-    width: 100%;
+    /* size to content so wide sheets overflow -> horizontal scrollbar,
+       but still fill the container when narrow */
+    width: max-content;
+    min-width: 100%;
+    max-width: none;
     margin-bottom: 1rem;
     font-size: 13px;
 }
