@@ -32,6 +32,8 @@ export const TIFFViewer = ({
 
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const wheelLock = useRef(false);
 
   const overlayMap = useMemo(() => {
     const map: Record<number, any[]> = {};
@@ -241,6 +243,33 @@ export const TIFFViewer = ({
     selectStampFunc(selectedStamp, page, setSelectedStamp, fabricCanvasRef, setStampDataArr);
   }, [selectedStamp]);
 
+  // Reset scroll to top whenever the page changes.
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+  }, [page]);
+
+  // Scroll wheel flips pages, but only once the current page is scrolled to its
+  // top/bottom edge (so a zoomed/tall page can still be scrolled internally first).
+  const handleWheel = (e: any) => {
+    const el = scrollRef.current;
+    if (!el || wheelLock.current) return;
+
+    const atTop = el.scrollTop <= 0;
+    const atBottom = Math.ceil(el.scrollTop + el.clientHeight) >= el.scrollHeight;
+
+    if (e.deltaY > 0 && atBottom) {
+      // last page -> wrap to first
+      setPage((p) => (p + 1) % pages.length);
+      wheelLock.current = true;
+      setTimeout(() => { wheelLock.current = false; }, 400);
+    } else if (e.deltaY < 0 && atTop) {
+      // first page -> wrap to last
+      setPage((p) => (p - 1 + pages.length) % pages.length);
+      wheelLock.current = true;
+      setTimeout(() => { wheelLock.current = false; }, 400);
+    }
+  };
+
   const saveStampData = async () => {
     saveOverlay({
       canvasRef: fabricCanvasRef,
@@ -272,19 +301,17 @@ export const TIFFViewer = ({
       <div className="flex justify-between items-center">
         <div className="flex flex-wrap items-center gap-2 p-2">
           <button
-            onClick={() => setPage((p) => Math.max(0, p - 1))}
-            disabled={page === 0}
+            onClick={() => setPage((p) => (p - 1 + pages.length) % pages.length)}
             title="Previous page"
-            className="py-1 rounded disabled:opacity-50 hover:bg-gray-300"
+            className="py-1 rounded hover:bg-gray-300"
           >
             <MdOutlineKeyboardArrowUp fontSize={20} />
           </button>
           <span className="text-xl">|</span>
           <button
-            onClick={() => setPage((p) => Math.min(pages.length - 1, p + 1))}
-            disabled={page === pages.length - 1}
+            onClick={() => setPage((p) => (p + 1) % pages.length)}
             title="Next page"
-            className="py-1 rounded disabled:opacity-50 hover:bg-gray-300"
+            className="py-1 rounded hover:bg-gray-300"
           >
             <MdOutlineKeyboardArrowDown fontSize={20} />
           </button>
@@ -344,6 +371,8 @@ export const TIFFViewer = ({
 
       <div
         id="tiff-container"
+        ref={scrollRef}
+        onWheel={handleWheel}
         className="flex-1 flex justify-center overflow-auto border border-gray-400 rounded-lg bg-white p-2 relative"
       >
         <div style={{ transform: `rotate(${rotation}deg)`, transformOrigin: "center center", transition: "transform 0.2s ease" }}>

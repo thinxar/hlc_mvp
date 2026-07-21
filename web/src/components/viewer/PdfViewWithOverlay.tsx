@@ -25,6 +25,8 @@ export const PDFViewerWithOverlay = (
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const wheelLock = useRef(false);
 
   const overlayMap = useMemo(() => {
     const map: Record<number, any[]> = {};
@@ -99,6 +101,33 @@ export const PDFViewerWithOverlay = (
     selectStampFunc(selectedStamp, page, setSelectedStamp, fabricCanvasRef, setStampDataArr)
   }, [selectedStamp])
 
+  // Reset scroll to top whenever the page changes so the new page starts at the top.
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+  }, [page]);
+
+  // Scroll wheel flips pages, but only once the current page is scrolled to its
+  // top/bottom edge (so a zoomed/tall page can still be scrolled internally first).
+  const handleWheel = (e: any) => {
+    const el = scrollRef.current;
+    if (!el || wheelLock.current) return;
+
+    const atTop = el.scrollTop <= 0;
+    const atBottom = Math.ceil(el.scrollTop + el.clientHeight) >= el.scrollHeight;
+
+    if (e.deltaY > 0 && atBottom) {
+      // last page -> wrap to first
+      setPage((p: any) => (p + 1) % pages.length);
+      wheelLock.current = true;
+      setTimeout(() => { wheelLock.current = false; }, 400);
+    } else if (e.deltaY < 0 && atTop) {
+      // first page -> wrap to last
+      setPage((p: any) => (p - 1 + pages.length) % pages.length);
+      wheelLock.current = true;
+      setTimeout(() => { wheelLock.current = false; }, 400);
+    }
+  };
+
   if (loading)
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
@@ -114,8 +143,7 @@ export const PDFViewerWithOverlay = (
       <div className="flex justify-between items-center">
         <div className="flex gap-2 items-center">
           <button
-            onClick={() => setPage((p: any) => Math.max(0, p - 1))}
-            disabled={page === 0}
+            onClick={() => setPage((p: any) => (p - 1 + pages.length) % pages.length)}
             title="Previous page"
             className="hover:bg-gray-200 px-2 py-1 rounded"
           >
@@ -123,8 +151,7 @@ export const PDFViewerWithOverlay = (
           </button>
           <span>|</span>
           <button
-            onClick={() => setPage((p: any) => Math.min(pages.length - 1, p + 1))}
-            disabled={page === pages.length - 1}
+            onClick={() => setPage((p: any) => (p + 1) % pages.length)}
             title="Next page"
             className="hover:bg-gray-200 px-2 py-1 rounded"
           >
@@ -159,7 +186,9 @@ export const PDFViewerWithOverlay = (
           )}
         </div>
       </div>
-      <div   
+      <div
+      ref={scrollRef}
+      onWheel={handleWheel}
       className="overflow-auto rounded relative p-2 flex justify-center
        items-center bg-black ">
         <div
