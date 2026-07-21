@@ -25,9 +25,20 @@ interface IOptions {
     onSaveSuccess?: (data: any) => void;
     onSaveFailure?: any;
     policyId: any
+    accept?: Record<string, string[]>
+    supportedFormats?: string
 }
+
+const DEFAULT_ACCEPT: Record<string, string[]> = {
+    pdf: ['.pdf'], docx: ['.docx'], doc: ['.doc'], html: ['.html', '.htm'], text: ['.txt'],
+    images: ['.jpg', '.jpeg', '.png'], 'image/tiff': ['.tiff', '.tif'],
+    excel: ['.xls', '.xlsx'], csv: ['.csv']
+};
+const DEFAULT_SUPPORTED_FORMATS = 'PDF, TIFF, PNG, JPG, JPEG, DOC, DOCX, XLS, XLSX, CSV';
+
 const FileDropZone = (props: IOptions) => {
-    const { onClose, onSaveSuccess, policyId } = props;
+    const { onClose, onSaveSuccess, policyId,
+        accept = DEFAULT_ACCEPT, supportedFormats = DEFAULT_SUPPORTED_FORMATS } = props;
     const [fileList, setFileList] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [docketId, setDocketId] = useState(null);
@@ -63,10 +74,7 @@ const FileDropZone = (props: IOptions) => {
             }
         },
         multiple: false,
-        accept: {
-            pdf: ['.pdf'], docx: ['.docx'], html: ['.html', '.htm'], text: ['.txt'],
-            images: ['.jpg', '.jpeg', '.png'], 'image/tiff': ['.tiff', '.tif']
-        }
+        accept
     });
 
     // useEffect(() => {
@@ -190,7 +198,7 @@ const FileDropZone = (props: IOptions) => {
                                         Browse file
                                     </p>
                                     <div className={`text-sm space-y-1 text-gray-500`}>
-                                        <p>Supported formats: {'PDF, TIFF , PNG , JPG, JPEG'}</p>
+                                        <p>Supported formats: {supportedFormats}</p>
                                         <p>Maximum file size : 25MB</p>
                                         <p className="text-blue-600">(Upload one file at a time)</p>
                                     </div>

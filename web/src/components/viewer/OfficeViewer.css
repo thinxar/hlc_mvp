@@ -1,0 +1,45 @@
+.office-viewer {
+    color: #111827;
+}
+
+.office-viewer table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 1rem;
+    font-size: 13px;
+}
+
+.office-viewer td,
+.office-viewer th {
+    border: 1px solid #d1d5db;
+    padding: 4px 8px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.office-viewer tr:nth-child(even) td {
+    background: #f9fafb;
+}
+
+.office-viewer .excel-sheet-title {
+    font-weight: 600;
+    margin: 14px 0 6px;
+    color: #1e40af;
+}
+
+.office-viewer img {
+    max-width: 100%;
+    height: auto;
+}
+
+.office-viewer p {
+    margin: 0 0 0.5rem;
+    line-height: 1.5;
+}
+
+.office-viewer h1,
+.office-viewer h2,
+.office-viewer h3 {
+    font-weight: 600;
+    margin: 0.75rem 0 0.4rem;
+}

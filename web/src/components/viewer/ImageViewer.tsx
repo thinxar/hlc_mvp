@@ -10,6 +10,7 @@ import { useFormstore } from "wire/StoreFactory";
 import { formatDateTime } from "utils/FormateDate";
 import { handleError } from "wire/ErrorHandler";
 import { selectStampFunc } from "./widgets/widget";
+import { ViewerControls, useViewerTransform } from "./ViewerControls";
 
 export const ImageViewer = ({
     endPoint,
@@ -25,6 +26,7 @@ export const ImageViewer = ({
 
     const params = useParams();
     const [loading, setLoading] = useState(true);
+    const { style, zoomIn, zoomOut, rotate, reset } = useViewerTransform(1);
 
     const containerRef = useRef<HTMLDivElement | null>(null);
     const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
@@ -180,25 +182,28 @@ export const ImageViewer = ({
             <div className="flex justify-between mb-3 items-center">
                 <strong>{file.fileName}</strong>
 
-                {stampDataArr?.length > 0 && (
-                    <button
-                        onClick={saveStamps}
-                        className="cursor-pointer px-3 py-1.5 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700"
-                    >
-                        Save Stamp
-                    </button>
-                )}
+                <div className="flex items-center gap-3">
+                    <ViewerControls onZoomIn={zoomIn} onZoomOut={zoomOut} onRotate={rotate} onReset={reset} />
+                    {stampDataArr?.length > 0 && (
+                        <button
+                            onClick={saveStamps}
+                            className="cursor-pointer px-3 py-1.5 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700"
+                        >
+                            Save Stamp
+                        </button>
+                    )}
+                </div>
             </div>
-            <div
-                ref={containerRef}
-                className="relative w-full h-[80vh] bg-white border rounded-xl overflow-hidden" >
-                <img
-                    id="mainImage"
-                    src={endPoint}
-                    alt="document"
-                    className="absolute top-0 left-0 w-full h-full object-contain z-0"
-                />
-                <canvas id="stampCanvas" className="absolute top-0 left-0 "></canvas>
+            <div className="relative w-full h-[80vh] bg-white border rounded-xl overflow-auto">
+                <div ref={containerRef} className="relative w-full h-full" style={style}>
+                    <img
+                        id="mainImage"
+                        src={endPoint}
+                        alt="document"
+                        className="absolute top-0 left-0 w-full h-full object-contain z-0"
+                    />
+                    <canvas id="stampCanvas" className="absolute top-0 left-0 "></canvas>
+                </div>
             </div>
             {loading && (
                 <div className="flex justify-center items-center p-10">

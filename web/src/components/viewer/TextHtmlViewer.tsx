@@ -12,6 +12,7 @@ import { formatDateTime } from "utils/FormateDate";
 import { handleError } from "wire/ErrorHandler";
 import { selectStampFunc } from "./widgets/widget";
 import DOMPurify from "dompurify";
+import { ViewerControls, useViewerTransform } from "./ViewerControls";
 
 export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSelectedStamp, setSelectedFile, handleFetch, stampDataArr, setStampDataArr }: any) => {
   const [content, setContent] = useState("");
@@ -21,6 +22,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const params = useParams();
+  const { style: transformStyle, zoomIn, zoomOut, rotate, reset } = useViewerTransform(1);
 
   const uploadStampEndPoint = StringFormat(
     ServiceEndpoint.policy.stamp.stampUploadApi,
@@ -179,8 +181,8 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
 
   return (
     <div className="p-5 w-full h-full overflow-y-auto">
-      <div className="flex justify-between mb-3 items-center">
-        {/* <strong>{file.fileName}</strong> */}
+      <div className="flex justify-end gap-3 mb-3 items-center">
+        <ViewerControls onZoomIn={zoomIn} onZoomOut={zoomOut} onRotate={rotate} onReset={reset} />
         {
           stampDataArr?.length > 0 && <div>
             <button onClick={saveOverlays} className='cursor-pointer px-2 py-1.5 flex items-center gap-2 bg-linear-to-r pr-bgcolor text-white
@@ -198,6 +200,7 @@ export const TextHtmlViewer = ({ endPoint, file, selectedStamp, overlays, setSel
       >
         <div
           dangerouslySetInnerHTML={{ __html: content }}
+          style={transformStyle}
           // className="absolute top-2 left-2 rounded-md pointer-events-none border border-gray-200"
           className=" absolute top-2 left-2 rounded-md pointer-events-none border-double border-4 border-blue-700 p-1"
         />

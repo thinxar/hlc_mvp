@@ -4,6 +4,7 @@ import { FaFile } from 'react-icons/fa6';
 import { PDFViewerWithOverlay } from 'components/viewer/PdfViewWithOverlay';
 import { TIFFViewer } from 'components/viewer/TiffViewWithOverlay';
 import { TextHtmlViewer } from 'components/viewer/TextHtmlViewer';
+import { OfficeViewer, isOfficeFile } from 'components/viewer/OfficeViewer';
 import { useParams } from 'react-router-dom';
 import { StringFormat } from '@palmyralabs/ts-utils';
 import { ServiceEndpoint } from 'config/ServiceEndpoint';
@@ -58,6 +59,8 @@ const FileViewer = ({ fileUrl, key, file, selectedStamp, stampData, setSelectedF
                             uploadStampEndPoint={uploadStampEndPoint}
                             handleFetch={handleFetch} stampDataArr={stampDataArr} setStampDataArr={setStampDataArr}
                         />
+                    ) : isOfficeFile(fileData) ? (
+                        <OfficeViewer endPoint={fileUrl} file={fileData} />
                     ) : fileData?.fileType === 'text/plain' || fileData?.fileType === 'text/html' ? (
                         <TextHtmlViewer endPoint={fileUrl} file={fileData} selectedStamp={selectedStamp} overlays={stampData}
                             uploadStampEndPoint={uploadStampEndPoint} setSelectedStamp={setSelectedStamp} setSelectedFile={setSelectedFile}

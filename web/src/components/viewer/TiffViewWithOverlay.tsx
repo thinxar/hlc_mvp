@@ -3,7 +3,7 @@ import axios from "axios";
 import { fabric } from "fabric";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineZoomIn, AiOutlineZoomOut } from "react-icons/ai";
-import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
+import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp, MdRotateRight } from "react-icons/md";
 import UTIF from "utif2";
 import { formatDateTime } from "utils/FormateDate";
 import { useFormstore } from "wire/StoreFactory";
@@ -28,6 +28,7 @@ export const TIFFViewer = ({
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [zoom, setZoom] = useState(0.85);
+  const [rotation, setRotation] = useState(0);
 
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -273,6 +274,7 @@ export const TIFFViewer = ({
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={page === 0}
+            title="Previous page"
             className="py-1 rounded disabled:opacity-50 hover:bg-gray-300"
           >
             <MdOutlineKeyboardArrowUp fontSize={20} />
@@ -281,6 +283,7 @@ export const TIFFViewer = ({
           <button
             onClick={() => setPage((p) => Math.min(pages.length - 1, p + 1))}
             disabled={page === pages.length - 1}
+            title="Next page"
             className="py-1 rounded disabled:opacity-50 hover:bg-gray-300"
           >
             <MdOutlineKeyboardArrowDown fontSize={20} />
@@ -294,6 +297,7 @@ export const TIFFViewer = ({
         <div className="flex flex-wrap items-center gap-2">
           <div
             onClick={() => setZoom((z) => Math.max(0.2, z - 0.1))}
+            title="Zoom out"
             className="py-1 rounded hover:bg-gray-300 cursor-pointer"
           >
             <AiOutlineZoomOut fontSize={20} />
@@ -303,13 +307,25 @@ export const TIFFViewer = ({
 
           <div
             onClick={() => setZoom((z) => Math.min(5, z + 0.1))}
+            title="Zoom in"
             className="py-1 rounded hover:bg-gray-300 cursor-pointer"
           >
             <AiOutlineZoomIn fontSize={20} />
           </div>
 
+          <span className="text-xl">|</span>
+
           <div
-            onClick={() => setZoom(0.85)}
+            onClick={() => setRotation((r) => (r + 90) % 360)}
+            title="Rotate"
+            className="py-1 rounded hover:bg-gray-300 cursor-pointer"
+          >
+            <MdRotateRight fontSize={20} />
+          </div>
+
+          <div
+            onClick={() => { setZoom(0.85); setRotation(0); }}
+            title="Reset"
             className="px-3 py-1 bg-gray-200 rounded cursor-pointer"
           >
             Reset
@@ -330,7 +346,9 @@ export const TIFFViewer = ({
         id="tiff-container"
         className="flex-1 flex justify-center overflow-auto border border-gray-400 rounded-lg bg-white p-2 relative"
       >
-        <canvas id="fabric-tiff-canvas" />
+        <div style={{ transform: `rotate(${rotation}deg)`, transformOrigin: "center center", transition: "transform 0.2s ease" }}>
+          <canvas id="fabric-tiff-canvas" />
+        </div>
 
         <div
           ref={tooltipRef}

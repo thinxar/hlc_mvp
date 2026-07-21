@@ -5,7 +5,7 @@ import * as pdfjsLib from "pdfjs-dist";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineZoomIn, AiOutlineZoomOut } from "react-icons/ai";
-import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp } from "react-icons/md";
+import { MdOutlineKeyboardArrowDown, MdOutlineKeyboardArrowUp, MdRotateRight } from "react-icons/md";
 import { useFormstore } from "wire/StoreFactory";
 import { saveOverlay } from "./overlay/saveOverlay";
 import { pdfRender, selectStampFunc } from "./widgets/widget";
@@ -20,6 +20,7 @@ export const PDFViewerWithOverlay = (
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState<any>(0);
   const [zoom, setZoom] = useState(0.9);
+  const [rotation, setRotation] = useState(0);
   const pdfRef = useRef<any>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
@@ -115,6 +116,7 @@ export const PDFViewerWithOverlay = (
           <button
             onClick={() => setPage((p: any) => Math.max(0, p - 1))}
             disabled={page === 0}
+            title="Previous page"
             className="hover:bg-gray-200 px-2 py-1 rounded"
           >
             <MdOutlineKeyboardArrowUp fontSize={20} />
@@ -123,6 +125,7 @@ export const PDFViewerWithOverlay = (
           <button
             onClick={() => setPage((p: any) => Math.min(pages.length - 1, p + 1))}
             disabled={page === pages.length - 1}
+            title="Next page"
             className="hover:bg-gray-200 px-2 py-1 rounded"
           >
             <MdOutlineKeyboardArrowDown fontSize={20} />
@@ -130,14 +133,18 @@ export const PDFViewerWithOverlay = (
           <span>Page {page + 1} / {pages.length}</span>
         </div>
         <div className="flex gap-2 items-center">
-          <button onClick={() => setZoom((z) => Math.max(0.2, z - 0.1))} className="cursor-pointer">
+          <button onClick={() => setZoom((z) => Math.max(0.2, z - 0.1))} title="Zoom out" className="cursor-pointer">
             <AiOutlineZoomOut fontSize={20} />
           </button>
-          <button onClick={() => setZoom((z) => z + 0.1)} className="cursor-pointer">
+          <button onClick={() => setZoom((z) => z + 0.1)} title="Zoom in" className="cursor-pointer">
             <AiOutlineZoomIn fontSize={20} />
           </button>
+          <button onClick={() => setRotation((r) => (r + 90) % 360)} title="Rotate" className="cursor-pointer">
+            <MdRotateRight fontSize={20} />
+          </button>
           <button
-            onClick={() => setZoom(0.9)}
+            onClick={() => { setZoom(0.9); setRotation(0); }}
+            title="Reset"
             className="bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded cursor-pointer"
           >
             Reset
@@ -157,7 +164,8 @@ export const PDFViewerWithOverlay = (
        items-center bg-black ">
         <div
           ref={containerRef} className="flex justify-center"
-          style={{ position: "relative", width: "100%", height: "100%" }}
+          style={{ position: "relative", width: "100%", height: "100%",
+            transform: `rotate(${rotation}deg)`, transformOrigin: "center center", transition: "transform 0.2s ease" }}
         >
           <canvas id="fabric-pdf-canvas" />
           <div
